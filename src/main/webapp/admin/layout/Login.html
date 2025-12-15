@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f6f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .login-container {
+            background: #fff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            width: 350px;
+        }
+
+        .login-container h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .login-container input[type="text"],
+        .login-container input[type="password"] {
+            width: 100%;
+            padding: 12px 15px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .login-container input[type="text"]:focus,
+        .login-container input[type="password"]:focus {
+            border-color: #5c9bde;
+        }
+
+        .login-container button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #5c9bde;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .login-container button:hover {
+            background-color: #3687cd;
+        }
+
+        .remember {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .remember input[type="checkbox"] {
+            margin-right: 8px;
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        .remember label {
+            cursor: pointer;
+        }
+
+        #alertEmail,
+        #alertPassword {
+            color: red;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-container">
+        <h2>管理員登入</h2>
+        <div id="alertEmail"></div>
+        <div id="alertPassword"></div>
+        <form id="loginForm">
+            <input type="text" id="email" placeholder="請輸入 Email" autocomplete="off" required>
+            <input type="password" id="password" placeholder="請輸入密碼" autocomplete="off">
+            <div class="remember">
+                <input type="checkbox" id="rememberMe">
+                <label for="rememberMe">記住帳號</label>
+            </div>
+            <button type="submit" id="login">登入</button>
+        </form>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script>
+        $(function () {
+            // 頁面載入時檢查 localStorage
+            const savedEmail = localStorage.getItem('savedEmail');
+            if (savedEmail) {
+                $('#email').val(savedEmail);
+                $('#rememberMe').prop('checked', true);
+            }
+
+            // 點擊登入按鈕時儲存或刪除帳號
+            $('#login').on('click', function () {
+                const email = $('#email').val();
+                const remember = $('#rememberMe').prop('checked');
+
+                if (remember) {
+                    localStorage.setItem('savedEmail', email); // 儲存帳號
+                } else {
+                    localStorage.removeItem('savedEmail'); // 刪除帳號
+                }
+
+            });
+
+            $('#loginForm').on('submit', function (e) {
+            	e.preventDefault();
+                const email = $('#email').val().trim();
+                const pwd = $('#password').val().trim();
+
+                if (email === '') {
+                    e.preventDefault();
+                    $('#alertEmail').text('Email不得為空白');
+                    return;
+                }
+
+                // Email 格式不正確
+                if (!isValidEmail(email)) {
+                    e.preventDefault();
+                    $('#alertEmail').text('Email 格式不正確');
+                    return;
+                } else {
+                    $('#alertEmail').text('');
+                }
+
+                // 空白密碼
+                if (pwd === '') {
+                    $('#alertPassword').text('密碼不得為空白');
+                    e.preventDefault(); // 阻止送出
+                    return;
+                } else {
+                    // 清空錯誤訊息
+                    $('#alertPassword').text('');
+                }
+
+                //Email格式
+                function isValidEmail(email) {
+                    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    return regex.test(email);
+                }
+
+                $.ajax({
+                    url: '/pet/AdminLoginServlet',
+                    type: 'POST',
+                    data: {
+                        email: email,
+                        password: pwd
+                    },
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response.status === 'success') {
+                        	sessionStorage.setItem('role', response.role);
+                            window.location.href = 'Home.jsp';
+                        } else {
+                            $('#alertPassword').text(response.message);
+                        }
+                    },
+                    error: function () {
+                        alert('系統錯誤，請稍後再試')
+                    }
+                })
+
+            });
+        });
+    </script>
+    </script>
+
+</body>
+
+</html>

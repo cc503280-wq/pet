@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MemberPetQueryAll.html</title>
+
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="../../plugins/fontawesome-free/css/all.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="../../dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="../../plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="../../plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+    
+    <style type="text/css">
+        /* 調整 sidebar logo 排版 */
+        .brand-link {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            /* 展開時靠左 */
+            padding: 0.5rem 1rem;
+        }
+
+        /* 收起 sidebar 時，icon 置中 */
+        .sidebar-collapse .brand-link {
+            justify-content: center;
+        }
+
+        /* 調整 icon 與文字間距 */
+        .brand-link i {
+            width: 1.5rem;
+            /* 固定寬度讓文字距離固定 */
+            text-align: center;
+        }
+
+        /* 收起 sidebar 時文字隱藏 */
+        .sidebar-collapse .brand-text {
+            display: none;
+        }
+
+        .box1 {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .disabled-btn {
+            pointer-events: none !important;
+            /* 禁止滑鼠事件 */
+            opacity: 0.5;
+            /* 變淡灰色 */
+            cursor: not-allowed !important;
+            /* 滑鼠變禁止符號 */
+        }
+        
+        /* DataTable 所有欄位水平 + 垂直置中 */
+		#example2 td, 
+		#example2 th {
+		    text-align: center !important;
+		    vertical-align: middle !important;
+		    font-size: 0.8rem;
+		    padding: 0.25rem 0.5rem;
+		    white-space: nowrap;
+		}
+		
+		
+    </style>
+</head>
+
+<body class="hold-transition sidebar-mini sidebar-collapse">
+    <!-- Site wrapper -->
+    <div class="wrapper">
+        <!-- Navbar -->
+        <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+            <!-- Left navbar links -->
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+                </li>
+            </ul>
+		<!-- 右側 Navbar 按鈕 -->
+		    <ul class="navbar-nav ml-auto">
+		        <li class="nav-item">
+		            <a href="Login.html" class="btn btn-secondary btn-sm">
+		                <i class="fas fa-sign-out-alt"></i> 登出
+		            </a>
+		        </li>
+		    </ul>
+
+        </nav>
+        <!-- /.navbar -->
+
+        <!-- Main Sidebar Container -->
+        <aside class="main-sidebar sidebar-dark-primary elevation-4">
+            <!-- Brand Logo -->
+            <a href="../../index3.html" class="brand-link">
+                <i class="fas fa-paw" style="color: #FFD43B; font-size: 1.5rem;"></i>
+                <span class="brand-text font-weight-light"></span>
+            </a>
+
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+
+                </div>
+
+
+
+                <!-- Sidebar Menu -->
+                <nav class="mt-2">
+                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
+                        data-accordion="false">
+                        <!-- Add icons to the links using the .nav-icon class
+               with font-awesome or any other icon font library -->
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-edit"></i>
+                                <p>
+                                    會員管理
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="AdminQueryAll.html" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>管理員資料</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="MemberQueryAll.html" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>會員基本資料</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="MemberPetQueryAll.html" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>會員寵物資料</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="CouponQueryAll.html" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>優惠券總覽</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="CouponUsersQueryAll.html" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>會員持有優惠券</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="FavoritesQueryAll.html" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>會員收藏清單</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        <li class="nav-item">
+              <a href="../../AllProducts" class="nav-link">
+                <i class="nav-icon fas fa-edit"></i>
+                <p>
+                  商品管理
+                  <i class="right fas fa-angle-left"></i>
+                </p>
+              </a>
+            </li>
+                        <li class="nav-item">
+            <a href="#" class="nav-link"> 
+            <i class="nav-icon fas fa-edit"></i>
+				<p>
+					訂單管理 <i class="right fas fa-angle-left"></i>
+				</p>
+			</a>
+			<ul class="nav nav-treeview">
+				<li class="nav-item"><a
+					href="../../orderList"
+					class="nav-link"> <i class="far fa-circle nav-icon"></i>
+						<p>查詢全部訂單</p>
+				</a></li>
+				<li class="nav-item"><a
+					href="../../shipmentsList"
+					class="nav-link"> <i class="far fa-circle nav-icon"></i>
+						<p>物流查詢</p>
+				</a></li>
+				<li class="nav-item"><a
+					href="../../orderItemsList"
+					class="nav-link"> <i class="far fa-circle nav-icon"></i>
+						<p>查詢全部訂單明細</p>
+				</a></li>
+				<li class="nav-item"><a
+					href="../order/shopping.jsp"
+					class="nav-link"> <i class="far fa-circle nav-icon"></i>
+						<p>新增訂單</p>
+				</a></li>
+			</ul></li>
+                        <li class="nav-item">
+              <a href="../../GetAllAppointmentsServlet" class="nav-link">
+                <i class="nav-icon fas fa-edit"></i>
+                <p>
+                  預約管理
+                  <i class="right fas fa-angle-left"></i>
+                </p>
+              </a>
+            </li>
+
+                    </ul>
+                </nav>
+                <!-- /.sidebar-menu -->
+            </div>
+            <!-- /.sidebar -->
+        </aside>
+
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <section class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-12 box1">
+                            <h1>會員管理</h1>
+                            
+                        </div>
+                        <div class="col-sm-6">
+
+                        </div>
+                    </div>
+                </div><!-- /.container-fluid -->
+            </section>
+
+            <!-- Main content -->
+            <section class="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header d-flex align-items-center justify-content-between">
+
+                                    <h3 class="card-title me-auto">寵物列表</h3>
+
+                                    <div class="d-flex align-items-center" style="gap: 0.5rem;">
+                                    	<a href="MemberPetQueryAll.html" class="btn btn-secondary btn-sm mr-2 btn-query-all">
+                                            查詢全部
+                                        </a>
+                                        <!-- 依petId查詢 -->
+									    <div class="input-group input-group-sm mr-2" style="width: 180px;">
+									        <input id="petIdInput" type="text" class="form-control" placeholder="依寵物ID查詢">
+									        <div class="input-group-append">
+									            <a href="#" id="petIdSearchBtn" class="btn btn-secondary">
+									                <i class="fas fa-search"></i>
+									            </a>
+									        </div>
+									    </div>
+                                        <!-- 依memberId查詢 -->
+									    <div class="input-group input-group-sm mr-2" style="width: 180px;">
+									        <input id="memberIdInput" type="text" class="form-control" placeholder="依會員ID查詢">
+									        <div class="input-group-append">
+									            <a href="#" id="memberIdSearchBtn" class="btn btn-secondary">
+									                <i class="fas fa-search"></i>
+									            </a>
+									        </div>
+									    </div>
+                                        <!-- 種類查詢 -->
+										<div class="input-group input-group-sm mr-2" style="width: 180px;">
+										    <select id="typeSelect" class="form-control">
+										        <option value="">所有種類</option>
+										        <option value="狗">狗</option>
+										        <option value="貓">貓</option>
+										        <option value="其他">其他</option>
+										    </select>
+										</div>
+										
+										<!-- 年齡查詢 -->
+										<div class="input-group input-group-sm mr-2" style="width: 180px;">
+										    <select id="ageSelect" class="form-control">
+										        <option value="">所有年齡</option>
+										        <option value="幼年">幼年</option>
+										        <option value="成年">成年</option>
+										        <option value="老年">老年</option>
+										    </select>
+										</div>
+										
+										<!-- 體型查詢 -->
+										<div class="input-group input-group-sm mr-2" style="width: 180px;">
+										    <select id="sizeSelect" class="form-control">
+										        <option value="">所有體型</option>
+										        <option value="小型">小型</option>
+										        <option value="中型">中型</option>
+										        <option value="大型">大型</option>
+										    </select>
+										</div>
+										
+										<!-- 查詢按鈕 -->
+										<button id="searchBtn" class="btn btn-secondary btn-sm">查詢</button>
+									
+                                    </div>
+                                </div>
+                                <!-- /.card-header -->
+                                <div class="card-body">
+                                    <table id="example2" class="table table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>寵物ID</th>
+                                                <th>會員ID</th>
+                                                <th>寵物名</th>
+                                                <th>寵物種類</th>
+                                                <th>寵物品種</th>
+                                                <th>寵物年齡</th>
+                                                <th>寵物體型</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+
+                                        </tbody>
+
+                                    </table>
+
+                                </div>
+                                <!-- /.card-body -->
+                            </div>
+                            <!-- /.card -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- /.content -->
+        </div>
+        <!-- /.content-wrapper -->
+
+        <footer class="main-footer">
+            <div class="float-right d-none d-sm-block">
+                <b>Version</b> 3.2.0
+            </div>
+            <strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.</strong> All rights
+            reserved.
+        </footer>
+
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-dark">
+            <!-- Control sidebar content goes here -->
+        </aside>
+        <!-- /.control-sidebar -->
+    </div>
+    <!-- ./wrapper -->
+
+    <!-- jQuery -->
+    <script src="../../plugins/jquery/jquery.min.js"></script>
+    <!-- Bootstrap 4 -->
+    <script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- DataTables  & Plugins -->
+    <script src="../../plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="../../plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="../../plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="../../plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+    <script src="../../plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="../../plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+    <script src="../../plugins/jszip/jszip.min.js"></script>
+    <script src="../../plugins/pdfmake/pdfmake.min.js"></script>
+    <script src="../../plugins/pdfmake/vfs_fonts.js"></script>
+    <script src="../../plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+    <script src="../../plugins/datatables-buttons/js/buttons.print.min.js"></script>
+    <script src="../../plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
+	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="../../dist/js/adminlte.min.js"></script>
+    <!-- AdminLTE for demo purposes
+            <script src="../../dist/js/demo.js"></script> -->
+    <!-- Page specific script -->
+    <script>
+$(function () {
+    // 初始化 DataTable
+    $('#example2').DataTable({
+        "paging": true,
+        "lengthChange": false,
+        "searching": false,
+        "ordering": true,
+        "info": true,
+        "autoWidth": true,
+        "responsive": true,
+        "dom": '<"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7 d-flex justify-content-end"p>>'
+    });
+
+    // 寵物 ID 查詢
+    $('#petIdSearchBtn').on('click', function(e) {
+        e.preventDefault();
+        const petId = $('#petIdInput').val().trim();
+        if (!petId) return alert("請輸入寵物 ID");
+
+        $.ajax({
+            url: `/pet/MemberPetServlet?action=queryByPetId&petId=${petId}`,
+            method: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                renderTable([data]); // 單筆用陣列包起來
+            },
+            error: function(xhr) {
+                console.error(xhr.responseText);
+            }
+        });
+    });
+
+    // 會員 ID 查詢
+    $('#memberIdSearchBtn').on('click', function(e) {
+        e.preventDefault();
+        const memberId = $('#memberIdInput').val().trim();
+        if (!memberId) return alert("請輸入會員 ID");
+
+        $.ajax({
+            url: `/pet/MemberPetServlet?action=queryByMemberId&memberId=${memberId}`,
+            method: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                renderTable(data);
+            },
+            error: function(xhr) {
+                console.error(xhr.responseText);
+            }
+        });
+    });
+
+    // 條件查詢
+    $('#searchBtn').on('click', function() {
+        const petType = $('#typeSelect').val();
+        const petAge = $('#ageSelect').val();
+        const petSize = $('#sizeSelect').val();
+
+        const params = $.param({
+            action: 'search',
+            petType,
+            petAge,
+            petSize
+        });
+
+        $.ajax({
+            url: `/pet/MemberPetServlet?${params}`,
+            method: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                renderTable(data);
+            },
+            error: function(xhr) {
+                console.error(xhr.responseText);
+            }
+        });
+    });
+
+    // 更新表格
+    function renderTable(list) {
+        const table = $('#example2');
+        if ($.fn.DataTable.isDataTable(table)) {
+            table.DataTable().clear().destroy();
+        }
+        const tbody = $('#example2 tbody');
+        tbody.empty();
+
+        list.forEach(item => {
+            tbody.append(`
+                <tr>
+                    <td>${item.petId}</td>
+                    <td>${item.memberId}</td>
+                    <td>${item.petName}</td>
+                    <td>${item.petType}</td>
+                    <td>${item.petBreed}</td>
+                    <td>${item.petAge}</td>
+                    <td>${item.petSize}</td>
+                </tr>
+            `);
+        });
+
+        table.DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": false,
+            "ordering": true,
+            "info": true,
+            "autoWidth": true,
+            "responsive": true,
+            "dom": '<"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7 d-flex justify-content-end"p>>'
+        });
+    }
+
+    // 頁面載入就查詢全部
+    function loadAllPets() {
+        $.ajax({
+            url: '/pet/MemberPetServlet?action=list',
+            method: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                renderTable(data);
+            },
+            error: function(xhr) {
+                console.error(xhr.responseText);
+            }
+        });
+    }
+
+    loadAllPets();
+});
+</script>
+</body>
+
+</html>
