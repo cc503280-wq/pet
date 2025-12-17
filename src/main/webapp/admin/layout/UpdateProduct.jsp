@@ -1,5 +1,5 @@
-<%@page import="bean.CategoriesBean"%>
-<%@page import="bean.ProductBean"%>
+<%@page import="com.pet.model.product.CategoriesBean"%>
+<%@page import="com.pet.model.product.ProductBean"%>
 <%@page import="java.util.*"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
@@ -234,7 +234,7 @@
 									<!-- /.card-header -->
 									<!-- form start -->
 									<jsp:useBean id="product" scope="request"
-										class="bean.ProductBean" />
+										class="com.pet.model.product.ProductBean" />
 									<form class="form-horizontal" method="post"
 										action="<%=request.getContextPath()%>/UpdateProductDone"
 										enctype="multipart/form-data">

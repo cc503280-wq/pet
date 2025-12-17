@@ -232,7 +232,7 @@
                   </div>
                   <!-- /.card-header -->
                   <!-- form start -->
-                  <jsp:useBean id="product" scope="request" class="bean.ProductBean" />
+                  <jsp:useBean id="product" scope="request" class="com.pet.model.product.ProductBean" />
                   <form class="form-horizontal">
                     <div class="card-body">
                       <div class="form-group row ">

@@ -1,4 +1,4 @@
-<%@page import="bean.CategoriesBean"%>
+<%@page import="com.pet.model.product.CategoriesBean"%>
 <%@page import="java.util.*"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
@@ -65,7 +65,7 @@
 
 <body class="hold-transition sidebar-mini sidebar-collapse">
 	<jsp:useBean id="product" scope="request"
-		class="bean.ProductBean" />
+		class="com.pet.model.product.ProductBean" />
 	<!-- Site wrapper -->
 	<div class="wrapper">
 		<!-- Navbar -->

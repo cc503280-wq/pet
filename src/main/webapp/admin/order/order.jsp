@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ page import="java.util.List"%>
-<%@ page import="bean.orderItemBean"%>
+<%@ page import="com.pet.model.order.orderItemBean"%>
 <!--bean需要更換-->
 <%@ page import="javax.sql.*"%>
 <%@ page import="javax.naming.Context"%>

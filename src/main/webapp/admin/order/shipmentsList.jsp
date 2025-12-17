@@ -1,4 +1,4 @@
-<%@page import="bean.shipmentsBean"%>
+<%@page import="com.pet.model.order.shipmentsBean"%>
 <%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
