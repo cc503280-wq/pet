@@ -21,7 +21,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-import com.pet.model.appoinment.EmployeeScheduleOverviewDTO;
+import com.pet.model.appointment.EmployeeScheduleOverviewDTO;
 
 public class ScheduleQueryDAO {
 	

@@ -12,7 +12,7 @@ import java.util.List;
 import javax.naming.NamingException;
 
 import com.pet.dao.appointment.AppointmentDAO;
-import com.pet.model.appoinment.GetAllAppointmentDTO;
+import com.pet.model.appointment.GetAllAppointmentDTO;
 
 
 @WebServlet("/GetAllAppointmentsServlet")

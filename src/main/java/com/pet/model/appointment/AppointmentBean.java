@@ -1,4 +1,4 @@
-package com.pet.model.appoinment;
+package com.pet.model.appointment;
 import java.sql.Date;
 
 public class AppointmentBean {

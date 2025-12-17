@@ -16,9 +16,9 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-import com.pet.model.appoinment.AppointmentBean;
-import com.pet.model.appoinment.EmpBean;
-import com.pet.model.appoinment.GetAllAppointmentDTO;
+import com.pet.model.appointment.AppointmentBean;
+import com.pet.model.appointment.EmpBean;
+import com.pet.model.appointment.GetAllAppointmentDTO;
 
 public class AppointmentDAO {
 

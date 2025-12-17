@@ -22,11 +22,11 @@ import com.pet.dao.appointment.AppointmentDAO;
 import com.pet.dao.appointment.PServiceDAO;
 import com.pet.dao.member.MemberDao;
 import com.pet.dao.member.MemberPetDao;
-import com.pet.model.appoinment.AppointSuccessDTO;
-import com.pet.model.appoinment.AppointmentBean;
-import com.pet.model.appoinment.MemberBean;
-import com.pet.model.appoinment.MemberPetsBean;
-import com.pet.model.appoinment.PetServiceBean;
+import com.pet.model.appointment.AppointSuccessDTO;
+import com.pet.model.appointment.AppointmentBean;
+import com.pet.model.appointment.MemberBean;
+import com.pet.model.appointment.MemberPetsBean;
+import com.pet.model.appointment.PetServiceBean;
 
 @WebServlet("/InsertAppointmentServlet")
 public class InsertAppointmentServlet extends HttpServlet {

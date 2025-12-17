@@ -15,7 +15,7 @@ import javax.naming.NamingException;
 import com.google.gson.Gson;
 import com.pet.dao.appointment.EmpDAO;
 import com.pet.dao.appointment.ScheduleQueryDAO;
-import com.pet.model.appoinment.EmpBean;
+import com.pet.model.appointment.EmpBean;
 
 @WebServlet("/GetScheduleServlet")
 public class GetScheduleServlet extends HttpServlet {
