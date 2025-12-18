@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"
-	import="java.util.*,com.pet.model.appointment.GetAllAppointmentDTO"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+	import="java.util.*,com.pet.model.appoinment.GetAllAppointmentDTO"%>
+<%@ taglib uri="jakarta.tags.core" prefix="c"%>
 <%-- GetAllAppointment.jsp --%>
 <!DOCTYPE html>
 <html>
