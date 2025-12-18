@@ -27,16 +27,15 @@ public class GetAllAppointmentDTO {
 	private Date updateTime;
 	private int durationMinutes;
 	
+	
+
 	public GetAllAppointmentDTO() {
-		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public GetAllAppointmentDTO(int appointmentId, int memberId, String memberName, int petId, String petName,
 			int serviceId, String serviceName, int employeeId, String employeeName, Date appointmentDate,
 			Time startTime, Time endTime, String notes, int price, String appointmentStatus, String payStatus,
 			int rating, String comment, String reply, Date updateTime,int slotId,int durationMinutes) {
-		super();
 		this.appointmentId = appointmentId;
 		this.memberId = memberId;
 		this.memberName = memberName;

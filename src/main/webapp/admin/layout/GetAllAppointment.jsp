@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"
-	import="java.util.*,com.pet.model.appoinment.GetAllAppointmentDTO"%>
+	import="java.util.*,com.pet.model.appointment.GetAllAppointmentDTO"%>
 <%@ taglib uri="jakarta.tags.core" prefix="c"%>
 <%-- GetAllAppointment.jsp --%>
 <!DOCTYPE html>

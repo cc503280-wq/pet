@@ -1,63 +1,66 @@
-package com.pet.model.appointment;
+package model;
 
 import java.sql.Date;
-import java.sql.Time;
+import java.sql.Timestamp;
+import java.util.HashSet;
+import java.util.Set;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
-public class MemberBean {
+@Entity
+@Table(name="members")
+public class Member {
 	
-	// member_id INT IDENTITY(1,1) PRIMARY KEY
-    private Integer memberId; 
-
-    // email VARCHAR(255) UNIQUE
+	
+	@Id @Column(name="member_id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer memberId;
+	@Column(name="email")
     private String email;
-
-    // password VARCHAR(255)
+	@Column(name="password")
     private String password;
-
-    // name NVARCHAR(50)
+	@Column(name="name")
     private String name;
-
-    // gender CHAR(1)
-    private String gender; // 使用 String 儲存 CHAR(1)
-
-    // birthday DATE
-    private Date birthday; // 建議使用 java.sql.Date 或 java.time.LocalDate
-
-    // phone VARCHAR(20) UNIQUE
+	@Column(name="gender")
+    private String gender; 
+	@Column(name="birthday")
+    private Date birthday;
+	@Column(name="phone")
     private String phone;
-
-    // address NVARCHAR(255)
+	@Column(name="address")
     private String address;
-
-    // picture VARCHAR(255)
+	@Column(name="picture")
     private String picture;
-
-    // status VARCHAR(50) DEFAULT 'active'
+	@Column(name="status")
     private String status;
-
-    // oauth_type VARCHAR(20)
+	@Column(name="oauth_type")
     private String oauthType;
-
-    // oauth_id VARCHAR(255)
+	@Column(name="oauth_id")
     private String oauthId;
-
-    // points INT DEFAULT 0
+	@Column(name="points")
     private Integer points;
+	@Column(name="created_at")
+    private Timestamp createdAt; 
+	@Column(name="updated_at")
+    private Timestamp updatedAt;
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "member", cascade = CascadeType.ALL)
+	private Set<MemberPets> memberPets = new HashSet<MemberPets>();
 
-    // created_at DATETIME
-    private Time createdAt; 
-
-    // updated_at DATETIME
-    private Time updatedAt;
-
-	public MemberBean() {
-		super();
+	public Member() {
+		
 	}
 
-	public MemberBean(Integer memberId, String email, String password, String name, String gender, Date birthday,
+	public Member(Integer memberId, String email, String password, String name, String gender, Date birthday,
 			String phone, String address, String picture, String status, String oauthType, String oauthId,
-			Integer points, Time createdAt, Time updatedAt) {
-		super();
+			Integer points, Timestamp createdAt, Timestamp updatedAt) {
 		this.memberId = memberId;
 		this.email = email;
 		this.password = password;
@@ -179,20 +182,28 @@ public class MemberBean {
 		this.points = points;
 	}
 
-	public Time getCreatedAt() {
+	public Timestamp getCreatedAt() {
 		return createdAt;
 	}
 
-	public void setCreatedAt(Time createdAt) {
+	public void setCreatedAt(Timestamp createdAt) {
 		this.createdAt = createdAt;
 	}
 
-	public Time getUpdatedAt() {
+	public Timestamp getUpdatedAt() {
 		return updatedAt;
 	}
 
-	public void setUpdatedAt(Time updatedAt) {
+	public void setUpdatedAt(Timestamp updatedAt) {
 		this.updatedAt = updatedAt;
+	}
+
+	public Set<MemberPets> getPet() {
+		return memberPets;
+	}
+
+	public void setPet(Set<MemberPets> memberPets) {
+		this.memberPets = memberPets;
 	}
 
 }
