@@ -27,7 +27,6 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-import org.apache.tomcat.jakartaee.commons.lang3.ObjectUtils.Null;
 
 import com.google.gson.Gson;
 import com.pet.dao.member.MemberPetDao;
