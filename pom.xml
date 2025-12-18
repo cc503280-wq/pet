@@ -3,6 +3,12 @@
   <groupId>pet</groupId>
   <artifactId>pet</artifactId>
   <version>0.0.1-SNAPSHOT</version>
+  <packaging>war</packaging> <properties>
+      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+      <maven.compiler.source>21</maven.compiler.source>
+      <maven.compiler.target>21</maven.compiler.target>
+  </properties>
+  
   <dependencies>
 	<dependency>
 		<groupId>com.microsoft.sqlserver</groupId>
@@ -52,15 +58,7 @@
     </dependency>
 	
   </dependencies>
-  
-  
-<build>
-	<sourceDirectory>src</sourceDirectory>
-	<resources>
-	<resource>
-		<directory>src</directory>
-	</resource>
-</resources>
+  <build>
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
