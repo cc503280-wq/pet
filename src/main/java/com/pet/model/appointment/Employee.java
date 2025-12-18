@@ -1,4 +1,4 @@
-package model;
+package com.pet.model.appointment;
 
 import java.sql.Date;
 import java.sql.Timestamp;

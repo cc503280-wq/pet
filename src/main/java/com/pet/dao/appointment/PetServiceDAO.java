@@ -1,17 +1,19 @@
-package DAO;
+package com.pet.dao.appointment;
 
 import java.util.List;
+
 
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
-import model.PetService;
+import com.pet.model.appointment.PetService;
 
-public class PetServiceDAO1 {
+
+public class PetServiceDAO {
 	
 	private Session session;
 
-	public PetServiceDAO1(Session session) {
+	public PetServiceDAO(Session session) {
 		this.session = session;
 	}
 	

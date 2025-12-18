@@ -1,4 +1,4 @@
-package Util;
+package com.pet.utils;
 
 import org.hibernate.SessionFactory;
 

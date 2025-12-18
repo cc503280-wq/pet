@@ -1,11 +1,11 @@
-package Util;
+package com.pet.utils;
 
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
 
 @WebListener
-public class SessionFactoryListenre implements ServletContextListener {
+public class SessionFactoryListener implements ServletContextListener {
 
 	@Override
 	public void contextDestroyed(ServletContextEvent sce) {
