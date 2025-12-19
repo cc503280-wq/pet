@@ -37,40 +37,38 @@ public class ScheduleQueryDAO {
 		this.session = session;
 	}
 	
-	public List<EmployeeScheduleOverviewDTO> findDailyScheduleOverview(LocalDate targetDate,Integer employeeIdFilter)
+	public List<EmployeeScheduleOverviewDTO> findDailyScheduleOverview(Date targetDate,Integer employeeIdFilter)
 			throws NamingException, SQLException{
 		
 		Integer finalFilterId = (employeeIdFilter == null || employeeIdFilter == 0) ? null : employeeIdFilter;
 		
-		String hql = "SELECT new com.pet.model.appointment.EmployeeScheduleOverviewDTO(" +
-	            "   ws.slotId, " +
-	            "   e.employeeId, " +
-	            "   e.ename, " +
-	            "   ws.startTime, " +
-	            "   ws.endTime, " +
-	            
-	            // ★ 關鍵改動 1: 使用 COALESCE + 子查詢來決定狀態
-	            // 邏輯: 優先找預約(有就回傳'已預約') -> 沒預約找排假(有就回傳理由) -> 都沒有就回傳'可預約'
-	            "   COALESCE(" +
-	            "       (SELECT '已預約' FROM Appointment a WHERE a.employee = e AND a.workSlot = ws AND a.appointmentDate = :targetDate AND a.appointmentStatus IN ('預約確認', '進行中', '已完成')), " +
-	            "       (SELECT sb.reason FROM ScheduleBlock sb WHERE sb.employee = e AND sb.workSlot = ws AND sb.blockDate = :targetDate), " +
-	            "       '可預約' " +
-	            "   ), " +
-	            
-	            // ★ 關鍵改動 2: 詳情欄位也用子查詢
-	            "   (SELECT '被預約' FROM Appointment a WHERE a.employee = e AND a.workSlot = ws AND a.appointmentDate = :targetDate AND a.appointmentStatus IN ('預約確認', '進行中', '已完成')) " +
-	            ") " +
-	            
-	            // ★ 這裡只留 Cross Join，乾淨俐落，不寫會報錯的 Left Join
-	            "FROM Employee e, WorkSlot ws " +
-	            
-	            "WHERE e.isActive = true " +
-	            "AND (:employeeIdFilter IS NULL OR e.employeeId = :employeeIdFilter) " +
-	            "ORDER BY e.employeeId, ws.slotId";
+		String hql =
+				"SELECT new com.pet.model.appointment.EmployeeScheduleOverviewDTO(" +
+			            "   ws.slotId, " +
+			            "   e.employeeId, " +
+			            "   e.ename, " +
+			            "   ws.startTime, " +
+			            "   ws.endTime, " +
+
+			            "   COALESCE(" +
+			            "       (SELECT '已預約' FROM Appointment a WHERE a.employee.employeeId = e.employeeId AND a.workSlot.slotId = ws.slotId AND a.appointmentDate = :targetDate AND a.appointmentStatus IN ('預約確認', '進行中', '已完成')), " +
+			            "       (SELECT sb.reason FROM ScheduleBlock sb WHERE sb.employee.employeeId = e.employeeId AND sb.workSlot.slotId = ws.slotId AND sb.blockDate = :targetDate), " +
+			            "       '可預約' " +
+			            "   ), " +
+
+			            "   (SELECT '被預約' FROM Appointment a WHERE a.employee.employeeId = e.employeeId AND a.workSlot.slotId = ws.slotId AND a.appointmentDate = :targetDate AND a.appointmentStatus IN ('預約確認', '進行中', '已完成')) " +
+			            ") " +
+			            
+			            
+			            "FROM Employee e, WorkSlot ws " +
+			            
+			            "WHERE e.isActive = true " +
+			            "AND (:employeeIdFilter IS NULL OR e.employeeId = :employeeIdFilter) " +
+			            "ORDER BY e.employeeId, ws.slotId";
 		
 		try {
 	        return session.createQuery(hql, EmployeeScheduleOverviewDTO.class)
-	                      .setParameter("targetDate", targetDate)
+	        			  .setParameter("targetDate", targetDate)
 	                      .setParameter("employeeIdFilter", finalFilterId)
 	                      .getResultList();
 	                      
@@ -84,7 +82,7 @@ public class ScheduleQueryDAO {
 	        throws NamingException, SQLException {
 
 	    
-	    LocalDate startDate = LocalDate.parse(startDateStr); 
+	    Date startDate = Date.valueOf(startDateStr); 
 	    List<LocalDate> weekDates = new ArrayList<>();
 	    for (int i = 0; i < 7; i++) {
 	        weekDates.add(startDate.plusDays(i)); 
@@ -94,7 +92,7 @@ public class ScheduleQueryDAO {
 	
 	    Map<String, Map<String, Object>> combinedSchedule = new LinkedHashMap<>();
 
-	    for (LocalDate date : weekDates) {
+	    for (Date date : weekDates) {
 
            
 	        List<EmployeeScheduleOverviewDTO> dailyList = findDailyScheduleOverview(date, employeeIdFilter); 
