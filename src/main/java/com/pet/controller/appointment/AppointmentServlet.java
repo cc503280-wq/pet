@@ -83,7 +83,7 @@ public class AppointmentServlet extends HttpServlet {
     }
 	
 	// ============================================================
-    // 1. 列表查詢 (List)
+    // 列表查詢 (List)
     // ============================================================
     private void listAppointments(HttpServletRequest request, HttpServletResponse response, AppointmentDAO appDao) throws ServletException, IOException {
         String searchById = request.getParameter("searchById");

@@ -68,8 +68,8 @@ public class AppointmentDAO {
 	public List<GetAllAppointmentDTO> findAllAppointmentDTOs() {
 		String hql = "SELECT new com.pet.model.appointment.GetAllAppointmentDTO("
 	               + "a.appointmentId, "
-	               + "a.memberPets.member.memberId, a.memberPets.member.name, " 
-	               + "a.memberPets.petId, a.memberPets.petName, "
+	               + "a.memberPet.member.memberId, a.memberPet.member.name, " 
+	               + "a.memberPet.petId, a.memberPet.petName, "
 	               + "a.petservice.serviceId, a.petservice.serviceName, "
 	               + "a.employee.employeeId, a.employee.ename, "
 	               + "a.appointmentDate, "       
@@ -89,8 +89,8 @@ public class AppointmentDAO {
 		
 		String hql = "SELECT new com.pet.model.appointment.GetAllAppointmentDTO("
 	               + "a.appointmentId, "
-	               + "a.memberPets.member.memberId, a.memberPets.member.name, " 
-	               + "a.memberPets.petId, a.memberPets.petName, "
+	               + "a.memberPet.member.memberId, a.memberPet.member.name, " 
+	               + "a.memberPet.petId, a.memberPet.petName, "
 	               + "a.petservice.serviceId, a.petservice.serviceName, "
 	               + "a.employee.employeeId, a.employee.ename, "
 	               + "a.appointmentDate, "
@@ -107,7 +107,7 @@ public class AppointmentDAO {
 	                  .uniqueResult();
 	}
 	
-public List<GetAllAppointmentDTO> getFuzzySearchByName(String memberName) {
+	public List<GetAllAppointmentDTO> getFuzzySearchByName(String memberName) {
         
         
         String hql = "SELECT new com.pet.model.appointment.GetAllAppointmentDTO("

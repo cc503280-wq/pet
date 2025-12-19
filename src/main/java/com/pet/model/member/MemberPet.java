@@ -3,16 +3,23 @@ package com.pet.model.member;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.annotation.processing.Generated;
 
+import com.pet.model.appointment.Appointment;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity @Table(name = "member_pets")
@@ -49,6 +56,9 @@ public class MemberPet {
 	
 	@Column(name = "updated_at")
 	private Timestamp updatedAt;
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "memberPet", cascade = CascadeType.ALL)
+	private Set<Appointment> appointments = new HashSet<Appointment>();
 	
 	public MemberPet() {
 		super();

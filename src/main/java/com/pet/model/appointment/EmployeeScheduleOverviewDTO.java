@@ -5,11 +5,11 @@ import java.time.LocalTime;
 
 public class EmployeeScheduleOverviewDTO {
 		private Integer employeeId;
-	 	private LocalDate targetDate;       // 班表日期
-	    private String employeeName;        // 美容師姓名
-	    private LocalTime startTime;        // 開始時間
-	    private LocalTime endTime;          // 結束時間
-	    private String slotStatus;          // 可預約, 佔用, 阻擋, 請假等
+	 	private LocalDate targetDate;       
+	    private String employeeName;        
+	    private LocalTime startTime;        
+	    private LocalTime endTime;          
+	    private String slotStatus;         
 	    private String detailInfo;
 	    private Integer slot_id;
 	    

@@ -1,7 +1,11 @@
 package com.pet.model.appointment;
 
 import java.sql.Timestamp;
+
 import java.util.Date;
+
+import com.pet.model.member.MemberPet;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -68,7 +72,7 @@ public class Appointment {
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "pet_id")
-	private MemberPets memberPets;
+	private MemberPet memberPet;
 
 	
 	public Appointment() {
@@ -250,12 +254,12 @@ public class Appointment {
 		this.workSlot = workSlot;
 	}
 
-	public MemberPets getMemberPets() {
-		return memberPets;
+	public MemberPet getMemberPets() {
+		return memberPet;
 	}
 
-	public void setMemberPets(MemberPets memberPets) {
-		this.memberPets = memberPets;
+	public void setMemberPets(MemberPet memberPet) {
+		this.memberPet = memberPet;
 	}
 
 	
