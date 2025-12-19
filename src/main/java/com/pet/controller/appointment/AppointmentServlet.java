@@ -42,14 +42,14 @@ public class AppointmentServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         response.setContentType("text/html;charset=UTF-8");
 
-        // 1. 取得目前的 Session (由 Filter 已經開啟並管理 Transaction)
+        
         SessionFactory factory = HibernateUtil.getSessionFactory();
         Session session = factory.getCurrentSession();
 
         String action = request.getParameter("action");
         if (action == null) action = "list"; 
 
-        // 2. 實例化 DAO (傳入 Session 以便共用同一個連線)
+       
         AppointmentDAO appDao = new AppointmentDAO(session);
 
         try {
