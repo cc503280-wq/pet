@@ -7,14 +7,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
-
 import org.mindrot.jbcrypt.BCrypt;
-
-import com.pet.model.appointment.MemberBean;
 import com.pet.model.member.Member;
 
 public class MemberDao {
