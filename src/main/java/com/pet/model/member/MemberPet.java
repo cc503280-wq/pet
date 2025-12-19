@@ -8,6 +8,7 @@ import javax.annotation.processing.Generated;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -66,6 +67,18 @@ public class MemberPet {
 		this.petSize = petSize;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
+	}
+
+	public MemberPet(int petId, int memberId, String petName, String petType, String petBreed, String petAge,
+			String petSize) {
+		super();
+		this.petId = petId;
+		this.memberId = memberId;
+		this.petName = petName;
+		this.petType = petType;
+		this.petBreed = petBreed;
+		this.petAge = petAge;
+		this.petSize = petSize;
 	}
 
 	public int getPetId() {

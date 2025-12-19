@@ -27,20 +27,24 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
+import org.hibernate.Session;
 
 import com.google.gson.Gson;
 import com.pet.dao.member.MemberPetDao;
 import com.pet.model.member.Member;
 import com.pet.model.member.MemberPet;
+import com.pet.utils.HibernateUtil;
 
 
 @WebServlet("/MemberPetServlet")
 @MultipartConfig
 public class MemberPetServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	MemberPetDao memberPetDao = new MemberPetDao(); 
+	
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+		MemberPetDao memberPetDao = new MemberPetDao(session);
 		request.setCharacterEncoding("UTF-8");
 		response.setContentType("application/json; charset=UTF-8");
 		String action = request.getParameter("action");
