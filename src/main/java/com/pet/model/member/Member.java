@@ -19,7 +19,7 @@ public class Member {
 	
 	@Id @Column(name = "member_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int memberId;
+	private Integer memberId;
 	
 	@Column(name = "email")
 	private String email;
@@ -71,7 +71,7 @@ public class Member {
 	}
 
 	
-	public Member(int memberId, String name) {
+	public Member(Integer memberId, String name) {
 		super();
 		this.memberId = memberId;
 		this.name = name;
@@ -79,8 +79,8 @@ public class Member {
 
 
 
-	public Member(int memberId, String email, String password, String name, String gender, Date birthday, String phone,
-			String address, String picture, String status, String oauthType, String oauthId, int points,
+	public Member(Integer memberId, String email, String password, String name, String gender, Date birthday, String phone,
+			String address, String picture, String status, String oauthType, String oauthId, Integer points,
 			Timestamp createdAt, Timestamp updatedAt) {
 		super();
 		this.memberId = memberId;
@@ -115,7 +115,7 @@ public class Member {
 		this.picture = picture;
 	}
 	
-	public Member(int memberId ,String email, String name, String gender, Date birthday, String phone,
+	public Member(Integer memberId ,String email, String name, String gender, Date birthday, String phone,
 			String address, String picture) {
 		super();
 		this.memberId = memberId;
@@ -144,7 +144,7 @@ public class Member {
 		return memberId;
 	}
 
-	public void setMemberId(int memberId) {
+	public void setMemberId(Integer memberId) {
 		this.memberId = memberId;
 	}
 
@@ -240,7 +240,7 @@ public class Member {
 		return points;
 	}
 
-	public void setPoints(int points) {
+	public void setPoints(Integer points) {
 		this.points = points;
 	}
 

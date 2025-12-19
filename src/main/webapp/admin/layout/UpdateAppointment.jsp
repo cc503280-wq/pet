@@ -189,7 +189,7 @@
 				</a></li>
 			</ul></li>
             <li class="nav-item">
-              <a href="../../GetAllAppointmentsServlet" class="nav-link">
+              <a href="../../AppointmentServlet.do" class="nav-link">
                 <i class="nav-icon fas fa-edit"></i>
                 <p>
                   預約管理
@@ -213,7 +213,7 @@
 					<div class="row mb-2">
 						<div class="col-sm-12 box1">
 							<h1>預約訂單管理</h1>
-							<a href="GetAllAppointmentsServlet"
+							<a href="AppointmentServlet.do"
 								class="btn btn-secondary btn-sm"> 回列表 </a>
 						</div>
 						<div class="col-sm-6"></div>

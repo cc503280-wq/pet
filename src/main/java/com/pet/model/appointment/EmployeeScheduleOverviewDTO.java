@@ -14,12 +14,10 @@ public class EmployeeScheduleOverviewDTO {
 	    private Integer slot_id;
 	    
 		public EmployeeScheduleOverviewDTO() {
-			super();
 		}
 		
 		public EmployeeScheduleOverviewDTO(Integer employeeId, LocalDate targetDate, String employeeName, LocalTime startTime,
 				LocalTime endTime, String slotStatus, String detailInfo, Integer slot_id) {
-			super();
 			this.employeeId = employeeId;
 			this.targetDate = targetDate;
 			this.employeeName = employeeName;
@@ -29,6 +27,23 @@ public class EmployeeScheduleOverviewDTO {
 			this.detailInfo = detailInfo;
 			this.slot_id = slot_id;
 		}
+		
+		public EmployeeScheduleOverviewDTO(
+	            Integer slot_id, 
+	            Integer employeeId, 
+	            String employeeName, 
+	            LocalTime startTime, 
+	            LocalTime endTime, 
+	            String slotStatus, 
+	            String detailInfo) {
+	        this.slot_id = slot_id;
+	        this.employeeId = employeeId;
+	        this.employeeName = employeeName;
+	        this.startTime = startTime;
+	        this.endTime = endTime;
+	        this.slotStatus = slotStatus;
+	        this.detailInfo = detailInfo;
+	    }
 		
 		
 		

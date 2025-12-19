@@ -1,11 +1,13 @@
 package com.pet.dao.appointment;
 
 import java.util.List;
+
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
 import com.pet.model.appointment.Appointment;
 import com.pet.model.appointment.GetAllAppointmentDTO;
+import com.pet.model.member.Member;
 
 
 public class AppointmentDAO {
@@ -124,7 +126,7 @@ public class AppointmentDAO {
                    + "a.rating, a.comment, a.reply, a.updatedAt, "
                    + "a.petservice.durationMinutes) "
                    + "FROM Appointment a "
-                   + "WHERE a.memberPets.member.name LIKE :memberName " 
+                   + "WHERE a.memberPet.member.name LIKE :memberName " 
                    + "ORDER BY a.appointmentDate ASC, a.appointmentId DESC";
 
       
@@ -135,6 +137,24 @@ public class AppointmentDAO {
        
         return query.getResultList();
     }
+	
+	public List<Member> getAllMembers() {   //MemberDAO裡面
+        
+        Query<Member> query = session.createQuery("from Member",Member.class);
+        List<Member> list = query.list();
+       
+        return list ;
+    }
+	
+	public Member getMemberWithPet(Integer memberId) { //MemberPetDAO裡面
+		String hql = "FROM Member m LEFT JOIN FETCH m.pets WHERE m.memberId = :mid";
+		
+		Query<Member> query = session.createQuery(hql,Member.class);
+		query.setParameter("mid", memberId);
+
+		return query.uniqueResult();
+	}
+	
 	
 	
 
