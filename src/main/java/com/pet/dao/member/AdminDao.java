@@ -12,7 +12,6 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-import org.eclipse.jdt.internal.compiler.batch.Main;
 import org.mindrot.jbcrypt.BCrypt;
 
 import com.pet.model.member.Admin;

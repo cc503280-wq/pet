@@ -14,7 +14,6 @@ import javax.sql.DataSource;
 
 import org.mindrot.jbcrypt.BCrypt;
 
-import com.pet.model.appointment.MemberBean;
 import com.pet.model.member.Member;
 
 public class MemberDao {
@@ -337,23 +336,23 @@ public class MemberDao {
 		return memberName;
 	}
 	
-	public List<MemberBean> SearchAll() throws SQLException, NamingException {
+	public List<Member> SearchAll() throws SQLException, NamingException {
 
 		final String SQL = "SELECT member_id, name FROM members";
 
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		List<MemberBean> members = new ArrayList<>();
+		List<Member> members = new ArrayList<>();
 
 		try {
 			conn = getConnection();
 			pstmt = conn.prepareStatement(SQL);
 			rs = pstmt.executeQuery();
-			MemberBean member = null;
+			Member member = null;
 			while (rs.next()) {
 				
-				member=new MemberBean();
+				member=new Member();
 				member.setMemberId(rs.getInt("member_id"));
 				member.setName(rs.getString("name"));	
 				members.add(member);

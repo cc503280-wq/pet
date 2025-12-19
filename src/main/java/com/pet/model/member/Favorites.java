@@ -4,12 +4,32 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Date;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity @Table(name = "favorites_products_view")
 public class Favorites {
+	
+	@Id @Column(name = "favorite_id")
 	private int favoriteId;
+	
+	@Column(name = "member_id")
 	private int memberId;
+	
+	@Column(name = "product_id")
 	private int productId;
+	
+	@Column(name = "product_name")
 	private String productName;
+	
+	@Column(name = "price")
 	private double price;
+	
+	@Column(name = "created_at")
 	private Timestamp createdAt;
 	
 	public Favorites() {
