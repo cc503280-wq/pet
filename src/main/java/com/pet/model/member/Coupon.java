@@ -4,22 +4,60 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Date;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity @Table(name = "coupons")
 public class Coupon {
 	
+	@Id @Column(name = "coupon_id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int couponId;
+	
+	@Column(name = "code")
 	private String code;
+	
+	@Column(name = "discount_type")
 	private String discountType;
+	
+	@Column(name = "discount_value")
 	private double discountValue;
+	
+	@Column(name = "is_limited")
 	private int isLimited;
+	
+	@Column(name = "total_amount")
 	private Integer totalAmount; //容許null
+	
+	@Column(name = "issued_amount")
 	private Integer issuedAmount; //容許null
+	
+	@Column(name = "issue_start_at")
 	private Date issueStartAt;
+	
+	@Column(name = "issue_end_at")
 	private Date issueEndAt;
+	
+	@Column(name = "use_start_at")
 	private Date useStartAt;
+	
+	@Column(name = "use_end_at")
 	private Date useEndAt;
+	
+	@Column(name = "min_purchase")
 	private int minPurchase;
+	
+	@Column(name = "created_at")
 	private Timestamp createdAt;
+	
+	@Column(name = "updated_at")
 	private Timestamp updatedAt;
+	
+	@Column(name = "status")
 	private String status;
 	
 	public Coupon() {

@@ -6,9 +6,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
+
 import com.pet.model.member.MemberPet;
 
 public class MemberPetDao {
@@ -154,44 +156,7 @@ public class MemberPetDao {
 	       return memberPets;
 	   }
 	
-public List<MemberPetsBean> findByMemberId(int memberId) throws Exception{
-		
-		Connection conn = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;        
-        List<MemberPetsBean> mpbs = new ArrayList<>();
-        String SQL = "SELECT pet_id, pet_name, pet_type From member_pets WHERE member_id= ?";
-		
-		
-		try {
-			
-			 conn = getConnection();
-			 pstmt = conn.prepareStatement(SQL);
 
-			 pstmt.setInt(1, memberId);
-			 rs = pstmt.executeQuery();
-			 MemberPetsBean mpb =null;
-			 while (rs.next()) {
-			
-				mpb = new MemberPetsBean();
-				mpb.setPetId(rs.getInt("pet_id"));
-				mpb.setPetName(rs.getString("pet_name"));
-				mpb.setPetType(rs.getString("pet_type"));
-				mpbs.add(mpb);
-			}
-			
-			return mpbs; 
-		} catch (SQLException | NamingException e) {
-            e.printStackTrace();
-            throw e; // 將例外拋出給 Controller 處理
-        } finally {
-            // 4. 關閉資源
-            if (rs != null) try { rs.close(); } catch (SQLException e) { e.printStackTrace(); }
-            if (pstmt != null) try { pstmt.close(); } catch (SQLException e) { e.printStackTrace(); }
-            if (conn != null) try { conn.close(); } catch (SQLException e) { e.printStackTrace(); }
-        }
-
-	}
 	
 	
 	

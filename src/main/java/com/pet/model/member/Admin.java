@@ -3,24 +3,49 @@ package com.pet.model.member;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity @Table(name = "admin")
 public class Admin {
+	
+	@Id @Column(name = "admin_id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int adminId;
+	
+	@Column(name = "email")
 	private String email;
+	
+	@Column(name = "password")
 	private String password;
+	
+	@Column(name = "name")
 	private String name;
+	
+	@Column(name = "phone")
 	private String phone;
+	
+	@Column(name = "role")
 	private String role;
+	
+	@Column(name = "status")
 	private String status;
+	
+	@Column(name = "created_at")
 	private Timestamp createdAt;
+	
+	@Column(name = "updated_at")
 	private Timestamp updatedAt;
 	
 	
 	public Admin() {
 		super();
 	}
-
-	
-	
 
 
 	public Admin(int adminId, String email, String name, String phone, String role, String status) {
