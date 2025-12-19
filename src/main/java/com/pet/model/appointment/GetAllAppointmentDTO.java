@@ -1,42 +1,42 @@
 package com.pet.model.appointment;
 
 import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.Date;
 
 public class GetAllAppointmentDTO {
-	private int appointmentId;
-	private int memberId;
+	private Integer appointmentId;
+	private Integer memberId;
 	private String memberName;
-	private int petId;
+	private Integer petId;
 	private String petName;
-	private int serviceId;
+	private Integer serviceId;
 	private String serviceName;
-	private int employeeId;
+	private Integer employeeId;
 	private String employeeName;
 	private Date appointmentDate;
-	private int slotId;
+	private Integer slotId;
 	private Time startTime;
 	private Time endTime;
 	private String notes;
-	private int price;
+	private Integer price;
 	private String appointmentStatus;
 	private String payStatus;
-	private int rating;
+	private Integer rating;
 	private String comment;
 	private String reply;
-	private Date updateTime;
-	private int durationMinutes;
+	private Timestamp updateTime;
+	private Integer durationMinutes;
 	
 	public GetAllAppointmentDTO() {
-		super();
-		// TODO Auto-generated constructor stub
 	}
 
-	public GetAllAppointmentDTO(int appointmentId, int memberId, String memberName, int petId, String petName,
-			int serviceId, String serviceName, int employeeId, String employeeName, Date appointmentDate,
-			Time startTime, Time endTime, String notes, int price, String appointmentStatus, String payStatus,
-			int rating, String comment, String reply, Date updateTime,int slotId,int durationMinutes) {
-		super();
+	public GetAllAppointmentDTO(Integer appointmentId, Integer memberId, String memberName, Integer petId,
+			String petName, Integer serviceId, String serviceName, Integer employeeId, String employeeName,
+			Date appointmentDate, Integer slotId, Time startTime, Time endTime, String notes, Integer price,
+			String appointmentStatus, String payStatus, Integer rating, String comment, String reply, Timestamp updateTime,
+			Integer durationMinutes) {
+
 		this.appointmentId = appointmentId;
 		this.memberId = memberId;
 		this.memberName = memberName;
@@ -47,6 +47,7 @@ public class GetAllAppointmentDTO {
 		this.employeeId = employeeId;
 		this.employeeName = employeeName;
 		this.appointmentDate = appointmentDate;
+		this.slotId = slotId;
 		this.startTime = startTime;
 		this.endTime = endTime;
 		this.notes = notes;
@@ -57,23 +58,22 @@ public class GetAllAppointmentDTO {
 		this.comment = comment;
 		this.reply = reply;
 		this.updateTime = updateTime;
-		this.slotId= slotId;
 		this.durationMinutes = durationMinutes;
 	}
 
-	public int getAppointmentId() {
+	public Integer getAppointmentId() {
 		return appointmentId;
 	}
 
-	public void setAppointmentId(int appointmentId) {
+	public void setAppointmentId(Integer appointmentId) {
 		this.appointmentId = appointmentId;
 	}
 
-	public int getMemberId() {
+	public Integer getMemberId() {
 		return memberId;
 	}
 
-	public void setMemberId(int memberId) {
+	public void setMemberId(Integer memberId) {
 		this.memberId = memberId;
 	}
 
@@ -85,11 +85,11 @@ public class GetAllAppointmentDTO {
 		this.memberName = memberName;
 	}
 
-	public int getPetId() {
+	public Integer getPetId() {
 		return petId;
 	}
 
-	public void setPetId(int petId) {
+	public void setPetId(Integer petId) {
 		this.petId = petId;
 	}
 
@@ -101,11 +101,11 @@ public class GetAllAppointmentDTO {
 		this.petName = petName;
 	}
 
-	public int getServiceId() {
+	public Integer getServiceId() {
 		return serviceId;
 	}
 
-	public void setServiceId(int serviceId) {
+	public void setServiceId(Integer serviceId) {
 		this.serviceId = serviceId;
 	}
 
@@ -117,11 +117,11 @@ public class GetAllAppointmentDTO {
 		this.serviceName = serviceName;
 	}
 
-	public int getEmployeeId() {
+	public Integer getEmployeeId() {
 		return employeeId;
 	}
 
-	public void setEmployeeId(int employeeId) {
+	public void setEmployeeId(Integer employeeId) {
 		this.employeeId = employeeId;
 	}
 
@@ -139,6 +139,14 @@ public class GetAllAppointmentDTO {
 
 	public void setAppointmentDate(Date appointmentDate) {
 		this.appointmentDate = appointmentDate;
+	}
+
+	public Integer getSlotId() {
+		return slotId;
+	}
+
+	public void setSlotId(Integer slotId) {
+		this.slotId = slotId;
 	}
 
 	public Time getStartTime() {
@@ -165,11 +173,11 @@ public class GetAllAppointmentDTO {
 		this.notes = notes;
 	}
 
-	public int getPrice() {
+	public Integer getPrice() {
 		return price;
 	}
 
-	public void setPrice(int price) {
+	public void setPrice(Integer price) {
 		this.price = price;
 	}
 
@@ -189,11 +197,11 @@ public class GetAllAppointmentDTO {
 		this.payStatus = payStatus;
 	}
 
-	public int getRating() {
+	public Integer getRating() {
 		return rating;
 	}
 
-	public void setRating(int rating) {
+	public void setRating(Integer rating) {
 		this.rating = rating;
 	}
 
@@ -213,32 +221,24 @@ public class GetAllAppointmentDTO {
 		this.reply = reply;
 	}
 
-	public Date getUpdateTime() {
+	public Timestamp getUpdateTime() {
 		return updateTime;
 	}
 
-	public void setUpdateTime(Date updateTime) {
+	public void setUpdateTime(Timestamp updateTime) {
 		this.updateTime = updateTime;
 	}
 
-	public int getSlotId() {
-		return slotId;
-	}
-
-	public void setSlotId(int slotId) {
-		this.slotId = slotId;
-	}
-
-	public int getDurationMinutes() {
+	public Integer getDurationMinutes() {
 		return durationMinutes;
 	}
 
-	public void setDurationMinutes(int durationMinutes) {
+	public void setDurationMinutes(Integer durationMinutes) {
 		this.durationMinutes = durationMinutes;
 	}
 	
 	
-	
+
 	
 
 }

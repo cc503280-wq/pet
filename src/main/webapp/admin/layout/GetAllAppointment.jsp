@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"
-	import="java.util.*,com.pet.model.appoinment.GetAllAppointmentDTO"%>
+	import="java.util.*,com.pet.model.appointment.GetAllAppointmentDTO"%>
 <%@ taglib uri="jakarta.tags.core" prefix="c"%>
 <%-- GetAllAppointment.jsp --%>
 <!DOCTYPE html>
@@ -191,7 +191,7 @@
 				</a></li>
 			</ul></li>
 						<li class="nav-item">
-			              <a href="${pageContext.request.contextPath}/GetAllAppointmentsServlet" class="nav-link">
+			              <a href="${pageContext.request.contextPath}/AppointmentServlet.do?action=list" class="nav-link">
 			                <i class="nav-icon fas fa-edit"></i>
 			                <p>
 			                  預約管理
@@ -234,13 +234,17 @@
 									<h3 class="card-title">預約訂單列表</h3>
 
 									<div class="d-flex align-items-center ml-auto">
-										<a href="InsertAppointmentServlet"
+										<a href="AppointmentServlet.do?action=toInsert"
 											class="btn btn-secondary btn-sm mr-2"> 新增資料 </a> <a
-											href="GetAllAppointmentsServlet"
+											href="AppointmentServlet.do?action=list"
 											class="btn btn-secondary btn-sm mr-2"> 查詢全部 </a>
-
-										<form action="GetAllAppointmentsServlet" method="get"
+										
+										<!-- 待修改，要判定進去Servlet的值是甚麼 -->
+										<form action="AppointmentServlet.do" method="get"
 											class="mr-2" style="display: flex;">
+											
+											<input type="hidden" name="action" value="list">
+											
 											<div class="input-group input-group-sm" style="width: 150px;">
 												<input id="idSearchInput" type="text" class="form-control"
 													name="searchById" placeholder="依 ID 查詢"
@@ -252,9 +256,13 @@
 												</div>
 											</div>
 										</form>
-
-										<form action="GetAllAppointmentsServlet" method="get"
+										
+										<!-- 待修改，要判定進去Servlet的值是甚麼 -->
+										<form action="AppointmentServlet.do" method="get"
 											style="display: flex;" class="mr-2">
+											
+											<input type="hidden" name="action" value="list">
+											
 											<div class="input-group input-group-sm" style="width: 150px;">
 												<input id="fuzzySearchInput" type="text"
 													class="form-control" name="fuzzybyname" placeholder="模糊查詢"
@@ -313,11 +321,11 @@
 													<td>${app.comment}
 													<td>${app.reply}
 													<td class="text-center">
-														<a href="UpdateAppointmentServlet?appointmentId=${app.appointmentId}&fuzzybyname=${fuzzybyname}&searchById=${searchById}&from=GetAllAppointment"
+														<a href="AppointmentServlet.do?action=toUpdate&appointmentId=${app.appointmentId}&fuzzybyname=${fuzzybyname}&searchById=${searchById}&from=GetAllAppointment"
        														class="btn btn-secondary btn-sm mr-1">修改</a>
-														<a href="DeleteAppointmentServlet?appointmentId=${app.appointmentId}&type=soft&fuzzybyname=${fuzzybyname}&searchById=${searchById}"
+														<a href="AppointmentServlet.do?action=delete&appointmentId=${app.appointmentId}&type=soft&fuzzybyname=${fuzzybyname}&searchById=${searchById}"
       														class="btn btn-secondary btn-sm mr-1">停用</a>
-														<a href="DeleteAppointmentServlet?appointmentId=${app.appointmentId}&type=hard&fuzzybyname=${fuzzybyname}&searchById=${searchById}"
+														<a href="AppointmentServlet.do?action=delete&appointmentId=${app.appointmentId}&type=hard&fuzzybyname=${fuzzybyname}&searchById=${searchById}"
        														class="btn btn-secondary btn-sm mr-1">刪除</a></td>
 											</c:forEach>
 										</tbody>
