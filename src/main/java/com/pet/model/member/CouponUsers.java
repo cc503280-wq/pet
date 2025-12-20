@@ -61,13 +61,13 @@ public class CouponUsers {
 		super();
 	}
 
-	public CouponUsers(int id, int memberId, int couponId, String status, Timestamp assignedAt, Timestamp usedAt,
+	public CouponUsers(int id, int couponId, int memberId, String status, Timestamp assignedAt, Timestamp usedAt,
 			String code, String discountType, double discountValue, int minPurchase, Date issueStartAt, Date issueEndAt,
 			Date useStartAt, Date useEndAt, String isExpired) {
 		super();
 		this.id = id;
-		this.memberId = memberId;
 		this.couponId = couponId;
+		this.memberId = memberId;
 		this.status = status;
 		this.assignedAt = assignedAt;
 		this.usedAt = usedAt;
