@@ -27,21 +27,24 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
+import org.hibernate.Session;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.pet.dao.member.FavoritesDao;
 import com.pet.model.member.Favorites;
 import com.pet.model.member.Member;
+import com.pet.utils.HibernateUtil;
 
 
 @WebServlet("/FavoritesServlet")
 @MultipartConfig
 public class FavoritesServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	FavoritesDao favoritesDao = new FavoritesDao(); 
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+		FavoritesDao favoritesDao = new FavoritesDao(session);
 		request.setCharacterEncoding("UTF-8");
 		response.setContentType("application/json; charset=UTF-8");
 		String action = request.getParameter("action");
@@ -69,7 +72,7 @@ public class FavoritesServlet extends HttpServlet {
 				//依 memberId 查詢
 			case "queryByMemberId":
                 int memberId = Integer.parseInt(request.getParameter("memberId"));
-                List<Favorites> favorite2 = favoritesDao.queryFavotitesByMemberId(memberId);
+                List<Favorites> favorite2 = favoritesDao.queryFavoritesByMemberId(memberId);
                 out.print(gson.toJson(favorite2));
                 break;
 				

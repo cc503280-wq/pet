@@ -47,6 +47,15 @@ public class Favorites {
 		this.createdAt = createdAt;
 	}
 
+	public Favorites(int favoriteId, int memberId, int productId, String productName, double price) {
+		super();
+		this.favoriteId = favoriteId;
+		this.memberId = memberId;
+		this.productId = productId;
+		this.productName = productName;
+		this.price = price;
+	}
+
 	public int getFavoriteId() {
 		return favoriteId;
 	}
