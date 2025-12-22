@@ -82,10 +82,12 @@ public class ScheduleQueryDAO {
 	        throws NamingException, SQLException {
 
 	    
-	    Date startDate = Date.valueOf(startDateStr); 
-	    List<LocalDate> weekDates = new ArrayList<>();
+		Date sqlStartDate = Date.valueOf(startDateStr); 
+		LocalDate localStartDate = sqlStartDate.toLocalDate();
+	    List<Date> weekDates = new ArrayList<>();
 	    for (int i = 0; i < 7; i++) {
-	        weekDates.add(startDate.plusDays(i)); 
+	    	LocalDate nextDay = localStartDate.plusDays(i); 
+	    	weekDates.add(Date.valueOf(nextDay));
 	    }
 	    System.out.println("一周日期"+weekDates);
 
@@ -105,19 +107,24 @@ public class ScheduleQueryDAO {
 
 	            String slotKey = dto.getEmployeeId() + "-" + dto.getStartTime();
 
-                
-	            Map<String, Object> slotRow = combinedSchedule.computeIfAbsent(slotKey, k -> {
-	               
-	                Map<String, Object> row = new LinkedHashMap<>(); 
-	                row.put("employeeId", dto.getEmployeeId());
-	                row.put("employeeName", dto.getEmployeeName());
+	            Map<String, Object> slotRow = combinedSchedule.get(slotKey);
+
+	            
+	            if (slotRow == null) {
+	                slotRow = new LinkedHashMap<>();
+              
+	                slotRow.put("employeeId", dto.getEmployeeId());
+	                slotRow.put("employeeName", dto.getEmployeeName());
+	                slotRow.put("slotId", dto.getSlot_id()); 
+	                slotRow.put("startTime", dto.getStartTime().toString());
+	                slotRow.put("endTime", dto.getEndTime().toString());
 	                
-	                row.put("slotId", dto.getSlot_id());
-	                row.put("startTime", dto.getStartTime().toString());
-	                row.put("endTime", dto.getEndTime().toString());
-	                System.out.println("row"+row);
-	                return row;
-	            });
+	                System.out.println("新建立的 row: " + slotRow);
+             
+	                combinedSchedule.put(slotKey, slotRow);
+	            }
+
+	            slotRow.put(dateField, dto.getSlotStatus());
 	            
 	            
 	            slotRow.put(dateField, dto.getSlotStatus());

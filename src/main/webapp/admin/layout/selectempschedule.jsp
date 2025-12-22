@@ -305,12 +305,13 @@
     function fetchScheduleData(employeeId, startDate) {
       if (!employeeId) return;
 	 
-      const API_URL = "${pageContext.request.contextPath}/GetScheduleServlet"; 
+      const API_URL = "${pageContext.request.contextPath}/GetScheduleServlet.do"; 
 
       $.ajax({
         url: API_URL,
         type: "POST",
         data: {
+          action: "data",
           employeeId: employeeId,
           startDate: startDate
         },

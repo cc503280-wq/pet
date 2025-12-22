@@ -82,7 +82,7 @@
                  <!-- 右側 Navbar 按鈕 -->
 			    <ul class="navbar-nav ml-auto">
 			        <li class="nav-item">
-			            <a href="../../AdminLogoutServlet" class="btn btn-secondary btn-sm">
+			            <a href="Login.html" class="btn btn-secondary btn-sm">
 			                <i class="fas fa-sign-out-alt"></i> 登出
 			            </a>
 			        </li>
@@ -347,7 +347,7 @@
 
 
 											<input type="hidden" name="hiddenEmployeeId"
-												id="hidden_emp_id"> <input type="hidden"
+												id="hidden_emp_id"><input type="hidden" name="memberName" id="hiddenMemberName"> <input type="hidden"
 												name="appointmentDate" id="hidden_date"> <input
 												type="hidden" name="hidden_slot_id" id="hidden_slot_id">
 											<input type="hidden" name="appointmentstartTime"
@@ -465,7 +465,7 @@
 			let top = (screen.height - height) / 2;
 
 			
-			let url = "${pageContext.request.contextPath}/GetScheduleServlet"; 
+			let url = "${pageContext.request.contextPath}/GetScheduleServlet.do"; 
 
 			window.open(url, "SelectScheduleWindow", "width=" + width
 					+ ",height=" + height + ",top=" + top + ",left=" + left
@@ -509,7 +509,7 @@
 				.addEventListener(
 						'submit',
 						function(e) {
-
+							const memberSelect = document.getElementById('memberName');
 							const petSelect = document.getElementById('petId');
 							const serviceId = document
 									.getElementById('serviceId');
@@ -538,6 +538,11 @@
 								alert(errorMessage);
 								return;
 							}
+
+							if (memberSelect && memberSelect.selectedIndex !== -1) {						       
+						        const text = memberSelect.options[memberSelect.selectedIndex].text;
+						        document.getElementById('hiddenMemberName').value = text;						      
+						    }
 
 							if (petSelect.selectedIndex !== -1) {
 								const text = petSelect.options[petSelect.selectedIndex].text;

@@ -1,6 +1,7 @@
 package com.pet.model.appointment;
 
 import java.sql.Timestamp;
+
 import java.util.Date;
 
 import com.pet.model.member.MemberPet;
@@ -71,7 +72,7 @@ public class Appointment {
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "pet_id")
-	private MemberPet memberPets;
+	private MemberPet memberPet;
 
 	
 	public Appointment() {
@@ -254,11 +255,11 @@ public class Appointment {
 	}
 
 	public MemberPet getMemberPets() {
-		return memberPets;
+		return memberPet;
 	}
 
-	public void setMemberPets(MemberPet memberPets) {
-		this.memberPets = memberPets;
+	public void setMemberPets(MemberPet memberPet) {
+		this.memberPet = memberPet;
 	}
 
 	

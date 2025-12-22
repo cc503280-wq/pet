@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="jakarta.tags.core" prefix="c"%>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt"%>
 <%@ page import="java.util.List"%>
 <!-- UpdateAppointment.jsp -->
 <!DOCTYPE html>
@@ -82,7 +83,7 @@
                  <!-- 右側 Navbar 按鈕 -->
 			    <ul class="navbar-nav ml-auto">
 			        <li class="nav-item">
-			            <a href="${pageContext.request.contextPath}/AdminLogoutServlet" class="btn btn-secondary btn-sm">
+			            <a href="Login.html" class="btn btn-secondary btn-sm">
 			                <i class="fas fa-sign-out-alt"></i> 登出
 			            </a>
 			        </li>
@@ -240,7 +241,8 @@
 									<!-- form start -->
 
 									<form class="form-horizontal"
-										action="UpdateAppointmentServlet" method="post">
+										action="AppointmentServlet.do" method="post">
+										<input type="hidden" name="action" value="update">
 										<div class="card-body">
 
 											<div class="form-group row">
@@ -401,7 +403,7 @@
 											
 										
 											<input type="hidden" name="hiddenEmployeeId" id="hidden_emp_id" value="${dto.employeeId}">
-											<input type="hidden" name="appointmentDate" id="hidden_date" value="${dto.appointmentDate}"> 
+											<input type="hidden" name="appointmentDate" id="hidden_date" value="<fmt:formatDate value='${dto.appointmentDate}' pattern='yyyy-MM-dd'/>"> 
 											<input type="hidden" name="hidden_slot_id" id="hidden_slot_id" value="${dto.slotId}">
 											<input type="hidden" name="startTime" id="hidden_starttime" value="${dto.startTime}">
 											<input type="hidden" name="endTime" id="hidden_endtime" value="${dto.endTime}">  
@@ -548,7 +550,7 @@
 			console.log("dbendTime: "+ dbendTime);
 
 			
-			let url = "${pageContext.request.contextPath}/GetScheduleServlet?"
+			let url = "${pageContext.request.contextPath}/GetScheduleServlet.do?"
 					+ "AppointDate=" + currentDate 
 					+ "&AppointEmployee="+ currentEmpId 
 					+ "&AppointStartTime=" + currentstartTime
@@ -558,6 +560,7 @@
 					+ "&DbEmp=" + dbEmpId 
 					+ "&DbStartTime=" + dbstartTime
 					+ "&DbEndTime=" + dbendTime;
+					+ "&action=view"
 
 			console.log("url: "+url)
 
