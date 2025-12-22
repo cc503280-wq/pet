@@ -81,7 +81,7 @@ public class Appointment {
 			Date appointmentDate, String notes, String appointmentStatus, Timestamp createdAt,
 			Timestamp updatedAt, Integer rating, String comment, String reply, Date reviewDate,
 			Integer totalPrice,String payStatus) {
-		super();
+		
 		this.appointmentId = appointmentId;
 		this.petId = petId;
 		this.serviceId = serviceId;
