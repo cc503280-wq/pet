@@ -12,6 +12,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 
 @Entity @Table(name = "members")
@@ -70,7 +72,24 @@ public class Member {
 		super();
 	}
 
-	
+    @PrePersist
+    protected void onCreate() {
+        Timestamp now = Timestamp.valueOf(LocalDateTime.now());
+        this.createdAt = now;
+        this.updatedAt = now;
+
+        // 預設狀態
+        if (this.status == null) {
+            this.status = "active";
+        }
+
+    }
+    
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = Timestamp.valueOf(LocalDateTime.now());
+    }
+    
 	public Member(int memberId, String name) {
 		super();
 		this.memberId = memberId;
@@ -130,6 +149,21 @@ public class Member {
 
 	
 	
+	public Member(int memberId, String email, String name, String gender, Date birthday, String phone, String address,
+			String picture, String status, int points) {
+		super();
+		this.memberId = memberId;
+		this.email = email;
+		this.name = name;
+		this.gender = gender;
+		this.birthday = birthday;
+		this.phone = phone;
+		this.address = address;
+		this.picture = picture;
+		this.status = status;
+		this.points = points;
+	}
+
 	public List<MemberPet> getPets() {
 		return pets;
 	}
