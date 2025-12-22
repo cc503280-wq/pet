@@ -1,112 +1,80 @@
 package com.pet.dao.order;
 
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.Session;
+import org.hibernate.query.Query;
+
+import com.pet.model.order.orderBean;
 import com.pet.model.order.orderItemBean;
-import com.pet.utils.JDBCUtil;
+import com.pet.utils.HibernateUtil;
 
 public class OrderItemsDao {
 	 
-	    public boolean insertOrderItem(
-	            Integer productId,
-	            Integer orderId,
-	            Integer quantity,
-	            BigDecimal unitPrice,
-	            BigDecimal subtotal
-	            
-	    ) {
-	        // 使用 OUTPUT INSERTED.order_id 取得剛插入的自增欄位
-	        String sql = "insert into OrderItems (product_id,order_id,quantity,unit_price,subtotal) values (?,?,?,?,?)";
+	  public boolean insertOrderItem(orderBean order, Integer productId, Integer quantity, BigDecimal unitPrice, BigDecimal subtotal) {
+	        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 
-	        try (Connection connection=JDBCUtil.getConnection();
-	        		PreparedStatement ps = connection.prepareStatement(sql)) {
-	        	ps.setInt(1, productId);
-	            ps.setInt(2, orderId);
-	            ps.setInt(3, quantity);
-	            ps.setBigDecimal(4, unitPrice);
-	            ps.setBigDecimal(5, subtotal);
+	        try {
+	            session.beginTransaction();
 
-	            int rows = ps.executeUpdate();
-	            return rows > 0; // 插入成功返回 true
-	           
-	            }
+	            orderItemBean item = new orderItemBean();
+	            item.setOrder(order);
+	            item.setProductId(productId);
+	            item.setQuantity(quantity);
+	            item.setUnitPrice(unitPrice.doubleValue());
+	            item.setSubtotal(subtotal.doubleValue());
 
-	         catch (SQLException e) {
+	            session.persist(item); // Hibernate 自動插入
+	            session.getTransaction().commit();
+	            return true;
+
+	        } catch (Exception e) {
+	            if (session.getTransaction().isActive()) session.getTransaction().rollback();
 	            e.printStackTrace();
 	            return false;
-	            
 	        }
 	    }
 	    
-	    public List<orderItemBean> findAllOrderItems() {
-			List<orderItemBean> orderitems = new ArrayList<orderItemBean>();
-			String sql = "SELECT * FROM OrderItems";
-			
-			try (Connection connection=JDBCUtil.getConnection();
-	        		PreparedStatement ps = connection.prepareStatement(sql);
-					ResultSet resultSet=ps.executeQuery();) {
-				
-				while (resultSet.next()) {
-					Integer productItemId = resultSet.getInt("product_item_id");
-					Integer orderId = resultSet.getInt("order_id");
-					Integer productId = resultSet.getInt("product_id");
-					Integer quantity = resultSet.getInt("quantity");
-					Double unitPrice = resultSet.getDouble("unit_price");
-					Double subtotal = resultSet.getDouble("subtotal");
-					orderItemBean orderItem = new orderItemBean(productItemId, orderId, productId, quantity, unitPrice, subtotal);
-					orderitems.add(orderItem);
-					
-				}
-				
+	  public List<orderItemBean> findAllOrderItems() {
+	        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+	        List<orderItemBean> items = new ArrayList<>();
 
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+	        try {
+	            session.beginTransaction();
 
-			return orderitems;
+	            Query<orderItemBean> query = session.createQuery("from orderItemBean", orderItemBean.class);
+	            items = query.getResultList();
 
-		}
-	    public List<orderItemBean> findOrderItems(Integer orderId) {
-			List<orderItemBean> orderitems = new ArrayList<orderItemBean>();
-			String sql = "SELECT * FROM OrderItems where order_id=?";
-			
-			try (Connection connection=JDBCUtil.getConnection();
-	        		PreparedStatement ps = connection.prepareStatement(sql)) {
-				ps.setInt(1,orderId);
-				try (ResultSet resultSet=ps.executeQuery();){
-					while (resultSet.next()) {
-						Integer productItemId = resultSet.getInt("product_item_id");
-						orderId = resultSet.getInt("order_id");
-						Integer productId = resultSet.getInt("product_id");
-						Integer quantity = resultSet.getInt("quantity");
-						Double unitPrice = resultSet.getDouble("unit_price");
-						Double subtotal = resultSet.getDouble("subtotal");
-						orderItemBean orderItem = new orderItemBean(productItemId, orderId, productId, quantity, unitPrice, subtotal);
-						orderitems.add(orderItem);
-						
-					}
-					
-				} catch (SQLException e) {
-					// TODO: handle exception
-					e.printStackTrace();
-				}
-				
-				
-				
+	            session.getTransaction().commit();
 
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+	        } catch (Exception e) {
+	            if (session.getTransaction().isActive()) session.getTransaction().rollback();
+	            e.printStackTrace();
+	        }
 
-			return orderitems;
+	        return items;
+	    }
+	  
+	  public List<orderItemBean> findOrderItems(orderBean order) {
+	        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+	        List<orderItemBean> items = new ArrayList<>();
 
-		}
+	        try {
+	            session.beginTransaction();
+
+	            Query<orderItemBean> query = session.createQuery("from orderItemBean i where i.order = :order", orderItemBean.class);
+	            query.setParameter("order", order);
+	            items = query.getResultList();
+
+	            session.getTransaction().commit();
+
+	        } catch (Exception e) {
+	            if (session.getTransaction().isActive()) session.getTransaction().rollback();
+	            e.printStackTrace();
+	        }
+
+	        return items;
+	    }
 }

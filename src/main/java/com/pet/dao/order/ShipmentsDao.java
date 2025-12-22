@@ -1,220 +1,145 @@
 package com.pet.dao.order;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.hibernate.Session;
+import org.hibernate.query.Query;
+
+import com.pet.model.order.orderBean;
 import com.pet.model.order.shipmentsBean;
-import com.pet.utils.JDBCUtil;
+import com.pet.utils.HibernateUtil;
 
 public class ShipmentsDao {
 
-	public boolean insertShipment(Integer orderId, String shippingMethod, Integer shippingFee, String recipientName,
-			String recipientPhone, String shippingAddress
+	public boolean insertShipment(orderBean order, String shippingMethod, Integer shippingFee, String recipientName,
+			String recipientPhone, String shippingAddress) {
 
-	) {
-		// 使用 OUTPUT INSERTED.order_id 取得剛插入的自增欄位
-		String sql = "insert INTO Shipments(order_id,shipping_method,shipping_fee,recipient_name,recipient_phone,shipping_address)values (?,?,?,?,?,?)";
+		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 
-		try (Connection conn = JDBCUtil.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
-			ps.setInt(1, orderId);
-			ps.setString(2, shippingMethod);
-			ps.setInt(3, shippingFee);
-			ps.setString(4, recipientName);
-			ps.setString(5, recipientPhone);
-			ps.setString(6, shippingAddress);
+		try {
+			session.beginTransaction();
 
-			int rows = ps.executeUpdate();
-			return rows > 0; // 插入成功返回 true
+			shipmentsBean shipment = new shipmentsBean();
+			shipment.setorderId(order); // 關聯 orderBean
+			shipment.setShippingMethod(shippingMethod);
+			shipment.setShippingFee(shippingFee);
+			shipment.setRecipientName(recipientName);
+			shipment.setRecipientPhone(recipientPhone);
+			shipment.setShippingAddress(shippingAddress);
 
-		}
+			session.persist(shipment);
+			session.getTransaction().commit();
+			return true;
 
-		catch (SQLException e) {
+		} catch (Exception e) {
+			if (session.getTransaction().isActive())
+				session.getTransaction().rollback();
 			e.printStackTrace();
 			return false;
-
 		}
 	}
 
 	public List<shipmentsBean> findAllShipments() {
-		List<shipmentsBean> shipmentList = new ArrayList<shipmentsBean>();
-		String sql = "SELECT * FROM Shipments";
-		try (Connection conn = JDBCUtil.getConnection();
-				PreparedStatement ps = conn.prepareStatement(sql);
-				ResultSet rs = ps.executeQuery()) {
-			while (rs.next()) {
-				Integer shipmentId = rs.getInt("shipment_id");
-				Integer orderId = rs.getInt("order_id");
-				String shippingMethod = rs.getString("shipping_method");
-				Integer shippingFee = rs.getInt("shipping_fee");
-				String trackingNumber = rs.getString("tracking_number");
-				Date shippedAt = rs.getTimestamp("shipped_at");
-				Date deliveredAt = rs.getTimestamp("delivered_at");
-				String status = rs.getString("status");
-				String recipientName = rs.getString("recipient_name");
-				String recipientPhone = rs.getString("recipient_phone");
-				String shippingAddress = rs.getString("shipping_address");
-				shipmentsBean shipmentsBean = new shipmentsBean(shipmentId, orderId, shippingMethod, shippingFee,
-						trackingNumber, shippedAt, deliveredAt, status, recipientName, recipientPhone, shippingAddress);
-				shipmentList.add(shipmentsBean);
+        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+        List<shipmentsBean> shipments = new ArrayList<>();
 
-			}
+        try {
+            session.beginTransaction();
+            Query<shipmentsBean> query = session.createQuery("from shipmentsBean", shipmentsBean.class);
+            shipments = query.getResultList();
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            if (session.getTransaction().isActive()) session.getTransaction().rollback();
+            e.printStackTrace();
+        }
 
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+        return shipments;
+    }
+	 public List<shipmentsBean> findOrderShipments(orderBean order) {
+	        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+	        List<shipmentsBean> shipments = new ArrayList<>();
+
+	        try {
+	            session.beginTransaction();
+	            Query<shipmentsBean> query = session.createQuery(
+	                "from shipmentsBean s where s.orderId = :order", shipmentsBean.class);
+	            query.setParameter("order", order);
+	            shipments = query.getResultList();
+	            session.getTransaction().commit();
+	        } catch (Exception e) {
+	            if (session.getTransaction().isActive()) session.getTransaction().rollback();
+	            e.printStackTrace();
+	        }
+
+	        return shipments;
+	    }
+
+	 public shipmentsBean findShipmentById(Integer shipmentId) {
+		    Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+		    shipmentsBean shipment = null;
+
+		    try {
+		        session.beginTransaction();
+
+		        // 用 session.get 直接根據主鍵查詢
+		        shipment = session.get(shipmentsBean.class, shipmentId);
+
+		        session.getTransaction().commit();
+		    } catch (Exception e) {
+		        if (session.getTransaction().isActive()) session.getTransaction().rollback();
+		        e.printStackTrace();
+		    }
+
+		    return shipment;
 		}
 
-		return shipmentList;
+	 public void changeShipment(String trackingNumber, Date shippedAt, Date deliveredAt, String status, Integer orderId) {
+		    Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 
-	}
+		    try {
+		        session.beginTransaction();
 
-	public List<shipmentsBean> findOrderShipments(Integer orderId) {
-		List<shipmentsBean> shipmentList = new ArrayList<shipmentsBean>();
-		String sql = "SELECT * FROM Shipments where order_id=?";
+		        // 用 HQL 找出 shipment
+		        Query<shipmentsBean> query = session.createQuery(
+		            "from shipmentsBean s where s.orderId.orderId = :orderId", shipmentsBean.class);
+		        query.setParameter("orderId", orderId);
+		        shipmentsBean shipment = query.uniqueResult();
 
-		try (Connection conn = JDBCUtil.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
-			ps.setInt(1, orderId);
+		        if (shipment != null) {
+		            shipment.setTrackingNumber(trackingNumber);
+		            shipment.setShippedAt(shippedAt);
+		            shipment.setDeliveredAt(deliveredAt);
+		            shipment.setStatus(status);
+		            // Hibernate 會自動偵測變更，不需要手動 update
+		        }
 
-			try (ResultSet rs = ps.executeQuery();) {
-				while (rs.next()) {
-					Integer shipmentId = rs.getInt("shipment_id");
-					orderId = rs.getInt("order_id");
-					String shippingMethod = rs.getString("shipping_method");
-					Integer shippingFee = rs.getInt("shipping_fee");
-					String trackingNumber = rs.getString("tracking_number");
-					Date shippedAt = rs.getTimestamp("shipped_at");
-					Date deliveredAt = rs.getTimestamp("delivered_at");
-					String status = rs.getString("status");
-					String recipientName = rs.getString("recipient_name");
-					String recipientPhone = rs.getString("recipient_phone");
-					String shippingAddress = rs.getString("shipping_address");
-					shipmentsBean shipmentsBean = new shipmentsBean(shipmentId, orderId, shippingMethod, shippingFee,
-							trackingNumber, shippedAt, deliveredAt, status, recipientName, recipientPhone,
-							shippingAddress);
-					shipmentList.add(shipmentsBean);
-				}
-
-			} catch (SQLException e) {
-				// TODO: handle exception
-				e.printStackTrace();
-			}
-
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		        session.getTransaction().commit();
+		    } catch (Exception e) {
+		        if (session.getTransaction().isActive()) session.getTransaction().rollback();
+		        e.printStackTrace();
+		    }
 		}
 
-		return shipmentList;
+	 public void changeShipmentById(String trackingNumber, Date shippedAt, Date deliveredAt, String status, Integer shipmentId) {
+		    Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 
-	}
+		    try {
+		        session.beginTransaction();
 
-	public List<shipmentsBean> findShipmentsId(Integer shipmentId) {
-		List<shipmentsBean> shipmentList = new ArrayList<shipmentsBean>();
-		String sql = "SELECT * FROM Shipments where shipment_id=?";
+		        shipmentsBean shipment = session.get(shipmentsBean.class, shipmentId);
+		        if (shipment != null) {
+		            shipment.setTrackingNumber(trackingNumber);
+		            shipment.setShippedAt(shippedAt);
+		            shipment.setDeliveredAt(deliveredAt);
+		            shipment.setStatus(status);
+		        }
 
-		try (Connection conn = JDBCUtil.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
-			ps.setInt(1, shipmentId);
-			try (ResultSet rs = ps.executeQuery();) {
-				while (rs.next()) {
-					shipmentId = rs.getInt("shipment_id");
-					Integer orderId = rs.getInt("order_id");
-					String shippingMethod = rs.getString("shipping_method");
-					Integer shippingFee = rs.getInt("shipping_fee");
-					String trackingNumber = rs.getString("tracking_number");
-					Date shippedAt = rs.getTimestamp("shipped_at");
-					Date deliveredAt = rs.getTimestamp("delivered_at");
-					String status = rs.getString("status");
-					String recipientName = rs.getString("recipient_name");
-					String recipientPhone = rs.getString("recipient_phone");
-					String shippingAddress = rs.getString("shipping_address");
-					shipmentsBean shipmentsBean = new shipmentsBean(shipmentId, orderId, shippingMethod, shippingFee,
-							trackingNumber, shippedAt, deliveredAt, status, recipientName, recipientPhone,
-							shippingAddress);
-					shipmentList.add(shipmentsBean);
-
-				}
-
-			} catch (SQLException e) {
-				// TODO: handle exception
-			}
-
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		        session.getTransaction().commit();
+		    } catch (Exception e) {
+		        if (session.getTransaction().isActive()) session.getTransaction().rollback();
+		        e.printStackTrace();
+		    }
 		}
-		return shipmentList;
-
-	}
-
-	public void changeShipment(String trackingNumber, Date shippedAt, Date deliveredAt, String status, Integer id) {
-		String sql = "update Shipments set tracking_number=?, shipped_at=?,delivered_at=?, status=? where order_id=?";
-		try (Connection conn = JDBCUtil.getConnection();
-				PreparedStatement ps = conn.prepareStatement(sql)) {
-			if (trackingNumber != null && !trackingNumber.isEmpty()) {
-				ps.setString(1, trackingNumber);
-			} else {
-				ps.setNull(1, java.sql.Types.NVARCHAR);
-			}
-
-			// 轉換 java.util.Date → java.sql.Date（允許 null）
-			if (shippedAt != null) {
-				ps.setDate(2, new java.sql.Date(shippedAt.getTime()));
-			} else {
-				ps.setNull(2, java.sql.Types.DATE);
-			}
-
-			if (deliveredAt != null) {
-				ps.setDate(3, new java.sql.Date(deliveredAt.getTime()));
-			} else {
-				ps.setNull(3, java.sql.Types.DATE);
-			}
-			ps.setString(4, status);
-			ps.setInt(5, id);
-
-			ps.executeUpdate();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-	}
-
-	public void changeShipmentId(String trackingNumber, Date shippedAt, Date deliveredAt, String status,
-			Integer shipmentId) {
-		String sql = "update Shipments set tracking_number=?, shipped_at=?,delivered_at=?, status=? where shipment_id=?";
-		try (Connection conn = JDBCUtil.getConnection();
-				PreparedStatement ps = conn.prepareStatement(sql)) {
-			if (trackingNumber != null && !trackingNumber.isEmpty()) {
-				ps.setString(1, trackingNumber);
-			} else {
-				ps.setNull(1, java.sql.Types.NVARCHAR);
-			}
-
-			// 轉換 java.util.Date → java.sql.Date（允許 null）
-			if (shippedAt != null) {
-				ps.setDate(2, new java.sql.Date(shippedAt.getTime()));
-			} else {
-				ps.setNull(2, java.sql.Types.DATE);
-			}
-
-			if (deliveredAt != null) {
-				ps.setDate(3, new java.sql.Date(deliveredAt.getTime()));
-			} else {
-				ps.setNull(3, java.sql.Types.DATE);
-			}
-			ps.setString(4, status);
-			ps.setInt(5, shipmentId);
-
-			ps.executeUpdate();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-	}
 }

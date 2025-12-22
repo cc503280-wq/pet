@@ -2,25 +2,59 @@ package com.pet.model.order;
 
 import java.util.Date;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+
+
+@Entity @Table(name = "shipments")
 public class shipmentsBean implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
-	Integer shipmentId;
-	Integer orderId;
-	String shippingMethod;
-	Integer shippingFee;
-	String trackingNumber;
-	Date shippedAt;
-	Date deliveredAt;
-	String status;
-	String recipientName;
-	String recipientPhone;
-	String shippingAddress;
-	public shipmentsBean(Integer shipmentId, Integer orderId, String shippingMethod, Integer shippingFee,
+	
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "shipment_id")
+	private Integer shipmentId;
+	
+	@OneToOne
+	@JoinColumn(name = "order_id")
+	private orderBean order;
+	
+	@Column (name ="shipping_method")
+	private String shippingMethod;
+	
+	@Column (name = "shipping_fee")
+	private Integer shippingFee;
+	
+	@Column(name = "tracking_number")
+	private String trackingNumber;
+	
+	@Column(name = "shipped_at")
+	private Date shippedAt;
+	
+	@Column(name = "delivered_at")
+	private Date deliveredAt;
+	@Column(name = "status")
+	private String status;
+	
+	@Column(name = "recipient_name")
+	private String recipientName;
+	@Column(name = "recipient_phone")
+	private String recipientPhone;
+	@Column(name = "shipping_Address")
+	private String shippingAddress;
+	
+	
+	public shipmentsBean(Integer shipmentId, orderBean orderId, String shippingMethod, Integer shippingFee,
 			String trackingNumber, Date shippedAt, Date deliveredAt, String status, String recipientName,
 			String recipientPhone, String shippingAddress) {
 		super();
 		this.shipmentId = shipmentId;
-		this.orderId = orderId;
+		this.order = orderId;
 		this.shippingMethod = shippingMethod;
 		this.shippingFee = shippingFee;
 		this.trackingNumber = trackingNumber;
@@ -40,11 +74,11 @@ public class shipmentsBean implements java.io.Serializable {
 	public void setShipmentId(Integer shipmentId) {
 		this.shipmentId = shipmentId;
 	}
-	public Integer getorderId() {
-		return orderId;
+	public orderBean getorderId() {
+		return order;
 	}
-	public void setorderId(Integer orderId) {
-		this.orderId = orderId;
+	public void setorderId(orderBean orderId) {
+		this.order = orderId;
 	}
 	public String getShippingMethod() {
 		return shippingMethod;
@@ -102,6 +136,9 @@ public class shipmentsBean implements java.io.Serializable {
 	}
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+	public Integer getOrderId() {
+	    return order != null ? order.getOrderId() : null;
 	}
 	
 	

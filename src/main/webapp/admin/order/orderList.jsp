@@ -268,7 +268,7 @@
 												<td><%=o.getOrderDate()%></td>
 												<td class="status-cell" data-orderid="<%=o.getOrderId()%>"><%=o.getStatus()%></td>
 												<td><%=o.getTotalAmountUndiscount()%></td>
-												<td><%=o.getCoupon_id()%></td>
+												<td><%=o.getCouponId()%></td>
 												<td><%=o.getTotalAmountDiscount()%></td>
 												<td><%=o.getUsePoints()%></td>
 												<td><%=o.getTotalAmountDiscountPoints()%></td>

@@ -265,7 +265,7 @@
 											%>
 											<tr>
 												<td><%=s.getShipmentId()%></td>
-												<td><%=s.getorderId()%></td>
+												<td><%=s.getOrderId()%></td>
 												<td><%=s.getShippingMethod()%></td>
 												<td><%=s.getShippingFee()%></td>
 												<td><%=s.getTrackingNumber()%></td>
