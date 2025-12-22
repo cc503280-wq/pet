@@ -80,6 +80,7 @@ public class Admin {
 	    this.password = password;
 	    this.phone = phone;
 	    this.role = role;
+	    this.status = "active";
 	    this.createdAt = Timestamp.valueOf(LocalDateTime.now());
 	    this.updatedAt = Timestamp.valueOf(LocalDateTime.now());
 	}

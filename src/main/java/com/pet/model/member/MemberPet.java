@@ -78,6 +78,18 @@ public class MemberPet {
 		this.updatedAt = updatedAt;
 	}
 
+	public MemberPet(int petId, int memberId, String petName, String petType, String petBreed, String petAge,
+			String petSize) {
+		super();
+		this.petId = petId;
+		this.memberId = memberId;
+		this.petName = petName;
+		this.petType = petType;
+		this.petBreed = petBreed;
+		this.petAge = petAge;
+		this.petSize = petSize;
+	}
+
 	public int getPetId() {
 		return petId;
 	}

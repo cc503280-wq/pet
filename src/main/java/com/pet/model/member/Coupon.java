@@ -9,6 +9,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 
 @Entity @Table(name = "coupons")
@@ -59,6 +61,27 @@ public class Coupon {
 	
 	@Column(name = "status")
 	private String status;
+	
+	//更新前
+	@PrePersist
+	protected void onCreate() {
+	    Timestamp now = Timestamp.valueOf(LocalDateTime.now());
+
+	    // 新增一定要有
+	    this.createdAt = now;
+	    this.updatedAt = now;
+
+	    // status 預設值
+	    if (this.status == null) {
+	        this.status = "active";
+	    }
+	}
+
+	//修改前
+	@PreUpdate
+	protected void onUpdate() {
+	    this.updatedAt = Timestamp.valueOf(LocalDateTime.now());
+	}
 	
 	public Coupon() {
 		super();

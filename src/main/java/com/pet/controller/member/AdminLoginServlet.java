@@ -8,20 +8,16 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.sql.DataSource;
+
+import org.hibernate.Session;
 
 import com.google.gson.Gson;
 import com.pet.dao.member.AdminDao;
 import com.pet.model.member.Admin;
+import com.pet.utils.HibernateUtil;
 
 
 @WebServlet("/AdminLoginServlet")
@@ -30,13 +26,14 @@ public class AdminLoginServlet extends HttpServlet {
 	 
     
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		Session currentSession = HibernateUtil.getSessionFactory().getCurrentSession();
+		AdminDao adminDao = new AdminDao(currentSession);
 		request.setCharacterEncoding("UTF-8");
 		response.setContentType("application/json; charset=UTF-8");
 		String Email = request.getParameter("email");
 		String password = request.getParameter("password");
 //		System.out.println("email: " + Email + ", password: " + password);
 		
-		AdminDao adminDao = new AdminDao();
 		Admin admin = adminDao.login(Email, password);
 		
 		if(admin != null) {

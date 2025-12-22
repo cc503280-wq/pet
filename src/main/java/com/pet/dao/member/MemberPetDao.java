@@ -1,163 +1,80 @@
 package com.pet.dao.member;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.sql.DataSource;
+
+
+import org.hibernate.Session;
+import org.hibernate.query.Query;
 
 import com.pet.model.member.MemberPet;
 
 public class MemberPetDao {
-	//連線
-	private Connection getConnection() throws SQLException, NamingException {
-        InitialContext context = new InitialContext();
-        DataSource dataSource = (DataSource) context.lookup("java:/comp/env/jdbc/petDB");
-        return dataSource.getConnection();
-    }
+
+	private Session session;
+	
+	public MemberPetDao(Session session) {
+		this.session = session;
+	}
 	
 	//查詢全部
 	public List<MemberPet> queryAllMemberPets(){
 		
-		String sql = "SELECT * FROM member_pets ORDER BY pet_id";
-		List<MemberPet> memberPets = new ArrayList<>();
-		
-		try (Connection connection = getConnection();
-				PreparedStatement preparedStatement = connection.prepareStatement(sql);
-				ResultSet resultSet = preparedStatement.executeQuery()) {
-			
-			while(resultSet.next()) {
-				MemberPet memberPet = new MemberPet();
-				memberPet.setPetId(resultSet.getInt("pet_id"));
-				memberPet.setMemberId(resultSet.getInt("member_id"));
-				memberPet.setPetName(resultSet.getString("pet_name"));
-				memberPet.setPetType(resultSet.getString("pet_type"));
-				memberPet.setPetBreed(resultSet.getString("pet_breed"));
-				memberPet.setPetAge(resultSet.getString("pet_age"));
-				memberPet.setPetSize(resultSet.getString("pet_size"));
-				
-				memberPets.add(memberPet);
-			}
-		} catch (SQLException | NamingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return memberPets;
+		String hql = "select new com.pet.model.member.MemberPet(p.petId, p.memberId, p.petName, p.petType, p.petBreed, p.petAge, p.petSize) " +
+                "from MemberPet p order by p.petId";
+		Query<MemberPet> query = session.createQuery(hql, MemberPet.class);
+		return query.list();
 	}
 	
 	//依petId查詢
 	public MemberPet queryMemberPetByPetId(int id) {
-		String sql = "SELECT * FROM member_pets WHERE pet_id=?";
-		MemberPet memberPet = null;
 		
-		try (Connection connection = getConnection();
-				PreparedStatement preparedStatement = connection.prepareStatement(sql)){
-			
-			preparedStatement.setInt(1, id);
-			try (ResultSet resultSet = preparedStatement.executeQuery()) {
-				if(resultSet.next()) {
-					memberPet = new MemberPet();
-					memberPet.setPetId(resultSet.getInt("pet_id"));
-					memberPet.setMemberId(resultSet.getInt("member_id"));
-					memberPet.setPetName(resultSet.getString("pet_name"));
-					memberPet.setPetType(resultSet.getString("pet_type"));
-					memberPet.setPetBreed(resultSet.getString("pet_breed"));
-					memberPet.setPetAge(resultSet.getString("pet_age"));
-					memberPet.setPetSize(resultSet.getString("pet_size"));
-				}
-			}
-		} catch (SQLException | NamingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return memberPet;
+		String hql = "select new com.pet.model.member.MemberPet(p.petId, p.memberId, p.petName, p.petType, p.petBreed, p.petAge, p.petSize) " +
+                "from MemberPet p where p.petId = :id";
+		Query<MemberPet> query = session.createQuery(hql, MemberPet.class);
+		query.setParameter("id", id);
+		return query.uniqueResult(); // 回傳單筆資料
 	}
 	//依memberId查詢
 	public List<MemberPet> queryMemberPetByMemberId(int id) {
-		String sql = "SELECT * FROM member_pets WHERE member_id=? ORDER BY pet_id";
-		MemberPet memberPet = null;
-		List<MemberPet> memberPets = new ArrayList<>();
-		try (Connection connection = getConnection();
-				PreparedStatement preparedStatement = connection.prepareStatement(sql)){
-			
-			preparedStatement.setInt(1, id);
-			try (ResultSet resultSet = preparedStatement.executeQuery()) {
-				while (resultSet.next()) {
-					memberPet = new MemberPet();
-					memberPet.setPetId(resultSet.getInt("pet_id"));
-					memberPet.setMemberId(resultSet.getInt("member_id"));
-					memberPet.setPetName(resultSet.getString("pet_name"));
-					memberPet.setPetType(resultSet.getString("pet_type"));
-					memberPet.setPetBreed(resultSet.getString("pet_breed"));
-					memberPet.setPetAge(resultSet.getString("pet_age"));
-					memberPet.setPetSize(resultSet.getString("pet_size"));
-					memberPets.add(memberPet);
-				}
-			}
-		} catch (SQLException | NamingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return memberPets;
+		
+		String hql = "select new com.pet.model.member.MemberPet(p.petId, p.memberId, p.petName, p.petType, p.petBreed, p.petAge, p.petSize) " +
+                "from MemberPet p where p.memberId = :id order by p.petId";
+		Query<MemberPet> query = session.createQuery(hql, MemberPet.class);
+		query.setParameter("id", id);
+		return query.list();
 	}
 	
 	public List<MemberPet> queryPetsByConditions(String type, String age, String size){
-		List<MemberPet> memberPets = new ArrayList<>();
 		
-		StringBuilder sql = new StringBuilder("SELECT * FROM member_pets WHERE 1=1");
+		StringBuilder hql = new StringBuilder(
+		        "select new com.pet.model.member.MemberPet(p.petId, p.memberId, p.petName, p.petType, p.petBreed, p.petAge, p.petSize) " +
+		        "from MemberPet p where 1=1"
+		    );
 		
-		if (type != null && !type.isEmpty()) {
-	        sql.append(" AND pet_type = ?");
-	    }
-	    if (age != null && !age.isEmpty()) {
-	        sql.append(" AND pet_age = ?");
-	    }
-	    if (size != null && !size.isEmpty()) {
-	        sql.append(" AND pet_size = ?");
-	    }
-	    
-	    try (Connection connection = getConnection();
-	            PreparedStatement preparedStatement = connection.prepareStatement(sql.toString())) {
+		if(type!=null && !type.isEmpty()) {
+			hql.append("and p.petType = :type");
+		}
+		if (age != null && !age.isEmpty()) {
+            hql.append(" and p.petAge = :age");
+        }
+        if (size != null && !size.isEmpty()) {
+            hql.append(" and p.petSize = :size");
+        }
 
-	           int paramIndex = 1;
+        Query<MemberPet> query = session.createQuery(hql.toString(), MemberPet.class);
+        
+        if (type != null && !type.isEmpty()) {
+            query.setParameter("type", type);
+        }
+        if (age != null && !age.isEmpty()) {
+            query.setParameter("age", age);
+        }
+        if (size != null && !size.isEmpty()) {
+            query.setParameter("size", size);
+        }
 
-	           if (type != null && !type.isEmpty()) {
-	               preparedStatement.setString(paramIndex++, type);
-	           }
-	           if (age != null && !age.isEmpty()) {
-	               preparedStatement.setString(paramIndex++, age);
-	           }
-	           if (size != null && !size.isEmpty()) {
-	               preparedStatement.setString(paramIndex++, size);
-	           }
-
-	           ResultSet resultSet = preparedStatement.executeQuery();
-	           while (resultSet.next()) {
-	        	   MemberPet memberPet = new MemberPet();
-				   memberPet.setPetId(resultSet.getInt("pet_id"));
-				   memberPet.setMemberId(resultSet.getInt("member_id"));
-				   memberPet.setPetName(resultSet.getString("pet_name"));
-				   memberPet.setPetType(resultSet.getString("pet_type"));
-				   memberPet.setPetBreed(resultSet.getString("pet_breed"));
-				   memberPet.setPetAge(resultSet.getString("pet_age"));
-				   memberPet.setPetSize(resultSet.getString("pet_size"));
-				
-				   memberPets.add(memberPet);;
-	           }
-
-	       } catch (Exception e) {
-	           e.printStackTrace();
-	       }
-	       return memberPets;
-	   }
-	
-
-	
-	
+        return query.list();
+	}
 	
 }

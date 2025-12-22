@@ -64,7 +64,7 @@
 			<!-- Left navbar links -->
 			<ul class="navbar-nav ml-auto">
 			        <li class="nav-item">
-			            <a href="${pageContext.request.contextPath}/admin/layout/Login.html" class="btn btn-secondary btn-sm">
+			            <a href="${pageContext.request.contextPath}/AdminLogoutServlet" class="btn btn-secondary btn-sm">
 			                <i class="fas fa-sign-out-alt"></i> 登出
 			            </a>
 			        </li>

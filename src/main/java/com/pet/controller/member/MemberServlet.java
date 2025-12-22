@@ -27,18 +27,19 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
+import org.hibernate.Session;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.pet.dao.member.MemberDao;
 import com.pet.model.member.Member;
+import com.pet.utils.HibernateUtil;
 
 
 @WebServlet("/MemberServlet")
 @MultipartConfig
 public class MemberServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	MemberDao memberDao = new MemberDao(); 
     
 	private void handlePictureUpload(HttpServletRequest request, Member member) throws IOException, ServletException {
 	    Part filePart = request.getPart("picture"); // 前端 input name="picture"
@@ -61,6 +62,8 @@ public class MemberServlet extends HttpServlet {
 	}
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		Session currentSession = HibernateUtil.getSessionFactory().getCurrentSession();
+		MemberDao memberDao = new MemberDao(currentSession);
 		request.setCharacterEncoding("UTF-8");
 		response.setContentType("application/json; charset=UTF-8");
 		String action = request.getParameter("action");

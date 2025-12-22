@@ -1,51 +1,39 @@
 package com.pet.controller.member;
 
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import jakarta.servlet.http.Part;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.file.Paths;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.sql.DataSource;
 
+import org.hibernate.Session;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.pet.dao.member.CouponDao;
-import com.pet.dao.member.MemberDao;
 import com.pet.model.member.Coupon;
-import com.pet.model.member.Member;
+import com.pet.utils.HibernateUtil;
 
 
 @WebServlet("/CouponServlet")
 public class CouponServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	CouponDao couponDao = new CouponDao();
 	Gson gson = new GsonBuilder().setDateFormat("yyyy/MM/dd").create(); //設定回傳JSON的日期格式
 	SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
     
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		Session currentSession = HibernateUtil.getSessionFactory().getCurrentSession();
+		CouponDao couponDao = new CouponDao(currentSession);
 		request.setCharacterEncoding("UTF-8");
 		response.setContentType("application/json; charset=UTF-8");
 		String action = request.getParameter("action");
