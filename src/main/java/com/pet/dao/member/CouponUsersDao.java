@@ -1,5 +1,8 @@
 package com.pet.dao.member;
 
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -7,6 +10,7 @@ import org.hibernate.Session;
 import org.hibernate.query.Query;
 
 import com.pet.model.member.CouponUsers;
+import com.pet.utils.HibernateUtil;
 
 public class CouponUsersDao {
 	
@@ -48,22 +52,10 @@ public class CouponUsersDao {
 	        return query.list();
 	}
 
-//	public void usedcoupon(Integer couponId) {
-//		String sql = "update coupon_users set status = ? ,used_at=? where coupon_id=?";
-//		try (Connection connection = getConnection();
-//				PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-//			preparedStatement.setString(1, "used");
-//			preparedStatement.setTimestamp(2, Timestamp.valueOf(LocalDateTime.now()));
-//			preparedStatement.setInt(3, couponId);
-//			preparedStatement.execute();
-//		} catch (SQLException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (NamingException e1) {
-//			// TODO Auto-generated catch block
-//			e1.printStackTrace();
-//		}
-//
-//	}
+	public void usedcoupon(Integer couponId) {
+		CouponUsers couponUsers = session.find(CouponUsers.class, couponId);
+		couponUsers.setStatus("used");
+		couponUsers.setUsedAt(Timestamp.valueOf(LocalDateTime.now()));
+	}
 
 }
