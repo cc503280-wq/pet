@@ -8,10 +8,13 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-import com.pet.dao.product.GetAllCategories;
-import com.pet.dao.product.GetOneProduct;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+
+import com.pet.dao.product.CategoryDao;
 import com.pet.model.product.CategoriesBean;
 import com.pet.model.product.ProductBean;
+import com.pet.utils.HibernateUtil;
 
 @WebServlet("/UpdateProduct")
 public class UpdateProduct extends HttpServlet {
@@ -19,13 +22,18 @@ public class UpdateProduct extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		SessionFactory factory = HibernateUtil.getSessionFactory();
+		Session session = factory.getCurrentSession();
+		
 		String id = request.getParameter("product_id");
-		GetOneProduct one = new GetOneProduct();
-		ProductBean product = one.getProduct(id);
+		
+		ProductBean product = session.find(ProductBean.class, Integer.parseInt(id));
 		request.setAttribute("product", product);
-		GetAllCategories cate = new GetAllCategories();
-		List<CategoriesBean> categories = cate.getCategory();
+		
+		CategoryDao cDao = new CategoryDao(session);
+		List<CategoriesBean> categories = cDao.getCategories();
 		request.setAttribute("categories", categories);
+		
 		request.getRequestDispatcher("/admin/layout/UpdateProduct.jsp").forward(request, response);
 	}
 

@@ -8,8 +8,11 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-import com.pet.dao.product.GetOneProduct;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+
 import com.pet.model.product.ProductBean;
+import com.pet.utils.HibernateUtil;
 
 @WebServlet("/OneProduct")
 public class OneProduct extends HttpServlet {
@@ -18,8 +21,11 @@ public class OneProduct extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		String id = request.getParameter("product_id");
-		GetOneProduct one = new GetOneProduct();
-		ProductBean product = one.getProduct(id);
+		SessionFactory factory = HibernateUtil.getSessionFactory();
+		Session session = factory.getCurrentSession();
+		
+		ProductBean product = session.find(ProductBean.class, Integer.parseInt(id));
+		
 		request.setAttribute("product", product);
 		
 		request.getRequestDispatcher("/admin/layout/OneProduct.jsp").forward(request, response);

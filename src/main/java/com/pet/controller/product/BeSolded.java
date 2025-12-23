@@ -8,7 +8,11 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-import com.pet.dao.product.NotActived;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+
+import com.pet.dao.product.ProductDao;
+import com.pet.utils.HibernateUtil;
 
 
 @WebServlet("/BeSolded")
@@ -17,9 +21,12 @@ public class BeSolded extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		SessionFactory factory = HibernateUtil.getSessionFactory();
+		Session session = factory.getCurrentSession();
 		String id = request.getParameter("product_id");
-		NotActived notActived = new NotActived();
-		notActived.SetNotActived(id);
+		
+		ProductDao pDao = new ProductDao(session);
+		pDao.SetNotActived(id); //做下架商品
 		response.sendRedirect(request.getContextPath() + "/AllProducts");
 	}
 
