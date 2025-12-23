@@ -52,10 +52,37 @@ public class CouponUsersDao {
 	        return query.list();
 	}
 
-	public void usedcoupon(Integer couponId) {
-		CouponUsers couponUsers = session.find(CouponUsers.class, couponId);
-		couponUsers.setStatus("used");
-		couponUsers.setUsedAt(Timestamp.valueOf(LocalDateTime.now()));
+	public void usedcoupon(Integer couponId, Integer memberId) {
+
+	    Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+
+	    try {
+	        session.beginTransaction();
+
+	        String hql = """
+	            update CouponUsersBean cu
+	            set cu.status = :status,
+	                cu.usedAt = :usedAt
+	            where cu.id.couponId = :couponId
+	              and cu.id.memberId = :memberId
+	        """;
+
+	        Query<?> query = session.createQuery(hql);
+	        query.setParameter("status", "used");
+	        query.setParameter("usedAt", LocalDateTime.now());
+	        query.setParameter("couponId", couponId);
+	        query.setParameter("memberId", memberId);
+
+	        query.executeUpdate();
+
+	        session.getTransaction().commit();
+
+	    } catch (Exception e) {
+	        if (session.getTransaction().isActive()) {
+	            session.getTransaction().rollback();
+	        }
+	        e.printStackTrace();
+	    }
 	}
 
 }

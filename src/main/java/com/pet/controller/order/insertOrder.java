@@ -10,11 +10,14 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import org.hibernate.Session;
+
 import com.pet.dao.member.CouponUsersDao;
 import com.pet.dao.order.OrderDao;
 import com.pet.dao.order.OrderItemsDao;
 import com.pet.dao.order.ShipmentsDao;
 import com.pet.model.order.orderBean;
+import com.pet.utils.HibernateUtil;
 
 @WebServlet("/insertOrder")
 public class insertOrder extends HttpServlet {
@@ -56,9 +59,10 @@ public class insertOrder extends HttpServlet {
             }
 
             // 3. 使用優惠券
-            CouponUsersDao couponUsersDao = new CouponUsersDao();
+            Session currentSession = HibernateUtil.getSessionFactory().getCurrentSession();
+            CouponUsersDao couponUsersDao = new CouponUsersDao(currentSession);
             if (couponId != null) {
-                couponUsersDao.usedcoupon(couponId);
+                couponUsersDao.usedcoupon(couponId,memberId);
             }
 
             // 4. 商品明細
