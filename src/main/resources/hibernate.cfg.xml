@@ -28,8 +28,8 @@
   <mapping class="com.pet.model.member.Favorites"/>
   <mapping class="com.pet.model.member.Admin"/>
 
-  
-  
-
+  <mapping class="com.pet.model.product.CategoriesBean"/>
+  <mapping class="com.pet.model.product.ProductBean"/>
+  <mapping class="com.pet.model.product.ProductImagesBean"/>
  </session-factory>
 </hibernate-configuration>

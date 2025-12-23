@@ -8,24 +8,34 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-import com.pet.dao.product.GetAllCategories;
-import com.pet.dao.product.GetAllProducts;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+
+import com.pet.dao.product.CategoryDao;
+import com.pet.dao.product.ProductDao;
 import com.pet.model.product.CategoriesBean;
 import com.pet.model.product.ProductBean;
+import com.pet.utils.HibernateUtil;
 
 @WebServlet("/CategoryNotOnShelfSearch")
 public class CategoryNotOnShelfSearch extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		SessionFactory factory = HibernateUtil.getSessionFactory();
+		Session session1 = factory.getCurrentSession();
+		
 		String id = request.getParameter("category_id");
-		GetAllProducts category = new GetAllProducts();
-		List<ProductBean> products = category.getCategoryNotOnShelfSearch(id);
+		
+		ProductDao pDao = new ProductDao(session1);
+		List<ProductBean> products = pDao.getCategoryNotOnShelfSearch(id);
 		request.setAttribute("products", products);	
 		
-		GetAllCategories cate = new GetAllCategories();
-		List<CategoriesBean> categories = cate.getCategory();
+		Session session2 = factory.getCurrentSession();
+		CategoryDao cDao = new CategoryDao(session2);
+		List<CategoriesBean> categories = cDao.getCategories();
 		request.setAttribute("categories", categories);
+		
 		request.setAttribute("selectedCategoryId", id);
 		request.getRequestDispatcher("/admin/layout/CategoryNotOnShelf.jsp").forward(request, response);
 		

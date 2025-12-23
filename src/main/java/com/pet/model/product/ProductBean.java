@@ -1,23 +1,80 @@
 package com.pet.model.product;
 
-import java.util.Date;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "products")
 public class ProductBean implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
-	private int productId;
+
+	@Id
+	@Column(name = "PRODUCT_ID")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer productId;
+
+	@Column(name = "product_name", nullable = false)
 	private String productName;
+
+	@Column(name = "description", columnDefinition = "TEXT")
 	private String description;
-	private Double price;
-	private int stock;
-	private int categoryId;
-	private String categoryName;
+
+	@Column(name = "price", nullable = false)
+	private BigDecimal price;
+
+	@Column(name = "stock", nullable = false)
+	private Integer stock;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "category_id")
+	private CategoriesBean category;
+
+	@Column(name = "image_url")
 	private String imageUrl;
+
+	@Column(name = "expire_date")
 	private String expireDate;
+
+	@Column(name = "is_active")
 	private Boolean isActive;
-	private Date createdAt;
-	private Date updatedAt;
+
+	@Column(name = "created_at", updatable = false) 
+	private LocalDateTime createdAt;
+
+	@Column(name = "updated_at") 
+	private LocalDateTime updatedAt;
+
+	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+	private Set<ProductImagesBean> productImages = new LinkedHashSet<>();
 	
-	public ProductBean(int productId, String productName, Double price) {
+	@PrePersist
+	public void onCreate() {
+		if(createdAt == null) createdAt = LocalDateTime.now();
+		if(updatedAt == null) updatedAt = LocalDateTime.now();
+	}
+
+	@PreUpdate
+	public void onUpdate() {
+		updatedAt = LocalDateTime.now();
+	}
+
+	public ProductBean(int productId, String productName, BigDecimal price) {
 		super();
 		this.productId = productId;
 		this.productName = productName;
@@ -25,14 +82,13 @@ public class ProductBean implements java.io.Serializable {
 	}
 
 	public ProductBean() {
-		super();
 	}
 
-	public int getProductId() {
+	public Integer getProductId() {
 		return productId;
 	}
 
-	public void setProductId(int productId) {
+	public void setProductId(Integer productId) {
 		this.productId = productId;
 	}
 
@@ -52,28 +108,28 @@ public class ProductBean implements java.io.Serializable {
 		this.description = description;
 	}
 
-	public Double getPrice() {
+	public BigDecimal getPrice() {
 		return price;
 	}
 
-	public void setPrice(Double price) {
+	public void setPrice(BigDecimal price) {
 		this.price = price;
 	}
 
-	public int getStock() {
+	public Integer getStock() {
 		return stock;
 	}
 
-	public void setStock(int stock) {
+	public void setStock(Integer stock) {
 		this.stock = stock;
 	}
 
-	public int getCategoryId() {
-		return categoryId;
+	public CategoriesBean getCategory() {
+		return category;
 	}
 
-	public void setCategoryId(int categoryId) {
-		this.categoryId = categoryId;
+	public void setCategory(CategoriesBean category) {
+		this.category = category;
 	}
 
 	public String getImageUrl() {
@@ -100,28 +156,28 @@ public class ProductBean implements java.io.Serializable {
 		this.isActive = isActive;
 	}
 
-	public Date getCreatedAt() {
+	public LocalDateTime getCreatedAt() {
 		return createdAt;
 	}
 
-	public void setCreatedAt(Date createdAt) {
+	public void setCreatedAt(LocalDateTime createdAt) {
 		this.createdAt = createdAt;
 	}
 
-	public Date getUpdatedAt() {
+	public LocalDateTime getUpdatedAt() {
 		return updatedAt;
 	}
 
-	public void setUpdatedAt(Date updatedAt) {
+	public void setUpdatedAt(LocalDateTime updatedAt) {
 		this.updatedAt = updatedAt;
 	}
 
-	public String getCategoryName() {
-		return categoryName;
+	public Set<ProductImagesBean> getProductImages() {
+		return productImages;
 	}
 
-	public void setCategoryName(String categoryName) {
-		this.categoryName = categoryName;
+	public void setProductImages(Set<ProductImagesBean> productImages) {
+		this.productImages = productImages;
 	}
 
 }
