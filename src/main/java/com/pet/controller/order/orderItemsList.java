@@ -21,8 +21,8 @@ public class orderItemsList extends HttpServlet {
 		request.setCharacterEncoding("UTF-8");
 	    response.setCharacterEncoding("UTF-8");
 	    response.setContentType("text/html; charset=UTF-8");
-		OrderItemsDao dao = new OrderItemsDao();
-        List<orderItemBean> list = dao.findAllOrderItems(); // 查詢會員ID所屬的訂單
+	    OrderItemsDao dao = new OrderItemsDao();
+	    List<orderItemBean> list = dao.findAllOrderItems(); // 查詢會員ID所屬的訂單
 
         request.setAttribute("orderItemsList", list);
         request.getRequestDispatcher("admin/order/orderItemsList.jsp").forward(request, response);

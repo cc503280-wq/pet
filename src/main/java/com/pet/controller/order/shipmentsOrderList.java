@@ -9,7 +9,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
+import com.pet.dao.order.OrderDao;
 import com.pet.dao.order.ShipmentsDao;
+import com.pet.model.order.orderBean;
 import com.pet.model.order.shipmentsBean;
 
 @WebServlet("/shipmentsOrderList")
@@ -22,8 +24,11 @@ public class shipmentsOrderList extends HttpServlet {
 	    response.setCharacterEncoding("UTF-8");
 	    response.setContentType("text/html; charset=UTF-8");
 		ShipmentsDao dao = new ShipmentsDao();
+		OrderDao orderDao = new OrderDao();
+		
 		String orderId = request.getParameter("orderId");
-        List<shipmentsBean> list = dao.findOrderShipments(Integer.parseInt(orderId)); // 查詢全部訂單
+		orderBean order = orderDao.findOrderById(Integer.parseInt(orderId));
+        List<shipmentsBean> list = dao.findOrderShipments(order); // 查詢全部訂單
 
         request.setAttribute("shipmentsList", list);
         request.getRequestDispatcher("admin/order/shipmentsList.jsp").forward(request, response);
