@@ -18,7 +18,7 @@ public class EmpDAO {
 	}
 
 	public List<Employee> getAllActiveEmp() {
-		Query<Employee> query = session.createQuery("FROM Emp WHERE isActive = true", Employee.class);
+		Query<Employee> query = session.createQuery("FROM Employee WHERE isActive = true", Employee.class);
 		List<Employee> list = query.list();
 		return list;
 	}

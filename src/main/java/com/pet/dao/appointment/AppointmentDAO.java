@@ -1,11 +1,13 @@
 package com.pet.dao.appointment;
 
 import java.util.List;
+
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
 import com.pet.model.appointment.Appointment;
 import com.pet.model.appointment.GetAllAppointmentDTO;
+import com.pet.model.member.Member;
 
 
 public class AppointmentDAO {
@@ -68,8 +70,8 @@ public class AppointmentDAO {
 	public List<GetAllAppointmentDTO> findAllAppointmentDTOs() {
 		String hql = "SELECT new com.pet.model.appointment.GetAllAppointmentDTO("
 	               + "a.appointmentId, "
-	               + "a.memberPets.member.memberId, a.memberPets.member.name, " 
-	               + "a.memberPets.petId, a.memberPets.petName, "
+	               + "a.memberPet.member.memberId, a.memberPet.member.name, " 
+	               + "a.memberPet.petId, a.memberPet.petName, "
 	               + "a.petservice.serviceId, a.petservice.serviceName, "
 	               + "a.employee.employeeId, a.employee.ename, "
 	               + "a.appointmentDate, "       
@@ -89,8 +91,8 @@ public class AppointmentDAO {
 		
 		String hql = "SELECT new com.pet.model.appointment.GetAllAppointmentDTO("
 	               + "a.appointmentId, "
-	               + "a.memberPets.member.memberId, a.memberPets.member.name, " 
-	               + "a.memberPets.petId, a.memberPets.petName, "
+	               + "a.memberPet.member.memberId, a.memberPet.member.name, " 
+	               + "a.memberPet.petId, a.memberPet.petName, "
 	               + "a.petservice.serviceId, a.petservice.serviceName, "
 	               + "a.employee.employeeId, a.employee.ename, "
 	               + "a.appointmentDate, "
@@ -107,7 +109,7 @@ public class AppointmentDAO {
 	                  .uniqueResult();
 	}
 	
-public List<GetAllAppointmentDTO> getFuzzySearchByName(String memberName) {
+	public List<GetAllAppointmentDTO> getFuzzySearchByName(String memberName) {
         
         
         String hql = "SELECT new com.pet.model.appointment.GetAllAppointmentDTO("
@@ -124,7 +126,7 @@ public List<GetAllAppointmentDTO> getFuzzySearchByName(String memberName) {
                    + "a.rating, a.comment, a.reply, a.updatedAt, "
                    + "a.petservice.durationMinutes) "
                    + "FROM Appointment a "
-                   + "WHERE a.memberPets.member.name LIKE :memberName " 
+                   + "WHERE a.memberPet.member.name LIKE :memberName " 
                    + "ORDER BY a.appointmentDate ASC, a.appointmentId DESC";
 
       
@@ -135,6 +137,10 @@ public List<GetAllAppointmentDTO> getFuzzySearchByName(String memberName) {
        
         return query.getResultList();
     }
+	
+	
+	
+	
 	
 	
 

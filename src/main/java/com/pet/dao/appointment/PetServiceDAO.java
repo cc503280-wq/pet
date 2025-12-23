@@ -17,7 +17,7 @@ public class PetServiceDAO {
 		this.session = session;
 	}
 	
-	public List<PetService> SearchAllService(){
+	public List<PetService> getAllService(){
 		Query<PetService> query =session.createQuery("from PetService",PetService.class);
 		List<PetService> list = query.list();
 		return list;

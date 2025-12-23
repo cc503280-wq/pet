@@ -101,7 +101,7 @@
                  <!-- 右側 Navbar 按鈕 -->
 			    <ul class="navbar-nav ml-auto">
 			        <li class="nav-item">
-			            <a href="../../AdminLogoutServlet" class="btn btn-secondary btn-sm">
+			            <a href="Login.html" class="btn btn-secondary btn-sm">
 			                <i class="fas fa-sign-out-alt"></i> 登出
 			            </a>
 			        </li>
@@ -399,7 +399,7 @@
                         
                         <!-- /.card-body -->
                       <div class="card-footer">
-                        <a href="GetAllAppointmentsServlet"><button type="button" class="btn btn-info">送出</button></a>
+                        <a href="AppointmentServlet.do"><button type="button" class="btn btn-info">送出</button></a>
                         <button
                           type="reset"
                           class="btn btn-default float-right"
