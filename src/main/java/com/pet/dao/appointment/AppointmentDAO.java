@@ -138,22 +138,8 @@ public class AppointmentDAO {
         return query.getResultList();
     }
 	
-	public List<Member> getAllMembers() {   //MemberDAO裡面
-        
-        Query<Member> query = session.createQuery("from Member",Member.class);
-        List<Member> list = query.list();
-       
-        return list ;
-    }
 	
-	public Member getMemberWithPet(Integer memberId) { //MemberPetDAO裡面
-		String hql = "FROM Member m LEFT JOIN FETCH m.pets WHERE m.memberId = :mid";
-		
-		Query<Member> query = session.createQuery(hql,Member.class);
-		query.setParameter("mid", memberId);
-
-		return query.uniqueResult();
-	}
+	
 	
 	
 	

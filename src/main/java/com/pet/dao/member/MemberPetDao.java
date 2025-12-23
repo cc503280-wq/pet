@@ -7,6 +7,7 @@ import java.util.List;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
+import com.pet.model.member.Member;
 import com.pet.model.member.MemberPet;
 
 public class MemberPetDao {
@@ -77,4 +78,12 @@ public class MemberPetDao {
         return query.list();
 	}
 	
+	public Member getMemberWithPet(Integer memberId) { 
+		String hql = "FROM Member m LEFT JOIN FETCH m.pets WHERE m.memberId = :mid";
+		
+		Query<Member> query = session.createQuery(hql,Member.class);
+		query.setParameter("mid", memberId);
+
+		return query.uniqueResult();
+	}
 }

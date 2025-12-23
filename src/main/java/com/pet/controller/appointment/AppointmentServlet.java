@@ -174,7 +174,8 @@ public class AppointmentServlet extends HttpServlet {
     	
     	String selectedMemberIdStr = request.getParameter("selectedMemberId");
     	
-    	AppointmentDAO appointmentDAO = new AppointmentDAO(session);
+    	MemberPetDao memberPetDao = new MemberPetDao(session);
+    	MemberDao memberDao = new MemberDao(session);
     	PetServiceDAO pserviceDAO = new PetServiceDAO(session);
     	
     	List<Member> memberList = null;
@@ -183,13 +184,13 @@ public class AppointmentServlet extends HttpServlet {
     	
 		
 		try {
-			memberList = appointmentDAO.getAllMembers();
+			memberList = memberDao.queryAllMembers();
 			serviceList = pserviceDAO.getAllService();
 			
 			if (selectedMemberIdStr != null && !selectedMemberIdStr.isEmpty()) {
                 int selectedMemberId = Integer.parseInt(selectedMemberIdStr);
 
-                Member currentMember = appointmentDAO.getMemberWithPet(selectedMemberId);
+                Member currentMember = memberPetDao.getMemberWithPet(selectedMemberId);
  
                 request.setAttribute("currentMemberId", selectedMemberId);
                 request.setAttribute("memberName", currentMember.getName());
@@ -224,6 +225,7 @@ public class AppointmentServlet extends HttpServlet {
 	    List<String> payStatusList = List.of("待付款", "已付款", "已退款");
 	    
 	    AppointmentDAO app = new AppointmentDAO(session);	
+	    MemberPetDao memberPetDao = new MemberPetDao(session);
 		PetServiceDAO pserviceDAO = new PetServiceDAO(session);
 		
 		GetAllAppointmentDTO dto = null;
@@ -237,7 +239,7 @@ public class AppointmentServlet extends HttpServlet {
 			
 			if (dto != null) {
 				serviceList = pserviceDAO.getAllService();
-	            petList = app.getMemberWithPet(dto.getMemberId()).getPets();
+	            petList = memberPetDao.getMemberWithPet(dto.getMemberId()).getPets();
 	        }
 		
 		} catch (Exception e) {
