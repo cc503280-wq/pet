@@ -16,3 +16,11 @@ bin/
 # 忽略作業系統產生的縮圖檔
 .DS_Store
 Thumbs.db
+target/classes/com/pet/controller/member/AdminServlet.class
+*.class
+*.class
+target/m2e-wtp/web-resources/META-INF/maven/pet/pet/pom.properties
+target/classes/hibernate.cfg.xml
+.settings/org.eclipse.jdt.core.prefs
+/target/classes
+target/classes/com/pet/controller/member/AdminLoginServlet.class
