@@ -8,8 +8,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-import com.pet.dao.product.GetAllCategories;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+
+import com.pet.dao.product.CategoryDao;
 import com.pet.model.product.CategoriesBean;
+import com.pet.utils.HibernateUtil;
 
 @WebServlet("/FindCategory")
 public class FindCategory extends HttpServlet {
@@ -17,8 +21,10 @@ public class FindCategory extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		GetAllCategories cate = new GetAllCategories();
-		List<CategoriesBean> categories = cate.getCategory();
+		SessionFactory factory = HibernateUtil.getSessionFactory();
+		Session session = factory.getCurrentSession();
+		CategoryDao cDao = new CategoryDao(session);
+		List<CategoriesBean> categories = cDao.getCategories();
 		request.setAttribute("categories", categories);
 		request.getRequestDispatcher("/admin/layout/InsertProduct.jsp").forward(request, response);
 	}

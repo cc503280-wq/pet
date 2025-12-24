@@ -1,158 +1,88 @@
 package com.pet.dao.member;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.sql.DataSource;
+
+import org.hibernate.Session;
+import org.hibernate.query.Query;
 
 import com.pet.model.member.CouponUsers;
+import com.pet.utils.HibernateUtil;
 
 public class CouponUsersDao {
-	// 連線
-	private Connection getConnection() throws SQLException, NamingException {
-		InitialContext context = new InitialContext();
-		DataSource dataSource = (DataSource) context.lookup("java:/comp/env/jdbc/petDB");
-		return dataSource.getConnection();
+	
+	private Session session;
+	
+	public CouponUsersDao(Session session) {
+		this.session = session;
 	}
-
 	// 查詢全部
 	public List<CouponUsers> queryAllCouponUsers() {
 
-		String sql = "SELECT * FROM member_coupon_view ORDER BY coupon_id";
-		List<CouponUsers> couponUsers = new ArrayList<>();
+		String hql = "select new com.pet.model.member.CouponUsers(" +
+	            "c.id, c.couponId, c.memberId, c.status, c.assignedAt, c.usedAt, c.code, c.discountType, c.discountValue, c.minPurchase, c.issueStartAt, c.issueEndAt, c.useStartAt, c.useEndAt, c.isExpired) " +
+	            "from CouponUsers c order by c.id";
 
-		try (Connection connection = getConnection();
-				PreparedStatement preparedStatement = connection.prepareStatement(sql);
-				ResultSet resultSet = preparedStatement.executeQuery()) {
-
-			while (resultSet.next()) {
-				CouponUsers couponUser = new CouponUsers();
-				couponUser.setId(resultSet.getInt("id"));
-				couponUser.setCouponId(resultSet.getInt("coupon_id"));
-				couponUser.setMemberId(resultSet.getInt("member_id"));
-				couponUser.setStatus(resultSet.getString("status"));
-				couponUser.setAssignedAt(resultSet.getTimestamp("assigned_at"));
-				couponUser.setUsedAt(
-						resultSet.getTimestamp("used_at") != null ? resultSet.getTimestamp("used_at") : null); //可以不需要三元運算也會傳null
-				couponUser.setCode(resultSet.getString("code"));
-				couponUser.setDiscountType(resultSet.getString("discount_type"));
-				couponUser.setDiscountValue(resultSet.getDouble("discount_value"));
-				couponUser.setMinPurchase(resultSet.getInt("min_purchase"));
-				couponUser.setIssueStartAt(resultSet.getDate("issue_start_at"));
-				couponUser.setIssueEndAt(resultSet.getDate("issue_end_at"));
-				couponUser.setUseStartAt(resultSet.getDate("use_start_at"));
-				couponUser.setUseEndAt(resultSet.getDate("use_end_at"));
-				couponUser.setIsExpired(resultSet.getString("is_expired"));
-
-				couponUsers.add(couponUser);
-			}
-		} catch (SQLException | NamingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return couponUsers;
+        Query<CouponUsers> query = session.createQuery(hql, CouponUsers.class);
+        return query.list();
 	}
 
 	// 依couponId查詢
 	public List<CouponUsers> queryCouponUsersByCouponId(int id) {
-		String sql = "SELECT * FROM member_coupon_view WHERE coupon_id=?";
-		List<CouponUsers> couponUsers = new ArrayList<>();
+		String hql = "select new com.pet.model.member.CouponUsers(" +
+				"c.id, c.couponId, c.memberId, c.status, c.assignedAt, c.usedAt, c.code, c.discountType, c.discountValue, c.minPurchase, c.issueStartAt, c.issueEndAt, c.useStartAt, c.useEndAt, c.isExpired) " +
+	            "from CouponUsers c where c.couponId = :id order by c.id";
 
-		try (Connection connection = getConnection();
-				PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-			preparedStatement.setInt(1, id);
-			try (ResultSet resultSet = preparedStatement.executeQuery()) {
-				while (resultSet.next()) {
-					CouponUsers couponUser = new CouponUsers();
-					couponUser.setId(resultSet.getInt("id"));
-					couponUser.setCouponId(resultSet.getInt("coupon_id"));
-					couponUser.setMemberId(resultSet.getInt("member_id"));
-					couponUser.setStatus(resultSet.getString("status"));
-					couponUser.setAssignedAt(resultSet.getTimestamp("assigned_at"));
-					couponUser.setUsedAt(
-							resultSet.getTimestamp("used_at") != null ? resultSet.getTimestamp("used_at") : null);
-					couponUser.setCode(resultSet.getString("code"));
-					couponUser.setDiscountType(resultSet.getString("discount_type"));
-					couponUser.setDiscountValue(resultSet.getDouble("discount_value"));
-					couponUser.setMinPurchase(resultSet.getInt("min_purchase"));
-					couponUser.setIssueStartAt(resultSet.getDate("issue_start_at"));
-					couponUser.setIssueEndAt(resultSet.getDate("issue_end_at"));
-					couponUser.setUseStartAt(resultSet.getDate("use_start_at"));
-					couponUser.setUseEndAt(resultSet.getDate("use_end_at"));
-					couponUser.setIsExpired(resultSet.getString("is_expired"));
-
-					couponUsers.add(couponUser);
-				}
-			}
-		} catch (SQLException | NamingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return couponUsers;
+	        Query<CouponUsers> query = session.createQuery(hql, CouponUsers.class);
+	        query.setParameter("id", id);
+	        return query.list();
 	}
 
 	// 依memberId查詢
 	public List<CouponUsers> queryCouponUsersByMemberId(int id) {
-		String sql = "SELECT * FROM member_coupon_view WHERE member_id=?";
-		List<CouponUsers> couponUsers = new ArrayList<>();
+		String hql = "select new com.pet.model.member.CouponUsers(" +
+				"c.id, c.couponId, c.memberId, c.status, c.assignedAt, c.usedAt, c.code, c.discountType, c.discountValue, c.minPurchase, c.issueStartAt, c.issueEndAt, c.useStartAt, c.useEndAt, c.isExpired) " +
+	            "from CouponUsers c where c.memberId = :id order by c.id";
 
-		try (Connection connection = getConnection();
-				PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-			preparedStatement.setInt(1, id);
-			try (ResultSet resultSet = preparedStatement.executeQuery()) {
-				while (resultSet.next()) {
-					CouponUsers couponUser = new CouponUsers();
-					couponUser.setId(resultSet.getInt("id"));
-					couponUser.setCouponId(resultSet.getInt("coupon_id"));
-					couponUser.setMemberId(resultSet.getInt("member_id"));
-					couponUser.setStatus(resultSet.getString("status"));
-					couponUser.setAssignedAt(resultSet.getTimestamp("assigned_at"));
-					couponUser.setUsedAt(
-							resultSet.getTimestamp("used_at") != null ? resultSet.getTimestamp("used_at") : null);
-					couponUser.setCode(resultSet.getString("code"));
-					couponUser.setDiscountType(resultSet.getString("discount_type"));
-					couponUser.setDiscountValue(resultSet.getDouble("discount_value"));
-					couponUser.setMinPurchase(resultSet.getInt("min_purchase"));
-					couponUser.setIssueStartAt(resultSet.getDate("issue_start_at"));
-					couponUser.setIssueEndAt(resultSet.getDate("issue_end_at"));
-					couponUser.setUseStartAt(resultSet.getDate("use_start_at"));
-					couponUser.setUseEndAt(resultSet.getDate("use_end_at"));
-					couponUser.setIsExpired(resultSet.getString("is_expired"));
-
-					couponUsers.add(couponUser);
-				}
-			}
-		} catch (SQLException | NamingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return couponUsers;
+	        Query<CouponUsers> query = session.createQuery(hql, CouponUsers.class);
+	        query.setParameter("id", id);
+	        return query.list();
 	}
 
-	public void usedcoupon(Integer couponId) {
-		String sql = "update coupon_users set status = ? ,used_at=? where coupon_id=?";
-		try (Connection connection = getConnection();
-				PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-			preparedStatement.setString(1, "used");
-			preparedStatement.setTimestamp(2, Timestamp.valueOf(LocalDateTime.now()));
-			preparedStatement.setInt(3, couponId);
-			preparedStatement.execute();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NamingException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+	public void usedcoupon(Integer couponId, Integer memberId) {
 
+	    Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+
+	    try {
+	        session.beginTransaction();
+
+	        String hql = """
+	            update CouponUsersBean cu
+	            set cu.status = :status,
+	                cu.usedAt = :usedAt
+	            where cu.id.couponId = :couponId
+	              and cu.id.memberId = :memberId
+	        """;
+
+	        Query<?> query = session.createQuery(hql);
+	        query.setParameter("status", "used");
+	        query.setParameter("usedAt", LocalDateTime.now());
+	        query.setParameter("couponId", couponId);
+	        query.setParameter("memberId", memberId);
+
+	        query.executeUpdate();
+
+	        session.getTransaction().commit();
+
+	    } catch (Exception e) {
+	        if (session.getTransaction().isActive()) {
+	            session.getTransaction().rollback();
+	        }
+	        e.printStackTrace();
+	    }
 	}
 
 }

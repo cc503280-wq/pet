@@ -74,7 +74,7 @@
 			<!-- Left navbar links -->
 			<ul class="navbar-nav ml-auto">
 			        <li class="nav-item">
-			            <a href="${pageContext.request.contextPath}/admin/layout/Login.html" class="btn btn-secondary btn-sm">
+			            <a href="${pageContext.request.contextPath}/AdminLogoutServlet" class="btn btn-secondary btn-sm">
 			                <i class="fas fa-sign-out-alt"></i> 登出
 			            </a>
 			        </li>
@@ -111,89 +111,78 @@
 								</p>
 						</a>
 							<ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="${pageContext.request.contextPath}/admin/layout/AdminQueryAll.html" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>管理員資料</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="${pageContext.request.contextPath}/admin/layout/MemberQueryAll.html" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>會員基本資料</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="${pageContext.request.contextPath}/admin/layout/MemberPetQueryAll.html" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>會員寵物資料</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="${pageContext.request.contextPath}/admin/layout/CouponQueryAll.html" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>優惠券總覽</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="${pageContext.request.contextPath}/admin/layout/CouponUsersQueryAll.html" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>會員持有優惠券</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="${pageContext.request.contextPath}/admin/layout/FavoritesQueryAll.html" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>會員收藏清單</p>
-                  </a>
-                </li>
-              </ul></li>
-						<li class="nav-item">
-              <a href="../../AllProducts" class="nav-link">
-                <i class="nav-icon fas fa-edit"></i>
-                <p>
-                  商品管理
-                  <i class="right fas fa-angle-left"></i>
-                </p>
-              </a>
-            </li>
+								<li class="nav-item"><a
+									href="${pageContext.request.contextPath}/admin/layout/AdminQueryAll.html"
+									class="nav-link"> <i class="far fa-circle nav-icon"></i>
+										<p>管理員資料</p>
+								</a></li>
+								<li class="nav-item"><a
+									href="${pageContext.request.contextPath}/admin/layout/MemberQueryAll.html"
+									class="nav-link"> <i class="far fa-circle nav-icon"></i>
+										<p>會員基本資料</p>
+								</a></li>
+								<li class="nav-item"><a
+									href="${pageContext.request.contextPath}/admin/layout/MemberPetQueryAll.html"
+									class="nav-link"> <i class="far fa-circle nav-icon"></i>
+										<p>會員寵物資料</p>
+								</a></li>
+								<li class="nav-item"><a
+									href="${pageContext.request.contextPath}/admin/layout/CouponQueryAll.html"
+									class="nav-link"> <i class="far fa-circle nav-icon"></i>
+										<p>優惠券總覽</p>
+								</a></li>
+								<li class="nav-item"><a
+									href="${pageContext.request.contextPath}/admin/layout/CouponUsersQueryAll.html"
+									class="nav-link"> <i class="far fa-circle nav-icon"></i>
+										<p>會員持有優惠券</p>
+								</a></li>
+								<li class="nav-item"><a
+									href="${pageContext.request.contextPath}/admin/layout/FavoritesQueryAll.html"
+									class="nav-link"> <i class="far fa-circle nav-icon"></i>
+										<p>會員收藏清單</p>
+								</a></li>
+							</ul></li>
+						<li class="nav-item"><a href="../../AllProducts"
+							class="nav-link"> <i class="nav-icon fas fa-edit"></i>
+								<p>
+									商品管理 <i class="right fas fa-angle-left"></i>
+								</p>
+						</a></li>
 						<li class="nav-item"><a href="#" class="nav-link"> <i
 								class="nav-icon fas fa-edit"></i>
-				<p>
-					訂單管理 <i class="right fas fa-angle-left"></i>
-				</p>
-		</a>
-			<ul class="nav nav-treeview">
-				<li class="nav-item"><a
-					href="${pageContext.request.contextPath}/orderList"
-					class="nav-link"> <i class="far fa-circle nav-icon"></i>
-						<p>查詢全部訂單</p>
-				</a></li>
-				<li class="nav-item"><a
-					href="${pageContext.request.contextPath}/shipmentsList"
-					class="nav-link"> <i class="far fa-circle nav-icon"></i>
-						<p>物流查詢</p>
-				</a></li>
-				<li class="nav-item"><a
-					href="${pageContext.request.contextPath}/orderItemsList"
-					class="nav-link"> <i class="far fa-circle nav-icon"></i>
-						<p>查詢全部訂單明細</p>
-				</a></li>
-				<li class="nav-item"><a
-					href="${pageContext.request.contextPath}/admin/order/shopping.jsp"
-					class="nav-link"> <i class="far fa-circle nav-icon"></i>
-						<p>新增訂單</p>
-				</a></li>
-			</ul></li>
-						<li class="nav-item">
-              <a href="../../GetAllAppointmentsServlet" class="nav-link">
-                <i class="nav-icon fas fa-edit"></i>
-                <p>
-                  預約管理
-                  <i class="right fas fa-angle-left"></i>
-                </p>
-              </a>
-            </li>
+								<p>
+									訂單管理 <i class="right fas fa-angle-left"></i>
+								</p>
+						</a>
+							<ul class="nav nav-treeview">
+								<li class="nav-item"><a
+									href="${pageContext.request.contextPath}/orderList"
+									class="nav-link"> <i class="far fa-circle nav-icon"></i>
+										<p>查詢全部訂單</p>
+								</a></li>
+								<li class="nav-item"><a
+									href="${pageContext.request.contextPath}/shipmentsList"
+									class="nav-link"> <i class="far fa-circle nav-icon"></i>
+										<p>物流查詢</p>
+								</a></li>
+								<li class="nav-item"><a
+									href="${pageContext.request.contextPath}/orderItemsList"
+									class="nav-link"> <i class="far fa-circle nav-icon"></i>
+										<p>查詢全部訂單明細</p>
+								</a></li>
+								<li class="nav-item"><a
+									href="${pageContext.request.contextPath}/admin/order/shopping.jsp"
+									class="nav-link"> <i class="far fa-circle nav-icon"></i>
+										<p>新增訂單</p>
+								</a></li>
+							</ul></li>
+						<li class="nav-item"><a
+							href="../../GetAllAppointmentsServlet" class="nav-link"> <i
+								class="nav-icon fas fa-edit"></i>
+								<p>
+									預約管理 <i class="right fas fa-angle-left"></i>
+								</p>
+						</a></li>
 
 					</ul>
 				</nav>
@@ -210,7 +199,8 @@
 					<div class="row mb-2">
 						<div class="col-sm-12 box1">
 							<h1>商品管理</h1>
-							<a href="${pageContext.request.contextPath}/AllProducts" class="btn btn-secondary btn-sm"> 回列表 </a>
+							<a href="${pageContext.request.contextPath}/AllProducts"
+								class="btn btn-secondary btn-sm"> 回列表 </a>
 						</div>
 						<div class="col-sm-6"></div>
 					</div>
@@ -242,7 +232,8 @@
 												<label for="inputEmail3" class="col-sm-2 col-form-label">商敏名稱:</label>
 												<div class="col-sm-10">
 													<input type="text" class="form-control" placeholder="商品名稱"
-														name="pname" value="<%=product.getProductName()%>" readonly>
+														name="pname" value="<%=product.getProductName()%>"
+														readonly>
 												</div>
 											</div>
 											<div class="form-group row">
@@ -273,8 +264,8 @@
 												<label class="col-sm-2 col-form-label">類別:</label>
 												<div class="col-sm-10">
 													<select class="form-control select2" style="width: 100%;"
-														name="category" >
-														<option ><%=product.getCategoryName()%></option>														
+														name="category">
+														<option><%=product.getCategory().getCategoryName()%></option>
 													</select>
 												</div>
 											</div>
@@ -295,8 +286,8 @@
 														data-target-input="nearest">
 														<input type="text"
 															class="form-control datetimepicker-input"
-															data-target="#reservationdate" name="expiredate" 
-															value="<%=product.getExpireDate() %>" readonly />
+															data-target="#reservationdate" name="expiredate"
+															value="<%=product.getExpireDate()%>" readonly />
 														<div class="input-group-append"
 															data-target="#reservationdate"
 															data-toggle="datetimepicker">
@@ -312,15 +303,15 @@
 												<div class="col-sm-10">
 													<select class="form-control select2" style="width: 100%;"
 														name="is_acitve" disabled>
-														<option><%=product.getIsActive() ? "是" : "否" %></option>
+														<option><%=product.getIsActive() ? "是" : "否"%></option>
 													</select>
 												</div>
 											</div>
 										</div>
 										<!-- /.card-body -->
 										<div class="card-footer">
-											<a href="${pageContext.request.contextPath}/AllProducts" class="btn btn-info float-right">  返回商品管理
-											</a>
+											<a href="${pageContext.request.contextPath}/AllProducts"
+												class="btn btn-info float-right"> 返回商品管理 </a>
 										</div>
 										<!-- /.card-footer -->
 									</form>

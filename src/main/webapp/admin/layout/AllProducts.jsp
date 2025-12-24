@@ -1,6 +1,7 @@
 <%@page import="com.pet.model.product.ProductBean"%>
 <%@page import="com.pet.model.product.CategoriesBean"%>
 <%@page import="java.util.*"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -59,19 +60,24 @@
 	<!-- Site wrapper -->
 	<div class="wrapper">
 		<!-- Navbar -->
-		<nav
-			class="main-header navbar navbar-expand navbar-white navbar-light">
+		
 			<!-- Left navbar links -->
-			<ul class="navbar-nav ml-auto">
-			        <li class="nav-item">
-			            <a href="${pageContext.request.contextPath}/admin/layout/Login.html" class="btn btn-secondary btn-sm">
-			                <i class="fas fa-sign-out-alt"></i> 登出
-			            </a>
-			        </li>
-			    </ul>
+			
+
+			<nav
+				class="main-header navbar navbar-expand navbar-white navbar-light">
+				<!-- Left navbar links -->
+				<ul class="navbar-nav ml-auto">
+					<li class="nav-item"><a
+						href="${pageContext.request.contextPath}/AdminLogoutServlet"
+						class="btn btn-secondary btn-sm"> <i
+							class="fas fa-sign-out-alt"></i> 登出
+					</a></li>
+				</ul>
 
 
-		</nav>
+			</nav>
+
 		<!-- /.navbar -->
 
 		<!-- Main Sidebar Container -->
@@ -101,89 +107,79 @@
 								</p>
 						</a>
 							<ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="${pageContext.request.contextPath}/admin/layout/AdminQueryAll.html" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>管理員資料</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="${pageContext.request.contextPath}/admin/layout/MemberQueryAll.html" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>會員基本資料</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="${pageContext.request.contextPath}/admin/layout/MemberPetQueryAll.html" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>會員寵物資料</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="${pageContext.request.contextPath}/admin/layout/CouponQueryAll.html" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>優惠券總覽</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="${pageContext.request.contextPath}/admin/layout/CouponUsersQueryAll.html" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>會員持有優惠券</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="${pageContext.request.contextPath}/admin/layout/FavoritesQueryAll.html" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>會員收藏清單</p>
-                  </a>
-                </li>
-              </ul></li>
-						<li class="nav-item">
-              <a href="${pageContext.request.contextPath}/AllProducts" class="nav-link">
-                <i class="nav-icon fas fa-edit"></i>
-                <p>
-                  商品管理
-                  <i class="right fas fa-angle-left"></i>
-                </p>
-              </a>
-            </li>
+								<li class="nav-item"><a
+									href="${pageContext.request.contextPath}/admin/layout/AdminQueryAll.html"
+									class="nav-link"> <i class="far fa-circle nav-icon"></i>
+										<p>管理員資料</p>
+								</a></li>
+								<li class="nav-item"><a
+									href="${pageContext.request.contextPath}/admin/layout/MemberQueryAll.html"
+									class="nav-link"> <i class="far fa-circle nav-icon"></i>
+										<p>會員基本資料</p>
+								</a></li>
+								<li class="nav-item"><a
+									href="${pageContext.request.contextPath}/admin/layout/MemberPetQueryAll.html"
+									class="nav-link"> <i class="far fa-circle nav-icon"></i>
+										<p>會員寵物資料</p>
+								</a></li>
+								<li class="nav-item"><a
+									href="${pageContext.request.contextPath}/admin/layout/CouponQueryAll.html"
+									class="nav-link"> <i class="far fa-circle nav-icon"></i>
+										<p>優惠券總覽</p>
+								</a></li>
+								<li class="nav-item"><a
+									href="${pageContext.request.contextPath}/admin/layout/CouponUsersQueryAll.html"
+									class="nav-link"> <i class="far fa-circle nav-icon"></i>
+										<p>會員持有優惠券</p>
+								</a></li>
+								<li class="nav-item"><a
+									href="${pageContext.request.contextPath}/admin/layout/FavoritesQueryAll.html"
+									class="nav-link"> <i class="far fa-circle nav-icon"></i>
+										<p>會員收藏清單</p>
+								</a></li>
+							</ul></li>
+						<li class="nav-item"><a
+							href="${pageContext.request.contextPath}/AllProducts"
+							class="nav-link"> <i class="nav-icon fas fa-edit"></i>
+								<p>
+									商品管理 <i class="right fas fa-angle-left"></i>
+								</p>
+						</a></li>
 						<li class="nav-item"><a href="#" class="nav-link"> <i
 								class="nav-icon fas fa-edit"></i>
-				<p>
-					訂單管理 <i class="right fas fa-angle-left"></i>
-				</p>
-		</a>
-			<ul class="nav nav-treeview">
-				<li class="nav-item"><a
-					href="${pageContext.request.contextPath}/orderList"
-					class="nav-link"> <i class="far fa-circle nav-icon"></i>
-						<p>查詢全部訂單</p>
-				</a></li>
-				<li class="nav-item"><a
-					href="${pageContext.request.contextPath}/shipmentsList"
-					class="nav-link"> <i class="far fa-circle nav-icon"></i>
-						<p>物流查詢</p>
-				</a></li>
-				<li class="nav-item"><a
-					href="${pageContext.request.contextPath}/orderItemsList"
-					class="nav-link"> <i class="far fa-circle nav-icon"></i>
-						<p>查詢全部訂單明細</p>
-				</a></li>
-				<li class="nav-item"><a
-					href="${pageContext.request.contextPath}/admin/order/shopping.jsp"
-					class="nav-link"> <i class="far fa-circle nav-icon"></i>
-						<p>新增訂單</p>
-				</a></li>
-			</ul></li>
-						<li class="nav-item">
-              <a href="${pageContext.request.contextPath}/GetAllAppointmentsServlet" class="nav-link">
-                <i class="nav-icon fas fa-edit"></i>
-                <p>
-                  預約管理
-                  <i class="right fas fa-angle-left"></i>
-                </p>
-              </a>
-            </li>
+								<p>
+									訂單管理 <i class="right fas fa-angle-left"></i>
+								</p>
+						</a>
+							<ul class="nav nav-treeview">
+								<li class="nav-item"><a
+									href="${pageContext.request.contextPath}/orderList"
+									class="nav-link"> <i class="far fa-circle nav-icon"></i>
+										<p>查詢全部訂單</p>
+								</a></li>
+								<li class="nav-item"><a
+									href="${pageContext.request.contextPath}/shipmentsList"
+									class="nav-link"> <i class="far fa-circle nav-icon"></i>
+										<p>物流查詢</p>
+								</a></li>
+								<li class="nav-item"><a
+									href="${pageContext.request.contextPath}/orderItemsList"
+									class="nav-link"> <i class="far fa-circle nav-icon"></i>
+										<p>查詢全部訂單明細</p>
+								</a></li>
+								<li class="nav-item"><a
+									href="${pageContext.request.contextPath}/admin/order/shopping.jsp"
+									class="nav-link"> <i class="far fa-circle nav-icon"></i>
+										<p>新增訂單</p>
+								</a></li>
+							</ul></li>
+						<li class="nav-item"><a
+							href="${pageContext.request.contextPath}/GetAllAppointmentsServlet"
+							class="nav-link"> <i class="nav-icon fas fa-edit"></i>
+								<p>
+									預約管理 <i class="right fas fa-angle-left"></i>
+								</p>
+						</a></li>
 					</ul>
 				</nav>
 				<!-- /.sidebar-menu -->
@@ -223,19 +219,16 @@
 											class="btn btn-secondary btn-sm mr-2"> 查詢全部 </a> <a
 											href="${pageContext.request.contextPath}/NotOnShelf"
 											class="btn btn-secondary btn-sm mr-2"> 未上架商品 </a>
-										<form action="${pageContext.request.contextPath}/CategorySearch"
-											method="get" style="margin-right: 10px; display: inline-block;">
+										<form
+											action="${pageContext.request.contextPath}/CategorySearch"
+											method="get"
+											style="margin-right: 10px; display: inline-block;">
 											<div class="input-group input-group-sm" style="width: 150px;">
 												<select name="category_id" class="form-control">
-													<%
-													List<CategoriesBean> categories = (ArrayList<CategoriesBean>) request.getAttribute("categories");
-													for (CategoriesBean category : categories) {
-													%>
-													<option
-														value="<%=category.getCategory_id()%>"><%=category.getCategory_name()%></option>
-													<%
-													}
-													%>
+													<c:forEach var="cat" items="${categories}">
+														<option value="${cat.categoryId}">
+															${cat.categoryName}</option>
+													</c:forEach>
 												</select>
 												<div class="input-group-append">
 													<button class="btn btn-secondary" type="submit">
@@ -245,10 +238,10 @@
 											</div>
 										</form>
 										<form action="${pageContext.request.contextPath}/FuzzySearch"
-											method="get" style="display:inline-block;">
+											method="get" style="display: inline-block;">
 											<div class="input-group input-group-sm" style="width: 150px;">
 												<input id="fuzzySearchInput" type="text"
-													class="form-control" placeholder="查詢" name="keyword">
+													class="form-control" placeholder="查詢" name="keyword" />
 												<div class="input-group-append">
 													<button class="btn btn-secondary" type="submit">
 														<i class="fas fa-search"></i>
@@ -279,7 +272,7 @@
 												<td><%=product.getProductName()%></td>
 												<td><%=product.getPrice()%></td>
 												<td><%=product.getStock()%></td>
-												<td><%=product.getCategoryName()%></td>
+												<td><%=(product.getCategory() != null) ? product.getCategory().getCategoryName() : "未分類"%></td>
 												<td class="text-center"><a
 													href="UpdateProduct?product_id=<%=product.getProductId()%>"
 													class="btn btn-secondary btn-sm mr-1">修改</a> <a

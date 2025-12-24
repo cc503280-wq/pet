@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="jakarta.tags.core" prefix="c"%>
 <%@ page import="java.util.List"%>
 
 <!--跑版需要調整-->
@@ -399,7 +399,7 @@
                         
                         <!-- /.card-body -->
                       <div class="card-footer">
-                        <a href="GetAllAppointmentsServlet"><button type="button" class="btn btn-info">送出</button></a>
+                        <a href="AppointmentServlet.do"><button type="button" class="btn btn-info">送出</button></a>
                         <button
                           type="reset"
                           class="btn btn-default float-right"

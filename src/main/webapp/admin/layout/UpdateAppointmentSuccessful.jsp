@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="jakarta.tags.core" prefix="c"%>
 <%@ page import="java.util.List"%>
 <!-- InsertAppointment.jsp -->
 <!DOCTYPE html>
@@ -383,7 +383,7 @@
 											<!-- /.card-body -->
 											<div class="card-footer">
 												<a
-													href="GetAllAppointmentsServlet?fuzzybyname=${fuzzybyname}&searchById=${searchById}"><button
+													href="AppointmentServlet.do?fuzzybyname=${fuzzybyname}&searchById=${searchById}"><button
 														type="button" class="btn btn-info">完成</button></a>
 												<button type="button" class="btn btn-default float-right">
 													清除</button>

@@ -1,6 +1,7 @@
 package com.pet.dao.appointment;
 
 import java.sql.Connection;
+
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,107 +15,86 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
-
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-import com.pet.model.appoinment.EmployeeScheduleOverviewDTO;
+import org.hibernate.Session;
+
+import org.hibernate.Session;
+import org.hibernate.query.Query;
+
+import com.pet.model.appointment.EmployeeScheduleOverviewDTO;
+
+
 
 public class ScheduleQueryDAO {
 	
-	protected Connection getConnection() throws NamingException, SQLException {
-        
-        Context context = new InitialContext();
-        DataSource ds = (DataSource) context.lookup("java:/comp/env/jdbc/petDB");
-        return ds.getConnection();
-    }
+	private Session session;
+
+	public ScheduleQueryDAO(Session session) {
+		this.session = session;
+	}
 	
-	public List<EmployeeScheduleOverviewDTO> findDailyScheduleOverview(LocalDate targetDate,Integer employeeIdFilter)
+	public List<EmployeeScheduleOverviewDTO> findDailyScheduleOverview(Date targetDate,Integer employeeIdFilter)
 			throws NamingException, SQLException{
 		
-		String sql =
-		        "SELECT " +
-		        "WS.slot_id, "+
-		        "E.employee_id, E.ename AS employeeName, WS.start_time, WS.end_time, " +
-		        "CASE " +
-		        "WHEN A.appointment_id IS NOT NULL THEN N'已預約' " +
-		        "WHEN SB.block_id IS NOT NULL THEN SB.reason " + 
-		        "ELSE N'可預約' END AS slotStatus, " +
-		        "CASE WHEN A.appointment_id IS NOT NULL THEN N'被預約' ELSE NULL END AS detailInfo " +
-		        "FROM work_slot WS " +
-		        "CROSS JOIN employee E " +
-		        "LEFT JOIN appointment A ON A.employee_id = E.employee_id AND A.appointment_date = ? AND A.slot_id = WS.slot_id AND A.appointment_status in (N'預約確認', N'進行中', N'已完成') " + // **參數 4: TargetDate**
-		        "LEFT JOIN schedule_block SB ON SB.employee_id = E.employee_id AND SB.block_date = ? AND SB.slot_id = WS.slot_id " + // **參數 5: TargetDate**
-		        "WHERE (? IS NULL OR ? = 0 OR E.employee_id = ?) " + 
-		        "AND E.is_active != 0 " +
-		        "ORDER BY E.employee_id, WS.slot_id";
+		Integer finalFilterId = (employeeIdFilter == null || employeeIdFilter == 0) ? null : employeeIdFilter;
 		
-		List<EmployeeScheduleOverviewDTO> scheduleList = new ArrayList<>();
+		String hql =
+				"SELECT new com.pet.model.appointment.EmployeeScheduleOverviewDTO(" +
+			            "   ws.slotId, " +
+			            "   e.employeeId, " +
+			            "   e.ename, " +
+			            "   ws.startTime, " +
+			            "   ws.endTime, " +
+
+			            "   COALESCE(" +
+			            "       (SELECT '已預約' FROM Appointment a WHERE a.employee.employeeId = e.employeeId AND a.workSlot.slotId = ws.slotId AND a.appointmentDate = :targetDate AND a.appointmentStatus IN ('預約確認', '進行中', '已完成')), " +
+			            "       (SELECT sb.reason FROM ScheduleBlock sb WHERE sb.employee.employeeId = e.employeeId AND sb.workSlot.slotId = ws.slotId AND sb.blockDate = :targetDate), " +
+			            "       '可預約' " +
+			            "   ), " +
+
+			            "   (SELECT '被預約' FROM Appointment a WHERE a.employee.employeeId = e.employeeId AND a.workSlot.slotId = ws.slotId AND a.appointmentDate = :targetDate AND a.appointmentStatus IN ('預約確認', '進行中', '已完成')) " +
+			            ") " +
+			            
+			            
+			            "FROM Employee e, WorkSlot ws " +
+			            
+			            "WHERE e.isActive = true " +
+			            "AND (:employeeIdFilter IS NULL OR e.employeeId = :employeeIdFilter) " +
+			            "ORDER BY e.employeeId, ws.slotId";
 		
-		Integer filterId = (employeeIdFilter == null || employeeIdFilter == 0) ? null : employeeIdFilter;
-		
-		try (Connection conn = getConnection();
-	             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-	            
-	            pstmt.setDate(1, Date.valueOf(targetDate)); 
-	            pstmt.setDate(2, Date.valueOf(targetDate)); 
-	            
-	           
-	            if (filterId == null) {
-	                pstmt.setNull(3, Types.INTEGER);
-	                pstmt.setNull(4, Types.INTEGER);
-	                pstmt.setNull(5, Types.INTEGER);
-	            } else {
-	                pstmt.setInt(3, filterId);
-	                pstmt.setInt(4, filterId);
-	                pstmt.setInt(5, filterId);
-	            }
-
-
-	            try (ResultSet rs = pstmt.executeQuery()) {
-	                while (rs.next()) {
-	                    EmployeeScheduleOverviewDTO dto = new EmployeeScheduleOverviewDTO();
-	                    dto.setSlot_id(rs.getInt("slot_id"));
-	                    dto.setEmployeeId(rs.getInt("employee_id"));
-	                    dto.setEmployeeName(rs.getString("employeeName"));
-	                    dto.setStartTime(rs.getTime("start_time").toLocalTime());
-	                    dto.setEndTime(rs.getTime("end_time").toLocalTime());
-	                    dto.setSlotStatus(rs.getString("slotStatus"));
-	                    dto.setDetailInfo(rs.getString("detailInfo"));
-	                    
-	                    scheduleList.add(dto);
-	                }
-	                System.out.println("單日排成"+scheduleList);
-	              
-	            }
-
-	        } catch (SQLException e) {
-	            System.err.println("查詢每日排程概覽失敗: " + e.getMessage());
-	            throw e;
-	        }
-
-	        return scheduleList;
+		try {
+	        return session.createQuery(hql, EmployeeScheduleOverviewDTO.class)
+	        			  .setParameter("targetDate", targetDate)
+	                      .setParameter("employeeIdFilter", finalFilterId)
+	                      .getResultList();
+	                      
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return new ArrayList<>(); 
 	    }
+	}
 	
 	public List<Map<String, Object>> generateTabulatorSchedule(Integer employeeIdFilter, String startDateStr) 
 	        throws NamingException, SQLException {
 
 	    
-	    LocalDate startDate = LocalDate.parse(startDateStr); 
-	    List<LocalDate> weekDates = new ArrayList<>();
+		Date sqlStartDate = Date.valueOf(startDateStr); 
+		LocalDate localStartDate = sqlStartDate.toLocalDate();
+	    List<Date> weekDates = new ArrayList<>();
 	    for (int i = 0; i < 7; i++) {
-	        weekDates.add(startDate.plusDays(i)); 
+	    	LocalDate nextDay = localStartDate.plusDays(i); 
+	    	weekDates.add(Date.valueOf(nextDay));
 	    }
 	    System.out.println("一周日期"+weekDates);
 
 	
 	    Map<String, Map<String, Object>> combinedSchedule = new LinkedHashMap<>();
 
-	    for (LocalDate date : weekDates) {
+	    for (Date date : weekDates) {
 
            
 	        List<EmployeeScheduleOverviewDTO> dailyList = findDailyScheduleOverview(date, employeeIdFilter); 
@@ -127,19 +107,24 @@ public class ScheduleQueryDAO {
 
 	            String slotKey = dto.getEmployeeId() + "-" + dto.getStartTime();
 
-                
-	            Map<String, Object> slotRow = combinedSchedule.computeIfAbsent(slotKey, k -> {
-	               
-	                Map<String, Object> row = new LinkedHashMap<>(); 
-	                row.put("employeeId", dto.getEmployeeId());
-	                row.put("employeeName", dto.getEmployeeName());
+	            Map<String, Object> slotRow = combinedSchedule.get(slotKey);
+
+	            
+	            if (slotRow == null) {
+	                slotRow = new LinkedHashMap<>();
+              
+	                slotRow.put("employeeId", dto.getEmployeeId());
+	                slotRow.put("employeeName", dto.getEmployeeName());
+	                slotRow.put("slotId", dto.getSlot_id()); 
+	                slotRow.put("startTime", dto.getStartTime().toString());
+	                slotRow.put("endTime", dto.getEndTime().toString());
 	                
-	                row.put("slotId", dto.getSlot_id());
-	                row.put("startTime", dto.getStartTime().toString());
-	                row.put("endTime", dto.getEndTime().toString());
-	                System.out.println("row"+row);
-	                return row;
-	            });
+	                System.out.println("新建立的 row: " + slotRow);
+             
+	                combinedSchedule.put(slotKey, slotRow);
+	            }
+
+	            slotRow.put(dateField, dto.getSlotStatus());
 	            
 	            
 	            slotRow.put(dateField, dto.getSlotStatus());

@@ -4,35 +4,70 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Date;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity @Table(name = "member_coupon_view")
 public class CouponUsers {
 	
+	@Id @Column(name = "id")
 	private int id;
+	
+	@Column(name = "member_id")
 	private int memberId;
+	
+	@Column(name = "coupon_id")
 	private int couponId;
+	
+	@Column(name = "status")
 	private String status;
+	
+	@Column(name = "assigned_at")
 	private Timestamp assignedAt;
+	
+	@Column(name = "used_at")
 	private Timestamp usedAt;
+	
+	@Column(name = "code")
 	private String code;
+	
+	@Column(name = "discount_type")
 	private String discountType;
+	
+	@Column(name = "discount_value")
 	private double discountValue;
+	
+	@Column(name = "min_purchase")
 	private int minPurchase;
+	
+	@Column(name = "issue_start_at")
 	private Date issueStartAt;
+	
+	@Column(name = "issue_end_at")
 	private Date issueEndAt;
+	
+	@Column(name = "use_start_at")
 	private Date useStartAt;
+	
+	@Column(name = "use_end_at")
 	private Date useEndAt;
+	
+	@Column(name = "is_expired")
 	private String isExpired;
 	
 	public CouponUsers() {
 		super();
 	}
 
-	public CouponUsers(int id, int memberId, int couponId, String status, Timestamp assignedAt, Timestamp usedAt,
+	public CouponUsers(int id, int couponId, int memberId, String status, Timestamp assignedAt, Timestamp usedAt,
 			String code, String discountType, double discountValue, int minPurchase, Date issueStartAt, Date issueEndAt,
 			Date useStartAt, Date useEndAt, String isExpired) {
 		super();
 		this.id = id;
-		this.memberId = memberId;
 		this.couponId = couponId;
+		this.memberId = memberId;
 		this.status = status;
 		this.assignedAt = assignedAt;
 		this.usedAt = usedAt;

@@ -27,22 +27,24 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-import org.apache.tomcat.jakartaee.commons.lang3.ObjectUtils.Null;
+import org.hibernate.Session;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.pet.dao.member.CouponUsersDao;
 import com.pet.model.member.CouponUsers;
 import com.pet.model.member.Member;
+import com.pet.utils.HibernateUtil;
 
 
 @WebServlet("/CouponUsersServlet")
 @MultipartConfig
 public class CouponUsersServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	CouponUsersDao couponUsersDao = new CouponUsersDao(); 
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+		CouponUsersDao couponUsersDao = new CouponUsersDao(session);
 		request.setCharacterEncoding("UTF-8");
 		response.setContentType("application/json; charset=UTF-8");
 		String action = request.getParameter("action");

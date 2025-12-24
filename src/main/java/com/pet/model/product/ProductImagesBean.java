@@ -1,42 +1,66 @@
 package com.pet.model.product;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "product_images")
 public class ProductImagesBean implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
-	private int image_id;
-	private int product_id;
-	private String image_url;
-	private int sort_order;
 
-	public int getImage_id() {
-		return image_id;
+	@Id
+	@Column(name = "image_id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer imageId;
+
+	// 多對一：多張圖片屬於一個商品
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "product_id")
+	private ProductBean product;
+	
+
+	@Column(name = "image_url")
+	private String imageUrl;
+	@Column(name = "sort_order")
+	private Integer sortOrder;
+
+	public Integer getImageId() {
+		return imageId;
 	}
 
-	public void setImage_id(int image_id) {
-		this.image_id = image_id;
+	public void setImageId(Integer imageId) {
+		this.imageId = imageId;
 	}
 
-	public int getProduct_id() {
-		return product_id;
+	public ProductBean getProduct() {
+		return product;
 	}
 
-	public void setProduct_id(int product_id) {
-		this.product_id = product_id;
+	public void setProduct(ProductBean product) {
+		this.product = product;
 	}
 
-	public String getImage_url() {
-		return image_url;
+	public String getImageUrl() {
+		return imageUrl;
 	}
 
-	public void setImage_url(String image_url) {
-		this.image_url = image_url;
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
 	}
 
-	public int getSort_order() {
-		return sort_order;
+	public Integer getSortOrder() {
+		return sortOrder;
 	}
 
-	public void setSort_order(int sort_order) {
-		this.sort_order = sort_order;
+	public void setSortOrder(Integer sortOrder) {
+		this.sortOrder = sortOrder;
 	}
 
 }

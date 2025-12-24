@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="jakarta.tags.core" prefix="c"%>
 <%@ page import="java.util.List"%>
 <!-- InsertAppointment.jsp -->
 <!DOCTYPE html>
@@ -189,7 +189,7 @@
 				</a></li>
 			</ul></li>
             <li class="nav-item">
-              <a href="../../GetAllAppointmentsServlet" class="nav-link">
+              <a href="../../AppointmentServlet.do" class="nav-link">
                 <i class="nav-icon fas fa-edit"></i>
                 <p>
                   預約管理
@@ -213,7 +213,7 @@
 					<div class="row mb-2">
 						<div class="col-sm-12 box1">
 							<h1>預約訂單管理</h1>
-							<a href="GetAllAppointmentsServlet"
+							<a href="AppointmentServlet.do"
 								class="btn btn-secondary btn-sm"> 回列表 </a>
 						</div>
 						<div class="col-sm-6"></div>
@@ -240,7 +240,8 @@
 									<!-- form start -->
 
 									<form class="form-horizontal"
-										action="InsertAppointmentServlet" method="post">
+										action="AppointmentServlet.do" method="post">
+									<input type="hidden" name="action" value="insert">
 										<div class="card-body">
 
 											<div class="form-group row">
@@ -346,7 +347,7 @@
 
 
 											<input type="hidden" name="hiddenEmployeeId"
-												id="hidden_emp_id"> <input type="hidden"
+												id="hidden_emp_id"><input type="hidden" name="memberName" id="hiddenMemberName"> <input type="hidden"
 												name="appointmentDate" id="hidden_date"> <input
 												type="hidden" name="hidden_slot_id" id="hidden_slot_id">
 											<input type="hidden" name="appointmentstartTime"
@@ -435,8 +436,7 @@
 			let memberSelect = document.getElementById("memberName");
 			let selectedId = memberSelect.value;
 			if (selectedId) {
-				window.location.href = "${pageContext.request.contextPath}/InsertAppointmentServlet?selectedMemberId="
-						+ selectedId;
+				window.location.href = "${pageContext.request.contextPath}/AppointmentServlet.do?action=toInsert&selectedMemberId=" + selectedId;
 			}
 		}
 
@@ -465,7 +465,7 @@
 			let top = (screen.height - height) / 2;
 
 			
-			let url = "${pageContext.request.contextPath}/GetScheduleServlet"; 
+			let url = "${pageContext.request.contextPath}/GetScheduleServlet.do"; 
 
 			window.open(url, "SelectScheduleWindow", "width=" + width
 					+ ",height=" + height + ",top=" + top + ",left=" + left
@@ -509,7 +509,7 @@
 				.addEventListener(
 						'submit',
 						function(e) {
-
+							const memberSelect = document.getElementById('memberName');
 							const petSelect = document.getElementById('petId');
 							const serviceId = document
 									.getElementById('serviceId');
@@ -538,6 +538,11 @@
 								alert(errorMessage);
 								return;
 							}
+
+							if (memberSelect && memberSelect.selectedIndex !== -1) {						       
+						        const text = memberSelect.options[memberSelect.selectedIndex].text;
+						        document.getElementById('hiddenMemberName').value = text;						      
+						    }
 
 							if (petSelect.selectedIndex !== -1) {
 								const text = petSelect.options[petSelect.selectedIndex].text;

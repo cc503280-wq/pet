@@ -1,26 +1,46 @@
 package com.pet.model.order;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity @Table(name = "orders")
 public class orderBean implements Serializable {
 	private static final long serialVersionUID = 1L;
+	@Id @Column(name = "order_id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer orderId;
+	@Column(name ="member_id")
 	private Integer memberId;
+	@Column(name ="order_date")
 	private Date orderDate;
+	@Column(name ="status")
 	private String status;
-	private Double totalAmountUndiscount;
-	private Integer coupon_id;
-	private Double totalAmountDiscount;
+	@Column(name ="total_amount_undiscount")
+	private BigDecimal totalAmountUndiscount;
+	@Column(name ="coupon_id")
+	private Integer couponId;
+	@Column(name ="total_amount_discount")
+	private BigDecimal totalAmountDiscount;
+	@Column(name ="use_points")
 	private Integer usePoints;
-	private Double totalAmountDiscountPoints;
+	@Column(name ="total_amount_discount_points")
+	private BigDecimal totalAmountDiscountPoints;
+	@Column(name ="get_points")
 	private Integer getPoints;
 	
 	
 	
 	
-	public orderBean(Integer orderId, Integer memberId, Date orderDate, String status, Double totalAmountUndiscount,
-			Integer coupon_id, Double totalAmountDiscount, Integer usePoints, Double totalAmountDiscountPoints,
+	public orderBean(Integer orderId, Integer memberId, Date orderDate, String status, BigDecimal totalAmountUndiscount,
+			Integer couponId, BigDecimal totalAmountDiscount, Integer usePoints, BigDecimal totalAmountDiscountPoints,
 			Integer getPoints) {
 		super();
 		this.orderId = orderId;
@@ -28,7 +48,7 @@ public class orderBean implements Serializable {
 		this.orderDate = orderDate;
 		this.status = status;
 		this.totalAmountUndiscount = totalAmountUndiscount;
-		this.coupon_id = coupon_id;
+		this.couponId = couponId;
 		this.totalAmountDiscount = totalAmountDiscount;
 		this.usePoints = usePoints;
 		this.totalAmountDiscountPoints = totalAmountDiscountPoints;
@@ -65,22 +85,22 @@ public class orderBean implements Serializable {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	public Double getTotalAmountUndiscount() {
+	public BigDecimal getTotalAmountUndiscount() {
 		return totalAmountUndiscount;
 	}
-	public void setTotalAmountUndiscount(Double totalAmountUndiscount) {
-		this.totalAmountUndiscount = totalAmountUndiscount;
+	public void setTotalAmountUndiscount(BigDecimal totalAmountUndiscount2) {
+		this.totalAmountUndiscount = totalAmountUndiscount2;
 	}
-	public Integer getCoupon_id() {
-		return coupon_id;
+	public Integer getCouponId() {
+		return couponId;
 	}
-	public void setCoupon_id(Integer coupon_id) {
-		this.coupon_id = coupon_id;
+	public void setCouponId(Integer couponId) {
+		this.couponId = couponId;
 	}
-	public Double getTotalAmountDiscount() {
+	public BigDecimal getTotalAmountDiscount() {
 		return totalAmountDiscount;
 	}
-	public void setTotalAmountDiscount(Double totalAmountDiscount) {
+	public void setTotalAmountDiscount(BigDecimal totalAmountDiscount) {
 		this.totalAmountDiscount = totalAmountDiscount;
 	}
 	public Integer getUsePoints() {
@@ -89,10 +109,10 @@ public class orderBean implements Serializable {
 	public void setUsePoints(Integer usePoints) {
 		this.usePoints = usePoints;
 	}
-	public Double getTotalAmountDiscountPoints() {
+	public BigDecimal getTotalAmountDiscountPoints() {
 		return totalAmountDiscountPoints;
 	}
-	public void setTotalAmountDiscountPoints(Double totalAmountDiscountPoints) {
+	public void setTotalAmountDiscountPoints(BigDecimal totalAmountDiscountPoints) {
 		this.totalAmountDiscountPoints = totalAmountDiscountPoints;
 	}
 	public Integer getGetPoints() {
