@@ -174,7 +174,7 @@
 								</a></li>
 							</ul></li>
 						<li class="nav-item"><a
-							href="${pageContext.request.contextPath}/GetAllAppointmentsServlet"
+							href="${pageContext.request.contextPath}/AppointmentServlet.do"
 							class="nav-link"> <i class="nav-icon fas fa-edit"></i>
 								<p>
 									預約管理 <i class="right fas fa-angle-left"></i>

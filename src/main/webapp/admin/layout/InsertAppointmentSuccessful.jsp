@@ -208,7 +208,7 @@
 				</a></li>
 			</ul></li>
             <li class="nav-item">
-              <a href="../../GetAllAppointmentsServlet" class="nav-link">
+              <a href="../../AppointmentServlet.do" class="nav-link">
                 <i class="nav-icon fas fa-edit"></i>
                 <p>
                   預約管理
