@@ -355,41 +355,41 @@ $(function () {
         "dom": '<"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7 d-flex justify-content-end"p>>'
     });
 
-    // 優惠券 ID 查詢
+ // 依商品 ID 查詢 (RESTful 版本)
     $('#productIdSearchBtn').on('click', function(e) {
         e.preventDefault();
         const productId = $('#productIdInput').val().trim();
         if (!productId) return alert("請輸入商品 ID");
 
         $.ajax({
-            url: `/pet/FavoritesServlet?action=queryByProductId&productId=${productId}`,
-            method: 'GET',
-            dataType: 'json',
-            success: function(data) {
-                renderTable(data); // 單筆用陣列包起來
-            },
-            error: function(xhr) {
-                console.error(xhr.responseText);
-            }
-        });
-    });
-
-    // 會員 ID 查詢
-    $('#memberIdSearchBtn').on('click', function(e) {
-        e.preventDefault();
-        const memberId = $('#memberIdInput').val().trim();
-        console.log(memberId);
-        if (!memberId) return alert("請輸入會員 ID");
-
-        $.ajax({
-            url: `/pet/FavoritesServlet?action=queryByMemberId&memberId=${memberId}`,
+            url: `/favorites/product/${productId}`, 
             method: 'GET',
             dataType: 'json',
             success: function(data) {
                 renderTable(data);
             },
             error: function(xhr) {
-                console.error(xhr.responseText);
+                alert("查詢商品收藏失敗");
+            }
+        });
+    });
+
+ // 依會員 ID 查詢 (RESTful 版本)
+    $('#memberIdSearchBtn').on('click', function(e) {
+        e.preventDefault();
+        const memberId = $('#memberIdInput').val().trim();
+        if (!memberId) return alert("請輸入會員 ID");
+
+        $.ajax({
+            url: `/favorites/member/${memberId}`, 
+            method: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                renderTable(data);
+            },
+            error: function(xhr) {
+                // 這裡會抓到 Service 丟出的「找不到會員」訊息
+                alert(xhr.responseText);
             }
         });
     });
@@ -404,7 +404,10 @@ $(function () {
         const tbody = $('#example2 tbody');
         tbody.empty();
 
-        list.forEach(item => {
+        // 如果後端回傳的是單一物件而非陣列，這裡要處理一下
+        const dataList = Array.isArray(list) ? list : [list];
+
+        dataList.forEach(item => {
             tbody.append(`
                 <tr>
                     <td>${item.favoriteId}</td>
@@ -431,7 +434,7 @@ $(function () {
     // 頁面載入就查詢全部
     function loadAllFavorites() {
         $.ajax({
-            url: '/pet/FavoritesServlet?action=list',
+            url: '/favorites/list',
             method: 'GET',
             dataType: 'json',
             success: function(data) {
@@ -439,6 +442,7 @@ $(function () {
             },
             error: function(xhr) {
                 console.error(xhr.responseText);
+                alert("無法載入收藏列表")
             }
         });
     }

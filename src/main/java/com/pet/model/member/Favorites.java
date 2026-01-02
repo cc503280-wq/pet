@@ -35,7 +35,7 @@ public class Favorites {
 	private Double price;
 	
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-	@Column(name = "created_at")
+	@Column(name = "favorite_created_at")
 	private LocalDateTime createdAt;
 	
 }
