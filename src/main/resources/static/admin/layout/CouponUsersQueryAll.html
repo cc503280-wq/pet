@@ -372,14 +372,14 @@ $(function () {
         if (!couponId) return alert("請輸入優惠券 ID");
 
         $.ajax({
-            url: `/pet/CouponUsersServlet?action=queryByCouponId&couponId=${couponId}`,
+            url: `/couponUsers/coupon/${couponId}`,
             method: 'GET',
             dataType: 'json',
             success: function(data) {
                 renderTable(data); 
             },
             error: function(xhr) {
-                console.error(xhr.responseText);
+                alert("查詢失敗，請檢查ID是否正確");
             }
         });
     });
@@ -391,14 +391,14 @@ $(function () {
         if (!memberId) return alert("請輸入會員 ID");
 
         $.ajax({
-            url: `/pet/CouponUsersServlet?action=queryByMemberId&memberId=${memberId}`,
+            url: `/couponUsers/member/${memberId}`,
             method: 'GET',
             dataType: 'json',
             success: function(data) {
                 renderTable(data);
             },
             error: function(xhr) {
-                console.error(xhr.responseText);
+            	alert("查詢失敗，請檢查 ID 是否正確");
             }
         });
     });
@@ -420,7 +420,7 @@ $(function () {
                     <td>${item.memberId}</td>
                     <td>${item.couponId}</td>
                     <td>${item.code}</td>
-                    <td>${item.discountType}</td>
+                    <td>${item.discountType === 'amount' ? '固定金額' : '百分比'}</td>
                     <td>${item.discountValue}</td>
                     <td>${item.minPurchase}</td>
                     <td>${item.issueStartAt}</td>
@@ -450,14 +450,14 @@ $(function () {
     // 頁面載入就查詢全部
     function loadAllCouponUsers() {
         $.ajax({
-            url: '/pet/CouponUsersServlet?action=list',
+            url: '/couponUsers',
             method: 'GET',
             dataType: 'json',
             success: function(data) {
                 renderTable(data);
             },
             error: function(xhr) {
-                console.error(xhr.responseText);
+            	console.error("載入失敗:", xhr.responseText);
             }
         });
     }

@@ -434,7 +434,7 @@ $(function () {
     // 頁面載入就查詢全部
     function loadAllFavorites() {
         $.ajax({
-            url: '/favorites/list',
+            url: '/favorites',
             method: 'GET',
             dataType: 'json',
             success: function(data) {
