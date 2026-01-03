@@ -1,209 +1,73 @@
 package com.pet.model.member;
 
-import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity @Table(name = "member_coupon_view")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class CouponUsers {
 	
 	@Id @Column(name = "id")
-	private int id;
+	private Integer id;
 	
 	@Column(name = "member_id")
-	private int memberId;
+	private Integer memberId;
 	
 	@Column(name = "coupon_id")
-	private int couponId;
+	private Integer couponId;
 	
-	@Column(name = "status")
 	private String status;
 	
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	@Column(name = "assigned_at")
-	private Timestamp assignedAt;
+	private LocalDateTime assignedAt;
 	
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	@Column(name = "used_at")
-	private Timestamp usedAt;
+	private LocalDateTime usedAt;
 	
-	@Column(name = "code")
 	private String code;
 	
 	@Column(name = "discount_type")
 	private String discountType;
 	
 	@Column(name = "discount_value")
-	private double discountValue;
+	private Double discountValue;
 	
 	@Column(name = "min_purchase")
-	private int minPurchase;
+	private Integer minPurchase;
 	
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	@Column(name = "issue_start_at")
-	private Date issueStartAt;
+	private LocalDate issueStartAt;
 	
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	@Column(name = "issue_end_at")
-	private Date issueEndAt;
+	private LocalDate issueEndAt;
 	
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	@Column(name = "use_start_at")
-	private Date useStartAt;
+	private LocalDate useStartAt;
 	
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	@Column(name = "use_end_at")
-	private Date useEndAt;
+	private LocalDate useEndAt;
 	
 	@Column(name = "is_expired")
 	private String isExpired;
-	
-	public CouponUsers() {
-		super();
-	}
-
-	public CouponUsers(int id, int couponId, int memberId, String status, Timestamp assignedAt, Timestamp usedAt,
-			String code, String discountType, double discountValue, int minPurchase, Date issueStartAt, Date issueEndAt,
-			Date useStartAt, Date useEndAt, String isExpired) {
-		super();
-		this.id = id;
-		this.couponId = couponId;
-		this.memberId = memberId;
-		this.status = status;
-		this.assignedAt = assignedAt;
-		this.usedAt = usedAt;
-		this.code = code;
-		this.discountType = discountType;
-		this.discountValue = discountValue;
-		this.minPurchase = minPurchase;
-		this.issueStartAt = issueStartAt;
-		this.issueEndAt = issueEndAt;
-		this.useStartAt = useStartAt;
-		this.useEndAt = useEndAt;
-		this.isExpired = isExpired;
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public int getMemberId() {
-		return memberId;
-	}
-
-	public void setMemberId(int memberId) {
-		this.memberId = memberId;
-	}
-
-	public int getCouponId() {
-		return couponId;
-	}
-
-	public void setCouponId(int couponId) {
-		this.couponId = couponId;
-	}
-
-	public String getStatus() {
-		return status;
-	}
-
-	public void setStatus(String status) {
-		this.status = status;
-	}
-
-	public Timestamp getAssignedAt() {
-		return assignedAt;
-	}
-
-	public void setAssignedAt(Timestamp assignedAt) {
-		this.assignedAt = assignedAt;
-	}
-
-	public Timestamp getUsedAt() {
-		return usedAt;
-	}
-
-	public void setUsedAt(Timestamp usedAt) {
-		this.usedAt = usedAt;
-	}
-
-	public String getCode() {
-		return code;
-	}
-
-	public void setCode(String code) {
-		this.code = code;
-	}
-
-	public String getDiscountType() {
-		return discountType;
-	}
-
-	public void setDiscountType(String discountType) {
-		this.discountType = discountType;
-	}
-
-	public double getDiscountValue() {
-		return discountValue;
-	}
-
-	public void setDiscountValue(double discountValue) {
-		this.discountValue = discountValue;
-	}
-
-	public int getMinPurchase() {
-		return minPurchase;
-	}
-
-	public void setMinPurchase(int minPurchase) {
-		this.minPurchase = minPurchase;
-	}
-
-	public Date getIssueStartAt() {
-		return issueStartAt;
-	}
-
-	public void setIssueStartAt(Date issueStartAt) {
-		this.issueStartAt = issueStartAt;
-	}
-
-	public Date getIssueEndAt() {
-		return issueEndAt;
-	}
-
-	public void setIssueEndAt(Date issueEndAt) {
-		this.issueEndAt = issueEndAt;
-	}
-
-	public Date getUseStartAt() {
-		return useStartAt;
-	}
-
-	public void setUseStartAt(Date useStartAt) {
-		this.useStartAt = useStartAt;
-	}
-
-	public Date getUseEndAt() {
-		return useEndAt;
-	}
-
-	public void setUseEndAt(Date useEndAt) {
-		this.useEndAt = useEndAt;
-	}
-
-	public String getIsExpired() {
-		return isExpired;
-	}
-
-	public void setIsExpired(String isExpired) {
-		this.isExpired = isExpired;
-	}
-	
-	
-	
-	
 	
 }

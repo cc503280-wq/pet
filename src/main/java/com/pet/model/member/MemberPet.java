@@ -1,16 +1,12 @@
 package com.pet.model.member;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
-import javax.annotation.processing.Generated;
 
-import com.pet.model.appointment.Appointment;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
-import jakarta.persistence.CascadeType;
+//import com.pet.model.appointment.Appointment;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -19,23 +15,29 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity @Table(name = "member_pets")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class MemberPet {
 	
 	@Id @Column(name = "pet_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int petId;
+	private Integer petId;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_id", insertable = false, updatable = false)
 	private Member member;
 
-	@Column(name = "member_id")
-	private int memberId;
-	
 	@Column(name = "pet_name")
 	private String petName;
 	
@@ -51,117 +53,23 @@ public class MemberPet {
 	@Column(name = "pet_size")
 	private String petSize;
 	
-	@Column(name = "created_at")
-	private Timestamp createdAt;
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@Column(name = "created_at", updatable = false)
+	private LocalDateTime createdAt;
 	
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	@Column(name = "updated_at")
-	private Timestamp updatedAt;
+	private LocalDateTime updatedAt;
 	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "memberPet", cascade = CascadeType.ALL)
-	private Set<Appointment> appointments = new HashSet<Appointment>();
-	
-	public MemberPet() {
-		super();
-	}
-
-	public MemberPet(int petId, int memberId, String petName, String petType, String petBreed, String petAge,
-			String petSize, Timestamp createdAt, Timestamp updatedAt) {
-		super();
-		this.petId = petId;
-		this.memberId = memberId;
-		this.petName = petName;
-		this.petType = petType;
-		this.petBreed = petBreed;
-		this.petAge = petAge;
-		this.petSize = petSize;
-		this.createdAt = createdAt;
-		this.updatedAt = updatedAt;
-	}
-
-	public MemberPet(int petId, int memberId, String petName, String petType, String petBreed, String petAge,
-			String petSize) {
-		super();
-		this.petId = petId;
-		this.memberId = memberId;
-		this.petName = petName;
-		this.petType = petType;
-		this.petBreed = petBreed;
-		this.petAge = petAge;
-		this.petSize = petSize;
-	}
-
-	public int getPetId() {
-		return petId;
-	}
-
-	public void setPetId(int petId) {
-		this.petId = petId;
-	}
-
-	public int getMemberId() {
-		return memberId;
-	}
-
-	public void setMemberId(int memberId) {
-		this.memberId = memberId;
-	}
-
-	public String getPetName() {
-		return petName;
-	}
-
-	public void setPetName(String petName) {
-		this.petName = petName;
-	}
-
-	public String getPetType() {
-		return petType;
-	}
-
-	public void setPetType(String petType) {
-		this.petType = petType;
-	}
-
-	public String getPetBreed() {
-		return petBreed;
-	}
-
-	public void setPetBreed(String petBreed) {
-		this.petBreed = petBreed;
-	}
-
-	public String getPetAge() {
-		return petAge;
-	}
-
-	public void setPetAge(String petAge) {
-		this.petAge = petAge;
-	}
-
-	public String getPetSize() {
-		return petSize;
-	}
-
-	public void setPetSize(String petSize) {
-		this.petSize = petSize;
-	}
-
-	public Timestamp getCreatedAt() {
-		return createdAt;
-	}
-
-	public void setCreatedAt(Timestamp createdAt) {
-		this.createdAt = createdAt;
-	}
-
-	public Timestamp getUpdatedAt() {
-		return updatedAt;
-	}
-
-	public void setUpdatedAt(Timestamp updatedAt) {
-		this.updatedAt = updatedAt;
+	@PrePersist
+	protected void onCreate() {
+		LocalDateTime now = LocalDateTime.now();
+		this.createdAt = now;
+		this.updatedAt = now;
 	}
 	
-	
-	
+	@PreUpdate
+	protected void onUpdate() {
+		this.updatedAt = LocalDateTime.now();
+	}
 }

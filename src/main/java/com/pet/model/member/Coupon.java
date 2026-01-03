@@ -1,8 +1,9 @@
 package com.pet.model.member;
 
-import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,255 +13,90 @@ import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity @Table(name = "coupons")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Coupon {
 	
 	@Id @Column(name = "coupon_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int couponId;
+	private Integer couponId;
 	
-	@Column(name = "code")
 	private String code;
 	
 	@Column(name = "discount_type")
 	private String discountType;
 	
 	@Column(name = "discount_value")
-	private double discountValue;
+	private Double discountValue;
 	
 	@Column(name = "is_limited")
-	private int isLimited;
+	private Integer isLimited;
 	
 	@Column(name = "total_amount")
-	private Integer totalAmount; //容許null
+	private Integer totalAmount; 
 	
 	@Column(name = "issued_amount")
-	private Integer issuedAmount; //容許null
+	private Integer issuedAmount; 
 	
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	@Column(name = "issue_start_at")
-	private Date issueStartAt;
+	private LocalDate issueStartAt;
 	
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	@Column(name = "issue_end_at")
-	private Date issueEndAt;
+	private LocalDate issueEndAt;
 	
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	@Column(name = "use_start_at")
-	private Date useStartAt;
+	private LocalDate useStartAt;
 	
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	@Column(name = "use_end_at")
-	private Date useEndAt;
+	private LocalDate useEndAt;
 	
 	@Column(name = "min_purchase")
-	private int minPurchase;
+	private Integer minPurchase;
 	
-	@Column(name = "created_at")
-	private Timestamp createdAt;
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@Column(name = "created_at", updatable = false)
+	private LocalDateTime createdAt;
 	
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	@Column(name = "updated_at")
-	private Timestamp updatedAt;
+	private LocalDateTime updatedAt;
 	
-	@Column(name = "status")
 	private String status;
 	
 	//更新前
 	@PrePersist
 	protected void onCreate() {
-	    Timestamp now = Timestamp.valueOf(LocalDateTime.now());
+		LocalDateTime now = LocalDateTime.now();
+		this.createdAt = now;
+		this.updatedAt = now;
 
-	    // 新增一定要有
-	    this.createdAt = now;
-	    this.updatedAt = now;
-
-	    // status 預設值
-	    if (this.status == null) {
-	        this.status = "active";
-	    }
+		// 預設狀態
+		if (this.status == null) {
+			this.status = "active";
+		}
+		
+		// 預設發放數量 (若為 null 則給 0)
+		if (this.issuedAmount == null) {
+			this.issuedAmount = 0;
+		}
 	}
 
 	//修改前
 	@PreUpdate
 	protected void onUpdate() {
-	    this.updatedAt = Timestamp.valueOf(LocalDateTime.now());
+		this.updatedAt = LocalDateTime.now();
 	}
-	
-	public Coupon() {
-		super();
-	}
-
-	public Coupon(int couponId, String code, String discountType, double discountValue, int isLimited, Integer totalAmount,
-			Integer issuedAmount, Date issueStartAt, Date issueEndAt, Date useStartAt, Date useEndAt, int minPurchase,
-			Timestamp createdAt, Timestamp updatedAt, String status) {
-		super();
-		this.couponId = couponId;
-		this.code = code;
-		this.discountType = discountType;
-		this.discountValue = discountValue;
-		this.isLimited = isLimited;
-		this.totalAmount = totalAmount;
-		this.issuedAmount = issuedAmount;
-		this.issueStartAt = issueStartAt;
-		this.issueEndAt = issueEndAt;
-		this.useStartAt = useStartAt;
-		this.useEndAt = useEndAt;
-		this.minPurchase = minPurchase;
-		this.createdAt = createdAt;
-		this.updatedAt = updatedAt;
-		this.status = status;
-	}
-	
-	public Coupon(String code, String discountType, double discountValue, int isLimited, Integer totalAmount,
-			Integer issuedAmount, Date issueStartAt, Date issueEndAt, Date useStartAt, Date useEndAt, int minPurchase) {
-		super();
-		this.code = code;
-		this.discountType = discountType;
-		this.discountValue = discountValue;
-		this.isLimited = isLimited;
-		this.totalAmount = totalAmount;
-		this.issuedAmount = issuedAmount;
-		this.issueStartAt = issueStartAt;
-		this.issueEndAt = issueEndAt;
-		this.useStartAt = useStartAt;
-		this.useEndAt = useEndAt;
-		this.minPurchase = minPurchase;
-	}
-
-	public Coupon(int couponId, String code, String discountType, double discountValue, int isLimited,
-			Integer totalAmount, Integer issuedAmount, Date issueStartAt, Date issueEndAt, Date useStartAt,
-			Date useEndAt, int minPurchase) {
-		super();
-		this.couponId = couponId;
-		this.code = code;
-		this.discountType = discountType;
-		this.discountValue = discountValue;
-		this.isLimited = isLimited;
-		this.totalAmount = totalAmount;
-		this.issuedAmount = issuedAmount;
-		this.issueStartAt = issueStartAt;
-		this.issueEndAt = issueEndAt;
-		this.useStartAt = useStartAt;
-		this.useEndAt = useEndAt;
-		this.minPurchase = minPurchase;
-	}
-
-	public int getCouponId() {
-		return couponId;
-	}
-
-	public void setCouponId(int couponId) {
-		this.couponId = couponId;
-	}
-
-	public String getCode() {
-		return code;
-	}
-
-	public void setCode(String code) {
-		this.code = code;
-	}
-
-	public String getDiscountType() {
-		return discountType;
-	}
-
-	public void setDiscountType(String discountType) {
-		this.discountType = discountType;
-	}
-
-	public double getDiscountValue() {
-		return discountValue;
-	}
-
-	public void setDiscountValue(double discountValue) {
-		this.discountValue = discountValue;
-	}
-
-	public int getIsLimited() {
-		return isLimited;
-	}
-
-	public void setIsLimited(int isLimited) {
-		this.isLimited = isLimited;
-	}
-
-	public Integer getTotalAmount() {
-		return totalAmount;
-	}
-
-	public void setTotalAmount(Integer totalAmount) {
-		this.totalAmount = totalAmount;
-	}
-
-	public Integer getIssuedAmount() {
-		return issuedAmount;
-	}
-
-	public void setIssuedAmount(Integer issuedAmount) {
-		this.issuedAmount = issuedAmount;
-	}
-
-	public Date getIssueStartAt() {
-		return issueStartAt;
-	}
-
-	public void setIssueStartAt(Date issueStartAt) {
-		this.issueStartAt = issueStartAt;
-	}
-
-	public Date getIssueEndAt() {
-		return issueEndAt;
-	}
-
-	public void setIssueEndAt(Date issueEndAt) {
-		this.issueEndAt = issueEndAt;
-	}
-
-	public Date getUseStartAt() {
-		return useStartAt;
-	}
-
-	public void setUseStartAt(Date useStartAt) {
-		this.useStartAt = useStartAt;
-	}
-
-	public Date getUseEndAt() {
-		return useEndAt;
-	}
-
-	public void setUseEndAt(Date useEndAt) {
-		this.useEndAt = useEndAt;
-	}
-
-	public int getMinPurchase() {
-		return minPurchase;
-	}
-
-	public void setMinPurchase(int minPurchase) {
-		this.minPurchase = minPurchase;
-	}
-
-	public Timestamp getCreatedAt() {
-		return createdAt;
-	}
-
-	public void setCreatedAt(Timestamp createdAt) {
-		this.createdAt = createdAt;
-	}
-
-	public Timestamp getUpdatedAt() {
-		return updatedAt;
-	}
-
-	public void setUpdatedAt(Timestamp updatedAt) {
-		this.updatedAt = updatedAt;
-	}
-
-	public String getStatus() {
-		return status;
-	}
-
-	public void setStatus(String status) {
-		this.status = status;
-	}
-	
 	
 }
