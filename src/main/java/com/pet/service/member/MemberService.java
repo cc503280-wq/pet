@@ -34,12 +34,29 @@ public class MemberService {
         return memberRepository.findByNameContainingOrderByMemberIdAsc(name);
     }
 
-    public Member createMember(Member member) {
-        if (member.getPassword() != null && !member.getPassword().isEmpty()) {
-            String hashedPassword = BCrypt.hashpw(member.getPassword(), BCrypt.gensalt());
-            member.setPassword(hashedPassword);
+    public Member createMember(Member input) {
+        // 1. 處理密碼加密
+        String hashedPassword = null;
+        if (input.getPassword() != null && !input.getPassword().isEmpty()) {
+            hashedPassword = BCrypt.hashpw(input.getPassword(), BCrypt.gensalt());
         }
-        return memberRepository.save(member);
+
+        // 2. 使用 Builder 組裝乾淨的物件
+        Member newMember = Member.builder()
+                .name(input.getName())
+                .email(input.getEmail())
+                .password(hashedPassword)
+                .phone(input.getPhone())
+                .address(input.getAddress())
+                .gender(input.getGender())
+                .birthday(input.getBirthday())
+                // 安全防護：註冊時點數(points)一律從 0 開始，不管前端傳什麼
+                .points(0)
+                // 狀態防護：預設為一般會員
+                .status("active")
+                .build();
+
+        return memberRepository.save(newMember);
     }
 
     public Member updateMember(Member input) {

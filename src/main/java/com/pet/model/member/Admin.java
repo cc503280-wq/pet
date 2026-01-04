@@ -26,7 +26,7 @@ public class Admin {
 	
 	@Id @Column(name = "admin_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int adminId;
+	private Integer adminId;
 	
 	@Column(unique = true)
 	private String email;

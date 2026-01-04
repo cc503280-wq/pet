@@ -32,7 +32,7 @@
             </ul>
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a href="../../AdminLogoutServlet" class="btn btn-secondary btn-sm">
+                    <a href="javascript:void(0)" id="logoutBtn" class="btn btn-secondary btn-sm">
                         <i class="fas fa-sign-out-alt"></i> 登出
                     </a>
                 </li>
@@ -40,21 +40,53 @@
         </nav>
 
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
-            <a href="../../index3.html" class="brand-link">
+            <a href="Home.html" class="brand-link">
                 <i class="fas fa-paw" style="color: #FFD43B; font-size: 1.5rem;"></i>
                 <span class="brand-text font-weight-light">後台管理系統</span>
             </a>
             <div class="sidebar">
                 <nav class="mt-2">
-                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu">
+                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                         <li class="nav-item menu-open">
                             <a href="#" class="nav-link active">
                                 <i class="nav-icon fas fa-edit"></i>
-                                <p>會員管理<i class="right fas fa-angle-left"></i></p>
+                                <p>會員管理 <i class="right fas fa-angle-left"></i></p>
                             </a>
                             <ul class="nav nav-treeview">
+                                <li class="nav-item"><a href="AdminQueryAll.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>管理員資料</p></a></li>
+                                <li class="nav-item"><a href="MemberQueryAll.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>會員基本資料</p></a></li>
+                                <li class="nav-item"><a href="MemberPetQueryAll.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>會員寵物資料</p></a></li>
                                 <li class="nav-item"><a href="CouponQueryAll.html" class="nav-link active"><i class="far fa-circle nav-icon"></i><p>優惠券總覽</p></a></li>
+                                <li class="nav-item"><a href="CouponUsersQueryAll.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>會員持有優惠券</p></a></li>
+                                <li class="nav-item"><a href="FavoritesQueryAll.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>會員收藏清單</p></a></li>
                             </ul>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="../../AllProducts" class="nav-link">
+                                <i class="nav-icon fas fa-edit"></i>
+                                <p>商品管理 <i class="right fas fa-angle-left"></i></p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-edit"></i>
+                                <p>訂單管理 <i class="right fas fa-angle-left"></i></p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item"><a href="../../orderList" class="nav-link"><i class="far fa-circle nav-icon"></i><p>查詢全部訂單</p></a></li>
+                                <li class="nav-item"><a href="../../shipmentsList" class="nav-link"><i class="far fa-circle nav-icon"></i><p>物流查詢</p></a></li>
+                                <li class="nav-item"><a href="../../orderItemsList" class="nav-link"><i class="far fa-circle nav-icon"></i><p>查詢全部訂單明細</p></a></li>
+                                <li class="nav-item"><a href="../order/shopping.jsp" class="nav-link"><i class="far fa-circle nav-icon"></i><p>新增訂單</p></a></li>
+                            </ul>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="../../AppointmentServlet.do" class="nav-link">
+                                <i class="nav-icon fas fa-edit"></i>
+                                <p>預約管理 <i class="right fas fa-angle-left"></i></p>
+                            </a>
                         </li>
                     </ul>
                 </nav>
@@ -171,6 +203,7 @@
     <script src="../../plugins/moment/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <script src="../../dist/js/adminlte.min.js"></script>
+    <script src="../../dist/js/adminAuth.js"></script>
 
     <script>
         $(function () {
@@ -183,7 +216,7 @@
                 return;
             }
 
-            // --- 1. 初始化日期元件 (與新增頁面相同邏輯) ---
+            // --- 1. 初始化日期元件 ---
             const datePickerConfig = {
                 autoUpdateInput: false,
                 locale: { format: 'YYYY-MM-DD', separator: ' ~ ', cancelLabel: '清除' }
@@ -200,7 +233,7 @@
 
             // --- 2. 載入原始資料 ---
             $.ajax({
-                url: `/coupon/${couponId}`, // RESTful GET
+                url: `/coupon/${couponId}`,
                 method: 'GET',
                 success: function (coupon) {
                     $('#couponId').val(coupon.couponId);
@@ -212,7 +245,6 @@
                     $('#issuedAmount').val(coupon.issuedAmount);
                     $('#minPurchase').val(coupon.minPurchase);
                     
-                    // 日期回填
                     if(coupon.issueStartAt && coupon.issueEndAt) {
                         $('#issueRange').val(`${coupon.issueStartAt} ~ ${coupon.issueEndAt}`);
                         $('#issueStartAt').val(coupon.issueStartAt);
@@ -224,7 +256,6 @@
                         $('#useEndAt').val(coupon.useEndAt);
                     }
 
-                    // 觸發一次限量控制狀態
                     toggleQuantityInputs();
                 },
                 error: function () {
@@ -235,16 +266,14 @@
             // --- 3. 限量控制邏輯 ---
             function toggleQuantityInputs() {
 			    const status = $('#isLimited').val(); 
-			
 			    if (status === "1") { 
-			        // 限量：啟用欄位
 			        $('#totalAmount').prop('disabled', false);
 			    } else {
-			        // 不限量：禁用並清空
 			        $('#totalAmount').prop('disabled', true).val('');
 			    }
-			    $('#isLimited').on('change', toggleQuantityInputs);
 			}
+            
+            $('#isLimited').on('change', toggleQuantityInputs);
 
             // --- 4. 送出更新 ---
             $('#updateForm').submit(function (e) {
@@ -257,6 +286,7 @@
                     discountValue: parseFloat($('#discountValue').val()),
                     isLimited: parseInt($('#isLimited').val()),
                     totalAmount: $('#totalAmount').val() ? parseInt($('#totalAmount').val()) : 0,
+                    issuedAmount: parseInt($('#issuedAmount').val() || 0),
                     minPurchase: parseInt($('#minPurchase').val()),
                     issueStartAt: $('#issueStartAt').val(),
                     issueEndAt: $('#issueEndAt').val(),
@@ -265,12 +295,11 @@
                 };
 
                 $.ajax({
-                    url: `/coupon/${couponId}`, // RESTful PUT
+                    url: `/coupon/${couponId}`,
                     method: 'PUT',
                     contentType: 'application/json',
                     data: JSON.stringify(updateData),
                     success: function (res) {
-                        // 存入 sessionStorage 供完成頁面使用
                         sessionStorage.setItem('lastUpdatedCoupon', JSON.stringify(res));
                         window.location.href = 'CouponUpdateDone.html';
                     },
