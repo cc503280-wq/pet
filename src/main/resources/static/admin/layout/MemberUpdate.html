@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MemberUpdate.html</title>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <link rel="stylesheet" href="../../plugins/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="../../dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="../../plugins/select2/css/select2.min.css">
+    <link rel="stylesheet" href="../../plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+    <link rel="stylesheet" href="../../plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
+    <style type="text/css">
+        .brand-link { display: flex; align-items: center; justify-content: flex-start; padding: 0.5rem 1rem; }
+        .sidebar-collapse .brand-link { justify-content: center; }
+        .brand-link i { width: 1.5rem; text-align: center; }
+        .sidebar-collapse .brand-text { display: none; }
+        .box1 { display: flex; justify-content: space-between; align-items: center; }
+    </style>
+</head>
+
+<body class="hold-transition sidebar-mini sidebar-collapse">
+    <div class="wrapper">
+        <div class="content-wrapper">
+            <section class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-12 box1">
+                            <h1>會員管理</h1>
+                            <a href="MemberQueryAll.html" class="btn btn-secondary btn-sm">回列表</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card card-info">
+                                <div class="card-header">
+                                    <h3 class="card-title">修改會員資料</h3>
+                                </div>
+                                <form class="form-horizontal" id="updateForm">
+                                    <div class="card-body">
+                                        <div class="form-group row">
+                                            <label class="col-sm-2 col-form-label">ID:</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" id="memberId" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-sm-2 col-form-label">姓名:</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" id="name" placeholder="姓名" autocomplete="off">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-sm-2 col-form-label">Email:</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" id="email" placeholder="Email" autocomplete="off">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-sm-2 col-form-label">性別:</label>
+                                            <div class="col-sm-10">
+                                                <select class="form-control select2" id="gender" style="width: 100%;">
+                                                    <option value="M">男</option>
+                                                    <option value="F">女</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-sm-2 col-form-label">生日:</label>
+                                            <div class="col-sm-10">
+                                                <div class="input-group date" id="reservationdate" data-target-input="nearest">
+                                                    <input type="text" class="form-control datetimepicker-input" id="birthday" data-target="#reservationdate" />
+                                                    <div class="input-group-append" data-target="#reservationdate" data-toggle="datetimepicker">
+                                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-sm-2 col-form-label">電話:</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" id="phone" placeholder="電話" autocomplete="off">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-sm-2 col-form-label">地址:</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" id="address" placeholder="地址" autocomplete="off">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-sm-2 col-form-label">大頭貼更新:</label>
+                                            <div class="col-sm-10">
+                                                <div class="custom-file">
+                                                    <input type="file" class="custom-file-input" id="picture">
+                                                    <label class="custom-file-label" for="picture">選擇新照片 (不更新請留空)</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer">
+                                        <button type="submit" class="btn btn-info">送出修改</button>
+                                        <button type="reset" class="btn btn-default float-right">還原</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script src="../../plugins/jquery/jquery.min.js"></script>
+    <script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../../plugins/moment/moment.min.js"></script>
+    <script src="../../plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
+    <script src="../../plugins/select2/js/select2.full.min.js"></script>
+    <script src="../../dist/js/adminlte.min.js"></script>
+
+    <script>
+        $(function () {
+            // 初始化 DatePicker
+            $('#reservationdate').datetimepicker({
+                format: 'YYYY-MM-DD',
+                useCurrent: false
+            });
+
+            // 檔案名稱顯示
+            $('.custom-file-input').on('change', function(e){
+                var fileName = e.target.files[0] ? e.target.files[0].name : "選擇新照片";
+                $(this).next('.custom-file-label').html(fileName);
+            });
+
+            // 1. 從 URL 獲取 memberId
+            const urlParams = new URLSearchParams(window.location.search);
+            const memberId = urlParams.get('memberId');
+            if (!memberId) {
+                alert('參數錯誤');
+                window.location.href = 'MemberQueryAll.html';
+                return;
+            }
+
+            // 2. 載入原始資料 (GET)
+            $.ajax({
+                url: `/members/${memberId}`,
+                method: 'GET',
+                success: function (member) {
+                    $('#memberId').val(member.memberId);
+                    $('#email').val(member.email);
+                    $('#name').val(member.name);
+                    $('#gender').val(member.gender).trigger('change');
+                    $('#birthday').val(member.birthday);
+                    $('#phone').val(member.phone);
+                    $('#address').val(member.address);
+                },
+                error: function () {
+                    alert('讀取會員資料失敗');
+                }
+            });
+
+            // 3. 送出更新 (PUT)
+            $('#updateForm').submit(function (e) {
+                e.preventDefault();
+
+                const email = $('#email').val().trim();
+                if (!email) { alert('Email不得為空白'); return; }
+
+                const formData = new FormData();
+                formData.append("memberId", $("#memberId").val());
+                formData.append("name", $("#name").val());
+                formData.append("email", $("#email").val());
+                formData.append("phone", $("#phone").val());
+                formData.append("address", $("#address").val());
+                formData.append("gender", $("#gender").val());
+                formData.append("birthday", $("#birthday").val());
+
+                const file = $("#picture")[0].files[0];
+                if (file) {
+                    // 對應後端 @RequestParam("pictureFile")
+                    formData.append("pictureFile", file); 
+                }
+
+                $.ajax({
+                    url: `/members/${memberId}`,
+                    method: "PUT", // 使用 PUT 進行修改
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (res) {
+                        // 存入 sessionStorage 供完成頁顯示
+                        sessionStorage.setItem('updatedMember', JSON.stringify(res));
+                        // 跳轉
+                        window.location.href = 'MemberUpdateDone.html';
+                    },
+                    error: function (xhr) {
+                        alert("更新失敗：" + xhr.responseText);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
