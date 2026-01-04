@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CouponCreateDone</title>
+
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <link rel="stylesheet" href="../../plugins/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="../../dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="../../plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="../../plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+
+    <style type="text/css">
+        .brand-link { display: flex; align-items: center; justify-content: flex-start; padding: 0.5rem 1rem; }
+        .sidebar-collapse .brand-link { justify-content: center; }
+        .brand-link i { width: 1.5rem; text-align: center; }
+        .sidebar-collapse .brand-text { display: none; }
+        .box1 { display: flex; justify-content: space-between; align-items: center; }
+        .form-control-static { padding-top: 7px; font-weight: bold; color: #333; }
+        .box2 { display: flex; justify-content: center; align-items: center; }
+    </style>
+</head>
+
+<body class="hold-transition sidebar-mini sidebar-collapse">
+    <div class="wrapper">
+        <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a href="../../AdminLogoutServlet" class="btn btn-secondary btn-sm">
+                        <i class="fas fa-sign-out-alt"></i> 登出
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <aside class="main-sidebar sidebar-dark-primary elevation-4">
+            <a href="../../index3.html" class="brand-link">
+                <i class="fas fa-paw" style="color: #FFD43B; font-size: 1.5rem;"></i>
+                <span class="brand-text font-weight-light">後台管理系統</span>
+            </a>
+            <div class="sidebar">
+                <nav class="mt-2">
+                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu">
+                        <li class="nav-item menu-open">
+                            <a href="#" class="nav-link active">
+                                <i class="nav-icon fas fa-edit"></i>
+                                <p>會員管理<i class="right fas fa-angle-left"></i></p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item"><a href="CouponQueryAll.html" class="nav-link active"><i class="far fa-circle nav-icon"></i><p>優惠券總覽</p></a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </aside>
+
+        <div class="content-wrapper">
+            <section class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-12 box1">
+                            <h1>會員管理</h1>
+                            <a href="CouponQueryAll.html" class="btn btn-secondary btn-sm">回列表</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="content">
+                <div class="container-fluid d-flex justify-content-center">
+                    <div class="row w-100 box2">
+                        <div class="col-md-6">
+                            <div class="card card-info">
+                                <div class="card-header">
+                                    <h3 class="card-title">新增資料檢視</h3>
+                                </div>
+                                
+                                <div class="alert alert-success mx-4 mt-3 py-2">
+                                    <i class="icon fas fa-check-circle"></i>
+                                    <strong>新增成功!</strong>
+                                </div>
+
+                                <form class="form-horizontal">
+                                    <div class="card-body">
+                                        <div class="form-group row">
+                                            <label class="col-sm-4 col-form-label">ID:</label>
+                                            <div class="col-sm-8"><p class="form-control-static" id="res-couponId"></p></div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-sm-4 col-form-label">折扣碼:</label>
+                                            <div class="col-sm-8"><p class="form-control-static" id="res-code"></p></div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-sm-4 col-form-label">折扣類型:</label>
+                                            <div class="col-sm-8"><p class="form-control-static" id="res-discountType"></p></div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-sm-4 col-form-label">折扣金額/百分比:</label>
+                                            <div class="col-sm-8"><p class="form-control-static" id="res-discountValue"></p></div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-sm-4 col-form-label">總發放量:</label>
+                                            <div class="col-sm-8"><p class="form-control-static" id="res-totalAmount"></p></div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-sm-4 col-form-label">使用門檻金額:</label>
+                                            <div class="col-sm-8"><p class="form-control-static" id="res-minPurchase"></p></div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-sm-4 col-form-label">發放區間:</label>
+                                            <div class="col-sm-8">
+                                                <p class="form-control-static">
+                                                    <span id="res-issueStartAt"></span> ~ <span id="res-issueEndAt"></span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-sm-4 col-form-label">使用區間:</label>
+                                            <div class="col-sm-8">
+                                                <p class="form-control-static">
+                                                    <span id="res-useStartAt"></span> ~ <span id="res-useEndAt"></span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer text-right">
+                                        <a href="CouponCreate.html" class="btn btn-info">
+                                            <i class="fas fa-plus"></i> 繼續新增
+                                        </a>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <footer class="main-footer">
+            <strong>Copyright &copy; 2026 Pet Admin.</strong>
+        </footer>
+    </div>
+
+    <script src="../../plugins/jquery/jquery.min.js"></script>
+    <script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../../dist/js/adminlte.min.js"></script>
+
+    <script>
+        $(function () {
+            // 1. 從 sessionStorage 取得剛新增成功的資料
+            const dataString = sessionStorage.getItem('lastCreatedCoupon');
+            
+            if (!dataString) {
+                alert("查無新增資料，將回列表頁");
+                window.location.href = 'CouponQueryAll.html';
+                return;
+            }
+
+            const data = JSON.parse(dataString);
+
+            // 2. 填充資料
+            $('#res-couponId').text(data.couponId);
+            $('#res-code').text(data.code);
+            
+            // 折扣類型顯示優化
+            const typeText = data.discountType === 'percent' ? '百分比折扣' : '固定金額折扣';
+            $('#res-discountType').text(typeText);
+            
+            // 折扣值顯示 (若是百分比則顯示例如 0.8)
+            $('#res-discountValue').text(data.discountValue);
+            
+            // 發放量顯示
+            $('#res-totalAmount').text(data.isLimited === 1 ? data.totalAmount : '不限量');
+            
+            $('#res-minPurchase').text(data.minPurchase);
+            $('#res-issueStartAt').text(data.issueStartAt);
+            $('#res-issueEndAt').text(data.issueEndAt);
+            $('#res-useStartAt').text(data.useStartAt);
+            $('#res-useEndAt').text(data.useEndAt);
+
+        });
+    </script>
+</body>
+</html>

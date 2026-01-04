@@ -393,13 +393,14 @@
             $('#issueRange').daterangepicker({
             	autoUpdateInput: false,  
                 locale: {
-                    format: 'YYYY/MM/DD', // 保留現有格式
+                	format: 'YYYY-MM-DD',
+                    separator: ' ~ ', // 強制中間符號為 波浪號
                     cancelLabel: '清除'
                 }
             });
 
             $('#issueRange').on('apply.daterangepicker', function(ev, picker) {
-                $(this).val(picker.startDate.format('YYYY/MM/DD') + ' - ' + picker.endDate.format('YYYY/MM/DD'));
+                $(this).val(picker.startDate.format('YYYY-MM-DD') + ' ~ ' + picker.endDate.format('YYYY-MM-DD'));
             });
 
             $('#issueRange').on('cancel.daterangepicker', function(ev, picker) {
@@ -410,13 +411,14 @@
             $('#useRange').daterangepicker({
             	autoUpdateInput: false,
                 locale: {
-                    format: 'YYYY/MM/DD',
+                	format: 'YYYY-MM-DD',
+                    separator: ' ~ ', // 強制中間符號為 波浪號
                     cancelLabel: '清除'
                 }
             });
 
             $('#useRange').on('apply.daterangepicker', function(ev, picker) {
-                $(this).val(picker.startDate.format('YYYY/MM/DD') + ' - ' + picker.endDate.format('YYYY/MM/DD'));
+                $(this).val(picker.startDate.format('YYYY-MM-DD') + ' ~ ' + picker.endDate.format('YYYY-MM-DD'));
             });
 
             $('#useRange').on('cancel.daterangepicker', function(ev, picker) {
@@ -425,23 +427,25 @@
             
             //查詢全部、啟用中、停用
             $('#statusSelect').on('change', function() {
-			    const status = $(this).val(); // 取得選擇值: all / active / disabled
-			    loadCouponsByStatus(status);
+			    loadCoupons($(this).val());
 			});
 			
-			function loadCouponsByStatus(status) {
-			    $.ajax({
-			        url: `/pet/CouponServlet?action=list&status=${status}`,
-			        method: 'GET',
-			        dataType: 'json',
-			        success: function(data) {
-			            renderTable(data);
-			        },
-			        error: function(xhr, status, error) {
-			            console.error(xhr.responseText);
-			        }
-			    });
-			}
+            function loadCoupons(status = 'all') {
+                // 根據 status 決定 URL
+                const url = (status === 'all') ? '/coupon' : `/coupon?status=${status}`;
+                
+                $.ajax({
+                    url: url,
+                    method: 'GET',
+                    dataType: 'json',
+                    success: function(data) {
+                        renderTable(data);
+                    },
+                    error: function(xhr) {
+                        console.error("載入失敗:", xhr.responseText);
+                    }
+                });
+            }
 
             //依ID查詢
             $('#idSearchBtn').on('click', function (e) {
@@ -451,12 +455,16 @@
                 if (!id) return alert("請輸入 ID");
 
                 $.ajax({
-                    url: `/pet/CouponServlet?action=queryById&couponId=${id}`,
+                    url: `/coupon/${id}`, // RESTful 路徑
                     method: 'GET',
                     dataType: 'json',
                     success: function (data) {
-                        renderTable([data]);
-                        // 單筆用陣列包起來
+                        if (data && data.couponId) {
+                            renderTable([data]); 
+                        } else {
+                            alert("找不到該 ID");
+                            loadCoupons(); // 刷回全部
+                        }
                     }
                 });
             });
@@ -465,10 +473,10 @@
             $(document).on('click', '.btn-edit', function (e) {
                 e.preventDefault();
 
-                const id = $(this).data("id");
+                const couponId = $(this).data("id");
 
                 // 跳頁
-                window.location.href = `CouponUpdate.jsp?couponId=${id}`;
+                window.location.href = `CouponUpdate.html?couponId=${couponId}`;
             });
             
             //停用啟用
@@ -481,13 +489,14 @@
 			    if (!confirm(confirmMsg)) return;
 			
 			    $.ajax({
-			        url: `/pet/CouponServlet?action=toggleStatus&couponId=${id}&status=${newStatus}`,
-			        method: 'POST',
+			        url: `/coupon/${id}/toggle`,
+			        method: 'PATCH',
 			        success: function() {
-			            loadAllCoupons(); // 重新載入表格
+			        	const status = $('#statusSelect').val();
+			        	loadCoupons(status);
 			        },
 			        error: function(xhr) {
-			            console.error(xhr.responseText);
+			        	alert("切換失敗: " + xhr.status);
 			        }
 			    });
 			});
@@ -496,19 +505,16 @@
                 const range = $('#issueRange').val().trim();
                 if (!range) return alert("請選擇發放區間");
 
-                const dates = range.split(' - ');
+                const dates = range.split(' ~ ');
                 const start = dates[0];
                 const end = dates[1];
 
                 $.ajax({
-                    url: `/pet/CouponServlet?action=queryByIssueRange&start=${start}&end=${end}`,
+                    url: `/coupon/search/issue?start=${start}&end=${end}`,
                     method: 'GET',
                     dataType: 'json',
                     success: function(data) {
                         renderTable(data);
-                    },
-                    error: function(xhr) {
-                        console.error(xhr.responseText);
                     }
                 });
             });
@@ -517,12 +523,12 @@
                 const range = $('#useRange').val().trim();
                 if (!range) return alert("請選擇使用區間");
 
-                const dates = range.split(' - ');
+                const dates = range.split(' ~ ');
                 const start = dates[0];
                 const end = dates[1];
 
                 $.ajax({
-                    url: `/pet/CouponServlet?action=queryByUseRange&start=${start}&end=${end}`,
+                    url: `/coupon/search/use?start=${start}&end=${end}`,
                     method: 'GET',
                     dataType: 'json',
                     success: function(data) {
@@ -543,16 +549,26 @@
 			    tbody.empty();
 			
 			    list.forEach(item => {
-			        const actionText = item.status === 'active' ? '停用' : '啟用';
+			    	const actionText = item.status === 'active' ? '停用' : '啟用';
+
+			        // 1. 處理「是否限量」顯示文字
+			        const isLimitedText = (item.isLimited === 1) ? '限量' : '不限量';
+
+			        // 2. 處理「總發放數量」：不限量時顯示橫線或文字
+			        const totalAmountText = (item.isLimited === 0) ? '-' : item.totalAmount;
+
+			        // 3. 處理「已發放數量」：如果是 null 則顯示 0
+			        const issuedAmountText = (item.issuedAmount == null) ? 0 : item.issuedAmount;
+
 			        tbody.append(`
 			            <tr>
 			                <td>${item.couponId}</td>
 			                <td>${item.code}</td>
 			                <td>${item.discountType}</td>
 			                <td>${item.discountValue}</td>
-			                <td>${item.isLimited}</td>
-			                <td>${item.totalAmount}</td>
-			                <td>${item.issuedAmount}</td>
+			                <td>${isLimitedText}</td> 
+			                <td>${totalAmountText}</td> 
+			                <td>${issuedAmountText}</td> 
 			                <td>${formatDate(item.issueStartAt)}</td>
 			                <td>${formatDate(item.issueEndAt)}</td>
 			                <td>${formatDate(item.useStartAt)}</td>
@@ -580,27 +596,13 @@
 			}
 
             
-            function loadAllCoupons() {
-                $.ajax({
-                    url: '/pet/CouponServlet?action=list',
-                    method: 'GET',
-                    dataType: 'json',
-                    success: function(data) {
-                        renderTable(data);
-                    },
-                    error: function(xhr, status, error) {
-                        console.error(xhr.responseText);
-                    }
-                });
-            }
-            
             function formatDate(dateStr) {
                 if (!dateStr) return '';
-                return moment(dateStr).format('YYYY/MM/DD');
+                return moment(dateStr).format('YYYY-MM-DD');
             }
 
             // 頁面一載入就呼叫
-            loadAllCoupons();
+            loadCoupons();
         });
     </script>
 </body>
