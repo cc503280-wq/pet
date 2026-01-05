@@ -67,12 +67,12 @@
             </ul>
 			<!-- 右側 Navbar 按鈕 -->
 		    <ul class="navbar-nav ml-auto">
-		        <li class="nav-item">
-		            <a href="../../AdminLogoutServlet" class="btn btn-secondary btn-sm">
-		                <i class="fas fa-sign-out-alt"></i> 登出
-		            </a>
-		        </li>
-		    </ul>
+                <li class="nav-item">
+                    <a href="javascript:void(0)" id="logoutBtn" class="btn btn-secondary btn-sm">
+                        <i class="fas fa-sign-out-alt"></i> 登出
+                    </a>
+                </li>
+            </ul>
 
         </nav>
         <!-- /.navbar -->
@@ -359,6 +359,7 @@
 	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <!-- AdminLTE App -->
     <script src="../../dist/js/adminlte.min.js"></script>
+    <script src="../../dist/js/adminAuth.js"></script>
     <!-- AdminLTE for demo purposes
             <script src="../../dist/js/demo.js"></script> -->
     <!-- Page specific script -->
@@ -394,15 +395,15 @@
             $('#issueRange').daterangepicker({
                 autoUpdateInput: false,
                 locale: {
-                    format: 'YYYY/MM/DD',
+                    format: 'YYYY-MM-DD',
                     cancelLabel: '清除'
                 }
             });
 
             $('#issueRange').on('apply.daterangepicker', function(ev, picker) {
-                $(this).val(picker.startDate.format('YYYY/MM/DD') + ' - ' + picker.endDate.format('YYYY/MM/DD'));
-                $('#issueStartAt').val(picker.startDate.format('YYYY/MM/DD'));
-                $('#issueEndAt').val(picker.endDate.format('YYYY/MM/DD'));
+                $(this).val(picker.startDate.format('YYYY-MM-DD') + ' ~ ' + picker.endDate.format('YYYY-MM-DD'));
+                $('#issueStartAt').val(picker.startDate.format('YYYY-MM-DD'));
+                $('#issueEndAt').val(picker.endDate.format('YYYY-MM-DD'));
             });
 
             $('#issueRange').on('cancel.daterangepicker', function(ev, picker) {
@@ -415,15 +416,15 @@
             $('#useRange').daterangepicker({
                 autoUpdateInput: false,
                 locale: {
-                    format: 'YYYY/MM/DD',
+                    format: 'YYYY-MM-DD',
                     cancelLabel: '清除'
                 }
             });
 
             $('#useRange').on('apply.daterangepicker', function(ev, picker) {
-                $(this).val(picker.startDate.format('YYYY/MM/DD') + ' - ' + picker.endDate.format('YYYY/MM/DD'));
-                $('#useStartAt').val(picker.startDate.format('YYYY/MM/DD'));
-                $('#useEndAt').val(picker.endDate.format('YYYY/MM/DD'));
+                $(this).val(picker.startDate.format('YYYY-MM-DD') + ' ~ ' + picker.endDate.format('YYYY-MM-DD'));
+                $('#useStartAt').val(picker.startDate.format('YYYY-MM-DD'));
+                $('#useEndAt').val(picker.endDate.format('YYYY-MM-DD'));
             });
 
             $('#useRange').on('cancel.daterangepicker', function(ev, picker) {
@@ -483,64 +484,36 @@
 
             $('form').on('submit', function (e) {
                 e.preventDefault();
-				
-                // 取得優惠券表單欄位值
-                const code = $('#code').val().trim();
-                const discountType = $('#discountType').val().trim();
-                const discountValue = $('#discountValue').val().trim();
-                const isLimited = $('#isLimited').val();
-                const totalAmount = $('#totalAmount').val().trim();
-                const minPurchase = $('#minPurchase').val().trim();
 
-                // 取得發放/使用區間拆分後的日期
-                const issueStartAt = $('#issueStartAt').val();
-                const issueEndAt = $('#issueEndAt').val();
-                const useStartAt = $('#useStartAt').val();
-                const useEndAt = $('#useEndAt').val();
-				
-                //呼叫驗證
-                const err = validateCouponFront(discountType, discountValue, minPurchase, issueStartAt, useStartAt);
+                const couponData = {
+                    code: $('#code').val().trim(),
+                    discountType: $('#discountType').val().trim(),
+                    discountValue: parseFloat($('#discountValue').val()),
+                    isLimited: parseInt($('#isLimited').val()),
+                    totalAmount: $('#isLimited').val() === "1" ? parseInt($('#totalAmount').val()) : null,
+                    minPurchase: parseInt($('#minPurchase').val()),
+                    issueStartAt: $('#issueStartAt').val(),
+                    issueEndAt: $('#issueEndAt').val(),
+                    useStartAt: $('#useStartAt').val(),
+                    useEndAt: $('#useEndAt').val()
+                };
 
-                if (err) {
-                    alert(err);
-                    return; // 中止送出
-                }
-                
-                // AJAX 上傳
+                const err = validateCouponFront(couponData.discountType, couponData.discountValue, couponData.minPurchase, couponData.issueStartAt, couponData.useStartAt);
+                if (err) return alert(err);
+
                 $.ajax({
-                    url: '/pet/CouponServlet?action=create',
+                    url: '/coupon', // 對應 RESTful API
                     type: 'POST',
-                    data: {
-                        code: code,
-                        discountType: discountType,
-                        discountValue: discountValue,
-                        isLimited: isLimited,
-                        totalAmount: totalAmount,
-                        minPurchase: minPurchase,
-                        issueStartAt: issueStartAt,
-                        issueEndAt: issueEndAt,
-                        useStartAt: useStartAt,
-                        useEndAt: useEndAt
-                    },
+                    contentType: 'application/json', // 告訴 Spring 我們傳的是 JSON
+                    data: JSON.stringify(couponData), // 序列化物件
                     success: function(res) {
-                        console.log('新增成功!', res);
-                        window.location.href = 
-                            `CouponCreateDone.jsp?` +
-                            `couponId=${res.couponId}` +
-                            `&code=${res.code}` +
-                            `&discountType=${res.discountType}` +
-                            `&discountValue=${res.discountValue}` +
-                            `&isLimited=${res.isLimited}` +
-                            `&totalAmount=${res.totalAmount}` +
-                            `&minPurchase=${res.minPurchase}` +
-                            `&issueStartAt=${res.issueStartAt}` +
-                            `&issueEndAt=${res.issueEndAt}` +
-                            `&useStartAt=${res.useStartAt}` +
-                            `&useEndAt=${res.useEndAt}`;
+                        // 【重要】將結果存入 sessionStorage，下一個頁面去拿
+                        sessionStorage.setItem('lastCreatedCoupon', JSON.stringify(res));
+                        // 直接跳轉到純 HTML 的完成頁面
+                        window.location.href = 'CouponCreateDone.html';
                     },
                     error: function(xhr) {
-                        console.error(xhr.responseText);
-                        alert('新增優惠券失敗，請檢查資料');
+                        alert('新增失敗：' + (xhr.responseJSON ? xhr.responseJSON.error : '資料格式有誤'));
                     }
                 });
             });

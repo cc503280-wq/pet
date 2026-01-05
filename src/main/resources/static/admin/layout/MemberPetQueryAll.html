@@ -86,12 +86,12 @@
             </ul>
 		<!-- 右側 Navbar 按鈕 -->
 		    <ul class="navbar-nav ml-auto">
-		        <li class="nav-item">
-		            <a href="../../AdminLogoutServlet" class="btn btn-secondary btn-sm">
-		                <i class="fas fa-sign-out-alt"></i> 登出
-		            </a>
-		        </li>
-		    </ul>
+                <li class="nav-item">
+                    <a href="javascript:void(0)" id="logoutBtn" class="btn btn-secondary btn-sm">
+                        <i class="fas fa-sign-out-alt"></i> 登出
+                    </a>
+                </li>
+            </ul>
 
         </nav>
         <!-- /.navbar -->
@@ -372,6 +372,7 @@
 	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <!-- AdminLTE App -->
     <script src="../../dist/js/adminlte.min.js"></script>
+    <script src="../../dist/js/adminAuth.js"></script>
     <!-- AdminLTE for demo purposes
             <script src="../../dist/js/demo.js"></script> -->
     <!-- Page specific script -->
@@ -396,14 +397,19 @@ $(function () {
         if (!petId) return alert("請輸入寵物 ID");
 
         $.ajax({
-            url: `/pet/MemberPetServlet?action=queryByPetId&petId=${petId}`,
+            url: `/memberPets/${petId}`,
             method: 'GET',
             dataType: 'json',
             success: function(data) {
-                renderTable([data]); // 單筆用陣列包起來
+                if (data) {
+                    renderTable([data]); 
+                } else {
+                    alert("查無此寵物");
+                    renderTable([]);
+                }
             },
             error: function(xhr) {
-                console.error(xhr.responseText);
+                alert("查詢出錯");
             }
         });
     });
@@ -415,40 +421,34 @@ $(function () {
         if (!memberId) return alert("請輸入會員 ID");
 
         $.ajax({
-            url: `/pet/MemberPetServlet?action=queryByMemberId&memberId=${memberId}`,
+            url: `/memberPets/member/${memberId}`,
             method: 'GET',
             dataType: 'json',
             success: function(data) {
                 renderTable(data);
             },
             error: function(xhr) {
-                console.error(xhr.responseText);
+            	alert("查詢會員寵物失敗");
             }
         });
     });
 
     // 條件查詢
     $('#searchBtn').on('click', function() {
-        const petType = $('#typeSelect').val();
-        const petAge = $('#ageSelect').val();
-        const petSize = $('#sizeSelect').val();
-
-        const params = $.param({
-            action: 'search',
-            petType,
-            petAge,
-            petSize
-        });
-
+        // 直接將參數物件丟給 data，jQuery 會自動幫你拼成 Query String
         $.ajax({
-            url: `/pet/MemberPetServlet?${params}`,
+            url: '/memberPets/search', 
             method: 'GET',
-            dataType: 'json',
+            data: {
+                petType: $('#typeSelect').val(),
+                petAge: $('#ageSelect').val(),
+                petSize: $('#sizeSelect').val()
+            },
             success: function(data) {
                 renderTable(data);
             },
             error: function(xhr) {
-                console.error(xhr.responseText);
+                alert("條件查詢失敗");
             }
         });
     });
@@ -461,20 +461,25 @@ $(function () {
         }
         const tbody = $('#example2 tbody');
         tbody.empty();
-
-        list.forEach(item => {
-            tbody.append(`
-                <tr>
-                    <td>${item.petId}</td>
-                    <td>${item.memberId}</td>
-                    <td>${item.petName}</td>
-                    <td>${item.petType}</td>
-                    <td>${item.petBreed}</td>
-                    <td>${item.petAge}</td>
-                    <td>${item.petSize}</td>
-                </tr>
-            `);
-        });
+        
+        if (!list || list.length === 0) {
+            tbody.append('<tr><td colspan="7" class="text-center">暫無資料</td></tr>');
+        } else {
+            list.forEach(item => {
+                tbody.append(`
+                		<tr>
+                        <td>${item.petId}</td>
+                        <td>${item.member ? item.member.memberId : '無'}</td>
+                        <td>${item.petName}</td>
+                        <td>${item.petType}</td>
+                        <td>${item.petBreed}</td>
+                        <td>${item.petAge}</td>
+                        <td>${item.petSize}</td>
+                    </tr>
+                `);
+            });
+        }
+        
 
         table.DataTable({
             "paging": true,
@@ -491,14 +496,14 @@ $(function () {
     // 頁面載入就查詢全部
     function loadAllPets() {
         $.ajax({
-            url: '/pet/MemberPetServlet?action=list',
+            url: '/memberPets',
             method: 'GET',
             dataType: 'json',
             success: function(data) {
                 renderTable(data);
             },
             error: function(xhr) {
-                console.error(xhr.responseText);
+            	console.error("載入全部寵物失敗");
             }
         });
     }

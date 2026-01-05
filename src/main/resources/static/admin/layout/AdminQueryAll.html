@@ -79,12 +79,12 @@
             </ul>
 			<!-- 右側 Navbar 按鈕 -->
 			    <ul class="navbar-nav ml-auto">
-			        <li class="nav-item">
-			            <a href="../../AdminLogoutServlet" class="btn btn-secondary btn-sm">
-			                <i class="fas fa-sign-out-alt"></i> 登出
-			            </a>
-			        </li>
-			    </ul>
+                <li class="nav-item">
+                    <a href="javascript:void(0)" id="logoutBtn" class="btn btn-secondary btn-sm">
+                        <i class="fas fa-sign-out-alt"></i> 登出
+                    </a>
+                </li>
+            </ul>
 
         </nav>
         <!-- /.navbar -->
@@ -340,176 +340,156 @@
     <script src="../../plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
     <!-- AdminLTE App -->
     <script src="../../dist/js/adminlte.min.js"></script>
+    <script src="../../dist/js/adminAuth.js"></script>
     <!-- AdminLTE for demo purposes
             <script src="../../dist/js/demo.js"></script> -->
     <!-- Page specific script -->
     <script>
-        $(function () {
-            //初始化DataTable	
-            $('#example2').DataTable({
+    $(function () {
+        // 權限控管 (維持使用 sessionStorage)
+        const role = sessionStorage.getItem('role');
+        if (!role) {
+            alert('請先登入');
+            window.location.href = 'Login.html'; 
+        }
+        const isSuperAdmin = role === 'super_admin';
+
+        if (!isSuperAdmin) {
+            $('.btn-add').addClass('disabled-btn'); 
+        }
+
+        //查詢全部、啟用中、停用 
+        $('#statusSelect').on('change', function() {
+            const status = $(this).val(); 
+            loadAdminsByStatus(status);
+        });
+        
+        function loadAdminsByStatus(status = 'all') {
+        	const url = (status === 'all') ? '/admins' : `/admins?status=${status}`;
+            $.ajax({
+                url: `/admins?status=${status}`, 
+                method: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    renderTable(data);
+                }
+            });
+        }
+
+        //  依 ID 查詢
+        $('#idSearchBtn').on('click', function (e) {
+            e.preventDefault();
+            const id = $('#idSearchInput').val().trim();
+            if (!id) return alert("請輸入 ID");
+
+            $.ajax({
+                url: `/admins/${id}`, // RESTful ID 路徑
+                method: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    if (data) {
+                        renderTable([data]); // 回傳單筆物件，用陣列包起來渲染
+                    } else {
+                        alert("找不到該管理員");
+                    }
+                }
+            });
+        });
+
+        // 4. 模糊查詢
+        $('#fuzzySearchBtn').on('click', function (e) {
+            e.preventDefault();
+            const name = $('#fuzzySearchInput').val().trim();
+            if (!name) return alert("請輸入姓名");
+
+            $.ajax({
+                url: `/admins/search?name=${name}`,
+                method: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    renderTable(data);
+                }
+            });
+        });
+
+        // 5. 修改按鈕 
+        $(document).on('click', '.btn-edit', function (e) {
+            e.preventDefault();
+            const id = $(this).data("id");
+            window.location.href = `AdminUpdate.html?adminId=${id}`;
+        });
+
+        // 6. 停用啟用 
+        $(document).on('click', '.btn-toggle-status', function(e) {
+            e.preventDefault();
+            const id = $(this).data('id');
+            const currentStatus = $(this).data('status');
+            const actionMsg = currentStatus === 'active' ? '確定要停用？' : '確定要啟用？';
+            
+            if (!confirm(actionMsg)) return;
+
+            $.ajax({
+                url: `/admins/${id}/toggle`, // 對應 @PatchMapping("/{id}/toggle")
+                method: 'PATCH',             // 使用 PATCH 方法
+                success: function(success) {
+                    if (success) {
+                    	loadAdminsByStatus('all'); 
+                    } else {
+                        alert("操作失敗");
+                    }
+                }
+            });
+        });
+
+        // 7. 更新表格 (邏輯維持，僅確保欄位對應正確)
+        function renderTable(list) {
+            const table = $('#example2');
+            if ($.fn.DataTable.isDataTable(table)) {
+                table.DataTable().clear().destroy();
+            }
+            const tbody = $('#example2 tbody');
+            tbody.empty();
+
+            // 防止 list 為 null 或 undefined
+            if (!list || list.length === 0) {
+                table.DataTable(dataTableConfig);
+                return;
+            }
+            
+            list.forEach(item => {
+                const actionText = item.status === 'active' ? '停用' : '啟用';
+                tbody.append(`
+                    <tr>
+                        <td>${item.adminId}</td>
+                        <td>${item.email}</td>
+                        <td>${item.name}</td>
+                        <td>${item.phone}</td>
+                        <td>${item.role}</td>
+                        <td>${item.status}</td>
+                        <td class="text-center">
+                            <a href="#" class="btn btn-secondary btn-sm mr-1 btn-edit ${isSuperAdmin ? '' : 'disabled-btn'}" data-id="${item.adminId}">修改</a>
+                            <a href="#" class="btn btn-secondary btn-sm btn-toggle-status ${isSuperAdmin ? '' : 'disabled-btn'}" data-id="${item.adminId}" data-status="${item.status}">${actionText}</a>
+                        </td>
+                    </tr>
+                `);
+            });
+            
+            
+            table.DataTable({
                 "paging": true,
-                "lengthChange": false, // 關閉每頁筆數選項
-                "searching": false,    // 關閉搜索框
+                "lengthChange": false,
+                "searching": false,
                 "ordering": true,
-                "info": true,          // 顯示資訊文字
+                "info": true,
                 "autoWidth": true,
                 "responsive": true,
-
-                // **【關鍵修正】使用 dom 屬性強制分頁 (p) 靠右 (col-md-7)**
-                // 結構: 表格本體(t) / 新的一行: [資訊(i) - 左 5 欄] [分頁(p) - 右 7 欄]
                 "dom": '<"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7 d-flex justify-content-end"p>>'
-
             });
-            //權限控管
-            const role = sessionStorage.getItem('role');
-		    if (!role) {
-		        alert('請先登入');
-		        window.location.href = 'login.html';
-		    }
-		    const isSuperAdmin = role === 'super_admin';
-	
-		    if (!isSuperAdmin) {
-		        $('.btn-add').addClass('disabled-btn'); 
-		    }
-		    
-          //查詢全部、啟用中、停用
-            $('#statusSelect').on('change', function() {
-			    const status = $(this).val(); // 取得選擇值: all / active / disabled
-			    loadAdminsByStatus(status);
-			});
-			
-			function loadAdminsByStatus(status) {
-			    $.ajax({
-			        url: `/pet/AdminServlet?action=list&status=${status}`,
-			        method: 'GET',
-			        dataType: 'json',
-			        success: function(data) {
-			            renderTable(data);
-			        },
-			        error: function(xhr, status, error) {
-			            console.error(xhr.responseText);
-			        }
-			    });
-			}
+        }
 
-
-            //依ID查詢
-            $('#idSearchBtn').on('click', function (e) {
-                e.preventDefault();
-
-                const id = $('#idSearchInput').val().trim();
-                if (!id) return alert("請輸入 ID");
-
-                $.ajax({
-                    url: `/pet/AdminServlet?action=queryById&adminId=${id}`,
-                    method: 'GET',
-                    dataType: 'json',
-                    success: function (data) {
-                        renderTable([data]);
-                        // 單筆用陣列包起來
-                    }
-                });
-            });
-            //模糊查詢
-            $('#fuzzySearchBtn').on('click', function (e) {
-                e.preventDefault();
-
-                const name = $('#fuzzySearchInput').val().trim();
-                if (!name) return alert("請輸入姓名");
-
-                $.ajax({
-                    url: `/pet/AdminServlet?action=queryLikeName&name=${name}`,
-                    method: 'GET',
-                    dataType: 'json',
-                    success: function (data) {
-                        renderTable(data);
-                    }
-                });
-            });
-            //修改
-            $(document).on('click', '.btn-edit', function (e) {
-                e.preventDefault();
-
-                const id = $(this).data("id");
-
-                // 跳頁
-                window.location.href = `AdminUpdate.jsp?adminId=${id}`;
-            });
-            //停用啟用
-            $(document).on('click', '.btn-toggle-status', function(e) {
-			    e.preventDefault();
-			    const id = $(this).data('id');
-			    const currentStatus = $(this).data('status');
-			    const newStatus = currentStatus == 'active' ? 'disabled' : 'active';
-			    const confirmMsg = newStatus == 'disabled' ? '確定要停用？' : '確定要啟用？';
-			    if (!confirm(confirmMsg)) return;
-			
-			    $.ajax({
-			        url: `/pet/AdminServlet?action=toggleStatus&adminId=${id}&status=${newStatus}`,
-			        method: 'POST',
-			        success: function() {
-			            loadAllAdmins(); // 重新載入表格
-			        },
-			        error: function(xhr) {
-			            console.error(xhr.responseText);
-			        }
-			    });
-			});
-            //更新表格
-            function renderTable(list) {
-                const table = $('#example2');
-                if ($.fn.DataTable.isDataTable(table)) {
-                    table.DataTable().clear().destroy();
-                }
-                const tbody = $('#example2 tbody');
-                tbody.empty();
-                list.forEach(item => {
-                const actionText = item.status == 'active' ? '停用' : '啟用';
-                
-                    tbody.append(`
-                        <tr>
-                            <td>${item.adminId}</td>
-                            <td>${item.email}</td>
-                            <td>${item.name}</td>
-                            <td>${item.phone}</td>
-                            <td>${item.role}</td>
-                            <td>${item.status}</td>
-                            <td class="text-center">
-                                <a href="#" class="btn btn-secondary btn-sm mr-1 btn-edit ${isSuperAdmin ? '' : 'disabled-btn'}" data-id="${item.adminId}">修改</a>
-                                <a href="#" class="btn btn-secondary btn-sm btn-toggle-status ${isSuperAdmin ? '' : 'disabled-btn'}" data-id="${item.adminId}" data-status="${item.status}">${actionText}</a>
-                            </td>
-                        </tr>
-                    `);
-                });
-                table.DataTable({
-                    "paging": true,
-                    "lengthChange": false,
-                    "searching": false,
-                    "ordering": true,
-                    "info": true,
-                    "autoWidth": true,
-                    "responsive": true,
-                    "dom": '<"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7 d-flex justify-content-end"p>>'
-                });
-            }
-
-            function loadAllAdmins() {
-                $.ajax({
-                    url: '/pet/AdminServlet?action=list',
-                    method: 'GET',
-                    dataType: 'json',
-                    success: function(data) {
-                        renderTable(data);
-                    },
-                    error: function(xhr, status, error) {
-                        console.error(xhr.responseText);
-                    }
-                });
-            }
-
-            // 頁面一載入就呼叫
-            loadAllAdmins();
-        });
+        // 頁面一載入就呼叫
+        loadAdminsByStatus('all');
+    });
     </script>
 </body>
 

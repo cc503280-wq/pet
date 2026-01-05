@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 //import com.pet.model.appointment.Appointment;
 
@@ -36,6 +37,7 @@ public class MemberPet {
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_id", insertable = false, updatable = false)
+	@JsonIgnoreProperties({"pets", "hibernateLazyInitializer", "handler"})
 	private Member member;
 
 	@Column(name = "pet_name")
