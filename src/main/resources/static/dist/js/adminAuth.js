@@ -19,12 +19,12 @@ $(function () {
                 method: 'POST',
                 success: function () {
                     sessionStorage.clear();
-                    window.location.href = 'Login.html';
+                    window.location.href = '/admin/layout/Login.html';
                 },
                 error: function () {
                     // 即使後端 Session 過期，前端也要清空並跳轉
                     sessionStorage.clear();
-                    window.location.href = 'Login.html';
+                    window.location.href = '/admin/layout/Login.html';
                 }
             });
         }
