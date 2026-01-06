@@ -1,9 +1,7 @@
 package com.pet.controller.member;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,7 +25,7 @@ public class MemberController {
 	@Autowired
     private MemberService memberService;
 
-    private final String UPLOAD_PATH = "C:/memberImages/";
+//    private final String UPLOAD_PATH = "C:/memberImages/";
 
     // 查詢 (含狀態篩選)
     @GetMapping
@@ -54,8 +52,7 @@ public class MemberController {
     @PostMapping
     public Member createMember(@ModelAttribute Member member, 
                          @RequestParam(value = "pictureFile", required = false) MultipartFile file) throws IOException {
-        processImage(member, file);
-        return memberService.createMember(member);
+        return memberService.createMemberWithImage(member, file);
     }
 
     // 修改
@@ -64,8 +61,7 @@ public class MemberController {
                          @ModelAttribute Member member,
                          @RequestParam(value = "pictureFile", required = false) MultipartFile file) throws IOException {
         member.setMemberId(id);
-        processImage(member, file);
-        return memberService.updateMember(member);
+        return memberService.updateMemberWithImage(id, member, file);
     }
 
     // 切換狀態
@@ -74,18 +70,18 @@ public class MemberController {
         return memberService.toggleStatus(id);
     }
 
-    // 私有方法：處理照片存檔 
-    private void processImage(Member member, MultipartFile file) throws IOException {
-        if (file != null && !file.isEmpty()) {
-            File uploadDir = new File(UPLOAD_PATH);
-            if (!uploadDir.exists()) uploadDir.mkdirs();
-
-            String originalName = file.getOriginalFilename();
-            String fileName = UUID.randomUUID().toString() + "_" + originalName; // 產生唯一的檔名
-            file.transferTo(new File(UPLOAD_PATH + fileName));
-            
-            // 存入資料庫的路徑，對應 WebConfig 設定
-            member.setPicture("/memberImages/" + fileName);
-        }
-    }
+//    // 私有方法：處理照片存檔 
+//    private void processImage(Member member, MultipartFile file) throws IOException {
+//        if (file != null && !file.isEmpty()) {
+//            File uploadDir = new File(UPLOAD_PATH);
+//            if (!uploadDir.exists()) uploadDir.mkdirs();
+//
+//            String originalName = file.getOriginalFilename();
+//            String fileName = UUID.randomUUID().toString() + "_" + originalName; // 產生唯一的檔名
+//            file.transferTo(new File(UPLOAD_PATH + fileName));
+//            
+//            // 存入資料庫的路徑，對應 WebConfig 設定
+//            member.setPicture("/memberImages/" + fileName);
+//        }
+//    }
 }

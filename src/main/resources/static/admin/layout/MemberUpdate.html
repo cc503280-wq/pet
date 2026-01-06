@@ -4,18 +4,33 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>MemberUpdateDone</title>
+    <title>會員資料修改</title>
 
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <link rel="stylesheet" href="../../plugins/fontawesome-free/css/all.min.css">
     <link rel="stylesheet" href="../../dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="../../plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="../../plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+    <link rel="stylesheet" href="../../plugins/select2/css/select2.min.css">
+    <link rel="stylesheet" href="../../plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+    <link rel="stylesheet" href="../../plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
     <style type="text/css">
         .brand-link { display: flex; align-items: center; justify-content: flex-start; padding: 0.5rem 1rem; }
         .sidebar-collapse .brand-link { justify-content: center; }
         .brand-link i { width: 1.5rem; text-align: center; }
         .sidebar-collapse .brand-text { display: none; }
         .box1 { display: flex; justify-content: space-between; align-items: center; }
-        .form-control-static { padding-top: 7px; color: #333; font-weight: 500; }
+        /* 讓圖片變成 120x120 的正方形 */
+		#currentPicture {
+		    width: 120px;
+		    height: 120px;
+		    object-fit: cover; /* 關鍵：這會像手機大頭貼一樣，自動裁切多餘部分而不變形 */
+		    border-radius: 8px; /* 加點圓角看起來比較精緻 */
+		    border: 2px solid #dee2e6;
+		    margin-bottom: 10px;
+		    display: block;
+		}
     </style>
 </head>
 
@@ -37,9 +52,9 @@
         </nav>
 
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
-            <a href="Home.html" class="brand-link">
+            <a href="../../index3.html" class="brand-link">
                 <i class="fas fa-paw" style="color: #FFD43B; font-size: 1.5rem;"></i>
-                <span class="brand-text font-weight-light">後台管理系統</span>
+                <span class="brand-text font-weight-light">後台管理</span>
             </a>
             <div class="sidebar">
                 <nav class="mt-2">
@@ -47,7 +62,7 @@
                         <li class="nav-item menu-open">
                             <a href="#" class="nav-link active">
                                 <i class="nav-icon fas fa-edit"></i>
-                                <p>會員管理 <i class="right fas fa-angle-left"></i></p>
+                                <p>會員管理<i class="right fas fa-angle-left"></i></p>
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item"><a href="AdminQueryAll.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>管理員資料</p></a></li>
@@ -58,30 +73,7 @@
                                 <li class="nav-item"><a href="FavoritesQueryAll.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>會員收藏清單</p></a></li>
                             </ul>
                         </li>
-                        <li class="nav-item">
-                            <a href="../../AllProducts" class="nav-link">
-                                <i class="nav-icon fas fa-edit"></i>
-                                <p>商品管理</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-edit"></i>
-                                <p>訂單管理 <i class="right fas fa-angle-left"></i></p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item"><a href="../../orderList" class="nav-link"><i class="far fa-circle nav-icon"></i><p>查詢全部訂單</p></a></li>
-                                <li class="nav-item"><a href="../../shipmentsList" class="nav-link"><i class="far fa-circle nav-icon"></i><p>物流查詢</p></a></li>
-                                <li class="nav-item"><a href="../../orderItemsList" class="nav-link"><i class="far fa-circle nav-icon"></i><p>查詢全部訂單明細</p></a></li>
-                                <li class="nav-item"><a href="../order/shopping.jsp" class="nav-link"><i class="far fa-circle nav-icon"></i><p>新增訂單</p></a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a href="../../AppointmentServlet.do" class="nav-link">
-                                <i class="nav-icon fas fa-edit"></i>
-                                <p>預約管理</p>
-                            </a>
-                        </li>
+                        <li class="nav-item"><a href="../../AllProducts" class="nav-link"><i class="nav-icon fas fa-edit"></i><p>商品管理</p></a></li>
                     </ul>
                 </nav>
             </div>
@@ -92,7 +84,7 @@
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-12 box1">
-                            <h1>會員管理</h1>
+                            <h1>修改會員資料</h1>
                             <a href="MemberQueryAll.html" class="btn btn-secondary btn-sm">回列表</a>
                         </div>
                     </div>
@@ -101,102 +93,154 @@
 
             <section class="content">
                 <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="card card-info">
-                                <div class="card-header">
-                                    <h3 class="card-title">修改資料檢視</h3>
-                                </div>
-                                <div class="alert alert-success mx-4 mt-3 py-2">
-                                    <i class="icon fas fa-check-circle"></i>
-                                    <strong>修改成功!</strong>
-                                </div>
-                                
-                                <form class="form-horizontal">
-                                    <div class="card-body">
-                                        <div class="form-group row">
-                                            <label class="col-sm-2 col-form-label">ID:</label>
-                                            <div class="col-sm-10">
-                                                <p id="showMemberId" class="form-control-static">載入中...</p>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label class="col-sm-2 col-form-label">姓名:</label>
-                                            <div class="col-sm-10">
-                                                <p id="showName" class="form-control-static"></p>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label class="col-sm-2 col-form-label">Email:</label>
-                                            <div class="col-sm-10">
-                                                <p id="showEmail" class="form-control-static"></p>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label class="col-sm-2 col-form-label">性別:</label>
-                                            <div class="col-sm-10">
-                                                <p id="showGender" class="form-control-static"></p>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label class="col-sm-2 col-form-label">生日:</label>
-                                            <div class="col-sm-10">
-                                                <p id="showBirthday" class="form-control-static"></p>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label class="col-sm-2 col-form-label">電話:</label>
-                                            <div class="col-sm-10">
-                                                <p id="showPhone" class="form-control-static"></p>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label class="col-sm-2 col-form-label">地址:</label>
-                                            <div class="col-sm-10">
-                                                <p id="showAddress" class="form-control-static"></p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="card-footer text-right">
-                                        <small class="text-muted">更新完成時間：<span id="updateTime"></span></small>
-                                    </div>
-                                </form>
-                            </div>
+                    <div class="card card-info">
+                        <div class="card-header">
+                            <h3 class="card-title">會員 ID: <span id="memberIdDisplay"></span></h3>
                         </div>
+                        <form class="form-horizontal" id="updateForm" enctype="multipart/form-data">
+                            <div class="card-body">
+                                <div class="form-group row">
+                                    <label class="col-sm-2 col-form-label">姓名:</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="name" required>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-2 col-form-label">Email:</label>
+                                    <div class="col-sm-10">
+                                        <input type="email" class="form-control" id="email" required>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-2 col-form-label">性別:</label>
+                                    <div class="col-sm-10">
+                                        <select class="form-control select2" id="gender">
+                                            <option value="M">男</option>
+                                            <option value="F">女</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-2 col-form-label">生日:</label>
+                                    <div class="col-sm-10">
+                                        <div class="input-group date" id="reservationdate" data-target-input="nearest">
+                                            <input type="text" class="form-control datetimepicker-input" id="birthday" data-target="#reservationdate" />
+                                            <div class="input-group-append" data-target="#reservationdate" data-toggle="datetimepicker">
+                                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-2 col-form-label">電話:</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="phone">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-2 col-form-label">地址:</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="address">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-2 col-form-label">目前大頭貼:</label>
+                                    <div class="col-sm-10">
+                                        <img id="currentPicture" src="../../dist/img/avatar.png" alt="No Image">
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input" id="picture" name="pictureFile">
+                                            <label class="custom-file-label" for="picture">更換照片 (若不更換請留空)</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-info">送出</button>
+                                <button type="reset" class="btn btn-default float-right">清除</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </section>
         </div>
-
-        <footer class="main-footer">
-            <strong>Copyright &copy; 2026 Pet Admin.</strong>
-        </footer>
     </div>
 
     <script src="../../plugins/jquery/jquery.min.js"></script>
     <script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../../plugins/moment/moment.min.js"></script>
+    <script src="../../plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
     <script src="../../dist/js/adminlte.min.js"></script>
-    <script src="../../dist/js/adminAuth.js"></script>
 
     <script>
-        $(function () {
-            const updatedMemberData = sessionStorage.getItem('updatedMember');
+    $(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const memberId = urlParams.get('memberId');
 
-            if (updatedMemberData) {
-                const member = JSON.parse(updatedMemberData);
-                $('#showMemberId').text(member.memberId);
-                $('#showName').text(member.name);
-                $('#showEmail').text(member.email);
-                $('#showGender').text(member.gender === 'M' ? '男' : '女');
-                $('#showBirthday').text(member.birthday);
-                $('#showPhone').text(member.phone);
-                $('#showAddress').text(member.address);
-                $('#updateTime').text(new Date().toLocaleString());
-            } else {
-                alert('查無資料，導回列表頁。');
-                window.location.href = 'MemberQueryAll.html';
-            }
+        if (!memberId) {
+            alert('未指定會員 ID');
+            window.location.href = 'MemberQueryAll.html';
+            return;
+        }
+
+        // 1. 初始化 DatePicker
+        $('#reservationdate').datetimepicker({ format: 'YYYY-MM-DD' });
+
+        // 2. 載入原始資料 (使用相對路徑防止解析失敗)
+        $.ajax({
+            url: `/members/${memberId}`,
+            type: 'GET',
+            success: function(member) {
+                $('#memberIdDisplay').text(member.memberId);
+                $('#name').val(member.name);
+                $('#email').val(member.email);
+                $('#gender').val(member.gender).trigger('change');
+                $('#birthday').val(member.birthday);
+                $('#phone').val(member.phone);
+                $('#address').val(member.address);
+                if (member.picture) {
+                    $('#currentPicture').attr('src', member.picture);
+                }
+            },
+            error: function() { alert('讀取會員資料失敗'); }
         });
+
+        // 顯示檔名
+        $('.custom-file-input').on('change', function(e){
+            var fileName = e.target.files[0] ? e.target.files[0].name : "更換照片";
+            $(this).next('.custom-file-label').html(fileName);
+        });
+
+        // 3. 提交表單 (PUT)
+        $('#updateForm').on('submit', function (e) {
+            e.preventDefault();
+
+            const formData = new FormData();
+            formData.append('name', $('#name').val());
+            formData.append('email', $('#email').val());
+            formData.append('gender', $('#gender').val());
+            formData.append('birthday', $('#birthday').val());
+            formData.append('phone', $('#phone').val());
+            formData.append('address', $('#address').val());
+            
+            const pictureFile = $('#picture')[0].files[0];
+            if (pictureFile) {
+                formData.append('pictureFile', pictureFile);
+            }
+
+            $.ajax({
+                url: `/members/${memberId}`,
+                type: 'PUT',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(res) {
+                    sessionStorage.setItem('updatedMember', JSON.stringify(res));
+                    window.location.href = 'MemberUpdateDone.html';
+                },
+                error: function() { alert('修改失敗'); }
+            });
+        });
+    });
     </script>
 </body>
 </html>

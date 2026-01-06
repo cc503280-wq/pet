@@ -151,11 +151,7 @@
 			<artifactId>jbcrypt</artifactId>
 			<version>0.4</version>
 		</dependency>
-		<dependency>
-			<groupId>HibernateProject</groupId>
-			<artifactId>HibernateProject</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
+		
 	</dependencies>
 
 	<build>
