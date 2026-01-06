@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CouponUpdate</title>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <link rel="stylesheet" href="../../plugins/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="../../dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="../../plugins/select2/css/select2.min.css">
+    <link rel="stylesheet" href="../../plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+    
+    <style type="text/css">
+        .brand-link { display: flex; align-items: center; justify-content: flex-start; padding: 0.5rem 1rem; }
+        .sidebar-collapse .brand-link { justify-content: center; }
+        .brand-link i { width: 1.5rem; text-align: center; }
+        .sidebar-collapse .brand-text { display: none; }
+        .box1 { display: flex; justify-content: space-between; align-items: center; }
+    </style>
+</head>
+
+<body class="hold-transition sidebar-mini sidebar-collapse">
+    <div class="wrapper">
+        <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a href="javascript:void(0)" id="logoutBtn" class="btn btn-secondary btn-sm">
+                        <i class="fas fa-sign-out-alt"></i> 登出
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <aside class="main-sidebar sidebar-dark-primary elevation-4">
+            <a href="Home.html" class="brand-link">
+                <i class="fas fa-paw" style="color: #FFD43B; font-size: 1.5rem;"></i>
+                <span class="brand-text font-weight-light">後台管理系統</span>
+            </a>
+            <div class="sidebar">
+                <nav class="mt-2">
+                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                        <li class="nav-item menu-open">
+                            <a href="#" class="nav-link active">
+                                <i class="nav-icon fas fa-edit"></i>
+                                <p>會員管理 <i class="right fas fa-angle-left"></i></p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item"><a href="AdminQueryAll.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>管理員資料</p></a></li>
+                                <li class="nav-item"><a href="MemberQueryAll.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>會員基本資料</p></a></li>
+                                <li class="nav-item"><a href="MemberPetQueryAll.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>會員寵物資料</p></a></li>
+                                <li class="nav-item"><a href="CouponQueryAll.html" class="nav-link active"><i class="far fa-circle nav-icon"></i><p>優惠券總覽</p></a></li>
+                                <li class="nav-item"><a href="CouponUsersQueryAll.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>會員持有優惠券</p></a></li>
+                                <li class="nav-item"><a href="FavoritesQueryAll.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>會員收藏清單</p></a></li>
+                            </ul>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="../../AllProducts" class="nav-link">
+                                <i class="nav-icon fas fa-edit"></i>
+                                <p>商品管理 <i class="right fas fa-angle-left"></i></p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-edit"></i>
+                                <p>訂單管理 <i class="right fas fa-angle-left"></i></p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item"><a href="../../orderList" class="nav-link"><i class="far fa-circle nav-icon"></i><p>查詢全部訂單</p></a></li>
+                                <li class="nav-item"><a href="../../shipmentsList" class="nav-link"><i class="far fa-circle nav-icon"></i><p>物流查詢</p></a></li>
+                                <li class="nav-item"><a href="../../orderItemsList" class="nav-link"><i class="far fa-circle nav-icon"></i><p>查詢全部訂單明細</p></a></li>
+                                <li class="nav-item"><a href="../order/shopping.jsp" class="nav-link"><i class="far fa-circle nav-icon"></i><p>新增訂單</p></a></li>
+                            </ul>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="../../AppointmentServlet.do" class="nav-link">
+                                <i class="nav-icon fas fa-edit"></i>
+                                <p>預約管理 <i class="right fas fa-angle-left"></i></p>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </aside>
+
+        <div class="content-wrapper">
+            <section class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-12 box1">
+                            <h1>會員管理</h1>
+                            <a href="CouponQueryAll.html" class="btn btn-secondary btn-sm">回列表</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card card-info">
+                                <div class="card-header">
+                                    <h3 class="card-title">修改優惠券資料</h3>
+                                </div>
+                                <form class="form-horizontal" id="updateForm">
+                                    <input type="hidden" id="couponId"> 
+                                    <div class="card-body">
+                                        <div class="form-group row">
+                                            <label for="code" class="col-sm-2 col-form-label">折扣碼:</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" id="code" required>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-sm-2 col-form-label">折扣類型:</label>
+                                            <div class="col-sm-10">
+                                                <select class="form-control select2" style="width: 100%;" id="discountType">
+                                                    <option value="amount">固定金額 (amount)</option>
+                                                    <option value="percent">百分比 (percent)</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="discountValue" class="col-sm-2 col-form-label">折扣金額/百分比:</label>
+                                            <div class="col-sm-10">
+                                                <input type="number" step="0.05" class="form-control" id="discountValue" required>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-sm-2 col-form-label">是否限量:</label>
+                                            <div class="col-sm-10">
+                                                <select class="form-control select2" style="width: 100%;" id="isLimited">
+                                                    <option value="0">0:不限量</option>
+                                                    <option value="1">1:限量</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="totalAmount" class="col-sm-2 col-form-label">總發放量:</label>
+                                            <div class="col-sm-10">
+                                                <input type="number" class="form-control" id="totalAmount">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="issuedAmount" class="col-sm-2 col-form-label">已發放數量:</label>
+                                            <div class="col-sm-10">
+                                                <input type="number" class="form-control" id="issuedAmount" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="minPurchase" class="col-sm-2 col-form-label">使用門檻金額:</label>
+                                            <div class="col-sm-10">
+                                                <input type="number" class="form-control" id="minPurchase">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-sm-2 col-form-label">發放區間:</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" id="issueRange">
+                                                <input type="hidden" id="issueStartAt">
+                                                <input type="hidden" id="issueEndAt">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-sm-2 col-form-label">使用區間:</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" id="useRange">
+                                                <input type="hidden" id="useStartAt">
+                                                <input type="hidden" id="useEndAt">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer">
+                                            <button type="submit" class="btn btn-info">送出</button>
+                                            <button type="reset" class="btn btn-default float-right">清除</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <footer class="main-footer">
+            <strong>Copyright &copy; 2026 Pet Admin.</strong>
+        </footer>
+    </div>
+
+    <script src="../../plugins/jquery/jquery.min.js"></script>
+    <script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../../plugins/moment/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <script src="../../dist/js/adminlte.min.js"></script>
+    <script src="../../dist/js/adminAuth.js"></script>
+
+    <script>
+        $(function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const couponId = urlParams.get('couponId');
+
+            if (!couponId) {
+                alert("缺少 Coupon ID");
+                window.location.href = 'CouponQueryAll.html';
+                return;
+            }
+
+            // --- 1. 初始化日期元件 ---
+            const datePickerConfig = {
+                autoUpdateInput: false,
+                locale: { format: 'YYYY-MM-DD', separator: ' ~ ', cancelLabel: '清除' }
+            };
+
+            $('#issueRange, #useRange').daterangepicker(datePickerConfig);
+
+            $('#issueRange, #useRange').on('apply.daterangepicker', function(ev, picker) {
+                $(this).val(picker.startDate.format('YYYY-MM-DD') + ' ~ ' + picker.endDate.format('YYYY-MM-DD'));
+                const prefix = this.id.replace('Range', '');
+                $(`#${prefix}StartAt`).val(picker.startDate.format('YYYY-MM-DD'));
+                $(`#${prefix}EndAt`).val(picker.endDate.format('YYYY-MM-DD'));
+            });
+
+            // --- 2. 載入原始資料 ---
+            $.ajax({
+                url: `/coupon/${couponId}`,
+                method: 'GET',
+                success: function (coupon) {
+                    $('#couponId').val(coupon.couponId);
+                    $('#code').val(coupon.code);
+                    $('#discountType').val(coupon.discountType);
+                    $('#discountValue').val(coupon.discountValue);
+                    $('#isLimited').val(coupon.isLimited);
+                    $('#totalAmount').val(coupon.totalAmount);
+                    $('#issuedAmount').val(coupon.issuedAmount);
+                    $('#minPurchase').val(coupon.minPurchase);
+                    
+                    if(coupon.issueStartAt && coupon.issueEndAt) {
+                        $('#issueRange').val(`${coupon.issueStartAt} ~ ${coupon.issueEndAt}`);
+                        $('#issueStartAt').val(coupon.issueStartAt);
+                        $('#issueEndAt').val(coupon.issueEndAt);
+                    }
+                    if(coupon.useStartAt && coupon.useEndAt) {
+                        $('#useRange').val(`${coupon.useStartAt} ~ ${coupon.useEndAt}`);
+                        $('#useStartAt').val(coupon.useStartAt);
+                        $('#useEndAt').val(coupon.useEndAt);
+                    }
+
+                    toggleQuantityInputs();
+                },
+                error: function () {
+                    alert('載入資料失敗');
+                }
+            });
+
+            // --- 3. 限量控制邏輯 ---
+            function toggleQuantityInputs() {
+			    const status = $('#isLimited').val(); 
+			    if (status === "1") { 
+			        $('#totalAmount').prop('disabled', false);
+			    } else {
+			        $('#totalAmount').prop('disabled', true).val('');
+			    }
+			}
+            
+            $('#isLimited').on('change', toggleQuantityInputs);
+
+            // --- 4. 送出更新 ---
+            $('#updateForm').submit(function (e) {
+                e.preventDefault();
+
+                const updateData = {
+                    couponId: $('#couponId').val(),
+                    code: $('#code').val().trim(),
+                    discountType: $('#discountType').val(),
+                    discountValue: parseFloat($('#discountValue').val()),
+                    isLimited: parseInt($('#isLimited').val()),
+                    totalAmount: $('#totalAmount').val() ? parseInt($('#totalAmount').val()) : 0,
+                    issuedAmount: parseInt($('#issuedAmount').val() || 0),
+                    minPurchase: parseInt($('#minPurchase').val()),
+                    issueStartAt: $('#issueStartAt').val(),
+                    issueEndAt: $('#issueEndAt').val(),
+                    useStartAt: $('#useStartAt').val(),
+                    useEndAt: $('#useEndAt').val()
+                };
+
+                $.ajax({
+                    url: `/coupon/${couponId}`,
+                    method: 'PUT',
+                    contentType: 'application/json',
+                    data: JSON.stringify(updateData),
+                    success: function (res) {
+                        sessionStorage.setItem('lastUpdatedCoupon', JSON.stringify(res));
+                        window.location.href = 'CouponUpdateDone.html';
+                    },
+                    error: function (xhr) {
+                        alert("更新失敗: " + (xhr.responseJSON?.message || "資料格式錯誤"));
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

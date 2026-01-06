@@ -66,12 +66,12 @@
             </ul>
 			<!-- 右側 Navbar 按鈕 -->
 			    <ul class="navbar-nav ml-auto">
-			        <li class="nav-item">
-			            <a href="../../AdminLogoutServlet" class="btn btn-secondary btn-sm">
-			                <i class="fas fa-sign-out-alt"></i> 登出
-			            </a>
-			        </li>
-			    </ul>
+                <li class="nav-item">
+                    <a href="javascript:void(0)" id="logoutBtn" class="btn btn-secondary btn-sm">
+                        <i class="fas fa-sign-out-alt"></i> 登出
+                    </a>
+                </li>
+            </ul>
 
         </nav>
         <!-- /.navbar -->
@@ -330,107 +330,102 @@
     <script src="../../plugins/select2/js/select2.full.min.js"></script>
     <!-- AdminLTE App -->
     <script src="../../dist/js/adminlte.min.js"></script>
+    <script src="../../dist/js/adminAuth.js"></script>
     <!-- AdminLTE for demo purposes
             <script src="../../dist/js/demo.js"></script> -->
     <!-- Page specific script -->
     <script>
-        $(function () {
+    $(function () {
+        // 1. 初始化 DataTable (維持原樣)
+        $('#example2').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": false,
+            "ordering": true,
+            "info": true,
+            "autoWidth": true,
+            "responsive": true,
+            "dom": '<"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7 d-flex justify-content-end"p>>'
+        });
 
-            $('#example2').DataTable({
-                "paging": true,
-                "lengthChange": false, // 關閉每頁筆數選項
-                "searching": false,    // 關閉搜索框
-                "ordering": true,
-                "info": true,          // 顯示資訊文字
-                "autoWidth": true,
-                "responsive": true,
+        // ----------- 驗證函式 (抽出至外部讓結構更乾淨) -----------
+        function isValidEmail(email) {
+            const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return regex.test(email);
+        }
 
-                // **【關鍵修正】使用 dom 屬性強制分頁 (p) 靠右 (col-md-7)**
-                // 結構: 表格本體(t) / 新的一行: [資訊(i) - 左 5 欄] [分頁(p) - 右 7 欄]
-                "dom": '<"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7 d-flex justify-content-end"p>>'
-            });
+        function validatePassword(pwd) {
+            if (pwd.length < 8) {
+                alert('密碼不得小於 8 碼');
+                return false;
+            }
+            if (!/[0-9]/.test(pwd)) {
+                alert('密碼必須包含數字');
+                return false;
+            }
+            if (!/[A-Za-z]/.test(pwd)) {
+                alert('密碼必須包含英文字母');
+                return false;
+            }
+            return true;
+        }
 
-            $('form').on('submit', function (e) {
-                e.preventDefault();
-				
-             // ----------- Email 驗證函式 -----------
-                function isValidEmail(email) {
-                    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                    return regex.test(email);
+        // 2. 表單提交事件
+        $('form').on('submit', function (e) {
+            e.preventDefault();
+
+            // 取得輸入值
+            const email = $('#email').val().trim();
+            const pwd = $('#password').val().trim();
+            const name = $('#name').val().trim();
+            const phone = $('#phone').val().trim();
+            const role = $('#role').val();
+
+            // ----------- 前端驗證 -----------
+            if (email === '') {
+                alert('Email不得為空白');
+                return;
+            }
+
+            if (!isValidEmail(email)) {
+                alert('Email 格式不正確');
+                return;
+            }
+
+            if (!validatePassword(pwd)) {
+                return; 
+            }
+
+            // 3. 準備 JSON 資料 (對應後端 Admin Bean 欄位)
+            const data = {
+                name: name,
+                email: email,
+                password: pwd,
+                phone: phone,
+                role: role
+            };
+
+            // 4. 發送 AJAX 請求至 Spring Boot
+            $.ajax({
+                url: '/admins',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                dataType: 'json',
+                success: function (res) {
+                    console.log('新增成功!');
+                    
+                    sessionStorage.setItem('newAdmin', JSON.stringify(res));
+
+                    window.location.href = 'AdminCreateDone.html';
+                },
+                error: function (xhr) {
+                    console.error(xhr.responseText);
+                    alert('新增失敗，請檢查資料是否重複');
                 }
-
-                // ----------- 密碼驗證共用函式 -----------
-                function validatePassword() {
-                    let pwd = $('#password').val().trim();
-
-                    if (pwd.length < 8) {
-                        alert('密碼不得小於 8 碼');
-                        return false;
-                    }
-                    if (!/[0-9]/.test(pwd)) {
-                        alert('密碼必須包含數字');
-                        return false;
-                    }
-                    if (!/[A-Za-z]/.test(pwd)) {
-                        alert('密碼必須包含英文字母');
-                        return false;
-                    }
-                    return true;
-                }
-
-                
-                const data = {
-                    name: $('#name').val().trim(),
-                    email: $('#email').val().trim(),
-                    password: $('#password').val().trim(),
-                    phone: $('#phone').val().trim(),
-                    role: $('#role').val(),
-                };
-                
-                const email = $('#email').val().trim();
-                const pwd = $('#password').val().trim();
-
-                if (email === '') {
-                    e.preventDefault();
-                    alert('Email不得為空白');
-                    return;
-                }
-
-                // Email 格式不正確
-                if (!isValidEmail(email)) {
-                    e.preventDefault();
-                    alert('Email 格式不正確');
-                    return;
-                }
-
-             // ----------- 密碼驗證-----------
-                if (!validatePassword()) {
-                    return; 
-                }
-
-                $.ajax({
-                    url: '/pet/AdminServlet?action=create',
-                    method: 'POST',
-                    data: data,
-                    dataType: 'json',
-                    success: function (res) {
-                    	console.log('成功!');
-                    	window.location.href = 
-                            `AdminCreateDone.jsp?` +
-                            `id=${res.adminId}` +
-                            `&name=${res.name}` +
-                            `&email=${res.email}` +
-                            `&phone=${res.phone}` +
-                            `&role=${res.role}`; // 新增後跳至新增成功頁面
-                    },
-                    error: function (xhr) {
-                        console.error(xhr.responseText);
-                        alert('新增失敗，請檢查資料');
-                    }
-                });
-                
             });
         });
+    });
     </script>
 </body>
 

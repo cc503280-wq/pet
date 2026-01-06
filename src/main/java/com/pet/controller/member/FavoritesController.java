@@ -20,13 +20,13 @@ public class FavoritesController {
 	@Autowired
 	private FavoritesService fService;
 	
-	// 全部：/pet/favorites/list
-    @GetMapping("/list")
+	// 全部：/favorites
+    @GetMapping
     public List<Favorites> listAll() {
         return fService.getAllFavorites();
     }
 
-    // 依會員：/pet/favorites/member/1
+    // 依會員：/favorites/member/1
     @GetMapping("/member/{memberId}")
     public ResponseEntity<?> queryByMember(@PathVariable Integer memberId) {
         try {
@@ -37,7 +37,7 @@ public class FavoritesController {
         }
     }
 
-    // 依商品：/pet/favorites/product/1
+    // 依商品：/favorites/product/1
     @GetMapping("/product/{productId}")
     public List<Favorites> queryByProduct(@PathVariable Integer productId) {
         return fService.getFavoritesByProductId(productId);
