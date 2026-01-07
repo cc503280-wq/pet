@@ -56,34 +56,32 @@ public class ProductController {
 		Product createdProduct = pService.createProduct(product);
 		return ResponseEntity.ok(createdProduct); // 回傳 200 OK 與新商品資料
 	}
-	
-	// 新增商品 (包含圖片)
-    // ==========================================
-    @PostMapping("/create")
-    public ResponseEntity<?> createProduct(
-            @RequestParam("productName") String productName,
-            @RequestParam("description") String description,
-            @RequestParam("price") Integer price,
-            @RequestParam("stock") Integer stock,
-            @RequestParam("categoryId") Integer categoryId,
-            @RequestParam(value = "expireDate", required = false) String expireDate,
 
-            // 處理檔案：MultipartFile
-            @RequestParam(value = "file", required = false) MultipartFile file
-    ) {
-        try {
-            // 呼叫 Service 處理 (包含存圖片、存資料庫)
-            Product newProduct = pService.createProductWithImage(
-                productName, description, price, stock, categoryId, expireDate, file
-            );
-            return ResponseEntity.ok(newProduct);
-            
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).body("新增失敗: " + e.getMessage());
-        }
-    }
-	
+	// 新增商品 (包含圖片)
+	// ==========================================
+	@PostMapping("/create")
+	public ResponseEntity<?> createProduct(@RequestParam("productName") String productName,
+			@RequestParam("description") String description, @RequestParam("price") Integer price,
+			@RequestParam("stock") Integer stock, @RequestParam("categoryId") Integer categoryId,
+			@RequestParam(value = "expireDate", required = false) String expireDate,
+
+			// 處理檔案：MultipartFile
+			@RequestParam(value = "file", required = false) MultipartFile file) {
+		if (stock < 0) {
+			stock = 0;
+		}
+
+		try {
+			// 呼叫 Service 處理 (包含存圖片、存資料庫)
+			Product newProduct = pService.createProductWithImage(productName, description, price, stock, categoryId,
+					expireDate, file);
+			return ResponseEntity.ok(newProduct);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(500).body("新增失敗: " + e.getMessage());
+		}
+	}
 
 	// 上下架切換
 	// 網址: PUT /products/5/status
@@ -105,33 +103,33 @@ public class ProductController {
 	public List<Product> getProductsByCategory(@PathVariable Integer categoryId) {
 		return pService.getProductsByCategory(categoryId);
 	}
-	
+
 	// 修改商品 (包含圖片更新)
-    @PostMapping("/update/{id}")
-    public ResponseEntity<?> updateProduct(
-            @PathVariable Integer id, // 抓網址上的 ID
-            @RequestParam("productName") String productName,
-            @RequestParam("description") String description,
-            @RequestParam("price") Integer price,
-            @RequestParam("stock") Integer stock,
-            @RequestParam("categoryId") Integer categoryId,
-            @RequestParam(value = "expireDate", required = false) String expireDate,
-            // 圖片是選填的，如果沒傳代表不改圖
-            @RequestParam(value = "file", required = false) MultipartFile file
-    ) {
-        try {
-            Product updatedProduct = pService.updateProduct(
-                id, productName, description, price, stock, categoryId, expireDate, file
-            );
-            
-            if (updatedProduct != null) {
-                return ResponseEntity.ok(updatedProduct);
-            } else {
-                return ResponseEntity.notFound().build();
-            }
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("更新失敗: " + e.getMessage());
-        }
-    }
+	@PostMapping("/update/{id}")
+	public ResponseEntity<?> updateProduct(@PathVariable Integer id, // 抓網址上的 ID
+			@RequestParam("productName") String productName, @RequestParam("description") String description,
+			@RequestParam("price") Integer price, @RequestParam("stock") Integer stock,
+			@RequestParam("categoryId") Integer categoryId,
+			@RequestParam(value = "expireDate", required = false) String expireDate,
+			// 圖片是選填的，如果沒傳代表不改圖
+			@RequestParam(value = "file", required = false) MultipartFile file) {
+		
+		if (stock < 0) {
+			stock = 0;
+		}
+
+		try {
+			Product updatedProduct = pService.updateProduct(id, productName, description, price, stock, categoryId,
+					expireDate, file);
+
+			if (updatedProduct != null) {
+				return ResponseEntity.ok(updatedProduct);
+			} else {
+				return ResponseEntity.notFound().build();
+			}
+		} catch (Exception e) {
+			return ResponseEntity.status(500).body("更新失敗: " + e.getMessage());
+		}
+	}
 
 }

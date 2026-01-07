@@ -24,8 +24,11 @@ public class ProductPageController {
         // 2. 抓取所有分類 (給下拉選單用)
         model.addAttribute("categories", categoryService.getAllCategories());
         
-        // 3. 回傳 HTML 檔案名稱 (不需要加 .html)
-        // 檔案要放在 src/main/resources/templates/admin/products.html
         return "admin/products"; 
+    }
+    
+    @GetMapping("/admin/categories")
+    public String categoryPage() {
+        return "admin/categories"; 
     }
 }
