@@ -31,9 +31,8 @@ public class OrderService {
 		return oRepository.findByMemberId(id);
 	}
 	
-	public String insertOrder(Order order) {
-		oRepository.save(order);
-		return "insert OK";
+	public Order insertOrder(Order order) {
+		return oRepository.save(order);
 	}
 	
 	public String updateOrder(Order order) {

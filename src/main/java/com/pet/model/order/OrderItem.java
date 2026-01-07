@@ -37,9 +37,9 @@ public class OrderItem implements Serializable {
 	@NonNull
 	private Integer quantity;
 	@NonNull
-	private Double unitPrice;
+	private Integer unitPrice;
 	@NonNull
-	private Double subtotal;
+	private Integer subtotal;
 	
 	@Transient
 	private String productName;

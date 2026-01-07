@@ -28,5 +28,8 @@ public class OrderItemService {
 	public List<OrderItem> getOrderItemByorder(Integer id) {
 		return oiRepository.findByOrder_OrderId(id);
 	}
+	public OrderItem insertOrderItem(OrderItem orderItem) {
+		return oiRepository.save(orderItem);
+	}
 
 }

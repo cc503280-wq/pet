@@ -61,12 +61,12 @@
 			class="main-header navbar navbar-expand navbar-white navbar-light">
 			<!-- Left navbar links -->
 			<ul class="navbar-nav ml-auto">
-				<li class="nav-item"><a
-					href="${pageContext.request.contextPath}/AdminLogoutServlet"
-					class="btn btn-secondary btn-sm"> <i
-						class="fas fa-sign-out-alt"></i> 登出
-				</a></li>
-			</ul>
+                <li class="nav-item">
+                    <a href="javascript:void(0)" id="logoutBtn" class="btn btn-secondary btn-sm">
+                        <i class="fas fa-sign-out-alt"></i> 登出
+                    </a>
+                </li>
+            </ul>
 
 
 		</nav>
@@ -145,22 +145,22 @@
 						</a>
 							<ul class="nav nav-treeview">
 								<li class="nav-item"><a
-									href="${pageContext.request.contextPath}/orderList"
+									href="/orders/list"
 									class="nav-link"> <i class="far fa-circle nav-icon"></i>
 										<p>查詢全部訂單</p>
 								</a></li>
 								<li class="nav-item"><a
-									href="${pageContext.request.contextPath}/shipmentsList"
+									href="/shipment/list"
 									class="nav-link"> <i class="far fa-circle nav-icon"></i>
 										<p>物流查詢</p>
 								</a></li>
 								<li class="nav-item"><a
-									href="${pageContext.request.contextPath}/orderItemsList"
+									href="/ordersItem/list"
 									class="nav-link"> <i class="far fa-circle nav-icon"></i>
 										<p>查詢全部訂單明細</p>
 								</a></li>
 								<li class="nav-item"><a
-									href="${pageContext.request.contextPath}/admin/order/shopping.jsp"
+									href="/Cart/shopping"
 									class="nav-link"> <i class="far fa-circle nav-icon"></i>
 										<p>新增訂單</p>
 								</a></li>
@@ -320,6 +320,7 @@
 		th:src="@{/plugins/datatables-buttons/js/buttons.colVis.min.js}"></script>
 	<!-- AdminLTE App -->
 	<script th:src="@{/dist/js/adminlte.min.js}"></script>
+	<script src="../../dist/js/adminAuth.js"></script>
 	<!-- AdminLTE for demo purposes
             <script src="${pageContext.request.contextPath}/dist/js/demo.js"></script> -->
 	<!-- Page specific script -->

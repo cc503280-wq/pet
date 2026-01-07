@@ -39,11 +39,11 @@ public class Shipment {
 	private String shippingMethod;
 	@NonNull
 	private Integer shippingFee;
-	@NonNull
+	
 	private String trackingNumber;
-	@NonNull
+	
 	private Date shippedAt;
-	@NonNull
+	
 	private Date deliveredAt;
 	@NonNull
 	private String status;
