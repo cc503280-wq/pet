@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -70,6 +71,7 @@ public class Member {
 	private LocalDateTime updatedAt;
 	
 	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+	@JsonIgnore //<== 這是我新增的，我將此變唯讀，需跟組長討論
 	private List<MemberPet> pets;
 	
 	
