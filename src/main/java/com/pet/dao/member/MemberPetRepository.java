@@ -27,4 +27,7 @@ public interface MemberPetRepository extends JpaRepository<MemberPet, Integer> {
 			+ "(:size IS NULL OR p.petSize = :size) "
 			+ "ORDER BY p.petId")
 	List<MemberPet> findPetsByConditions(@Param("type") String type, @Param("age") String age, @Param("size") String size);
+	
+	//預約
+	List<MemberPet> findByMemberMemberId(Integer memberId);
 }
