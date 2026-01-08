@@ -1,148 +1,73 @@
 package com.pet.model.member;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity @Table(name = "admin")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Admin {
 	
 	@Id @Column(name = "admin_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int adminId;
 	
-	@Column(name = "email")
+	@Column(unique = true)
 	private String email;
 	
-	@Column(name = "password")
 	private String password;
 	
-	@Column(name = "name")
 	private String name;
 	
-	@Column(name = "phone")
 	private String phone;
 	
-	@Column(name = "role")
 	private String role;
 	
-	@Column(name = "status")
 	private String status;
 	
-	@Column(name = "created_at")
-	private Timestamp createdAt;
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@Column(name = "created_at", updatable = false)
+	private LocalDateTime createdAt;
 	
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	@Column(name = "updated_at")
-	private Timestamp updatedAt;
+	private LocalDateTime updatedAt;
 	
-	
-	public Admin() {
-		super();
-	}
-
-
-	public Admin(int adminId, String email, String name, String phone, String role, String status) {
-		super();
-		this.adminId = adminId;
-		this.email = email;
-		this.status = status;
-		this.name = name;
-		this.phone = phone;
-		this.role = role;
-	}
-
-
-	public Admin(int adminId, String email, String password, String name, String phone, String role, String status,
-			Timestamp createdAt, Timestamp updatedAt) {
-		super();
-		this.adminId = adminId;
-		this.email = email;
-		this.password = password;
-		this.name = name;
-		this.phone = phone;
-		this.role = role;
-		this.status = status;
-		this.createdAt = createdAt;
-		this.updatedAt = updatedAt;
-	}
-
-	public Admin(String name, String email, String password, String phone, String role) {
-		super();
-	    this.name = name;
-	    this.email = email;
-	    this.password = password;
-	    this.phone = phone;
-	    this.role = role;
-	    this.status = "active";
-	    this.createdAt = Timestamp.valueOf(LocalDateTime.now());
-	    this.updatedAt = Timestamp.valueOf(LocalDateTime.now());
+	@PrePersist
+	protected void onCreate() {
+		LocalDateTime now = LocalDateTime.now();
+		this.createdAt = now;
+		this.updatedAt = now;
+		
+		// 預設管理員狀態
+		if (this.status == null) {
+			this.status = "active";
+		}
+		
+		// 預設角色 (如果沒給就給最一般的管理員)
+		if (this.role == null) {
+			this.role = "admin";
+		}
 	}
 	
-
-
-
-
-	public int getAdminId() {
-		return adminId;
+	@PreUpdate
+	protected void onUpdate() {
+		this.updatedAt = LocalDateTime.now();
 	}
-	public void setAdminId(int adminId) {
-		this.adminId = adminId;
-	}
-	public String getEmail() {
-		return email;
-	}
-	public void setEmail(String email) {
-		this.email = email;
-	}
-	public String getPassword() {
-		return password;
-	}
-	public void setPassword(String password) {
-		this.password = password;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public String getPhone() {
-		return phone;
-	}
-	public void setPhone(String phone) {
-		this.phone = phone;
-	}
-	public String getRole() {
-		return role;
-	}
-	public void setRole(String role) {
-		this.role = role;
-	}
-	public String getStatus() {
-		return status;
-	}
-	public void setStatus(String status) {
-		this.status = status;
-	}
-	public Timestamp getCreatedAt() {
-		return createdAt;
-	}
-	public void setCreatedAt(Timestamp createdAt) {
-		this.createdAt = createdAt;
-	}
-	public Timestamp getUpdatedAt() {
-		return updatedAt;
-	}
-	public void setUpdatedAt(Timestamp updatedAt) {
-		this.updatedAt = updatedAt;
-	}
-	
-	
 }

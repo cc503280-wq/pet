@@ -1,3 +1,4 @@
+HELP.md
 # 忽略編譯後的 class 檔
 *.class
 
@@ -16,3 +17,6 @@ bin/
 # 忽略作業系統產生的縮圖檔
 .DS_Store
 Thumbs.db
+
+### VS Code ###
+.vscode/

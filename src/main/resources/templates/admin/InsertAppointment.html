@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>新增預約</title>
+
+<link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
+    <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
+    <link rel="stylesheet" th:href="@{/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css}">
+    <link rel="stylesheet" th:href="@{/plugins/datatables-responsive/css/responsive.bootstrap4.min.css}">
+
+    <style>
+        .brand-link {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 0.5rem 1rem;
+        }
+
+        .sidebar-collapse .brand-link {
+            justify-content: center;
+        }
+
+        .brand-link i {
+            width: 1.5rem;
+            text-align: center;
+        }
+
+        .box1 {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<body class="hold-transition sidebar-mini sidebar-collapse">
+    <div class="wrapper">
+        <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a href="javascript:void(0)" id="logoutBtn" class="btn btn-secondary btn-sm">
+                        <i class="fas fa-sign-out-alt"></i> 登出
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <aside class="main-sidebar sidebar-dark-primary elevation-4">
+            <!-- Brand Logo -->
+            <a href="/admin/layout/Home.html" class="brand-link">
+                <i class="fas fa-paw" style="color: #FFD43B; font-size: 1.5rem;"></i>
+                <span class="brand-text font-weight-light"></span>
+            </a>
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+                </div>
+                <!-- Sidebar Menu -->
+                <nav class="mt-2">
+                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
+                        data-accordion="false">
+                        <!-- Add icons to the links using the .nav-icon class
+               with font-awesome or any other icon font library -->
+                        <li class="nav-item"><a href="#" class="nav-link"> <i
+								class="nav-icon fas fa-edit"></i>
+								<p>
+									會員管理 <i class="right fas fa-angle-left"></i>
+								</p>
+						</a>
+							<ul class="nav nav-treeview">
+								<li class="nav-item"><a href="AdminQueryAll.html"
+									class="nav-link"> <i class="far fa-circle nav-icon"></i>
+										<p>管理員資料</p>
+								</a></li>
+								<li class="nav-item"><a href="MemberQueryAll.html"
+									class="nav-link"> <i class="far fa-circle nav-icon"></i>
+										<p>會員基本資料</p>
+								</a></li>
+								<li class="nav-item"><a href="MemberPetQueryAll.html"
+									class="nav-link"> <i class="far fa-circle nav-icon"></i>
+										<p>會員寵物資料</p>
+								</a></li>
+								<li class="nav-item"><a href="CouponQueryAll.html"
+									class="nav-link"> <i class="far fa-circle nav-icon"></i>
+										<p>優惠券總覽</p>
+								</a></li>
+								<li class="nav-item"><a href="CouponUsersQueryAll.html"
+									class="nav-link"> <i class="far fa-circle nav-icon"></i>
+										<p>會員持有優惠券</p>
+								</a></li>
+								<li class="nav-item"><a href="FavoritesQueryAll.html"
+									class="nav-link"> <i class="far fa-circle nav-icon"></i>
+										<p>會員收藏清單</p>
+								</a></li>
+							</ul></li>
+
+						<li class="nav-item"><a href="../../AllProducts"
+							class="nav-link"> <i class="nav-icon fas fa-edit"></i>
+								<p>
+									商品管理 <i class="right fas fa-angle-left"></i>
+								</p>
+						</a></li>
+						<li class="nav-item"><a href="#" class="nav-link"> <i
+								class="nav-icon fas fa-edit"></i>
+								<p>
+									訂單管理 <i class="right fas fa-angle-left"></i>
+								</p>
+						</a>
+							<ul class="nav nav-treeview">
+								<li class="nav-item"><a href="../../orderList"
+									class="nav-link"> <i class="far fa-circle nav-icon"></i>
+										<p>查詢全部訂單</p>
+								</a></li>
+								<li class="nav-item"><a href="../../shipmentsList"
+									class="nav-link"> <i class="far fa-circle nav-icon"></i>
+										<p>物流查詢</p>
+								</a></li>
+								<li class="nav-item"><a href="../../orderItemsList"
+									class="nav-link"> <i class="far fa-circle nav-icon"></i>
+										<p>查詢全部訂單明細</p>
+								</a></li>
+								<li class="nav-item"><a href="../order/shopping.jsp"
+									class="nav-link"> <i class="far fa-circle nav-icon"></i>
+										<p>新增訂單</p>
+								</a></li>
+							</ul></li>
+						<li class="nav-item"><a href="#"
+							class="nav-link"> <i class="nav-icon fas fa-edit"></i>
+								<p>
+									預約管理 <i class="right fas fa-angle-left"></i>
+								</p>
+						</a>
+						<ul class="nav nav-treeview">
+                  <li class="nav-item">                                 
+                    <a th:href="@{/admin/layout/GetAllAppointments.html}" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>寵物美容訂單管理</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                   <a th:href="@{/admin/layout/GetAllLeaveRecords.html}" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>美容師請假管理</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                  <a th:href="@{/admin/layout/GetAllGroomers.html}" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>美容師管理</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                  <a th:href="@{/admin/layout/GetAllAppointmentDetails.html}" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>預約訂單明細</p>
+                    </a>
+                  </li>
+                    <li class="nav-item">
+                    <a th:href="@{/admin/layout/GetAllServiceItems.html}" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>服務項目管理</p>
+                    </a>
+                  </li>
+                </ul>				
+				</li>
+				</ul>
+              </li>
+				</nav>
+          <!-- /.sidebar-menu -->
+        </div>
+            <!-- /.sidebar -->
+        </aside>
+
+		<!-- Content Wrapper. Contains page content -->
+		<div class="content-wrapper">
+			<!-- Content Header (Page header) -->
+			<section class="content-header">
+				<div class="container-fluid">
+					<div class="row mb-2">
+						<div class="col-sm-12 box1">
+							<h1>預約訂單管理</h1>
+						</div>
+						<div class="col-sm-6"></div>
+					</div>
+				</div>
+				<!-- /.container-fluid -->
+			</section>
+
+
+
+			<!-- Main content -->
+			<section class="content">
+				<div class="container-fluid">
+					<div class="row">
+						<div class="col-12">
+							<div class="card">
+								<!-- /.card-header -->
+								<!-- Horizontal Form -->
+								<div class="card card-info">
+									<div class="card-header">
+										<h3 class="card-title">新增預約訂單</h3>
+									</div>
+									<!-- /.card-header -->
+									<!-- form start -->
+
+									<form class="form-horizontal"
+										id="appointmentForm">
+										<input type="hidden" name="action" value="insert">
+										<div class="card-body">
+											<!--會員和寵物區域-->
+											<div class="form-group row">
+												<label class="col-sm-2 col-form-label">會員姓名:</label>
+												<div class="col-sm-10">
+
+
+													<select class="form-control" name="memberId"
+														id="memberName">
+														<option value="">--選擇預約會員--</option>
+														<option th:each="member : ${memberList}"
+															th:value="${member.memberId}" th:text="${member.name}"
+															th:selected="${member.memberId == currentMemberId}">
+														</option>
+													</select>
+												</div>
+											</div>
+
+											<div class="form-group row">
+												<label class="col-sm-2 col-form-label">寵物:</label>
+												<div class="col-sm-10">
+													<select class="form-control" name="petId" id="petSelect"
+														disabled>
+														<option value="">-- 請先選擇會員 --</option>
+													</select>
+												</div>
+											</div>
+
+											<!--.會員和寵物區域-->
+
+											<!--選擇日期區域-->
+											<div class="form-group row">
+												<label class="col-sm-2 col-form-label">選擇日期:</label>
+												<div class="col-sm-10">
+													<input class="form-control" type="date" id="dateInput"
+														name="appointmetDate">
+												</div>
+											</div>
+											<!--.選擇日期區域-->
+
+											<!--服務項目區域-->
+											<div class="form-group row">
+												<label class="col-sm-2 col-form-label">服務項目:</label>
+												<div class="col-sm-10">
+													<select class="form-control" name="serviceIds"
+														id="mainServiceSelect" disabled>
+														<option value="">-- 請先選擇寵物 --</option>
+													</select>
+												</div>
+											</div>
+
+
+											<div class="form-group row">
+												<label class="col-sm-2 col-form-label">加購項目:</label>
+												<div class="col-sm-10">
+													<div id="addonContainer"
+														class="d-flex flex-column align-items-center p-2 border rounded"
+														style="gap: 15px; min-height: 38px; background-color: #e9ecef;">
+													</div>
+												</div>
+											</div>
+
+											<div class="form-group row">
+												<label class="col-sm-2 col-form-label">服務時長(min) :</label>
+												<div class="col-sm-10">
+													<input class="form-control" type="text"
+														name="durationMinutes" id="durationMinutes" value="0"
+														readonly>
+												</div>
+											</div>
+
+											<div class="form-group row">
+												<label class="col-sm-2 col-form-label">總價 :</label>
+												<div class="col-sm-10">
+													<input class="form-control" type="text" name="totalPrice"
+														id="totalPrice" value="0" readonly>
+												</div>
+											</div>
+											<!--.服務項目區域-->
+
+
+											<!--選擇美容師和時段區域-->
+											<div class="form-group row">
+												<label class="col-sm-2 col-form-label">選擇美容師:</label>
+												<div class="col-sm-10">
+													<select class="form-control" id="groomerSelect"
+														name="groomerId" disabled onchange="updateSlotOptions()">
+														<option value="">-- 請先選擇日期與服務 --</option>
+													</select>
+												</div>
+											</div>
+
+											<div class="form-group row">
+												<label class="col-sm-2 col-form-label">選擇時段:</label>
+												<div class="col-sm-10">
+													<select class="form-control" id="slotSelect" name="slotId"
+														disabled>
+														<option value="">-- 請先選擇美容師 --</option>
+													</select> <input type="hidden" name="startTime"
+														id="hidden_starttime"> <input type="hidden"
+														name="endTime" id="hidden_endtime">
+												</div>
+											</div>
+
+											<!--.選擇美容師和時段區域-->
+
+											<div class="form-group row">
+												<label class="col-sm-2 col-form-label">備註 :</label>
+												<div class="col-sm-10">
+													<textarea class="form-control" name="notes" rows="3"
+														cols="33" th:text="${dto?.notes}"></textarea>
+												</div>
+											</div>
+
+
+											<!-- /.card-body -->
+											<div class="card-footer">
+												<button type="button" id="submitBtn" class="btn btn-info">送出</button>
+												<button type="reset" class="btn btn-default float-right">
+													清除</button>
+											</div>
+											<!-- /.card-footer -->
+									</form>
+								</div>
+								<!-- /.card-body -->
+							</div>
+							<!-- /.card -->
+						</div>
+					</div>
+				</div>
+			</section>
+			<!-- /.content -->
+		</div>
+		<!-- /.content-wrapper -->
+		<footer class="main-footer">
+			<div class="float-right d-none d-sm-block">
+				<b>Version</b> 3.2.0
+			</div>
+			<strong>Copyright &copy; 2014-2021 <a
+				href="https://adminlte.io">AdminLTE.io</a>.
+			</strong> All rights reserved.
+		</footer>
+
+		<!-- Control Sidebar -->
+		<aside class="control-sidebar control-sidebar-dark">
+			<!-- Control sidebar content goes here -->
+		</aside>
+		<!-- /.control-sidebar -->
+	</div>
+	<!-- ./wrapper -->
+
+	 <script th:src="@{/plugins/jquery/jquery.min.js}"></script>
+    <script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+    <script th:src="@{/dist/js/adminlte.min.js}"></script>
+
+    <script th:inline="javascript">
+	<!-- AdminLTE for demo purposes
+           
+	<!-- Page specific script -->
+
+		const APPOINTMENT_API = '/appointments';
+		const SCHEDULE_API = '/schedule';
+
+		let cachedMainService = [];
+		let cachedAddonService = [];
+		let cachedSchedule = [];
+
+		$(document).ready(function () {
+			// 設定日期選擇器的最小值為今天
+			const today = new Date().toISOString().split('T')[0];
+			$('#dateInput').attr('min', today);
+		});
+
+		//監聽:選擇會員後載入寵物	
+		$('#memberName').change(function () {
+			const memberId = $(this).val();
+			if (memberId) {
+				$.ajax({
+					//這裡要跟組長要後端API
+					url:`${APPOINTMENT_API}/${memberId}/pets`,
+					type: 'GET',
+					dataType: 'json',
+					success: function (pets) {
+						let $petSelect = $('#petSelect');
+						console.log(pets);
+						$petSelect.empty().append('<option value="">--選擇寵物--</option>');
+
+						if(pets.length === 0){
+							$petSelect.append('<option value="">該會員無寵物資料</option>');
+						} else {
+							pets.forEach(function (pet) {
+								$petSelect.append(`<option value="${pet.petId}" data-pet-type="${pet.petType}" data-pet-size="${pet.petSize}">${pet.petName}</option>`);
+							});
+						}
+						$petSelect.prop('disabled', false);
+					},
+					error:function(){
+					alert('無法取得寵物資料，請稍後再試');
+				}
+				});
+			}
+		});
+
+		// 監聽 $petSelect (寵物下拉選單) 的變更事件
+		$('#petSelect').change(function () {
+
+    // 1. 取得當前選中的選項 (option) 中的 petType 屬性值 (例如: 'Dog' 或 'Cat')
+    // $(this) 指的是當前被改變的下拉選單
+    const petType = $(this).find('option:selected').data('petType');
+	const petSize = $(this).find('option:selected').data('petSize');
+    // 2. 判斷是否有選到有效的寵物種類
+   if (!petType || !petSize) return;
+        
+       
+        $.ajax({
+            url: `${APPOINTMENT_API}/services`,
+            
+       
+            type: 'GET',
+			data: {
+            petType: petType,
+            petSize: petSize
+        	},
+            dataType: 'json',
+            success: function (services) {
+                
+                // 把回傳的資料存到全域變數 cachedMainService，方便之後計算價格時使用
+                cachedMainService = services;
+
+                // 抓取頁面上的「主要服務下拉選單」物件
+                let $mainServiceSelect = $('#mainServiceSelect');
+                // 抓取頁面上的「加購服務容器」物件 (用來放 Checkbox 的區域)
+                let $addonContainer = $('#addonContainer');
+
+                // 清空主要服務選單的舊選項，並加入一個預設的提示選項 "--選擇主要服務--"
+                $mainServiceSelect.empty().append('<option value="">--選擇主要服務--</option>');
+                
+                // 清空加購服務區域的舊內容
+                $addonContainer.empty();
+
+                // 5. 判斷後端回傳的服務列表是否為空 (長度為 0)
+                if (services.length === 0) {
+                    // 如果沒有服務，顯示提示文字，並直接結束函式 (return)
+                    $addonContainer.append('<option value="">無可用服務</option>');
+                    return;
+                }
+                    
+                // 6. 使用 $.each 迴圈遍歷每一個服務項目 (svc 代表當前的服務物件)
+                $.each(services, function(index, svc) {
+                    
+                    // 判斷：如果這個服務是「加購項目」(isAddon 為 true)
+                    if (svc.isAddon) {
+                        
+                        // --- 產生 Checkbox (加購服務 UI) ---
+                        // 這裡用 Template String 拼湊 HTML 語法
+                        let checkboxHtml = `
+    				<div class="icheck-primary w-100 mb-2">
+        			<input type="checkbox" class="addon-checkbox"
+        				 name="serviceIds" 
+              			 id="addon_${svc.serviceId}"
+               			value="${svc.serviceId}"
+               			 data-price="${svc.price}"
+               			 data-duration="${svc.durationMinutes}">
+        
+       				 <label for="addon_${svc.serviceId}">
+            		${svc.serviceName}(${svc.durationMinutes}min) ($${svc.price}) 
+        			</label>
+    				</div>`;
+                        
+                        
+                        $addonContainer.append(checkboxHtml);
+                    
+                    } else { 
+                       
+                        $mainServiceSelect.append($('<option>', {
+                            value: svc.serviceId,              
+                            text: `${svc.serviceName} ($${svc.price})`, 
+                            'data-price': svc.price,              
+                            'data-duration': svc.durationMinutes  
+                        }));
+                    }
+                });
+
+                $mainServiceSelect.prop('disabled', false);
+            }
+        });
+    
+});
+
+				//監聽: 主服務/加購/日期變更時、更新價格和時長
+				$(document).on('change', '#mainServiceSelect, .addon-checkbox, #dateInput', function () {
+					calculateTotalPriceAndDuration();
+					fetchAvailableGroomers();
+					
+				});
+					
+				
+
+				//監聽: 選擇美容師 ->選擇時段
+				$('#groomerSelect').change(function () {
+					let selectedGroomerId = $(this).val();
+					updateSlotOptions(selectedGroomerId);
+				});
+
+				/// ==========================================
+        		// 5. 監聽：選擇時段 -> 填入隱藏欄位 (最後一步)
+       		 	// ==========================================
+       			
+				$('#slotSelect').change(function() {
+            		let $opt = $(this).find(':selected');
+            		$('#hidden_starttime').val($opt.data('start'));
+            		$('#hidden_endtime').val($opt.data('end'));
+        		});
+        		
+				//當按下submitbtn
+				$('#submitBtn').click(function() {
+
+				    // 1. 收集資料
+				    let serviceIds = [];
+				    
+				    // 抓主服務 ID
+				    let mainSvc = $('#mainServiceSelect').val();
+				    if(mainSvc) serviceIds.push(parseInt(mainSvc));
+				    
+				    // 抓加購服務 ID
+				    $('.addon-checkbox:checked').each(function() {
+				        serviceIds.push(parseInt($(this).val()));
+				    });
+
+				 	// --- 除錯用：可以在 Console 看到到底哪個欄位抓不到值 ---
+				    console.log("Member:", $('#memberName').val()); // 修正這裡 ID
+				    console.log("Pet:", $('#petSelect').val());
+				    console.log("Services:", serviceIds);
+				    console.log("Groomer:", $('#groomerSelect').val());
+
+				    // 檢查必填
+				    if (! $('#memberName').val() || ! $('#petSelect').val() || serviceIds.length === 0 || ! $('#groomerSelect').val()) {
+				        alert("請確認所有欄位都已填寫！");
+				        return;
+				    }
+
+				    // 2. 建立 JSON 物件 (對應後端 DTO)
+				    let payload = {
+				        memberId: parseInt($('#memberName').val()), // 假設你 ID 是 memberName
+				        petId: parseInt($('#petSelect').val()),
+				        groomerId: parseInt($('#groomerSelect').val()),
+				        appointmentDate: $('#dateInput').val(),
+				        startTime: $('#hidden_starttime').val(),
+				        endTime: $('#hidden_endtime').val(),
+				        durationMinutes: parseInt($('#durationMinutes').val()),
+				        totalPrice: parseFloat($('#totalPrice').val()),
+				        notes: $('textarea[name="notes"]').val(),
+				        serviceIds: serviceIds 
+				    };
+
+				    console.log("傳送的 JSON:", payload);
+
+				    // 3. 發送 AJAX
+				    $.ajax({
+				        url: `${APPOINTMENT_API}/insertInto`, // 對應 Controller 路徑
+				        type: 'POST',
+				        contentType: 'application/json', // ★ 重要：告訴後端我傳的是 JSON
+				        data: JSON.stringify(payload),   // ★ 重要：把物件轉成 JSON 字串
+				        success: function(response) {
+
+				            //TODO: 把目前資料裝起來
+							let selectedAppointmentData=[];
+
+							//抓取服務文字
+							let $mainOption=$('#mainServiceSelect option:selected');
+							if($mainOption.val()) selectedAppointmentData.push($mainOption.text());
+
+							//抓取加購服務文字
+							$('.addon-checkbox:checked').each(function(){
+								let text =$(this).next('label').text().trim();
+								selectedAppointmentData.push(text);
+							});
+							
+							//組成顯示資料物件，供下一頁顯示
+							let displayData ={
+								memberName: $('#memberName option:selected').text(),
+								petName: $('#petSelect option:selected').text(),
+								groomerName: $('#groomerSelect option:selected').text(),
+								appointmentDate: $('#dateInput').val(),
+								serviceNames: selectedAppointmentData.join('、'),
+								totalPrice: $('#totalPrice').val(),
+								durationMinutes: $('#durationMinutes').val(),	
+								notes: $('textarea[name="notes"]').val(),
+								timeSlot: $('#slotSelect option:selected').text()	
+							};
+
+							//把資料存到sessionStorage
+							sessionStorage.setItem('appointmentSuccessData', JSON.stringify(displayData));
+							console.log("跳頁資料內容：", sessionStorage.getItem('appointmentSuccessData'));
+				            // 預約成功後，跳轉到成功頁面
+				            window.location.href = '/admin/layout/InsertAppointmentSuccess.html';
+				             
+				             
+				        },
+				        error: function(xhr) {
+				            alert("預約失敗：" + xhr.responseText);
+				       }
+				    });
+				});
+
+				/// ==========================================
+        		// 邏輯函式區
+       		 	// ==========================================
+
+				//計算總時長和總價
+				function calculateTotalPriceAndDuration() {
+					let totalPrice = 0;
+					let totalDuration = 0;		
+
+					//計算主要服務
+					let $mainOption = $('#mainServiceSelect').find('option:selected');
+					if ($mainOption.val()){
+						totalPrice += parseFloat($mainOption.data('price'));
+						totalDuration += parseInt($mainOption.data('duration'));
+					}
+
+					//計算加購服務
+					$('.addon-checkbox:checked').each(function () {
+						totalPrice += parseFloat($(this).data('price'));
+						totalDuration += parseInt($(this).data('duration'));
+					});
+
+					//更新畫面
+					$('#totalPrice').val(totalPrice);
+					$('#durationMinutes').val(totalDuration);
+				}
+
+				// 向後端查詢可用美容師 (AJAX)
+    function fetchAvailableGroomers() {
+        let date = $('#dateInput').val();
+        let duration = $('#durationMinutes').val();
+
+        // 每次觸發此函式，都要先重置美容師與時段選單 (因為條件變了，舊的選擇失效)
+        resetStep3_Groomer();
+
+        // 防呆：如果日期沒選，或時長為 0，就不送出請求
+        if (!date || duration <= 0) {
+            return; 
+        }
+
+        // UI 顯示查詢中
+        let $groomerSelect = $('#groomerSelect');
+        $groomerSelect.empty().append('<option>查詢可用時段中...</option>');
+
+        $.ajax({
+            // 這是後端 API，負責接收「日期」+「總分鐘數」
+            // 回傳：當天有空檔大於等於該分鐘數的美容師列表
+            url: `${SCHEDULE_API}/available`, 
+            method: 'GET',
+            data: {
+                date: date,
+                duration: duration
+            },
+            dataType: 'json',
+            success: function(data) {
+                // [重要] 將回傳資料存入全域變數，供下一步使用
+                cachedScheduleData = data;
+
+                $groomerSelect.empty();
+                if (data.length === 0) {
+                    $groomerSelect.append('<option value="">該日無符合時長的空檔</option>');
+                    $groomerSelect.prop('disabled', true);
+                } else {
+                    $groomerSelect.append('<option value="">-- 請選擇美容師 --</option>');
+                    
+                    // 填入美容師選項
+                    $.each(data, function(index, groomer) {
+                        // 顯示範例：王小美 (剩餘 3 個時段)
+                        let slotCount = groomer.slots ? groomer.slots.length : 0;
+                        $groomerSelect.append($('<option>', {
+                            value: groomer.groomerId,
+                            text: `${groomer.groomName}`
+                        }));
+                    });
+                    $groomerSelect.prop('disabled', false);
+                }
+            },
+            error: function() {
+                $groomerSelect.empty().append('<option>查詢失敗，請稍後再試</option>');
+            }
+        });
+    }
+
+    // 根據選中的美容師，更新時段下拉選單 (純前端操作)
+    function updateSlotOptions() {
+    let groomerId = $('#groomerSelect').val();
+    let $slotSelect = $('#slotSelect');
+    $slotSelect.empty().append('<option value="">-- 請選擇時段 --</option>');
+    
+    if (!groomerId) return;
+
+    let groomerData = cachedScheduleData.find(g => g.groomerId == groomerId);
+    let duration = parseInt($('#durationMinutes').val());
+
+    if (groomerData && groomerData.slots) {
+        $.each(groomerData.slots, function(index, startTime) {
+            // 計算結束時間
+            let parts = startTime.split(':');
+            let date = new Date();
+            date.setHours(parseInt(parts[0]), parseInt(parts[1]), 0);
+            date.setMinutes(date.getMinutes() + duration);
+            
+            let endTime = date.getHours().toString().padStart(2, '0') + ":" + 
+                          date.getMinutes().toString().padStart(2, '0');
+
+            $slotSelect.append($('<option>', {
+                value: startTime, // 存入開始時間作為 value
+                text: `${startTime} ~ ${endTime}`,
+                'data-start': startTime,
+                'data-end': endTime
+            }));
+        });
+        $slotSelect.prop('disabled', false);
+    }
+}
+
+    // --- 重置介面用的輔助函式 ---
+
+    function resetStep1_Pet() {
+        $('#petSelect').empty().prop('disabled', true);
+        resetStep2_Service();
+    }
+
+    function resetStep2_Service() {
+        $('#mainServiceSelect').empty().prop('disabled', true);
+        $('#addonContainer').empty().css('background-color', '#e9ecef'); // 變回灰色
+        $('#totalPrice').val(0);
+        $('#durationMinutes').val(0);
+        resetStep3_Groomer();
+    }
+
+    function resetStep3_Groomer() {
+        // 當時間或日期改變時，美容師與時段必須重選
+        $('#groomerSelect').empty().append('<option value="">-- 請先選擇日期與服務 --</option>').prop('disabled', true);
+        $('#slotSelect').empty().append('<option value="">-- 請先選擇美容師 --</option>').prop('disabled', true);
+        $('#hidden_starttime').val('');
+        $('#hidden_endtime').val('');
+        cachedScheduleData = []; // 清空暫存
+    }
+
+	</script>
+</html>
