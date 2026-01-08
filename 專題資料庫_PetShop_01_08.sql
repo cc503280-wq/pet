@@ -789,11 +789,12 @@ FROM     dbo.leave_record AS l INNER JOIN
 GO
 
 -- View: 訂單明細
-Create VIEW appointment_detail_list_view AS
+CREATE VIEW appointment_detail_list_view AS
 SELECT   dbo.service.service_name, dbo.appointment_details.detail_id, dbo.appointment_details.appointment_id, dbo.appointment_details.service_id, dbo.appointment_details.price, 
               dbo.appointment_details.duration_minutes, dbo.appointment_details.created_at, dbo.service.is_addon
 FROM     dbo.appointment_details INNER JOIN
               dbo.service ON dbo.appointment_details.service_id = dbo.service.service_id
+GO
 
 -- SP: 排程生產
 CREATE PROCEDURE [dbo].[sp_GenerateGroomerSchedules]
