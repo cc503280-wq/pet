@@ -417,23 +417,23 @@
 		//監聽:選擇會員後載入寵物
 		$('#memberName').change(function () {
 			const memberId = $(this).val();
+			console.log("前端發送: 選擇會員 ID =", memberId);
 			if (memberId) {
 				$.ajax({
-					//這裡要跟組長要後端API
+					
 					url: `${APPOINTMENT_API}/${memberId}/pets`,
 					type: 'GET',
 					dataType: 'json',
 					success: function (pets) {
 						let $petSelect = $('#petSelect');
-						console.log(pets);
+						console.log("前端接收: 會員寵物資料 =", pets);
 						$petSelect.empty().append('<option value="">--選擇寵物--</option>');
 
 						if (pets.length === 0) {
 							$petSelect.append('<option value="">該會員無寵物資料</option>');
 						} else {
 							pets.forEach(function (pet) {
-								$petSelect.append(`<option value="${pet.petId}" data-pet-type="${pet.petType}" data-pet-size="${pet.petSize}">
-		${pet.petName}</option>`);
+							$petSelect.append(`<option value="${pet.petId}" data-pet-type="${pet.petType}" data-pet-size="${pet.petSize}">${pet.petName}</option>`);
 							});
 						}
 						$petSelect.prop('disabled', false);
@@ -453,6 +453,7 @@
 			const petType = $(this).find('option:selected').data('petType');
 			const petSize = $(this).find('option:selected').data('petSize');
 			// 2. 判斷是否有選到有效的寵物種類
+			console.log("前端發送: 查詢服務參數 petType =", petType, ", petSize =", petSize);
 			if (!petType || !petSize) return;
 
 
@@ -468,6 +469,7 @@
 				dataType: 'json',
 				success: function (services) {
 
+					console.log("前端接收: 後端回傳服務列表 =", services);
 					// 把回傳的資料存到全域變數 cachedMainService，方便之後計算價格時使用
 					cachedMainService = services;
 
@@ -491,6 +493,7 @@
 
 					// 6. 使用 $.each 迴圈遍歷每一個服務項目 (svc 代表當前的服務物件)
 					$.each(services, function (index, svc) {
+						console.log(`處理服務項目: ${svc.serviceName}, isAddon=${svc.isAddon}`);
 
 						// 判斷：如果這個服務是「加購項目」(isAddon 為 true)
 						if (svc.isAddon) {
@@ -594,17 +597,18 @@
 				serviceIds: serviceIds
 			};
 
-			console.log("傳送的 JSON:", payload);
+			console.log("前端發送: 預約 JSON =", payload);
 
 			// 3. 發送 AJAX
 			$.ajax({
-				url: `${APPOINTMENT_API}/insertInto`, // 對應 Controller 路徑
+				url: `${APPOINTMENT_API}/insertInto`, 
 				type: 'POST',
-				contentType: 'application/json', // ★ 重要：告訴後端我傳的是 JSON
-				data: JSON.stringify(payload), // ★ 重要：把物件轉成 JSON 字串
+				contentType: 'application/json', 
+				data: JSON.stringify(payload), 
 				success: function (response) {
+					console.log("前端接收: 預約成功回應 =", response);
 
-					//TODO: 把目前資料裝起來
+					
 					let selectedAppointmentData = [];
 
 					//抓取服務文字
@@ -620,7 +624,7 @@
 					//組成顯示資料物件，供下一頁顯示
 					let displayData = {
 						memberName: $('#memberName option:selected').text(),
-						petName: $('#petSelect option:selected').text(),
+						petName: $('#petSelect option:selected').text().trim(),
 						groomerName: $('#groomerSelect option:selected').text(),
 						appointmentDate: $('#dateInput').val(),
 						serviceNames: selectedAppointmentData.join('、'),
@@ -644,7 +648,7 @@
 			});
 		});
 
-		/// ==========================================
+		// ==========================================
 		// 邏輯函式區
 		// ==========================================
 
@@ -675,10 +679,11 @@
 		function fetchAvailableGroomers() {
 			let date = $('#dateInput').val();
 			let duration = $('#durationMinutes').val();
-
+			const $groomerSelect = $('#groomerSelect');
 			// 每次觸發此函式，都要先重置美容師與時段選單 (因為條件變了，舊的選擇失效)
 			resetStep3_Groomer();
 
+			console.log("前端發送: 查詢美容師參數 date =", date, ", duration =", duration);
 			// 防呆：如果日期沒選，或時長為 0，就不送出請求
 			if (!date || duration <= 0) { return; } // UI 顯示查詢中 let $groomerSelect=$('#groomerSelect');
 			$groomerSelect.empty().append('<option>查詢可用時段中...</option>');
@@ -694,7 +699,7 @@
 				},
 				dataType: 'json',
 				success: function (data) {
-					// [重要] 將回傳資料存入全域變數，供下一步使用
+					console.log("前端接收: 後端回傳的美容師資料:", data);
 					cachedScheduleData = data;
 
 					$groomerSelect.empty();
@@ -705,8 +710,7 @@
 						$groomerSelect.append('<option value="">-- 請選擇美容師 --</option>');
 
 						// 填入美容師選項
-						$.each(data, function (index, groomer) {
-							// 顯示範例：王小美 (剩餘 3 個時段)
+						$.each(data, function (index, groomer) {							
 							let slotCount = groomer.slots ? groomer.slots.length : 0;
 							$groomerSelect.append($('<option>', {
 								value: groomer.groomerId,

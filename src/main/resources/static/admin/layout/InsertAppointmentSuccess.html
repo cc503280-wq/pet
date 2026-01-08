@@ -432,9 +432,9 @@
 			}
 
 			let data = JSON.parse(dataStr);
-
+			console.log(data.petName);
 			$('#res_memberName').val(data.memberName);
-			$('#res_petName').val(data.petName);
+			$('#res_petName').val(data.petName.trim());
 			$('#res_appointmentDate').val(data.appointmentDate);
 			$('#res_durationMinutes').val(data.durationMinutes);
 			$('#res_totalPrice').val("$" + data.totalPrice);
