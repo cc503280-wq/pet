@@ -4,6 +4,7 @@ import com.cloudinary.Cloudinary;
 
 import com.mysql.cj.log.Log;
 import com.pet.dao.appointment.*;
+import com.pet.dao.member.MemberPetRepository;
 import com.pet.dao.member.MemberRepository;
 import com.pet.model.appointment.Appointment;
 import com.pet.model.appointment.AppointmentDetailList;
@@ -72,7 +73,7 @@ public class AppointmentService {
 	}
 	
 	public List<MemberPet> getPetsByMemberId(Integer memberId) {
-		return memberPetRepository.findByMemberMemberId(memberId);
+		return memberPetRepository.findByMember_MemberIdOrderByPetIdAsc(memberId);
 	}
 
 	public List<ServiceItem> findServicesByPetTypeAndPetSize(String petType, String petSize) {
