@@ -149,12 +149,31 @@
 								</a></li>
 							</ul></li>
 
-						<li class="nav-item"><a href="../../AllProducts"
-							class="nav-link"> <i class="nav-icon fas fa-edit"></i>
-								<p>
-									商品管理 <i class="right fas fa-angle-left"></i>
-								</p>
-						</a></li>
+						<li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-edit"></i>
+                                <p>
+                                    商品管理
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                            	<li class="nav-item">
+								    <a href="/admin/products" class="nav-link">
+								        <i class="far fa-circle nav-icon"></i>
+								        <p>商品管理</p>
+								    </a>
+								</li>
+	                            <li class="nav-item">
+								    <a href="/admin/categories" class="nav-link">
+								        <i class="far fa-circle nav-icon"></i>
+								        <p>分類管理</p>
+								    </a>
+								</li>
+                            </ul>
+                        </li>
+						
+						
 						<li class="nav-item"><a href="#" class="nav-link"> <i
 								class="nav-icon fas fa-edit"></i>
 								<p>
@@ -162,19 +181,19 @@
 								</p>
 						</a>
 							<ul class="nav nav-treeview">
-								<li class="nav-item"><a href="../../orderList"
+								<li class="nav-item"><a href="/orders/list"
 									class="nav-link"> <i class="far fa-circle nav-icon"></i>
 										<p>查詢全部訂單</p>
 								</a></li>
-								<li class="nav-item"><a href="../../shipmentsList"
+								<li class="nav-item"><a href="/shipment/list"
 									class="nav-link"> <i class="far fa-circle nav-icon"></i>
 										<p>物流查詢</p>
 								</a></li>
-								<li class="nav-item"><a href="../../orderItemsList"
+								<li class="nav-item"><a href="/ordersItem/list"
 									class="nav-link"> <i class="far fa-circle nav-icon"></i>
 										<p>查詢全部訂單明細</p>
 								</a></li>
-								<li class="nav-item"><a href="../order/shopping.jsp"
+								<li class="nav-item"><a href="/Cart/shopping"
 									class="nav-link"> <i class="far fa-circle nav-icon"></i>
 										<p>新增訂單</p>
 								</a></li>
