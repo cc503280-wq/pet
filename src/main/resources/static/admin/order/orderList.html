@@ -1,9 +1,6 @@
-<%@page import="com.pet.model.order.orderBean"%>
-<%@page import="java.util.List"%>
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
 <meta charset="utf-8">
@@ -66,12 +63,12 @@
 			class="main-header navbar navbar-expand navbar-white navbar-light">
 			<!-- Left navbar links -->
 			<ul class="navbar-nav ml-auto">
-			        <li class="nav-item">
-			            <a href="${pageContext.request.contextPath}/AdminLogoutServlet" class="btn btn-secondary btn-sm">
-			                <i class="fas fa-sign-out-alt"></i> 登出
-			            </a>
-			        </li>
-			    </ul>
+				<li class="nav-item"><a
+					href="${pageContext.request.contextPath}/AdminLogoutServlet"
+					class="btn btn-secondary btn-sm"> <i
+						class="fas fa-sign-out-alt"></i> 登出
+				</a></li>
+			</ul>
 
 
 		</nav>
@@ -104,89 +101,79 @@
 								</p>
 						</a>
 							<ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="${pageContext.request.contextPath}/admin/layout/AdminQueryAll.html" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>管理員資料</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="${pageContext.request.contextPath}/admin/layout/MemberQueryAll.html" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>會員基本資料</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="${pageContext.request.contextPath}/admin/layout/MemberPetQueryAll.html" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>會員寵物資料</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="${pageContext.request.contextPath}/admin/layout/CouponQueryAll.html" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>優惠券總覽</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="${pageContext.request.contextPath}/admin/layout/CouponUsersQueryAll.html" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>會員持有優惠券</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="${pageContext.request.contextPath}/admin/layout/FavoritesQueryAll.html" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>會員收藏清單</p>
-                  </a>
-                </li>
-              </ul></li>
-						<li class="nav-item">
-              <a href="${pageContext.request.contextPath}/AllProducts" class="nav-link">
-                <i class="nav-icon fas fa-edit"></i>
-                <p>
-                  商品管理
-                  <i class="right fas fa-angle-left"></i>
-                </p>
-              </a>
-            </li>
+								<li class="nav-item"><a
+									href="${pageContext.request.contextPath}/admin/layout/AdminQueryAll.html"
+									class="nav-link"> <i class="far fa-circle nav-icon"></i>
+										<p>管理員資料</p>
+								</a></li>
+								<li class="nav-item"><a
+									href="${pageContext.request.contextPath}/admin/layout/MemberQueryAll.html"
+									class="nav-link"> <i class="far fa-circle nav-icon"></i>
+										<p>會員基本資料</p>
+								</a></li>
+								<li class="nav-item"><a
+									href="${pageContext.request.contextPath}/admin/layout/MemberPetQueryAll.html"
+									class="nav-link"> <i class="far fa-circle nav-icon"></i>
+										<p>會員寵物資料</p>
+								</a></li>
+								<li class="nav-item"><a
+									href="${pageContext.request.contextPath}/admin/layout/CouponQueryAll.html"
+									class="nav-link"> <i class="far fa-circle nav-icon"></i>
+										<p>優惠券總覽</p>
+								</a></li>
+								<li class="nav-item"><a
+									href="${pageContext.request.contextPath}/admin/layout/CouponUsersQueryAll.html"
+									class="nav-link"> <i class="far fa-circle nav-icon"></i>
+										<p>會員持有優惠券</p>
+								</a></li>
+								<li class="nav-item"><a
+									href="${pageContext.request.contextPath}/admin/layout/FavoritesQueryAll.html"
+									class="nav-link"> <i class="far fa-circle nav-icon"></i>
+										<p>會員收藏清單</p>
+								</a></li>
+							</ul></li>
+						<li class="nav-item"><a
+							href="${pageContext.request.contextPath}/AllProducts"
+							class="nav-link"> <i class="nav-icon fas fa-edit"></i>
+								<p>
+									商品管理 <i class="right fas fa-angle-left"></i>
+								</p>
+						</a></li>
 						<li class="nav-item"><a href="#" class="nav-link"> <i
 								class="nav-icon fas fa-edit"></i>
-				<p>
-					訂單管理 <i class="right fas fa-angle-left"></i>
-				</p>
-		</a>
-			<ul class="nav nav-treeview">
-				<li class="nav-item"><a
-					href="${pageContext.request.contextPath}/orderList"
-					class="nav-link"> <i class="far fa-circle nav-icon"></i>
-						<p>查詢全部訂單</p>
-				</a></li>
-				<li class="nav-item"><a
-					href="${pageContext.request.contextPath}/shipmentsList"
-					class="nav-link"> <i class="far fa-circle nav-icon"></i>
-						<p>物流查詢</p>
-				</a></li>
-				<li class="nav-item"><a
-					href="${pageContext.request.contextPath}/orderItemsList"
-					class="nav-link"> <i class="far fa-circle nav-icon"></i>
-						<p>查詢全部訂單明細</p>
-				</a></li>
-				<li class="nav-item"><a
-					href="${pageContext.request.contextPath}/admin/order/shopping.jsp"
-					class="nav-link"> <i class="far fa-circle nav-icon"></i>
-						<p>新增訂單</p>
-				</a></li>
-			</ul></li>
-						<li class="nav-item">
-              <a href="${pageContext.request.contextPath}/AppointmentServlet.do" class="nav-link">
-                <i class="nav-icon fas fa-edit"></i>
-                <p>
-                  預約管理
-                  <i class="right fas fa-angle-left"></i>
-                </p>
-              </a>
-            </li>
+								<p>
+									訂單管理 <i class="right fas fa-angle-left"></i>
+								</p>
+						</a>
+							<ul class="nav nav-treeview">
+								<li class="nav-item"><a
+									href="${pageContext.request.contextPath}/orderList"
+									class="nav-link"> <i class="far fa-circle nav-icon"></i>
+										<p>查詢全部訂單</p>
+								</a></li>
+								<li class="nav-item"><a
+									href="${pageContext.request.contextPath}/shipmentsList"
+									class="nav-link"> <i class="far fa-circle nav-icon"></i>
+										<p>物流查詢</p>
+								</a></li>
+								<li class="nav-item"><a
+									href="${pageContext.request.contextPath}/orderItemsList"
+									class="nav-link"> <i class="far fa-circle nav-icon"></i>
+										<p>查詢全部訂單明細</p>
+								</a></li>
+								<li class="nav-item"><a
+									href="${pageContext.request.contextPath}/admin/order/shopping.jsp"
+									class="nav-link"> <i class="far fa-circle nav-icon"></i>
+										<p>新增訂單</p>
+								</a></li>
+							</ul></li>
+						<li class="nav-item"><a
+							href="${pageContext.request.contextPath}/AppointmentServlet.do"
+							class="nav-link"> <i class="nav-icon fas fa-edit"></i>
+								<p>
+									預約管理 <i class="right fas fa-angle-left"></i>
+								</p>
+						</a></li>
 
 					</ul>
 				</nav>
@@ -222,7 +209,7 @@
 									<h3 class="card-title">訂單列表</h3>
 
 									<div class="d-flex align-items-center ml-auto">
-										
+
 										<div class="input-group input-group-sm mr-2"
 											style="width: 150px;">
 											<input id="idSearchInput" type="text" class="form-control"
@@ -234,7 +221,7 @@
 											</div>
 										</div>
 
-										
+
 									</div>
 								</div>
 								<!-- /.card-header -->
@@ -256,36 +243,23 @@
 											</tr>
 										</thead>
 										<tbody>
-
-											<%
-											List<orderBean> list = (List<orderBean>) request.getAttribute("orderList");
-											if (list != null) {
-												for (orderBean o : list) {
-											%>
-											<tr>
-												<td><%=o.getOrderId()%></td>
-												<td><%=o.getMemberId()%></td>
-												<td><%=o.getOrderDate()%></td>
-												<td class="status-cell" data-orderid="<%=o.getOrderId()%>"><%=o.getStatus()%></td>
-												<td><%=o.getTotalAmountUndiscount()%></td>
-												<td><%=o.getCouponId()%></td>
-												<td><%=o.getTotalAmountDiscount()%></td>
-												<td><%=o.getUsePoints()%></td>
-												<td><%=o.getTotalAmountDiscountPoints()%></td>
-												<td><%=o.getGetPoints()%></td>
-
-												<td class="text-center"><a
-													href="${pageContext.request.contextPath}/cancelOrder?orderId=<%=o.getOrderId()%>"
-													class="btn btn-secondary btn-sm mr-1">訂單取消</a></td>
+											<tr th:each="o : ${orders}">
+												<td th:text="${o.orderId}"></td>
+												<td th:text="${o.memberId}"></td>
+												<td th:text="${o.orderDate}"></td>
+												<td th:text="${o.status}"></td>
+												<td th:text="${o.totalAmountUndiscount}"></td>
+												<td th:text="${o.couponId}"></td>
+												<td th:text="${o.totalAmountDiscount}"></td>
+												<td th:text="${o.usePoints}"></td>
+												<td th:text="${o.totalAmountDiscountPoints}"></td>
+												<td th:text="${o.getPoints}"></td>
 											</tr>
-											<%
-											}
-											}
-											%>
+
 										</tbody>
 
 
-										
+
 
 									</table>
 
@@ -373,57 +347,76 @@
 								// 結構: 表格本體(t) / 新的一行: [資訊(i) - 左 5 欄] [分頁(p) - 右 7 欄]
 								"dom" : '<"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7 d-flex justify-content-end"p>>'
 							});
-			$("#idSearchBtn").click(function () {
-			    let id = $("#idSearchInput").val();
-			    if (!id) return;
+			$("#idSearchBtn")
+					.click(
+							function() {
+								let id = $("#idSearchInput").val();
+								if (!id)
+									return;
 
-			    // 把 ID 塞進 a 標籤的 href 當 GET 參數
-			    let url = "${pageContext.request.contextPath}/orderId?memberId=" + encodeURIComponent(id);
-			    $(this).attr("href", url);
-			});
-			 $(".status-cell").click(function(){
-			        let $cell = $(this);
+								// 把 ID 塞進 a 標籤的 href 當 GET 參數
+								let url = "${pageContext.request.contextPath}/orderId?memberId="
+										+ encodeURIComponent(id);
+								$(this).attr("href", url);
+							});
+			$(".status-cell")
+					.click(
+							function() {
+								let $cell = $(this);
 
-			        // 如果已經是 input，就不處理
-			        if($cell.find("input").length > 0) return;
+								// 如果已經是 input，就不處理
+								if ($cell.find("input").length > 0)
+									return;
 
-			        let oldValue = $cell.text().trim();
-			        let orderId = $cell.data("orderid");
+								let oldValue = $cell.text().trim();
+								let orderId = $cell.data("orderid");
 
-			        // 建立 input
-			        let $input = $("<input>", {
-			            type: "text",
-			            value: oldValue,
-			            css: {width: "80px"}
-			        });
+								// 建立 input
+								let $input = $("<input>", {
+									type : "text",
+									value : oldValue,
+									css : {
+										width : "80px"
+									}
+								});
 
-			        $cell.empty().append($input);
-			        $input.focus();
+								$cell.empty().append($input);
+								$input.focus();
 
-			        // 按 Enter 送出
-			        $input.keypress(function(e){
-			            if(e.which === 13){ // Enter
-			                let newValue = $input.val();
+								// 按 Enter 送出
+								$input
+										.keypress(function(e) {
+											if (e.which === 13) { // Enter
+												let newValue = $input.val();
 
-			                $.post("${pageContext.request.contextPath}/updateOrderStatus", 
-			                    { orderId: orderId, status: newValue }, 
-			                    function(response){
-			                        $cell.text(newValue); // 更新 td 顯示
-			                    }
-			                ).fail(function(){
-			                    alert("更新失敗");
-			                    $cell.text(oldValue);
-			                });
-			            }
-			        });
+												$
+														.post(
+																"${pageContext.request.contextPath}/updateOrderStatus",
+																{
+																	orderId : orderId,
+																	status : newValue
+																},
+																function(
+																		response) {
+																	$cell
+																			.text(newValue); // 更新 td 顯示
+																})
+														.fail(
+																function() {
+																	alert("更新失敗");
+																	$cell
+																			.text(oldValue);
+																});
+											}
+										});
 
-			        // 失焦還原原值
-			        $input.blur(function(){
-			            if($cell.find("input").length > 0){
-			                $cell.text(oldValue);
-			            }
-			        });
-			    });
+								// 失焦還原原值
+								$input.blur(function() {
+									if ($cell.find("input").length > 0) {
+										$cell.text(oldValue);
+									}
+								});
+							});
 		});
 	</script>
 </body>
