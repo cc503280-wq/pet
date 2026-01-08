@@ -283,8 +283,6 @@
         <button id="btnReset" class="btn btn-secondary btn-sm">重置</button>
     </div>
 </div>
-									</div>
-								</div>
 								<!-- /.card-header -->
 								<div class="card-body">
 									<table id="example2" class="table table-bordered table-hover">
@@ -626,7 +624,7 @@
                     $('#modalGroomerName').val(g.groomerName);
                     $('#modalGroomerPhone').val(g.phone);
                     $('#modalGroomerEmail').val(g.email);
-                    $('#hiredateInput').val(g.hiredate);                               
+                    $('#hiredateInput').val(g.hiredate).prop('disabled', true);;                            
                
                     // 處理圖片預覽
                     // 清空檔案選擇器 (因為使用者可能不打算換圖)
@@ -658,7 +656,7 @@
             $('#modalImagePreview').attr('src', '').hide(); // 隱藏預覽圖
 
 			let today = moment().format('YYYY-MM-DD');
-        	$('#hiredateInput').val(today);
+        	$('#hiredateInput').val(today).prop('disabled', false);
 
             $('#Modal').modal('show');
         }

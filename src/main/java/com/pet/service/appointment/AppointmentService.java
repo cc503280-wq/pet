@@ -2,7 +2,6 @@ package com.pet.service.appointment;
 
 import com.cloudinary.Cloudinary;
 
-import com.mysql.cj.log.Log;
 import com.pet.dao.appointment.*;
 import com.pet.dao.member.MemberPetRepository;
 import com.pet.dao.member.MemberRepository;
@@ -16,19 +15,14 @@ import com.pet.model.appointment.ServiceItem;
 import com.pet.model.member.Member;
 import com.pet.model.member.MemberPet;
 import com.pet.util.TimeSlotUtils;
-
 import lombok.extern.slf4j.Slf4j;
-
-import java.lang.System.Logger;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -81,7 +75,7 @@ public class AppointmentService {
 		return serviceItemRepository.findByTargetPetTypeAndTargetPetSizeInAndIsActiveTrue(petType,sizeCriteria);
 	}
 	
-	//=======取消訂單
+	//=======取消訂單=======
 	@Transactional
 	public Appointment CancelAppointment(Integer id) {
 

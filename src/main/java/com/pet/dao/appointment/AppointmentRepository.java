@@ -27,4 +27,14 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Intege
     long countByGroomerIdAndDateRange(@Param("groomerId") Integer groomerId, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 	
 
+	@Query("SELECT COUNT(a) FROM Appointment a " +
+	           "JOIN a.appointmentDetails d " +
+	           "WHERE d.serviceId = :serviceId " +
+	           "AND a.appointmentDate >= :today " +
+	           "AND a.appointmentStatus != '已取消'")
+	    long countActiveAppointmentsByServiceId(
+	        @Param("serviceId") Integer serviceId, 
+	        @Param("today") LocalDate today);
+	
+	
 }

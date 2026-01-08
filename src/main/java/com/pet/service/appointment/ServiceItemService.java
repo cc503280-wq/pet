@@ -1,7 +1,7 @@
 package com.pet.service.appointment;
 
 import java.io.IOException;
-
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import com.pet.dao.appointment.AppointmentRepository;
 import com.pet.dao.appointment.ServiceItemRepository;
 import com.pet.model.appointment.ServiceItem;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +24,9 @@ public class ServiceItemService {
 	
 	@Autowired
 	private Cloudinary cloudinary;
+	
+	@Autowired 
+    private AppointmentRepository appointmentRepository;
 	
 	
 	public List<ServiceItem> getAllServiceItems() {
@@ -52,7 +56,7 @@ public class ServiceItemService {
 	
 	@Transactional
     public ServiceItem updateServiceItemInfo(Integer id, ServiceItem inputserviceItem, MultipartFile file) throws IOException {
-        log.info("開始新增美容師: {}", inputserviceItem.getServiceName());
+        log.info("開始修改服務項目: {}", inputserviceItem.getServiceName());
         
         ServiceItem existing = serviceItemRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("找不到 ID 為 " + id + " 的美容師"));
@@ -99,14 +103,24 @@ public class ServiceItemService {
                 if ("active".equals(fieldType)) {
                    
                     boolean nextStatus = !Boolean.TRUE.equals(item.getIsActive());
+                    if (!nextStatus) { 
+                        
+                        LocalDate today = LocalDate.now();
+                                              
+                        long conflictCount = appointmentRepository.countActiveAppointmentsByServiceId(id, today);
+                        
+                        if (conflictCount > 0) {
+                            
+                            throw new RuntimeException(
+                                "無法下架！該服務目前尚有 " + conflictCount + " 筆未執行的預約單 (含今日)。" +
+                                "請先至預約管理手動取消或修改這些訂單。"
+                            );
+                        }
+                    }
+                    
                     item.setIsActive(nextStatus);
                     result = nextStatus;
                 }
-                
-                /* TODO: 
-                   如果該服務已被預約，是否允許下架？
-                   這部分建議先執行查詢，若有未完成預約則拋出 RuntimeException
-                */
                 
                 serviceItemRepository.save(item);
                 return result; 

@@ -1,7 +1,6 @@
 package com.pet.service.appointment;
 
 import java.io.IOException;
-import java.time.temporal.ChronoUnit;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -69,9 +68,24 @@ public class GroomerService {
             String imageUrl = saveFile(file); 
             groomer.setPicture(imageUrl);     
         }
+        
+       
           
         Groomer savedGroomer = groomerRepository.save(groomer);
         log.info("新增美容師"+groomer.getGroomerName()+"成功");
+        
+        log.info("美容師 ID: {} 新增成功，開始自動產生 30 天排程...", savedGroomer.getGroomerId());
+        dailyScheduleRepository.generateGroomerSchedules(
+                savedGroomer.getGroomerId(),
+                savedGroomer.getHiredate(), // 從入職日開始
+                120,                         // 產生120天
+                "09:00",                    // 預設上班時間
+                "21:00",                    // 預設下班時間
+                -1                          // 預設無每週公休
+            );
+
+            log.info("新增美容師 {} 成功且已建立排程", groomer.getGroomerName());
+        
         return savedGroomer;
     }
 	
@@ -97,59 +111,11 @@ public class GroomerService {
             }
         }
         
-        /*
-         * 1. 若入職日提早 -> 補產生排程
-         * 2. 若入職日延後 -> 檢查是否有預約單，若有人工刪除此筆預約單，選擇其他美容師
-         */
-        
-        LocalDate oldHireDate = existing.getHiredate();
-        LocalDate newHireDate = inputGroomer.getHiredate();
-        
-     
-        if (newHireDate != null && !newHireDate.equals(oldHireDate)) {
-            
-           
-            if (newHireDate.isBefore(oldHireDate)) {
-                // 計算差距天數 
-                long daysDiff = ChronoUnit.DAYS.between(newHireDate, oldHireDate);
-                
-                log.info("入職日提早，補產生 {} 天排程 ({} ~ {})", daysDiff, newHireDate, oldHireDate.minusDays(1));
-                
-                dailyScheduleRepository.generateGroomerSchedules(
-                    id,
-                    newHireDate,      
-                    (int) daysDiff,   
-                    "09:00",         
-                    "21:00",         
-                    -1               
-                );
-            }
-            
-            //  入職日延後 (New > Old) -> 檢查預約並刪排程
-            else if (newHireDate.isAfter(oldHireDate)) {
-                
-                LocalDate rangeStart = oldHireDate;
-                LocalDate rangeEnd = newHireDate.minusDays(1);
-
-             
-                long conflictCount = appointmentRepository.countByGroomerIdAndDateRange(id, rangeStart, rangeEnd);
-                
-                if (conflictCount > 0) {
-                    throw new RuntimeException(
-                        String.format("無法延後入職日！在 %s 至 %s 期間已有 %d 筆預約。請先手動取消或轉移這些預約。", 
-                        rangeStart, rangeEnd, conflictCount)
-                    );
-                }
-
-                log.info("入職日延後，刪除舊排程區間: {} ~ {}", rangeStart, rangeEnd);
-                dailyScheduleRepository.deleteByGroomerIdAndDateRange(id, rangeStart, rangeEnd);
-            }
-        }
         
         existing.setGroomerName(inputGroomer.getGroomerName());
         existing.setPhone(inputGroomer.getPhone());
         existing.setEmail(inputGroomer.getEmail());
-        existing.setHiredate(inputGroomer.getHiredate());
+        
         
         if (file != null && !file.isEmpty()) {
             String imageUrl = saveFile(file); 
@@ -252,7 +218,6 @@ public class GroomerService {
 			
 			if (savedResult != null) {
 				log.info("新增假單成功: GroomerId={}, Date={}", gId, leaveDate);
-				
 				
 				dailyScheduleRepository.deleteByWorkDateAndGroomerId(leaveDate, gId);
 				log.info("已刪除美容師: {} 日期 {} 的排程", gId, leaveDate);

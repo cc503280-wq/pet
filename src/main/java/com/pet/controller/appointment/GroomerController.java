@@ -1,11 +1,6 @@
 package com.pet.controller.appointment;
 
 
-
-
-
-
-
 import java.time.LocalDate;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,10 +63,10 @@ public class GroomerController {
 	        groomer.setHiredate(hiredate);       
 
 	        groomerService.saveGroomerInfo(groomer,file);
-	        return ResponseEntity.ok().body("預約建立成功");
+	        return ResponseEntity.ok().body("美容師新增成功");
 	    } catch (Exception e) {
 	        log.error("新增失敗", e);
-	        return ResponseEntity.badRequest().body("預約失敗：" + e.getMessage());
+	        return ResponseEntity.badRequest().body("美容師新增失敗：" + e.getMessage());
 	    }
 	}
 	

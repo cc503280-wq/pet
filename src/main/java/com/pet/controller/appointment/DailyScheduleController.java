@@ -24,4 +24,6 @@ public class DailyScheduleController {
 		return dailyScheduleService.getAvailableTimeSlots(date, duration);
 	}
 	
+	
+	
 }

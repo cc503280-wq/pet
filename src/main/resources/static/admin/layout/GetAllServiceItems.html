@@ -71,13 +71,13 @@
       .remove-btn {
         background-color: red;
       }
-      
-       .table-img {
-            width: 50px;
-            height: 50px;
-            object-fit: cover;
-            border-radius: 4px;
-        }
+
+      .table-img {
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
+        border-radius: 4px;
+      }
 
       /* DataTable 所有欄位水平 + 垂直置中 */
       #example2 td,
@@ -106,12 +106,16 @@
         </ul>
         <!-- 右側 Navbar 按鈕 -->
         <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a href="javascript:void(0)" id="logoutBtn" class="btn btn-secondary btn-sm">
-                        <i class="fas fa-sign-out-alt"></i> 登出
-                    </a>
-                </li>
-            </ul>
+          <li class="nav-item">
+            <a
+              href="javascript:void(0)"
+              id="logoutBtn"
+              class="btn btn-secondary btn-sm"
+            >
+              <i class="fas fa-sign-out-alt"></i> 登出
+            </a>
+          </li>
+        </ul>
       </nav>
       <!-- /.navbar -->
 
@@ -137,76 +141,95 @@
             >
               <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
-          		<li class="nav-item"><a href="#" class="nav-link"> <i
-								class="nav-icon fas fa-edit"></i>
-								<p>
-									會員管理 <i class="right fas fa-angle-left"></i>
-								</p>
-						</a>
-							<ul class="nav nav-treeview">
-								<li class="nav-item"><a href="AdminQueryAll.html"
-									class="nav-link"> <i class="far fa-circle nav-icon"></i>
-										<p>管理員資料</p>
-								</a></li>
-								<li class="nav-item"><a href="MemberQueryAll.html"
-									class="nav-link"> <i class="far fa-circle nav-icon"></i>
-										<p>會員基本資料</p>
-								</a></li>
-								<li class="nav-item"><a href="MemberPetQueryAll.html"
-									class="nav-link"> <i class="far fa-circle nav-icon"></i>
-										<p>會員寵物資料</p>
-								</a></li>
-								<li class="nav-item"><a href="CouponQueryAll.html"
-									class="nav-link"> <i class="far fa-circle nav-icon"></i>
-										<p>優惠券總覽</p>
-								</a></li>
-								<li class="nav-item"><a href="CouponUsersQueryAll.html"
-									class="nav-link"> <i class="far fa-circle nav-icon"></i>
-										<p>會員持有優惠券</p>
-								</a></li>
-								<li class="nav-item"><a href="FavoritesQueryAll.html"
-									class="nav-link"> <i class="far fa-circle nav-icon"></i>
-										<p>會員收藏清單</p>
-								</a></li>
-							</ul></li>
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="nav-icon fas fa-edit"></i>
+                  <p>會員管理 <i class="right fas fa-angle-left"></i></p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="AdminQueryAll.html" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>管理員資料</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="MemberQueryAll.html" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>會員基本資料</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="MemberPetQueryAll.html" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>會員寵物資料</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="CouponQueryAll.html" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>優惠券總覽</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="CouponUsersQueryAll.html" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>會員持有優惠券</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="FavoritesQueryAll.html" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>會員收藏清單</p>
+                    </a>
+                  </li>
+                </ul>
+              </li>
 
-						<li class="nav-item"><a href="../../AllProducts"
-							class="nav-link"> <i class="nav-icon fas fa-edit"></i>
-								<p>
-									商品管理 <i class="right fas fa-angle-left"></i>
-								</p>
-						</a></li>
-						<li class="nav-item"><a href="#" class="nav-link"> <i
-								class="nav-icon fas fa-edit"></i>
-								<p>
-									訂單管理 <i class="right fas fa-angle-left"></i>
-								</p>
-						</a>
-							<ul class="nav nav-treeview">
-								<li class="nav-item"><a href="../../orderList"
-									class="nav-link"> <i class="far fa-circle nav-icon"></i>
-										<p>查詢全部訂單</p>
-								</a></li>
-								<li class="nav-item"><a href="../../shipmentsList"
-									class="nav-link"> <i class="far fa-circle nav-icon"></i>
-										<p>物流查詢</p>
-								</a></li>
-								<li class="nav-item"><a href="../../orderItemsList"
-									class="nav-link"> <i class="far fa-circle nav-icon"></i>
-										<p>查詢全部訂單明細</p>
-								</a></li>
-								<li class="nav-item"><a href="../order/shopping.jsp"
-									class="nav-link"> <i class="far fa-circle nav-icon"></i>
-										<p>新增訂單</p>
-								</a></li>
-							</ul></li>
-						<li class="nav-item"><a href="#"
-							class="nav-link"> <i class="nav-icon fas fa-edit"></i>
-								<p>
-									預約管理 <i class="right fas fa-angle-left"></i>
-								</p>
-						</a>
-						<ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="../../AllProducts" class="nav-link">
+                  <i class="nav-icon fas fa-edit"></i>
+                  <p>商品管理 <i class="right fas fa-angle-left"></i></p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="nav-icon fas fa-edit"></i>
+                  <p>訂單管理 <i class="right fas fa-angle-left"></i></p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="../../orderList" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>查詢全部訂單</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="../../shipmentsList" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>物流查詢</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="../../orderItemsList" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>查詢全部訂單明細</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="../order/shopping.jsp" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>新增訂單</p>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="nav-icon fas fa-edit"></i>
+                  <p>預約管理 <i class="right fas fa-angle-left"></i></p>
+                </a>
+                <ul class="nav nav-treeview">
                   <li class="nav-item">
                     <a href="GetAllAppointments.html" class="nav-link">
                       <i class="far fa-circle nav-icon"></i>
@@ -231,16 +254,16 @@
                       <p>預約訂單明細</p>
                     </a>
                   </li>
-                    <li class="nav-item">
+                  <li class="nav-item">
                     <a href="GetAllServiceItems.html" class="nav-link">
                       <i class="far fa-circle nav-icon"></i>
                       <p>服務項目管理</p>
                     </a>
                   </li>
-                </ul>				
-				</li>
-				</ul>
-				</nav>
+                </ul>
+              </li>
+            </ul>
+          </nav>
           <!-- /.sidebar-menu -->
         </div>
         <!-- /.sidebar -->
@@ -283,53 +306,79 @@
                       </button>
                       <!-- .新增資料 -->
 
-                      <div class="input-group input-group-sm" style="width: 150px;">
-        <input id="searchServiceName" type="text" class="form-control" placeholder="服務名稱">
-    </div>
+                      <div
+                        class="input-group input-group-sm"
+                        style="width: 150px"
+                      >
+                        <input
+                          id="searchServiceName"
+                          type="text"
+                          class="form-control"
+                          placeholder="服務名稱"
+                        />
+                      </div>
 
-    <div class="input-group input-group-sm" style="width: 100px;">
-        <select id="searchPetType" class="form-control">
-            <option value="">所有類型</option>
-            <option value="狗">狗</option>
-            <option value="貓">貓</option>
-            <option value="其他">其他</option>
-        </select>
-    </div>
+                      <div
+                        class="input-group input-group-sm"
+                        style="width: 100px"
+                      >
+                        <select id="searchPetType" class="form-control">
+                          <option value="">所有類型</option>
+                          <option value="狗">狗</option>
+                          <option value="貓">貓</option>
+                          <option value="其他">其他</option>
+                        </select>
+                      </div>
 
-    <div class="input-group input-group-sm" style="width: 100px;">
-        <select id="searchPetSize" class="form-control">
-            <option value="">所有體型</option>
-            <option value="小型">小型</option>
-            <option value="中型">中型</option>
-            <option value="大型">大型</option>
-            <option value="其他">不分體型</option>
-        </select>
-    </div>
+                      <div
+                        class="input-group input-group-sm"
+                        style="width: 100px"
+                      >
+                        <select id="searchPetSize" class="form-control">
+                          <option value="">所有體型</option>
+                          <option value="小型">小型</option>
+                          <option value="中型">中型</option>
+                          <option value="大型">大型</option>
+                          <option value="不分體型">不分體型</option>
+                        </select>
+                      </div>
 
-    <div class="input-group input-group-sm" style="width: 110px;">
-        <select id="searchIsAddon" class="form-control">
-            <option value="">服務性質</option>
-            <option value="false">主要服務</option>
-            <option value="true">加購服務</option>
-        </select>
-    </div>
+                      <div
+                        class="input-group input-group-sm"
+                        style="width: 110px"
+                      >
+                        <select id="searchIsAddon" class="form-control">
+                          <option value="">服務性質</option>
+                          <option value="false">主要服務</option>
+                          <option value="true">加購服務</option>
+                        </select>
+                      </div>
 
-    <div class="input-group input-group-sm" style="width: 100px;">
-        <select id="searchStatus" class="form-control">
-            <option value="">狀態</option>
-            <option value="1">上架</option>
-            <option value="0">下架</option>
-        </select>
-    </div>
+                      <div
+                        class="input-group input-group-sm"
+                        style="width: 100px"
+                      >
+                        <select id="searchStatus" class="form-control">
+                          <option value="">狀態</option>
+                          <option value="1">上架</option>
+                          <option value="0">下架</option>
+                        </select>
+                      </div>
 
-    <button id="btnSearch" class="btn btn-primary btn-sm" onclick="doServiceSearch()">
-        <i class="fas fa-search"></i> 搜尋
-    </button>
-    <button id="btnReset" class="btn btn-secondary btn-sm" onclick="resetSearch()">
-        重置
-    </button>
-</div>
-                      
+                      <button
+                        id="btnSearch"
+                        class="btn btn-primary btn-sm"
+                        onclick="doServiceSearch()"
+                      >
+                        <i class="fas fa-search"></i> 搜尋
+                      </button>
+                      <button
+                        id="btnReset"
+                        class="btn btn-secondary btn-sm"
+                        onclick="resetSearch()"
+                      >
+                        重置
+                      </button>
                     </div>
                   </div>
                   <!-- /.card-header -->
@@ -508,7 +557,7 @@
                   <option value="小型">小型</option>
                   <option value="中型">中型</option>
                   <option value="大型">大型</option>
-                  <option value="其他">不分體型</option>
+                  <option value="不分體型">不分體型</option>
                 </select>
               </div>
               <div class="form-group">
@@ -627,8 +676,8 @@
         initDataTable();
         loadAllData();
         ServiceDetailButtonClick();
-        bindPetTypeLinkage('#searchPetType', '#searchPetSize');
-        bindPetTypeLinkage('#modalTargetPetType', '#modalTargetPetSize');
+        bindPetTypeLinkage("#searchPetType", "#searchPetSize");
+        bindPetTypeLinkage("#modalTargetPetType", "#modalTargetPetSize");
       });
 
       const SERVICEITEM_API = "/serviceitems";
@@ -678,13 +727,10 @@
         tbody.empty();
 
         dataList.forEach(function (s) {
-        	const isActive = s.isActive;
-            const statusText = isActive ? "上架中" : "已下架";
-            const btnClass = isActive ? "btn-success" : "btn-outline-danger";
-            const icon = isActive ? "fa-check-circle" : "fa-times-circle";
-
-
-          
+          const isActive = s.isActive;
+          const statusText = isActive ? "上架中" : "已下架";
+          const btnClass = isActive ? "btn-success" : "btn-outline-danger";
+          const icon = isActive ? "fa-check-circle" : "fa-times-circle";
 
           const tr = `
                          <tr>
@@ -699,8 +745,10 @@
 							              <td>${s.isActive ? "上架" : "下架"}</td>
 							              <td>${s.updatedAt}</td>                          
                             <td class="text-center">
-                            <a href="#" class="btn btn-secondary btn-sm mr-2 sdetail-btn" data-id="${s.serviceId}">查看</a>
-							              <button class="btn btn-secondary btn-sm mr-2 btn-edit" onclick="openEditModal(${s.serviceId})">修改</button>	
+                            <a href="#" class="btn btn-secondary btn-sm mr-2 sdetail-btn" data-id="${
+                              s.serviceId
+                            }">查看</a>
+							              
 							               <button class="btn ${btnClass} btn-sm status-toggle-btn" 
                                     data-id="${s.serviceId}" 
                                     title="點擊切換狀態">
@@ -744,43 +792,44 @@
         });
       }
 
-      function openEditModal(id) {
-        $.ajax({
-          url: SERVICEITEM_API + "/" + id,
-          type: "GET",
-          success: function (s) {
-            // 2. 填入資料到表單
-            $("#modalServiceId").val(s.serviceId);
-            $("#modalServiceName").val(s.serviceName);
-            $("#modalTargetPetType").val(s.targetPetType).trigger('change');;
-            $("#modalTargetPetSize").val(s.targetPetSize);
-            $("#modalIsAddon").val(s.isAddon.toString());
-            $("#modalDurationMinutes").val(s.durationMinutes);
-            $("#modalPrice").val(s.price);
-            $("#modalDescription").val(s.description);
+      //預留
+      // function openEditModal(id) {
+      //   $.ajax({
+      //     url: SERVICEITEM_API + "/" + id,
+      //     type: "GET",
+      //     success: function (s) {
+      //       // 2. 填入資料到表單
+      //       $("#modalServiceId").val(s.serviceId);
+      //       $("#modalServiceName").val(s.serviceName);
+      //       $("#modalTargetPetType").val(s.targetPetType).trigger('change');;
+      //       $("#modalTargetPetSize").val(s.targetPetSize);
+      //       $("#modalIsAddon").val(s.isAddon.toString());
+      //       $("#modalDurationMinutes").val(s.durationMinutes);
+      //       $("#modalPrice").val(s.price);
+      //       $("#modalDescription").val(s.description);
 
-            // 處理圖片預覽
-            // 清空檔案選擇器 (因為使用者可能不打算換圖)
-            $("#modalImageFile").val("");
+      //       // 處理圖片預覽
+      //       // 清空檔案選擇器 (因為使用者可能不打算換圖)
+      //       $("#modalImageFile").val("");
 
-            if (s.picture) {
-              // 顯示舊圖片
-              $("#modalImagePreview")
-                .attr("src", IMAGE_BASE_URL + s.picture)
-                .show();
-            } else {
-              $("#modalImagePreview").hide();
-            }
+      //       if (s.picture) {
+      //         // 顯示舊圖片
+      //         $("#modalImagePreview")
+      //           .attr("src", IMAGE_BASE_URL + s.picture)
+      //           .show();
+      //       } else {
+      //         $("#modalImagePreview").hide();
+      //       }
 
-            // 3. 改標題並顯示
-            $("#modalTitle").text("修改服務項目資料");
-            $("#Modal").modal("show");
-          },
-          error: function (err) {
-            alert("無法載入服務項目資料");
-          },
-        });
-      }
+      //       // 3. 改標題並顯示
+      //       $("#modalTitle").text("修改服務項目資料");
+      //       $("#Modal").modal("show");
+      //     },
+      //     error: function (err) {
+      //       alert("無法載入服務項目資料");
+      //     },
+      //   });
+      // }
 
       function openCreateModal() {
         $("#serviceItemForm")[0].reset();
@@ -826,7 +875,6 @@
           processData: false,
           contentType: false,
           success: function (res) {
-            
             let msg = id ? "修改成功！" : "新增成功！";
             alert(msg);
 
@@ -860,98 +908,95 @@
         }
       }
 
-
       function doServiceSearch() {
-    	    const params = {
-    	        serviceName: $('#searchServiceName').val().trim(),
-    	        targetPetType: $('#searchPetType').val(),
-    	        targetPetSize: $('#searchPetSize').val(),
-    	        isAddon: $('#searchIsAddon').val(),
-    	        isActive: $('#searchStatus').val()
-    	    };
+        const params = {
+          serviceName: $("#searchServiceName").val().trim(),
+          targetPetType: $("#searchPetType").val(),
+          targetPetSize: $("#searchPetSize").val(),
+          isAddon: $("#searchIsAddon").val(),
+          isActive: $("#searchStatus").val(),
+        };
 
-    	    // 過濾掉空值，不傳送空參數給後端
-    	    Object.keys(params).forEach(key => (params[key] === "" || params[key] == null) && delete params[key]);
+        // 過濾掉空值，不傳送空參數給後端
+        Object.keys(params).forEach(
+          (key) =>
+            (params[key] === "" || params[key] == null) && delete params[key]
+        );
 
-    	    $.ajax({
-    	        url: `${SERVICEITEM_API}/search`, 
-    	        type: "GET",
-    	        data: params,
-    	        dataType: "json",
-    	        success: function (data) {
-    	            if (data.length === 0) {
-    	                alert("查無符合條件的服務項目");
-    	                renderTable([]);
-    	            } else {
-    	                renderTable(data);
-    	            }
-    	        },
-    	        error: function (xhr) {
-    	            console.error("搜尋失敗:", xhr);
-    	            alert("搜尋發生錯誤");
-    	        }
-    	    });
-    	}
+        $.ajax({
+          url: `${SERVICEITEM_API}/search`,
+          type: "GET",
+          data: params,
+          dataType: "json",
+          success: function (data) {
+            if (data.length === 0) {
+              alert("查無符合條件的服務項目");
+              renderTable([]);
+            } else {
+              renderTable(data);
+            }
+          },
+          error: function (xhr) {
+            console.error("搜尋失敗:", xhr);
+            alert("搜尋發生錯誤");
+          },
+        });
+      }
 
-    	// 重置按鈕
-    	function resetSearch() {
-    	    $('#searchServiceName').val('');
-    	    $('#searchPetType').val('');
-    	    $('#searchPetSize').val('');
-    	    $('#searchIsAddon').val('');
-    	    $('#searchStatus').val('');
-    	    loadAllData();
-    	}
+      // 重置按鈕
+      function resetSearch() {
+        $("#searchServiceName").val("");
+        $("#searchPetType").val("");
+        $("#searchPetSize").val("");
+        $("#searchIsAddon").val("");
+        $("#searchStatus").val("");
+        loadAllData();
+      }
 
-    	$(document).on("click", ".status-toggle-btn", function() {
-    	    const serviceId = $(this).data("id");
-    	    const $btn = $(this); // 抓取當前按鈕物件
+      $(document).on("click", ".status-toggle-btn", function () {
+        const serviceId = $(this).data("id");
+        const $btn = $(this); // 抓取當前按鈕物件
 
-    	    // 禁用按鈕防止重複點擊
-    	    $btn.prop('disabled', true);
+        // 禁用按鈕防止重複點擊
+        $btn.prop("disabled", true);
 
-    	    $.ajax({
-    	        url: `${SERVICEITEM_API}/${serviceId}/toggle`,
-    	        type: "PUT", 
-    	        data: { type: "active" }, 
-    	        success: function(newStatus) {
-    	            
-    	            alert(newStatus ? "服務已上架" : "服務已下架");
-    	            
-    	          
-    	            loadAllData(); 
-    	        },
-    	        error: function(xhr) {
-    	            console.error("狀態切換失敗", xhr);
-    	            alert("切換失敗：" + (xhr.responseText || "伺服器錯誤"));
-    	        },
-    	        complete: function() {
-    	            $btn.prop('disabled', false);
-    	        }
-    	    });
-    	});
+        $.ajax({
+          url: `${SERVICEITEM_API}/${serviceId}/toggle`,
+          type: "PUT",
+          data: { type: "active" },
+          success: function (newStatus) {
+            alert(newStatus ? "服務已上架" : "服務已下架");
 
- 
-function bindPetTypeLinkage(typeSelector, sizeSelector) {
-    const $typeSelect = $(typeSelector);
-    const $sizeSelect = $(sizeSelector);
+            loadAllData();
+          },
+          error: function (xhr) {
+            console.error("狀態切換失敗", xhr);
+            alert("切換失敗：" + (xhr.responseText || "伺服器錯誤"));
+          },
+          complete: function () {
+            $btn.prop("disabled", false);
+          },
+        });
+      });
 
-   
-    const originalOptions = $sizeSelect.html();
+      function bindPetTypeLinkage(typeSelector, sizeSelector) {
+        const $typeSelect = $(typeSelector);
+        const $sizeSelect = $(sizeSelector);
 
-    $typeSelect.on('change', function() {
-        const selectedType = $(this).val();
+        const originalOptions = $sizeSelect.html();
 
-        if (selectedType === '貓' || selectedType === '其他') {
-              $sizeSelect.html('<option value="">所有體型</option><option value="小型">小型</option><option value="其他">不分體型</option>');
-        } else {
-            
+        $typeSelect.on("change", function () {
+          const selectedType = $(this).val();
+
+          if (selectedType === "貓" || selectedType === "其他") {
+            $sizeSelect.html(
+              '<option value="">所有體型</option><option value="小型">小型</option><option value="不分體型">不分體型</option>'
+            );
+          } else {
             $sizeSelect.html(originalOptions);
-        }
-    });
-}
-
-      
+          }
+        });
+      }
     </script>
   </body>
 </html>
