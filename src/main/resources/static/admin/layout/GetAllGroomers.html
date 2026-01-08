@@ -89,11 +89,12 @@
 			</ul>
 			<!-- 右側 Navbar 按鈕 -->
 			<ul class="navbar-nav ml-auto">
-				<li class="nav-item"><a href="../../AdminLogoutServlet"
-					class="btn btn-secondary btn-sm"> <i
-						class="fas fa-sign-out-alt"></i> 登出
-				</a></li>
-			</ul>
+                <li class="nav-item">
+                    <a href="javascript:void(0)" id="logoutBtn" class="btn btn-secondary btn-sm">
+                        <i class="fas fa-sign-out-alt"></i> 登出
+                    </a>
+                </li>
+            </ul>
 		</nav>
 		<!-- /.navbar -->
 
@@ -426,6 +427,9 @@
 		src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
 	<script type="text/javascript"
 		src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+	<!-- 登出 -->
+    <script src="../../dist/js/adminAuth.js"></script>
+    <!-- .登出 -->
 	<!-- AdminLTE App -->
 	<script src="../../dist/js/adminlte.min.js"></script>
 	<!-- AdminLTE for demo purposes
