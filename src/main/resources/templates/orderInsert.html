@@ -1,86 +1,79 @@
-
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>insert.html</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>insert.html</title>
 
-<!-- Google Font -->
-<link rel="stylesheet"
-	href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+	<!-- Google Font -->
+	<link rel="stylesheet"
+		href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
 
-<!-- Font Awesome -->
-<link rel="stylesheet"
-	th:href="@{/plugins/fontawesome-free/css/all.min.css}">
+	<!-- Font Awesome -->
+	<link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
 
-<!-- Theme style -->
-<link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
+	<!-- Theme style -->
+	<link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
 
-<!-- DataTables -->
-<link rel="stylesheet"
-	th:href="@{/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css}">
-<link rel="stylesheet"
-	th:href="@{/plugins/datatables-responsive/css/responsive.bootstrap4.min.css}">
+	<!-- DataTables -->
+	<link rel="stylesheet" th:href="@{/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css}">
+	<link rel="stylesheet" th:href="@{/plugins/datatables-responsive/css/responsive.bootstrap4.min.css}">
 
-<!-- Select2 -->
-<link rel="stylesheet" th:href="@{/plugins/select2/css/select2.min.css}">
-<link rel="stylesheet"
-	th:href="@{/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css}">
+	<!-- Select2 -->
+	<link rel="stylesheet" th:href="@{/plugins/select2/css/select2.min.css}">
+	<link rel="stylesheet" th:href="@{/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css}">
 
-<!-- Tempus Dominus -->
-<link rel="stylesheet"
-	th:href="@{/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css}">
-<style type="text/css">
-/* 調整 sidebar logo 排版 */
-.brand-link {
-	display: flex;
-	align-items: center;
-	justify-content: flex-start;
-	/* 展開時靠左 */
-	padding: 0.5rem 1rem;
-}
+	<!-- Tempus Dominus -->
+	<link rel="stylesheet" th:href="@{/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css}">
+	<style type="text/css">
+		/* 調整 sidebar logo 排版 */
+		.brand-link {
+			display: flex;
+			align-items: center;
+			justify-content: flex-start;
+			/* 展開時靠左 */
+			padding: 0.5rem 1rem;
+		}
 
-/* 收起 sidebar 時，icon 置中 */
-.sidebar-collapse .brand-link {
-	justify-content: center;
-}
+		/* 收起 sidebar 時，icon 置中 */
+		.sidebar-collapse .brand-link {
+			justify-content: center;
+		}
 
-/* 調整 icon 與文字間距 */
-.brand-link i {
-	width: 1.5rem;
-	/* 固定寬度讓文字距離固定 */
-	text-align: center;
-}
+		/* 調整 icon 與文字間距 */
+		.brand-link i {
+			width: 1.5rem;
+			/* 固定寬度讓文字距離固定 */
+			text-align: center;
+		}
 
-/* 收起 sidebar 時文字隱藏 */
-.sidebar-collapse .brand-text {
-	display: none;
-}
+		/* 收起 sidebar 時文字隱藏 */
+		.sidebar-collapse .brand-text {
+			display: none;
+		}
 
-.box1 {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-}
-</style>
+		.box1 {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
+	</style>
 </head>
 
 <body class="hold-transition sidebar-mini sidebar-collapse">
 	<!-- Site wrapper -->
 	<div class="wrapper">
 		<!-- Navbar -->
-		<nav
-			class="main-header navbar navbar-expand navbar-white navbar-light">
+		<nav class="main-header navbar navbar-expand navbar-white navbar-light">
 			<!-- Left navbar links -->
 			<ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a href="javascript:void(0)" id="logoutBtn" class="btn btn-secondary btn-sm">
-                        <i class="fas fa-sign-out-alt"></i> 登出
-                    </a>
-                </li>
-            </ul>
+				<li class="nav-item">
+					<a href="javascript:void(0)" id="logoutBtn" class="btn btn-secondary btn-sm">
+						<i class="fas fa-sign-out-alt"></i> 登出
+					</a>
+				</li>
+			</ul>
 
 
 		</nav>
@@ -89,9 +82,8 @@
 		<!-- Main Sidebar Container -->
 		<aside class="main-sidebar sidebar-dark-primary elevation-4">
 			<!-- Brand Logo -->
-			<a href="../../index3.html" class="brand-link"> <i
-				class="fas fa-paw" style="color: #FFD43B; font-size: 1.5rem;"></i> <span
-				class="brand-text font-weight-light"></span>
+			<a href="/admin/layout/Home.html" class="brand-link"> <i class="fas fa-paw"
+					style="color: #FFD43B; font-size: 1.5rem;"></i> <span class="brand-text font-weight-light"></span>
 			</a>
 
 			<!-- Sidebar -->
@@ -102,83 +94,139 @@
 
 				<!-- Sidebar Menu -->
 				<nav class="mt-2">
-					<ul class="nav nav-pills nav-sidebar flex-column"
-						data-widget="treeview" role="menu" data-accordion="false">
+					<ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
+						data-accordion="false">
 						<!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
-						<li class="nav-item"><a href="#" class="nav-link"> <i
-								class="nav-icon fas fa-edit"></i>
+						<li class="nav-item"><a href="#" class="nav-link"> <i class="nav-icon fas fa-edit"></i>
 								<p>
 									會員管理 <i class="right fas fa-angle-left"></i>
 								</p>
-						</a>
+							</a>
 							<ul class="nav nav-treeview">
-								<li class="nav-item"><a href="" class="nav-link"> <i
-										class="far fa-circle nav-icon"></i>
+								<li class="nav-item">
+									<a href="/admin/layout/AdminQueryAll.html" class="nav-link">
+										<i class="far fa-circle nav-icon"></i>
 										<p>管理員資料</p>
-								</a></li>
-								<li class="nav-item"><a href="" class="nav-link"> <i
-										class="far fa-circle nav-icon"></i>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="/admin/layout/MemberQueryAll.html" class="nav-link">
+										<i class="far fa-circle nav-icon"></i>
 										<p>會員基本資料</p>
-								</a></li>
-								<li class="nav-item"><a href="" class="nav-link"> <i
-										class="far fa-circle nav-icon"></i>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="/admin/layout/MemberPetQueryAll.html" class="nav-link">
+										<i class="far fa-circle nav-icon"></i>
 										<p>會員寵物資料</p>
-								</a></li>
-								<li class="nav-item"><a href="" class="nav-link"> <i
-										class="far fa-circle nav-icon"></i>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="/admin/layout/CouponQueryAll.html" class="nav-link">
+										<i class="far fa-circle nav-icon"></i>
 										<p>優惠券總覽</p>
-								</a></li>
-								<li class="nav-item"><a href="" class="nav-link"> <i
-										class="far fa-circle nav-icon"></i>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="/admin/layout/CouponUsersQueryAll.html" class="nav-link">
+										<i class="far fa-circle nav-icon"></i>
 										<p>會員持有優惠券</p>
-								</a></li>
-								<li class="nav-item"><a href="" class="nav-link"> <i
-										class="far fa-circle nav-icon"></i>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="/admin/layout/FavoritesQueryAll.html" class="nav-link">
+										<i class="far fa-circle nav-icon"></i>
 										<p>會員收藏清單</p>
-								</a></li>
-							</ul></li>
-						<li class="nav-item"><a href="" class="nav-link"> <i
-								class="nav-icon fas fa-edit"></i>
+									</a>
+								</li>
+							</ul>
+						</li>
+						<li class="nav-item">
+							<a href="#" class="nav-link">
+								<i class="nav-icon fas fa-edit"></i>
 								<p>
-									商品管理 <i class="right fas fa-angle-left"></i>
+									商品管理
+									<i class="right fas fa-angle-left"></i>
 								</p>
-						</a></li>
-						<li class="nav-item"><a href="#" class="nav-link"> <i
-								class="nav-icon fas fa-edit"></i>
-								<p>
-									訂單管理 <i class="right fas fa-angle-left"></i>
-								</p>
-						</a>
+							</a>
 							<ul class="nav nav-treeview">
-								<li class="nav-item"><a
-									href="/orders/list"
-									class="nav-link"> <i class="far fa-circle nav-icon"></i>
+								<li class="nav-item">
+									<a th:href="@{/admin/products}" class="nav-link">
+										<i class="far fa-circle nav-icon"></i>
+										<p>商品管理</p>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a th:href="@{/admin/categories}" class="nav-link">
+										<i class="far fa-circle nav-icon"></i>
+										<p>分類管理</p>
+									</a>
+								</li>
+							</ul>
+						</li>
+						<li class="nav-item">
+							<a href="#" class="nav-link">
+								<i class="nav-icon fas fa-edit"></i>
+								<p>訂單管理 <i class="right fas fa-angle-left"></i></p>
+							</a>
+							<ul class="nav nav-treeview">
+								<li class="nav-item"><a href="/orders/list" class="nav-link"><i
+											class="far fa-circle nav-icon"></i>
 										<p>查詢全部訂單</p>
-								</a></li>
-								<li class="nav-item"><a
-									href="/shipment/list"
-									class="nav-link"> <i class="far fa-circle nav-icon"></i>
+									</a></li>
+								<li class="nav-item"><a href="/shipment/list" class="nav-link"><i
+											class="far fa-circle nav-icon"></i>
 										<p>物流查詢</p>
-								</a></li>
-								<li class="nav-item"><a
-									href="/ordersItem/list"
-									class="nav-link"> <i class="far fa-circle nav-icon"></i>
+									</a></li>
+								<li class="nav-item"><a href="/ordersItem/list" class="nav-link"><i
+											class="far fa-circle nav-icon"></i>
 										<p>查詢全部訂單明細</p>
-								</a></li>
-								<li class="nav-item"><a
-									href="/Cart/shopping"
-									class="nav-link"> <i class="far fa-circle nav-icon"></i>
+									</a></li>
+								<li class="nav-item"><a href="/Cart/shopping" class="nav-link"><i
+											class="far fa-circle nav-icon"></i>
 										<p>新增訂單</p>
-								</a></li>
-							</ul></li>
-						<li class="nav-item"><a href="" class="nav-link"> <i
-								class="nav-icon fas fa-edit"></i>
+									</a></li>
+							</ul>
+						</li>
+						<li class="nav-item"><a href="#" class="nav-link"> <i class="nav-icon fas fa-edit"></i>
 								<p>
 									預約管理 <i class="right fas fa-angle-left"></i>
 								</p>
-						</a></li>
-
+							</a>
+							<ul class="nav nav-treeview">
+								<li class="nav-item">
+									<a th:href="@{/admin/layout/GetAllAppointments.html}" class="nav-link">
+										<i class="far fa-circle nav-icon"></i>
+										<p>寵物美容訂單管理</p>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a th:href="@{/admin/layout/GetAllLeaveRecords.html}" class="nav-link">
+										<i class="far fa-circle nav-icon"></i>
+										<p>美容師請假管理</p>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a th:href="@{/admin/layout/GetAllGroomers.html}" class="nav-link">
+										<i class="far fa-circle nav-icon"></i>
+										<p>美容師管理</p>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a th:href="@{/admin/layout/GetAllAppointmentDetails.html}" class="nav-link">
+										<i class="far fa-circle nav-icon"></i>
+										<p>預約訂單明細</p>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a th:href="@{/admin/layout/GetAllServiceItems.html}" class="nav-link">
+										<i class="far fa-circle nav-icon"></i>
+										<p>服務項目管理</p>
+									</a>
+								</li>
+							</ul>
+						</li>
 					</ul>
 				</nav>
 				<!-- /.sidebar-menu -->
@@ -216,8 +264,7 @@
 									</div>
 									<!-- /.card-header -->
 									<!-- form start -->
-									<form class="form-horizontal" method="post"
-										action="/Cart/insertOrder">
+									<form class="form-horizontal" method="post" action="/Cart/insertOrder">
 										<div class="card-body">
 											<div th:each="item : ${session.cart}">
 												<!-- 商品編號 -->
@@ -233,18 +280,16 @@
 												<div class="form-group row">
 													<label class="col-sm-2 col-form-label">商品名稱</label>
 													<div class="col-sm-10">
-														<input type="text" class="form-control"
-															name="productName[]" th:value="${item.productName}"
-															readonly>
+														<input type="text" class="form-control" name="productName[]"
+															th:value="${item.productName}" readonly>
 													</div>
 												</div>
 												<!-- 數量 -->
 												<div class="form-group row">
 													<label class="col-sm-2 col-form-label">數量</label>
 													<div class="col-sm-10">
-														<input type="number" class="form-control"
-															name="quantity[]" th:value="${item.quantity}" min="1"
-															readonly>
+														<input type="number" class="form-control" name="quantity[]"
+															th:value="${item.quantity}" min="1" readonly>
 													</div>
 												</div>
 												<!-- 商品單價 -->
@@ -261,7 +306,8 @@
 											<hr>
 
 											<div class="form-group row">
-												<label for="inputPassword3" class="col-sm-2 col-form-label">目前總金額</label>
+												<label for="inputPassword3"
+													class="col-sm-2 col-form-label">目前總金額</label>
 												<div class="col-sm-10">
 													<input type="text" class="form-control" id="total_price"
 														name="total_price" value="" readonly>
@@ -276,11 +322,12 @@
 											<div class="form-group row">
 												<label class="col-sm-2 col-form-label">會員:</label>
 												<div class="col-sm-10">
-													<select class="form-control" id="member_id"
-														name="member_id" style="width: 100%;">
+													<select class="form-control" id="member_id" name="member_id"
+														style="width: 100%;">
 														<option value="">請選擇會員</option>
 														<option th:each="member:${session.members}"
-															th:value="${member.memberId}" th:text="${member.name}"></option>
+															th:value="${member.memberId}" th:text="${member.name}">
+														</option>
 													</select>
 												</div>
 											</div>
@@ -299,8 +346,8 @@
 											<div class="form-group row">
 												<label class="col-sm-2 col-form-label">優惠價格:</label>
 												<div class="col-sm-10">
-													<input type="number" class="form-control"
-														name="discountPrice" value="" id="discountPrice" readonly>
+													<input type="number" class="form-control" name="discountPrice"
+														value="" id="discountPrice" readonly>
 												</div>
 											</div>
 											<hr>
@@ -324,41 +371,43 @@
 											<div class="form-group row">
 												<label for="inputPassword3" class="col-sm-2 col-form-label">運費</label>
 												<div class="col-sm-10">
-													<input type="text" class="form-control" id="fee" value=""
-														readonly name="fee">
+													<input type="text" class="form-control" id="fee" value="" readonly
+														name="fee">
 												</div>
 											</div>
 											<div class="form-group row">
-												<label for="inputPassword3" class="col-sm-2 col-form-label">最後總金額</label>
+												<label for="inputPassword3"
+													class="col-sm-2 col-form-label">最後總金額</label>
 												<div class="col-sm-10">
-													<input type="text" class="form-control" id="finalAmount"
-														value="" readonly name="finalAmount">
+													<input type="text" class="form-control" id="finalAmount" value=""
+														readonly name="finalAmount">
 												</div>
 											</div>
 
 
 
 											<div class="form-group row">
-												<label for="inputPassword3" class="col-sm-2 col-form-label">收貨人姓名</label>
+												<label for="inputPassword3"
+													class="col-sm-2 col-form-label">收貨人姓名</label>
 												<div class="col-sm-10">
 													<input type="text" class="form-control" id="recipinet_name"
 														placeholder="收貨人姓名" name="recipientName">
 												</div>
 											</div>
 											<div class="form-group row">
-												<label for="inputPassword3" class="col-sm-2 col-form-label">收貨人電話</label>
+												<label for="inputPassword3"
+													class="col-sm-2 col-form-label">收貨人電話</label>
 												<div class="col-sm-10">
-													<input type="text" class="form-control"
-														id="recipinet_phone" placeholder="收貨人電話"
-														name="recipientPhone">
+													<input type="text" class="form-control" id="recipinet_phone"
+														placeholder="收貨人電話" name="recipientPhone">
 												</div>
 											</div>
 											<div class="form-group row">
-												<label for="inputPassword3" class="col-sm-2 col-form-label">收貨人地址(超商地址)</label>
+												<label for="inputPassword3"
+													class="col-sm-2 col-form-label">收貨人地址(超商地址)</label>
 												<div class="col-sm-10">
-													<input type="text" class="form-control"
-														id="recipinet_address" placeholder="地址"
-														name="shippingAddress">
+													<input type="text" class="form-control" id="recipinet_address"
+														placeholder="地址" name="shippingAddress">
 												</div>
 											</div>
 
@@ -390,8 +439,7 @@
 			<div class="float-right d-none d-sm-block">
 				<b>Version</b> 3.2.0
 			</div>
-			<strong>Copyright &copy; 2014-2021 <a
-				href="https://adminlte.io">AdminLTE.io</a>.
+			<strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.
 			</strong> All rights reserved.
 		</footer>
 
@@ -411,29 +459,22 @@
 
 	<!-- DataTables & Plugins -->
 	<script th:src="@{/plugins/datatables/jquery.dataTables.min.js}"></script>
-	<script
-		th:src="@{/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js}"></script>
-	<script
-		th:src="@{/plugins/datatables-responsive/js/dataTables.responsive.min.js}"></script>
-	<script
-		th:src="@{/plugins/datatables-responsive/js/responsive.bootstrap4.min.js}"></script>
+	<script th:src="@{/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js}"></script>
+	<script th:src="@{/plugins/datatables-responsive/js/dataTables.responsive.min.js}"></script>
+	<script th:src="@{/plugins/datatables-responsive/js/responsive.bootstrap4.min.js}"></script>
 
-	<script
-		th:src="@{/plugins/datatables-buttons/js/dataTables.buttons.min.js}"></script>
-	<script
-		th:src="@{/plugins/datatables-buttons/js/buttons.bootstrap4.min.js}"></script>
+	<script th:src="@{/plugins/datatables-buttons/js/dataTables.buttons.min.js}"></script>
+	<script th:src="@{/plugins/datatables-buttons/js/buttons.bootstrap4.min.js}"></script>
 	<script th:src="@{/plugins/jszip/jszip.min.js}"></script>
 	<script th:src="@{/plugins/pdfmake/pdfmake.min.js}"></script>
 	<script th:src="@{/plugins/pdfmake/vfs_fonts.js}"></script>
 
 	<script th:src="@{/plugins/datatables-buttons/js/buttons.html5.min.js}"></script>
 	<script th:src="@{/plugins/datatables-buttons/js/buttons.print.min.js}"></script>
-	<script
-		th:src="@{/plugins/datatables-buttons/js/buttons.colVis.min.js}"></script>
+	<script th:src="@{/plugins/datatables-buttons/js/buttons.colVis.min.js}"></script>
 
 	<script th:src="@{/plugins/moment/moment.min.js}"></script>
-	<script
-		th:src="@{/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js}"></script>
+	<script th:src="@{/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js}"></script>
 
 	<script th:src="@{/plugins/select2/js/select2.full.min.js}"></script>
 
@@ -445,55 +486,55 @@
 	<!-- Page specific script -->
 
 	<script>
-		$(function() {
+		$(function () {
 
 			$('#example2')
-					.DataTable(
-							{
-								"paging" : true,
-								"lengthChange" : false, // 關閉每頁筆數選項
-								"searching" : false, // 關閉搜索框
-								"ordering" : true,
-								"info" : true, // 顯示資訊文字
-								"autoWidth" : true,
-								"responsive" : true,
+				.DataTable(
+					{
+						"paging": true,
+						"lengthChange": false, // 關閉每頁筆數選項
+						"searching": false, // 關閉搜索框
+						"ordering": true,
+						"info": true, // 顯示資訊文字
+						"autoWidth": true,
+						"responsive": true,
 
-								// **【關鍵修正】使用 dom 屬性強制分頁 (p) 靠右 (col-md-7)**
-								// 結構: 表格本體(t) / 新的一行: [資訊(i) - 左 5 欄] [分頁(p) - 右 7 欄]
-								"dom" : '<"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7 d-flex justify-content-end"p>>'
-							});
+						// **【關鍵修正】使用 dom 屬性強制分頁 (p) 靠右 (col-md-7)**
+						// 結構: 表格本體(t) / 新的一行: [資訊(i) - 左 5 欄] [分頁(p) - 右 7 欄]
+						"dom": '<"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7 d-flex justify-content-end"p>>'
+					});
 			//計算總金額
-			function updateTotalPrice(){
-					let total = 0;
-			        // 遍歷每個商品的數量和價格
-			        $("input[name='quantity[]'").each(function(index) {
-			            let qty = parseFloat($(this).val());
-			            let price = parseFloat($("input[name='price[]'").eq(index).val());
-			            if (!isNaN(qty) && !isNaN(price)) {
-			                total += qty * price;
-			            }
-			        });
-			        // 設定總金額到 total_price 欄位
-			        $("#total_price").val(total.toFixed(2));
-			        // 同時也可以同步到 discountPrice 預設為總額
-			        $("#discountPrice").val(total.toFixed(2));
-			        // 如果有最後總金額欄位，呼叫計算函式
-			        finalAmount();
-				}
+			function updateTotalPrice() {
+				let total = 0;
+				// 遍歷每個商品的數量和價格
+				$("input[name='quantity[]'").each(function (index) {
+					let qty = parseFloat($(this).val());
+					let price = parseFloat($("input[name='price[]'").eq(index).val());
+					if (!isNaN(qty) && !isNaN(price)) {
+						total += qty * price;
+					}
+				});
+				// 設定總金額到 total_price 欄位
+				$("#total_price").val(total.toFixed(2));
+				// 同時也可以同步到 discountPrice 預設為總額
+				$("#discountPrice").val(total.toFixed(2));
+				// 如果有最後總金額欄位，呼叫計算函式
+				finalAmount();
+			}
 
 			updateTotalPrice();
-			
-			
-			
+
+
+
 			// 啟用 DatePicker (日期時間選擇器)
 			$('#reservationdate').datetimepicker({
-				format : 'L' // 這裡使用 'L' 代表當地短日期格式，例如 2025/11/29
+				format: 'L' // 這裡使用 'L' 代表當地短日期格式，例如 2025/11/29
 			});
-			
+
 			function updateFee() {
 				let method = $('#method').val();
 				let fee = 0;
-				
+
 				if (method === '7-11')
 					fee = 45;
 				else if (method === 'family')
@@ -504,99 +545,99 @@
 				finalAmount()
 			}
 			updateFee();
-			$('#method').on('change', function() {
+			$('#method').on('change', function () {
 				updateFee();
 			});
-			
-			function finalAmount(){
-				let discountPrice=parseFloat($("#discountPrice").val());
-				let fee=parseFloat($("#fee").val());
-				$('#finalAmount').val(fee+discountPrice);
+
+			function finalAmount() {
+				let discountPrice = parseFloat($("#discountPrice").val());
+				let fee = parseFloat($("#fee").val());
+				$('#finalAmount').val(fee + discountPrice);
 			}
-			
+
 			finalAmount()
-			
-		
+
+
 
 
 			// 選會員自動帶入會員編號
-			$("#member_id").change(function() {
-				 let memberId = $(this).val();
-				 if (!memberId || memberId == 0) {
-				        resetCouponSelect();
-				        return;
-				    }
-			    $.ajax({
-			    	url:"/Cart/byMember",
-			    	type:"GET",
-			    	data: { memberId: memberId },
-			    	success: function(coupons){
-			    		renderCoupons(coupons);
-			    	},
-			    	error:function(){
-			    		alert("讀取失敗");
-			    	}
-			    })
+			$("#member_id").change(function () {
+				let memberId = $(this).val();
+				if (!memberId || memberId == 0) {
+					resetCouponSelect();
+					return;
+				}
+				$.ajax({
+					url: "/Cart/byMember",
+					type: "GET",
+					data: { memberId: memberId },
+					success: function (coupons) {
+						renderCoupons(coupons);
+					},
+					error: function () {
+						alert("讀取失敗");
+					}
+				})
 			});
-			
+
 			function renderCoupons(coupons) {
 				console.log(coupons);
-			    let $select = $("#couponSelect");
-			    $select.empty();
+				let $select = $("#couponSelect");
+				$select.empty();
 
-			    // 預設選項
-			    $select.append(`
+				// 預設選項
+				$select.append(`
 			        <option value="0" data-type="" data-value="0">
 			            目前無優惠券
 			        </option>
 			    `);
 
-			    if (!coupons || coupons.length === 0) {
-			        return;
-			    }
+				if (!coupons || coupons.length === 0) {
+					return;
+				}
 
-			    $.each(coupons, function (i, c) {
-			        $select.append(`
+				$.each(coupons, function (i, c) {
+					$select.append(`
 			            <option value="${c.couponId}"
 			                    data-type="${c.discountType}"
 			                    data-value="${c.discountValue}">
 			                ${c.discountType} ${c.discountValue}
 			            </option>
 			        `);
-			    });
+				});
 			}
 
 			function resetCouponSelect() {
-			    $("#couponSelect")
-			        .empty()
-			        .append(`<option value="0">目前無優惠券</option>`);
+				$("#couponSelect")
+					.empty()
+					.append(`<option value="0">目前無優惠券</option>`);
 			}
 			//優惠券設定
-			$("#couponSelect").on("change", function() {
-			    let type = $(this).find("option:selected").data("type");
-			    let value = parseFloat($(this).find("option:selected").data("value")) || 0;
+			$("#couponSelect").on("change", function () {
+				let type = $(this).find("option:selected").data("type");
+				let value = parseFloat($(this).find("option:selected").data("value")) || 0;
 
-			    let total = parseFloat($("#total_price").val()) || 0;
-			    let discounted = total;
+				let total = parseFloat($("#total_price").val()) || 0;
+				let discounted = total;
 
-			    if (type === "amount") {
-			        discounted = Math.max(total - value, 0);
-			    } else if (type === "percent") {
-			        discounted = total * value
-			    }
-			    discounted = Math.round(discounted);
+				if (type === "amount") {
+					discounted = Math.max(total - value, 0);
+				} else if (type === "percent") {
+					discounted = total * value
+				}
+				discounted = Math.round(discounted);
 
-			    $("#discountPrice").val(discounted.toFixed(2));
+				$("#discountPrice").val(discounted.toFixed(2));
 
-			    // 更新最後總金額
-			    finalAmount();
+				// 更新最後總金額
+				finalAmount();
 			});
-			
-			
-			
-			
-			
-			
+
+
+
+
+
+
 
 		});
 	</script>

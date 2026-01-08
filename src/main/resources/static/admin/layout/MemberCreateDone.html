@@ -6,18 +6,49 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>MemberCreateDone</title>
 
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <link rel="stylesheet" href="../../plugins/fontawesome-free/css/all.min.css">
     <link rel="stylesheet" href="../../dist/css/adminlte.min.css">
 
     <style type="text/css">
-        .brand-link { display: flex; align-items: center; justify-content: flex-start; padding: 0.5rem 1rem; }
-        .sidebar-collapse .brand-link { justify-content: center; }
-        .brand-link i { width: 1.5rem; text-align: center; }
-        .sidebar-collapse .brand-text { display: none; }
-        .box1 { display: flex; justify-content: space-between; align-items: center; }
-        .form-control-static { padding-top: 7px; font-weight: bold; color: #333; }
-        .box2 { display: flex; justify-content: center; align-items: center; }
+        .brand-link {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 0.5rem 1rem;
+        }
+
+        .sidebar-collapse .brand-link {
+            justify-content: center;
+        }
+
+        .brand-link i {
+            width: 1.5rem;
+            text-align: center;
+        }
+
+        .sidebar-collapse .brand-text {
+            display: none;
+        }
+
+        .box1 {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .form-control-static {
+            padding-top: 7px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .box2 {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
     </style>
 </head>
 
@@ -39,52 +70,135 @@
         </nav>
 
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
-            <a href="../../index3.html" class="brand-link">
+            <a href="Home.html" class="brand-link">
                 <i class="fas fa-paw" style="color: #FFD43B; font-size: 1.5rem;"></i>
                 <span class="brand-text font-weight-light">後台管理系統</span>
             </a>
             <div class="sidebar">
                 <nav class="mt-2">
-                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
+                        data-accordion="false">
                         <li class="nav-item menu-open">
                             <a href="#" class="nav-link active">
                                 <i class="nav-icon fas fa-edit"></i>
                                 <p>會員管理 <i class="right fas fa-angle-left"></i></p>
                             </a>
                             <ul class="nav nav-treeview">
-                                <li class="nav-item"><a href="AdminQueryAll.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>管理員資料</p></a></li>
-                                <li class="nav-item"><a href="MemberQueryAll.html" class="nav-link active"><i class="far fa-circle nav-icon"></i><p>會員基本資料</p></a></li>
-                                <li class="nav-item"><a href="MemberPetQueryAll.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>會員寵物資料</p></a></li>
-                                <li class="nav-item"><a href="CouponQueryAll.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>優惠券總覽</p></a></li>
-                                <li class="nav-item"><a href="CouponUsersQueryAll.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>會員持有優惠券</p></a></li>
-                                <li class="nav-item"><a href="FavoritesQueryAll.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>會員收藏清單</p></a></li>
+                                <li class="nav-item"><a href="AdminQueryAll.html" class="nav-link"><i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>管理員資料</p>
+                                    </a></li>
+                                <li class="nav-item"><a href="MemberQueryAll.html" class="nav-link active"><i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>會員基本資料</p>
+                                    </a></li>
+                                <li class="nav-item"><a href="MemberPetQueryAll.html" class="nav-link"><i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>會員寵物資料</p>
+                                    </a></li>
+                                <li class="nav-item"><a href="CouponQueryAll.html" class="nav-link"><i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>優惠券總覽</p>
+                                    </a></li>
+                                <li class="nav-item"><a href="CouponUsersQueryAll.html" class="nav-link"><i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>會員持有優惠券</p>
+                                    </a></li>
+                                <li class="nav-item"><a href="FavoritesQueryAll.html" class="nav-link"><i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>會員收藏清單</p>
+                                    </a></li>
                             </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a href="../../AllProducts" class="nav-link">
-                                <i class="nav-icon fas fa-edit"></i>
-                                <p>商品管理</p>
-                            </a>
                         </li>
                         <li class="nav-item">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-edit"></i>
-                                <p>訂單管理 <i class="right fas fa-angle-left"></i></p>
+                                <p>
+                                    商品管理
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
                             </a>
                             <ul class="nav nav-treeview">
-                                <li class="nav-item"><a href="../../orderList" class="nav-link"><i class="far fa-circle nav-icon"></i><p>查詢全部訂單</p></a></li>
-                                <li class="nav-item"><a href="../../shipmentsList" class="nav-link"><i class="far fa-circle nav-icon"></i><p>物流查詢</p></a></li>
-                                <li class="nav-item"><a href="../../orderItemsList" class="nav-link"><i class="far fa-circle nav-icon"></i><p>查詢全部訂單明細</p></a></li>
-                                <li class="nav-item"><a href="../order/shopping.jsp" class="nav-link"><i class="far fa-circle nav-icon"></i><p>新增訂單</p></a></li>
+                                <li class="nav-item">
+                                    <a href="/admin/products" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>商品管理</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/admin/categories" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>分類管理</p>
+                                    </a>
+                                </li>
                             </ul>
                         </li>
-                        <li class="nav-item">
-                            <a href="../../AppointmentServlet.do" class="nav-link">
-                                <i class="nav-icon fas fa-edit"></i>
-                                <p>預約管理</p>
+
+
+                        <li class="nav-item"><a href="#" class="nav-link"> <i class="nav-icon fas fa-edit"></i>
+                                <p>
+                                    訂單管理 <i class="right fas fa-angle-left"></i>
+                                </p>
                             </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item"><a href="/orders/list" class="nav-link"> <i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>查詢全部訂單</p>
+                                    </a></li>
+                                <li class="nav-item"><a href="/shipment/list" class="nav-link"> <i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>物流查詢</p>
+                                    </a></li>
+                                <li class="nav-item"><a href="/ordersItem/list" class="nav-link"> <i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>查詢全部訂單明細</p>
+                                    </a></li>
+                                <li class="nav-item"><a href="/Cart/shopping" class="nav-link"> <i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>新增訂單</p>
+                                    </a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item"><a href="#" class="nav-link"> <i class="nav-icon fas fa-edit"></i>
+                                <p>
+                                    預約管理 <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="GetAllAppointments.html" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>寵物美容訂單管理</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="GetAllLeaveRecords.html" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>美容師請假管理</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="GetAllGroomers.html" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>美容師管理</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="GetAllAppointmentDetails.html" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>預約訂單明細</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="GetAllServiceItems.html" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>服務項目管理</p>
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
                     </ul>
+                    </li>
                 </nav>
             </div>
         </aside>
@@ -114,40 +228,56 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="form-group row justify-content-center mb-4">
-                                        <img id="show-picture" src="https://via.placeholder.com/120" alt="大頭貼" class="rounded-circle" 
+                                        <img id="show-picture" src="https://via.placeholder.com/120" alt="大頭貼"
+                                            class="rounded-circle"
                                             style="width:120px; height:120px; object-fit:cover; border:2px solid #FFD43B;">
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-sm-4 col-form-label text-right">會員 ID:</label>
-                                        <div class="col-sm-8"><p class="form-control-static" id="show-id"></p></div>
+                                        <div class="col-sm-8">
+                                            <p class="form-control-static" id="show-id"></p>
+                                        </div>
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-sm-4 col-form-label text-right">姓名:</label>
-                                        <div class="col-sm-8"><p class="form-control-static" id="show-name"></p></div>
+                                        <div class="col-sm-8">
+                                            <p class="form-control-static" id="show-name"></p>
+                                        </div>
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-sm-4 col-form-label text-right">Email:</label>
-                                        <div class="col-sm-8"><p class="form-control-static" id="show-email"></p></div>
+                                        <div class="col-sm-8">
+                                            <p class="form-control-static" id="show-email"></p>
+                                        </div>
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-sm-4 col-form-label text-right">電話:</label>
-                                        <div class="col-sm-8"><p class="form-control-static" id="show-phone"></p></div>
+                                        <div class="col-sm-8">
+                                            <p class="form-control-static" id="show-phone"></p>
+                                        </div>
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-sm-4 col-form-label text-right">性別:</label>
-                                        <div class="col-sm-8"><p class="form-control-static" id="show-gender"></p></div>
+                                        <div class="col-sm-8">
+                                            <p class="form-control-static" id="show-gender"></p>
+                                        </div>
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-sm-4 col-form-label text-right">生日:</label>
-                                        <div class="col-sm-8"><p class="form-control-static" id="show-birthday"></p></div>
+                                        <div class="col-sm-8">
+                                            <p class="form-control-static" id="show-birthday"></p>
+                                        </div>
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-sm-4 col-form-label text-right">地址:</label>
-                                        <div class="col-sm-8"><p class="form-control-static" id="show-address"></p></div>
+                                        <div class="col-sm-8">
+                                            <p class="form-control-static" id="show-address"></p>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="card-footer text-right">
-                                    <a href="MemberCreate.html" class="btn btn-info"><i class="fas fa-plus"></i> 繼續新增</a>
+                                    <a href="MemberCreate.html" class="btn btn-info"><i class="fas fa-plus"></i>
+                                        繼續新增</a>
                                 </div>
                             </div>
                         </div>
@@ -186,4 +316,5 @@
         });
     </script>
 </body>
+
 </html>

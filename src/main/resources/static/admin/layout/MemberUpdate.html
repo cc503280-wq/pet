@@ -16,21 +16,44 @@
     <link rel="stylesheet" href="../../plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
     <link rel="stylesheet" href="../../plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
     <style type="text/css">
-        .brand-link { display: flex; align-items: center; justify-content: flex-start; padding: 0.5rem 1rem; }
-        .sidebar-collapse .brand-link { justify-content: center; }
-        .brand-link i { width: 1.5rem; text-align: center; }
-        .sidebar-collapse .brand-text { display: none; }
-        .box1 { display: flex; justify-content: space-between; align-items: center; }
+        .brand-link {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 0.5rem 1rem;
+        }
+
+        .sidebar-collapse .brand-link {
+            justify-content: center;
+        }
+
+        .brand-link i {
+            width: 1.5rem;
+            text-align: center;
+        }
+
+        .sidebar-collapse .brand-text {
+            display: none;
+        }
+
+        .box1 {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
         /* 讓圖片變成 120x120 的正方形 */
-		#currentPicture {
-		    width: 120px;
-		    height: 120px;
-		    object-fit: cover; /* 關鍵：這會像手機大頭貼一樣，自動裁切多餘部分而不變形 */
-		    border-radius: 8px; /* 加點圓角看起來比較精緻 */
-		    border: 2px solid #dee2e6;
-		    margin-bottom: 10px;
-		    display: block;
-		}
+        #currentPicture {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            /* 關鍵：這會像手機大頭貼一樣，自動裁切多餘部分而不變形 */
+            border-radius: 8px;
+            /* 加點圓角看起來比較精緻 */
+            border: 2px solid #dee2e6;
+            margin-bottom: 10px;
+            display: block;
+        }
     </style>
 </head>
 
@@ -52,7 +75,7 @@
         </nav>
 
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
-            <a href="../../index3.html" class="brand-link">
+            <a href="Home.html" class="brand-link">
                 <i class="fas fa-paw" style="color: #FFD43B; font-size: 1.5rem;"></i>
                 <span class="brand-text font-weight-light">後台管理</span>
             </a>
@@ -65,16 +88,121 @@
                                 <p>會員管理<i class="right fas fa-angle-left"></i></p>
                             </a>
                             <ul class="nav nav-treeview">
-                                <li class="nav-item"><a href="AdminQueryAll.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>管理員資料</p></a></li>
-                                <li class="nav-item"><a href="MemberQueryAll.html" class="nav-link active"><i class="far fa-circle nav-icon"></i><p>會員基本資料</p></a></li>
-                                <li class="nav-item"><a href="MemberPetQueryAll.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>會員寵物資料</p></a></li>
-                                <li class="nav-item"><a href="CouponQueryAll.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>優惠券總覽</p></a></li>
-                                <li class="nav-item"><a href="CouponUsersQueryAll.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>會員持有優惠券</p></a></li>
-                                <li class="nav-item"><a href="FavoritesQueryAll.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>會員收藏清單</p></a></li>
+                                <li class="nav-item"><a href="AdminQueryAll.html" class="nav-link"><i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>管理員資料</p>
+                                    </a></li>
+                                <li class="nav-item"><a href="MemberQueryAll.html" class="nav-link active"><i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>會員基本資料</p>
+                                    </a></li>
+                                <li class="nav-item"><a href="MemberPetQueryAll.html" class="nav-link"><i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>會員寵物資料</p>
+                                    </a></li>
+                                <li class="nav-item"><a href="CouponQueryAll.html" class="nav-link"><i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>優惠券總覽</p>
+                                    </a></li>
+                                <li class="nav-item"><a href="CouponUsersQueryAll.html" class="nav-link"><i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>會員持有優惠券</p>
+                                    </a></li>
+                                <li class="nav-item"><a href="FavoritesQueryAll.html" class="nav-link"><i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>會員收藏清單</p>
+                                    </a></li>
                             </ul>
                         </li>
-                        <li class="nav-item"><a href="../../AllProducts" class="nav-link"><i class="nav-icon fas fa-edit"></i><p>商品管理</p></a></li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-edit"></i>
+                                <p>
+                                    商品管理
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="/admin/products" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>商品管理</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/admin/categories" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>分類管理</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
+
+                        <li class="nav-item"><a href="#" class="nav-link"> <i class="nav-icon fas fa-edit"></i>
+                                <p>
+                                    訂單管理 <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item"><a href="/orders/list" class="nav-link"> <i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>查詢全部訂單</p>
+                                    </a></li>
+                                <li class="nav-item"><a href="/shipment/list" class="nav-link"> <i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>物流查詢</p>
+                                    </a></li>
+                                <li class="nav-item"><a href="/ordersItem/list" class="nav-link"> <i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>查詢全部訂單明細</p>
+                                    </a></li>
+                                <li class="nav-item"><a href="/Cart/shopping" class="nav-link"> <i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>新增訂單</p>
+                                    </a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item"><a href="#" class="nav-link"> <i class="nav-icon fas fa-edit"></i>
+                                <p>
+                                    預約管理 <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="GetAllAppointments.html" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>寵物美容訂單管理</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="GetAllLeaveRecords.html" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>美容師請假管理</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="GetAllGroomers.html" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>美容師管理</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="GetAllAppointmentDetails.html" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>預約訂單明細</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="GetAllServiceItems.html" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>服務項目管理</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
                     </ul>
+                    </li>
                 </nav>
             </div>
         </aside>
@@ -124,8 +252,10 @@
                                     <label class="col-sm-2 col-form-label">生日:</label>
                                     <div class="col-sm-10">
                                         <div class="input-group date" id="reservationdate" data-target-input="nearest">
-                                            <input type="text" class="form-control datetimepicker-input" id="birthday" data-target="#reservationdate" />
-                                            <div class="input-group-append" data-target="#reservationdate" data-toggle="datetimepicker">
+                                            <input type="text" class="form-control datetimepicker-input" id="birthday"
+                                                data-target="#reservationdate" />
+                                            <div class="input-group-append" data-target="#reservationdate"
+                                                data-toggle="datetimepicker">
                                                 <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                             </div>
                                         </div>
@@ -148,7 +278,8 @@
                                     <div class="col-sm-10">
                                         <img id="currentPicture" src="../../dist/img/avatar.png" alt="No Image">
                                         <div class="custom-file">
-                                            <input type="file" class="custom-file-input" id="picture" name="pictureFile">
+                                            <input type="file" class="custom-file-input" id="picture"
+                                                name="pictureFile">
                                             <label class="custom-file-label" for="picture">更換照片 (若不更換請留空)</label>
                                         </div>
                                     </div>
@@ -172,75 +303,76 @@
     <script src="../../dist/js/adminlte.min.js"></script>
 
     <script>
-    $(function () {
-        const urlParams = new URLSearchParams(window.location.search);
-        const memberId = urlParams.get('memberId');
+        $(function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const memberId = urlParams.get('memberId');
 
-        if (!memberId) {
-            alert('未指定會員 ID');
-            window.location.href = 'MemberQueryAll.html';
-            return;
-        }
-
-        // 1. 初始化 DatePicker
-        $('#reservationdate').datetimepicker({ format: 'YYYY-MM-DD' });
-
-        // 2. 載入原始資料 (使用相對路徑防止解析失敗)
-        $.ajax({
-            url: `/members/${memberId}`,
-            type: 'GET',
-            success: function(member) {
-                $('#memberIdDisplay').text(member.memberId);
-                $('#name').val(member.name);
-                $('#email').val(member.email);
-                $('#gender').val(member.gender).trigger('change');
-                $('#birthday').val(member.birthday);
-                $('#phone').val(member.phone);
-                $('#address').val(member.address);
-                if (member.picture) {
-                    $('#currentPicture').attr('src', member.picture);
-                }
-            },
-            error: function() { alert('讀取會員資料失敗'); }
-        });
-
-        // 顯示檔名
-        $('.custom-file-input').on('change', function(e){
-            var fileName = e.target.files[0] ? e.target.files[0].name : "更換照片";
-            $(this).next('.custom-file-label').html(fileName);
-        });
-
-        // 3. 提交表單 (PUT)
-        $('#updateForm').on('submit', function (e) {
-            e.preventDefault();
-
-            const formData = new FormData();
-            formData.append('name', $('#name').val());
-            formData.append('email', $('#email').val());
-            formData.append('gender', $('#gender').val());
-            formData.append('birthday', $('#birthday').val());
-            formData.append('phone', $('#phone').val());
-            formData.append('address', $('#address').val());
-            
-            const pictureFile = $('#picture')[0].files[0];
-            if (pictureFile) {
-                formData.append('pictureFile', pictureFile);
+            if (!memberId) {
+                alert('未指定會員 ID');
+                window.location.href = 'MemberQueryAll.html';
+                return;
             }
 
+            // 1. 初始化 DatePicker
+            $('#reservationdate').datetimepicker({ format: 'YYYY-MM-DD' });
+
+            // 2. 載入原始資料 (使用相對路徑防止解析失敗)
             $.ajax({
                 url: `/members/${memberId}`,
-                type: 'PUT',
-                data: formData,
-                contentType: false,
-                processData: false,
-                success: function(res) {
-                    sessionStorage.setItem('updatedMember', JSON.stringify(res));
-                    window.location.href = 'MemberUpdateDone.html';
+                type: 'GET',
+                success: function (member) {
+                    $('#memberIdDisplay').text(member.memberId);
+                    $('#name').val(member.name);
+                    $('#email').val(member.email);
+                    $('#gender').val(member.gender).trigger('change');
+                    $('#birthday').val(member.birthday);
+                    $('#phone').val(member.phone);
+                    $('#address').val(member.address);
+                    if (member.picture) {
+                        $('#currentPicture').attr('src', member.picture);
+                    }
                 },
-                error: function() { alert('修改失敗'); }
+                error: function () { alert('讀取會員資料失敗'); }
+            });
+
+            // 顯示檔名
+            $('.custom-file-input').on('change', function (e) {
+                var fileName = e.target.files[0] ? e.target.files[0].name : "更換照片";
+                $(this).next('.custom-file-label').html(fileName);
+            });
+
+            // 3. 提交表單 (PUT)
+            $('#updateForm').on('submit', function (e) {
+                e.preventDefault();
+
+                const formData = new FormData();
+                formData.append('name', $('#name').val());
+                formData.append('email', $('#email').val());
+                formData.append('gender', $('#gender').val());
+                formData.append('birthday', $('#birthday').val());
+                formData.append('phone', $('#phone').val());
+                formData.append('address', $('#address').val());
+
+                const pictureFile = $('#picture')[0].files[0];
+                if (pictureFile) {
+                    formData.append('pictureFile', pictureFile);
+                }
+
+                $.ajax({
+                    url: `/members/${memberId}`,
+                    type: 'PUT',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (res) {
+                        sessionStorage.setItem('updatedMember', JSON.stringify(res));
+                        window.location.href = 'MemberUpdateDone.html';
+                    },
+                    error: function () { alert('修改失敗'); }
+                });
             });
         });
-    });
     </script>
 </body>
+
 </html>

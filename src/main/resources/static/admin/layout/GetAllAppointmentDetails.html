@@ -1,450 +1,416 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>預約管理</title>
 
-    <!-- Google Font: Source Sans Pro -->
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback"
-    />
-    <!-- Font Awesome -->
-    <link
-      rel="stylesheet"
-      href="../../plugins/fontawesome-free/css/all.min.css"
-    />
-    <!-- Theme style -->
-    <link rel="stylesheet" href="../../dist/css/adminlte.min.css" />
-    <link
-      rel="stylesheet"
-      href="../../plugins/datatables-bs4/css/dataTables.bootstrap4.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="../../plugins/datatables-responsive/css/responsive.bootstrap4.min.css"
-    />
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"
-    />
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>預約管理</title>
 
-    <style type="text/css">
-      /* 調整 sidebar logo 排版 */
-      .brand-link {
-        display: flex;
-        align-items: center;
-        justify-content: flex-start;
-        /* 展開時靠左 */
-        padding: 0.5rem 1rem;
-      }
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback" />
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="../../plugins/fontawesome-free/css/all.min.css" />
+  <!-- Theme style -->
+  <link rel="stylesheet" href="../../dist/css/adminlte.min.css" />
+  <link rel="stylesheet" href="../../plugins/datatables-bs4/css/dataTables.bootstrap4.min.css" />
+  <link rel="stylesheet" href="../../plugins/datatables-responsive/css/responsive.bootstrap4.min.css" />
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 
-      /* 收起 sidebar 時，icon 置中 */
-      .sidebar-collapse .brand-link {
-        justify-content: center;
-      }
+  <style type="text/css">
+    /* 調整 sidebar logo 排版 */
+    .brand-link {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      /* 展開時靠左 */
+      padding: 0.5rem 1rem;
+    }
 
-      /* 調整 icon 與文字間距 */
-      .brand-link i {
-        width: 1.5rem;
-        /* 固定寬度讓文字距離固定 */
-        text-align: center;
-      }
+    /* 收起 sidebar 時，icon 置中 */
+    .sidebar-collapse .brand-link {
+      justify-content: center;
+    }
 
-      /* 收起 sidebar 時文字隱藏 */
-      .sidebar-collapse .brand-text {
-        display: none;
-      }
+    /* 調整 icon 與文字間距 */
+    .brand-link i {
+      width: 1.5rem;
+      /* 固定寬度讓文字距離固定 */
+      text-align: center;
+    }
 
-      .box1 {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
+    /* 收起 sidebar 時文字隱藏 */
+    .sidebar-collapse .brand-text {
+      display: none;
+    }
 
-      .put-btn {
-        background-color: green;
-      }
+    .box1 {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-      .remove-btn {
-        background-color: red;
-      }
+    .put-btn {
+      background-color: green;
+    }
 
-      /* DataTable 所有欄位水平 + 垂直置中 */
-      #example2 td,
-      #example2 th {
-        text-align: center !important;
-        vertical-align: middle !important;
-        font-size: 0.8rem;
-        padding: 0.25rem 0.5rem;
-        white-space: nowrap;
-      }
-    </style>
-  </head>
+    .remove-btn {
+      background-color: red;
+    }
 
-  <body class="hold-transition sidebar-mini sidebar-collapse">
-    <!-- Site wrapper -->
-    <div class="wrapper">
-      <!-- Navbar -->
-      <nav class="main-header navbar navbar-expand navbar-white navbar-light">
-        <!-- Left navbar links -->
-        <ul class="navbar-nav">
-          <li class="nav-item">
-            <a class="nav-link" data-widget="pushmenu" href="#" role="button"
-              ><i class="fas fa-bars"></i
-            ></a>
-          </li>
-        </ul>
-        <!-- 右側 Navbar 按鈕 -->
-        <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a href="javascript:void(0)" id="logoutBtn" class="btn btn-secondary btn-sm">
-                        <i class="fas fa-sign-out-alt"></i> 登出
-                    </a>
-                </li>
-            </ul>
-      </nav>
-      <!-- /.navbar -->
+    /* DataTable 所有欄位水平 + 垂直置中 */
+    #example2 td,
+    #example2 th {
+      text-align: center !important;
+      vertical-align: middle !important;
+      font-size: 0.8rem;
+      padding: 0.25rem 0.5rem;
+      white-space: nowrap;
+    }
+  </style>
+</head>
 
-      <!-- Main Sidebar Container -->
-      <aside class="main-sidebar sidebar-dark-primary elevation-4">
-        <!-- Brand Logo -->
-        <a href="../../index3.html" class="brand-link">
-          <i class="fas fa-paw" style="color: #ffd43b; font-size: 1.5rem"></i>
-          <span class="brand-text font-weight-light"></span>
-        </a>
+<body class="hold-transition sidebar-mini sidebar-collapse">
+  <!-- Site wrapper -->
+  <div class="wrapper">
+    <!-- Navbar -->
+    <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+      <!-- Left navbar links -->
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+        </li>
+      </ul>
+      <!-- 右側 Navbar 按鈕 -->
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a href="javascript:void(0)" id="logoutBtn" class="btn btn-secondary btn-sm">
+            <i class="fas fa-sign-out-alt"></i> 登出
+          </a>
+        </li>
+      </ul>
+    </nav>
+    <!-- /.navbar -->
 
-        <!-- Sidebar -->
-        <div class="sidebar">
-          <div class="user-panel mt-3 pb-3 mb-3 d-flex"></div>
+    <!-- Main Sidebar Container -->
+    <aside class="main-sidebar sidebar-dark-primary elevation-4">
+      <!-- Brand Logo -->
+      <a href="Home.html" class="brand-link">
+        <i class="fas fa-paw" style="color: #ffd43b; font-size: 1.5rem"></i>
+        <span class="brand-text font-weight-light"></span>
+      </a>
 
-          <!-- Sidebar Menu -->
-          <nav class="mt-2">
-            <ul
-              class="nav nav-pills nav-sidebar flex-column"
-              data-widget="treeview"
-              role="menu"
-              data-accordion="false"
-            >
-              <!-- Add icons to the links using the .nav-icon class
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <div class="user-panel mt-3 pb-3 mb-3 d-flex"></div>
+
+        <!-- Sidebar Menu -->
+        <nav class="mt-2">
+          <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+            <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
-              		<li class="nav-item"><a href="#" class="nav-link"> <i
-								class="nav-icon fas fa-edit"></i>
-								<p>
-									會員管理 <i class="right fas fa-angle-left"></i>
-								</p>
-						</a>
-							<ul class="nav nav-treeview">
-								<li class="nav-item"><a href="AdminQueryAll.html"
-									class="nav-link"> <i class="far fa-circle nav-icon"></i>
-										<p>管理員資料</p>
-								</a></li>
-								<li class="nav-item"><a href="MemberQueryAll.html"
-									class="nav-link"> <i class="far fa-circle nav-icon"></i>
-										<p>會員基本資料</p>
-								</a></li>
-								<li class="nav-item"><a href="MemberPetQueryAll.html"
-									class="nav-link"> <i class="far fa-circle nav-icon"></i>
-										<p>會員寵物資料</p>
-								</a></li>
-								<li class="nav-item"><a href="CouponQueryAll.html"
-									class="nav-link"> <i class="far fa-circle nav-icon"></i>
-										<p>優惠券總覽</p>
-								</a></li>
-								<li class="nav-item"><a href="CouponUsersQueryAll.html"
-									class="nav-link"> <i class="far fa-circle nav-icon"></i>
-										<p>會員持有優惠券</p>
-								</a></li>
-								<li class="nav-item"><a href="FavoritesQueryAll.html"
-									class="nav-link"> <i class="far fa-circle nav-icon"></i>
-										<p>會員收藏清單</p>
-								</a></li>
-							</ul></li>
+            <li class="nav-item"><a href="#" class="nav-link"> <i class="nav-icon fas fa-edit"></i>
+                <p>
+                  會員管理 <i class="right fas fa-angle-left"></i>
+                </p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item"><a href="AdminQueryAll.html" class="nav-link"> <i
+                      class="far fa-circle nav-icon"></i>
+                    <p>管理員資料</p>
+                  </a></li>
+                <li class="nav-item"><a href="MemberQueryAll.html" class="nav-link"> <i
+                      class="far fa-circle nav-icon"></i>
+                    <p>會員基本資料</p>
+                  </a></li>
+                <li class="nav-item"><a href="MemberPetQueryAll.html" class="nav-link"> <i
+                      class="far fa-circle nav-icon"></i>
+                    <p>會員寵物資料</p>
+                  </a></li>
+                <li class="nav-item"><a href="CouponQueryAll.html" class="nav-link"> <i
+                      class="far fa-circle nav-icon"></i>
+                    <p>優惠券總覽</p>
+                  </a></li>
+                <li class="nav-item"><a href="CouponUsersQueryAll.html" class="nav-link"> <i
+                      class="far fa-circle nav-icon"></i>
+                    <p>會員持有優惠券</p>
+                  </a></li>
+                <li class="nav-item"><a href="FavoritesQueryAll.html" class="nav-link"> <i
+                      class="far fa-circle nav-icon"></i>
+                    <p>會員收藏清單</p>
+                  </a></li>
+              </ul>
+            </li>
 
-						<li class="nav-item"><a href="../../AllProducts"
-							class="nav-link"> <i class="nav-icon fas fa-edit"></i>
-								<p>
-									商品管理 <i class="right fas fa-angle-left"></i>
-								</p>
-						</a></li>
-						<li class="nav-item"><a href="#" class="nav-link"> <i
-								class="nav-icon fas fa-edit"></i>
-								<p>
-									訂單管理 <i class="right fas fa-angle-left"></i>
-								</p>
-						</a>
-							<ul class="nav nav-treeview">
-								<li class="nav-item"><a href="../../orderList"
-									class="nav-link"> <i class="far fa-circle nav-icon"></i>
-										<p>查詢全部訂單</p>
-								</a></li>
-								<li class="nav-item"><a href="../../shipmentsList"
-									class="nav-link"> <i class="far fa-circle nav-icon"></i>
-										<p>物流查詢</p>
-								</a></li>
-								<li class="nav-item"><a href="../../orderItemsList"
-									class="nav-link"> <i class="far fa-circle nav-icon"></i>
-										<p>查詢全部訂單明細</p>
-								</a></li>
-								<li class="nav-item"><a href="../order/shopping.jsp"
-									class="nav-link"> <i class="far fa-circle nav-icon"></i>
-										<p>新增訂單</p>
-								</a></li>
-							</ul></li>
-						<li class="nav-item"><a href="#"
-							class="nav-link"> <i class="nav-icon fas fa-edit"></i>
-								<p>
-									預約管理 <i class="right fas fa-angle-left"></i>
-								</p>
-						</a>
-						<ul class="nav nav-treeview">
-                  <li class="nav-item">
-                    <a href="GetAllAppointments.html" class="nav-link">
-                      <i class="far fa-circle nav-icon"></i>
-                      <p>寵物美容訂單管理</p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="GetAllLeaveRecords.html" class="nav-link">
-                      <i class="far fa-circle nav-icon"></i>
-                      <p>美容師請假管理</p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="GetAllGroomers.html" class="nav-link">
-                      <i class="far fa-circle nav-icon"></i>
-                      <p>美容師管理</p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="GetAllAppointmentDetails.html" class="nav-link">
-                      <i class="far fa-circle nav-icon"></i>
-                      <p>預約訂單明細</p>
-                    </a>
-                  </li>
-                   <li class="nav-item">
-                    <a href="GetAllServiceItems.html" class="nav-link">
-                      <i class="far fa-circle nav-icon"></i>
-                      <p>服務項目管理</p>
-                    </a>
-                  </li>
-         
-                </ul>				
-				</li>
-				</ul>
-              </li>
-				</nav>
-          <!-- /.sidebar-menu -->
-        </div>
-        <!-- /.sidebar -->
-      </aside>
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="nav-icon fas fa-edit"></i>
+                <p>商品管理 <i class="right fas fa-angle-left"></i></p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item"><a href="/admin/products" class="nav-link"><i class="far fa-circle nav-icon"></i>
+                    <p>商品管理</p>
+                  </a></li>
+                <li class="nav-item"><a href="/admin/categories" class="nav-link"><i class="far fa-circle nav-icon"></i>
+                    <p>類別管理</p>
+                  </a></li>
+              </ul>
+            </li>
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="nav-icon fas fa-edit"></i>
+                <p>訂單管理 <i class="right fas fa-angle-left"></i></p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item"><a href="/orders/list" class="nav-link"><i class="far fa-circle nav-icon"></i>
+                    <p>查詢全部訂單</p>
+                  </a></li>
+                <li class="nav-item"><a href="/shipment/list" class="nav-link"><i class="far fa-circle nav-icon"></i>
+                    <p>物流查詢</p>
+                  </a></li>
+                <li class="nav-item"><a href="/ordersItem/list" class="nav-link"><i class="far fa-circle nav-icon"></i>
+                    <p>查詢全部訂單明細</p>
+                  </a></li>
+                <li class="nav-item"><a href="/Cart/shopping" class="nav-link"><i class="far fa-circle nav-icon"></i>
+                    <p>新增訂單</p>
+                  </a></li>
+              </ul>
+            </li>
+            <li class="nav-item"><a href="#" class="nav-link"> <i class="nav-icon fas fa-edit"></i>
+                <p>
+                  預約管理 <i class="right fas fa-angle-left"></i>
+                </p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="GetAllAppointments.html" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>寵物美容訂單管理</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="GetAllLeaveRecords.html" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>美容師請假管理</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="GetAllGroomers.html" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>美容師管理</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="GetAllAppointmentDetails.html" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>預約訂單明細</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="GetAllServiceItems.html" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>服務項目管理</p>
+                  </a>
+                </li>
 
-      <!-- Content Wrapper. Contains page content -->
-      <div class="content-wrapper">
-        <!-- Content Header (Page header) -->
-        <section class="content-header">
-          <div class="container-fluid">
-            <div class="row mb-2">
-              <div class="col-sm-12 box1">
-                <h1>預約訂單明細管理</h1>
-              </div>
-              <div class="col-sm-6"></div>
-            </div>
-          </div>
-          <!-- /.container-fluid -->
-        </section>
-
-        <!-- Main content -->
-        <section class="content">
-          <div class="container-fluid">
-            <div class="row">
-              <div class="col-12">
-                <div class="card">
-                  <div
-                    class="card-header d-flex align-items-center justify-content-between"
-                  >
-                    <h3 class="card-title me-auto">預約訂單明細列表</h3>
-
-                    <div class="d-flex align-items-center" style="gap: 0.5rem">
-                      <!-- 新增資料 -->
-                      <!-- .新增資料 -->
-					  
-                      <!-- 依ID查詢 -->
-                      <div class="input-group input-group-sm mr-2" style="width: 150px;">
-                                            <input id="idSearchInput" type="text" class="form-control"
-                                                placeholder="依預約ID查詢">
-                                            <div class="input-group-append">
-                                                <a href="link" id="idSearchBtn" type="button" class="btn btn-secondary">
-                                                    <i class="fas fa-search"></i>
-                                                </a>
-                                            </div>
-                                        </div>
-                      <!-- .依ID查詢 -->
-                      <!-- 查詢全部 -->
-                      <a
-                        href="#"
-                        class="btn btn-secondary btn-sm mr-2 btn-query-all"
-                      >
-                        重置
-                      </a>
-                      <!-- .查詢全部 -->
-
-                    
-                      
-                    </div>
-                  </div>
-                  <!-- /.card-header -->
-                  <div class="card-body">
-                    <table
-                      id="example2"
-                      class="table table-bordered table-hover"
-                    >
-                      <thead>
-                        <tr>
-                          <th>ID</th>
-                          <th>預約ID</th>
-                          <th>服務名稱</th>
-                          <th>類別</th>
-                          <th>時長</th>
-                          <th>定價</th>
-                          <th>創建日期</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <!-- 資料呈現 -->
-                      </tbody>
-                    </table>
-                  </div>
-                  <!-- /.card-body -->
-                </div>
-                <!-- /.card -->
-              </div>
-            </div>
-          </div>
-        </section>
-        <!-- /.content -->
+              </ul>
+            </li>
+          </ul>
+          </li>
+        </nav>
+        <!-- /.sidebar-menu -->
       </div>
-      <!-- /.content-wrapper -->
+      <!-- /.sidebar -->
+    </aside>
 
-      <footer class="main-footer">
-        <div class="float-right d-none d-sm-block"><b>Version</b> 3.2.0</div>
-        <strong
-          >Copyright &copy; 2014-2021
-          <a href="https://adminlte.io">AdminLTE.io</a>.
-        </strong>
-        All rights reserved.
-      </footer>
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+      <!-- Content Header (Page header) -->
+      <section class="content-header">
+        <div class="container-fluid">
+          <div class="row mb-2">
+            <div class="col-sm-12 box1">
+              <h1>預約訂單明細管理</h1>
+            </div>
+            <div class="col-sm-6"></div>
+          </div>
+        </div>
+        <!-- /.container-fluid -->
+      </section>
 
-      <!-- Control Sidebar -->
-      <aside class="control-sidebar control-sidebar-dark">
-        <!-- Control sidebar content goes here -->
-      </aside>
-      <!-- /.control-sidebar -->
+      <!-- Main content -->
+      <section class="content">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-12">
+              <div class="card">
+                <div class="card-header d-flex align-items-center justify-content-between">
+                  <h3 class="card-title me-auto">預約訂單明細列表</h3>
+
+                  <div class="d-flex align-items-center" style="gap: 0.5rem">
+                    <!-- 新增資料 -->
+                    <!-- .新增資料 -->
+
+                    <!-- 依ID查詢 -->
+                    <div class="input-group input-group-sm mr-2" style="width: 150px;">
+                      <input id="idSearchInput" type="text" class="form-control" placeholder="依預約ID查詢">
+                      <div class="input-group-append">
+                        <a href="link" id="idSearchBtn" type="button" class="btn btn-secondary">
+                          <i class="fas fa-search"></i>
+                        </a>
+                      </div>
+                    </div>
+                    <!-- .依ID查詢 -->
+                    <!-- 查詢全部 -->
+                    <a href="#" class="btn btn-secondary btn-sm mr-2 btn-query-all">
+                      重置
+                    </a>
+                    <!-- .查詢全部 -->
+
+
+
+                  </div>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                  <table id="example2" class="table table-bordered table-hover">
+                    <thead>
+                      <tr>
+                        <th>ID</th>
+                        <th>預約ID</th>
+                        <th>服務名稱</th>
+                        <th>類別</th>
+                        <th>時長</th>
+                        <th>定價</th>
+                        <th>創建日期</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <!-- 資料呈現 -->
+                    </tbody>
+                  </table>
+                </div>
+                <!-- /.card-body -->
+              </div>
+              <!-- /.card -->
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- /.content -->
     </div>
-    <!-- ./wrapper -->
+    <!-- /.content-wrapper -->
 
-   
+    <footer class="main-footer">
+      <div class="float-right d-none d-sm-block"><b>Version</b> 3.2.0</div>
+      <strong>Copyright &copy; 2014-2021
+        <a href="https://adminlte.io">AdminLTE.io</a>.
+      </strong>
+      All rights reserved.
+    </footer>
 
-    <!-- jQuery -->
-    <script src="../../plugins/jquery/jquery.min.js"></script>
-    <!-- Bootstrap 4 -->
-    <script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <!-- DataTables  & Plugins -->
-    <script src="../../plugins/datatables/jquery.dataTables.min.js"></script>
-    <script src="../../plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
-    <script src="../../plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
-    <script src="../../plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
-    <script src="../../plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
-    <script src="../../plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
-    <script src="../../plugins/jszip/jszip.min.js"></script>
-    <script src="../../plugins/pdfmake/pdfmake.min.js"></script>
-    <script src="../../plugins/pdfmake/vfs_fonts.js"></script>
-    <script src="../../plugins/datatables-buttons/js/buttons.html5.min.js"></script>
-    <script src="../../plugins/datatables-buttons/js/buttons.print.min.js"></script>
-    <script src="../../plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
-    <script
-      type="text/javascript"
-      src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"
-    ></script>
-    <script
-      type="text/javascript"
-      src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"
-    ></script>
-    
-    <!-- 登出 -->
-    <script src="../../dist/js/adminAuth.js"></script>
-    <!-- .登出 -->
-    <!-- AdminLTE App -->
-    <script src="../../dist/js/adminlte.min.js"></script>
-    <!-- AdminLTE for demo purposes
+    <!-- Control Sidebar -->
+    <aside class="control-sidebar control-sidebar-dark">
+      <!-- Control sidebar content goes here -->
+    </aside>
+    <!-- /.control-sidebar -->
+  </div>
+  <!-- ./wrapper -->
+
+
+
+  <!-- jQuery -->
+  <script src="../../plugins/jquery/jquery.min.js"></script>
+  <!-- Bootstrap 4 -->
+  <script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <!-- DataTables  & Plugins -->
+  <script src="../../plugins/datatables/jquery.dataTables.min.js"></script>
+  <script src="../../plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+  <script src="../../plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+  <script src="../../plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+  <script src="../../plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+  <script src="../../plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+  <script src="../../plugins/jszip/jszip.min.js"></script>
+  <script src="../../plugins/pdfmake/pdfmake.min.js"></script>
+  <script src="../../plugins/pdfmake/vfs_fonts.js"></script>
+  <script src="../../plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+  <script src="../../plugins/datatables-buttons/js/buttons.print.min.js"></script>
+  <script src="../../plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+
+  <!-- 登出 -->
+  <script src="../../dist/js/adminAuth.js"></script>
+  <!-- .登出 -->
+  <!-- AdminLTE App -->
+  <script src="../../dist/js/adminlte.min.js"></script>
+  <!-- AdminLTE for demo purposes
             <script src="../../dist/js/demo.js"></script> -->
-    <!-- Page specific script -->
-    <script>
-      $(function () {
-        initDataTable();
-        loadAllServices();
-        handleViewButtonClick();
-        handleQueryAllButtonClick();
+  <!-- Page specific script -->
+  <script>
+    $(function () {
+      initDataTable();
+      loadAllServices();
+      handleViewButtonClick();
+      handleQueryAllButtonClick();
+    });
+
+    const APPOINTMENTDETAIL_API = "/appointments/details";
+
+    //初始化畫面
+    function initDataTable() {
+      if ($.fn.DataTable.isDataTable("#example2")) {
+        $("#example2").DataTable().destroy();
+      }
+      $("#example2").DataTable({
+        paging: true,
+        lengthChange: false,
+        searching: false,
+        ordering: true,
+        info: true,
+        autoWidth: true,
+        responsive: true,
+        dom: '<"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7 d-flex justify-content-end"p>>',
+
+        columnDefs: [
+          {
+            targets: [0], // 指定第 0 欄
+            visible: false,
+          },
+        ],
       });
+    }
 
-      const APPOINTMENTDETAIL_API = "/appointments/details";
+    //呼叫後端，獲取資料
+    function loadAllServices() {
+      $.ajax({
+        url: `${APPOINTMENTDETAIL_API}`,
+        type: "GET",
+        dataType: "json",
+        success: function (data) {
+          allServiceItems = data;
+          renderTable(data);
+        },
+        error: function (xhr) {
+          console.error("Error:", xhr);
+          alert("無法載入資料，請確認後端 Server 是否啟動");
+        },
+      });
+    }
 
-      //初始化畫面
-      function initDataTable() {
-        if ($.fn.DataTable.isDataTable("#example2")) {
-          $("#example2").DataTable().destroy();
-        }
-        $("#example2").DataTable({
-          paging: true,
-          lengthChange: false,
-          searching: false,
-          ordering: true,
-          info: true,
-          autoWidth: true,
-          responsive: true,
-          dom: '<"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7 d-flex justify-content-end"p>>',
 
-          columnDefs: [
-            {
-              targets: [0], // 指定第 0 欄
-              visible: false,
-            },
-          ],
-        });
+
+    //渲染表格
+    function renderTable(dataList) {
+      if ($.fn.DataTable.isDataTable("#example2")) {
+        $("#example2").DataTable().destroy();
       }
 
-      //呼叫後端，獲取資料
-      function loadAllServices() {
-        $.ajax({
-          url: `${APPOINTMENTDETAIL_API}`,
-          type: "GET",
-          dataType: "json",
-          success: function (data) {
-            allServiceItems = data;
-            renderTable(data);
-          },
-          error: function (xhr) {
-            console.error("Error:", xhr);
-            alert("無法載入資料，請確認後端 Server 是否啟動");
-          },
-        });
-      }
+      const tbody = $("#example2 tbody");
+      tbody.empty();
 
-      
-
-      //渲染表格
-      function renderTable(dataList) {
-        if ($.fn.DataTable.isDataTable("#example2")) {
-          $("#example2").DataTable().destroy();
-        }
-
-        const tbody = $("#example2 tbody");
-        tbody.empty();
-
-        dataList.forEach(function (ad) {
-          const tr = `
+      dataList.forEach(function (ad) {
+        const tr = `
                          <tr>
 							<td>${ad.detailId}</td>
                             <td>${ad.appointmentId}</td>
@@ -455,83 +421,84 @@
 							<td>${ad.createdAt}</td>                         
                         </tr>
                     `;
-          //載入表格資料
-          tbody.append(tr);
-        });
-
-        initDataTable();
-      }
-
-      //點擊查看按鈕，彈出Modal並顯示資料
-      function handleViewButtonClick() {
-        $(document).on("click", ".sdetail-btn", function (e) {
-          e.preventDefault();
-
-          // 1. 取得按鈕上的 ID
-          let id = $(this).data("id");
-
-          // 2. 從全域變數 allAppointments 裡面找到那一筆資料
-          // 這裡要注意：data-id 抓出來可能是字串，需轉型比對，或用 == (不嚴格比對)
-          let serviceData = allServiceItems.find(
-            (item) => item.serviceId == id
-          );
-
-          if (serviceData) {
-            // 3. 把資料填入 Modal 的欄位中
-            $("#modal-service-name").val(serviceData.serviceName);
-            $("#modal-target-pet-info").val(
-              `${serviceData.targetPetType} / ${serviceData.targetPetSize}`
-            );
-            $("#modal-service-description").val(serviceData.description);
-            // 4. 顯示 Modal
-            $("#serviceDetailModal").modal("show");
-          } else {
-            alert("找不到該筆資料！");
-          }
-        });
-      }
-
-  	  //依 ID 查詢
-      $('#idSearchBtn').on('click', function (e) {
-          e.preventDefault();
-          const id = $('#idSearchInput').val().trim();
-          if (!id) return alert("請輸入預約ID");
-
-          $.ajax({
-              url: `${APPOINTMENTDETAIL_API}/${id}`,
-              method: 'GET',
-              dataType: 'json',
-              success: function (data) {
-                  if (data) {
-                      renderTable(data); // 
-                  } else {
-                      alert("找不到該筆資料");
-                  }
-              }
-          });
+        //載入表格資料
+        tbody.append(tr);
       });
 
-      function handleQueryAllButtonClick() {          
-          $(document).on("click", ".btn-query-all", function (e) {
-            e.preventDefault();  
-                    
-            $('#idSearchInput').val('');
-            
-            $.ajax({
-                url: APPOINTMENTDETAIL_API, 
-                type: "GET",
-                dataType: "json",
-                success: function(data) {
-                    allAppointments = data;
-                    renderTable(data);
-                },
-                error: function(xhr) {
-                    console.error("Search Error:", xhr);
-                    alert("查詢失敗");
-                }
-            });
-          });
+      initDataTable();
+    }
+
+    //點擊查看按鈕，彈出Modal並顯示資料
+    function handleViewButtonClick() {
+      $(document).on("click", ".sdetail-btn", function (e) {
+        e.preventDefault();
+
+        // 1. 取得按鈕上的 ID
+        let id = $(this).data("id");
+
+        // 2. 從全域變數 allAppointments 裡面找到那一筆資料
+        // 這裡要注意：data-id 抓出來可能是字串，需轉型比對，或用 == (不嚴格比對)
+        let serviceData = allServiceItems.find(
+          (item) => item.serviceId == id
+        );
+
+        if (serviceData) {
+          // 3. 把資料填入 Modal 的欄位中
+          $("#modal-service-name").val(serviceData.serviceName);
+          $("#modal-target-pet-info").val(
+            `${serviceData.targetPetType} / ${serviceData.targetPetSize}`
+          );
+          $("#modal-service-description").val(serviceData.description);
+          // 4. 顯示 Modal
+          $("#serviceDetailModal").modal("show");
+        } else {
+          alert("找不到該筆資料！");
         }
-    </script>
-  </body>
+      });
+    }
+
+    //依 ID 查詢
+    $('#idSearchBtn').on('click', function (e) {
+      e.preventDefault();
+      const id = $('#idSearchInput').val().trim();
+      if (!id) return alert("請輸入預約ID");
+
+      $.ajax({
+        url: `${APPOINTMENTDETAIL_API}/${id}`,
+        method: 'GET',
+        dataType: 'json',
+        success: function (data) {
+          if (data) {
+            renderTable(data); // 
+          } else {
+            alert("找不到該筆資料");
+          }
+        }
+      });
+    });
+
+    function handleQueryAllButtonClick() {
+      $(document).on("click", ".btn-query-all", function (e) {
+        e.preventDefault();
+
+        $('#idSearchInput').val('');
+
+        $.ajax({
+          url: APPOINTMENTDETAIL_API,
+          type: "GET",
+          dataType: "json",
+          success: function (data) {
+            allAppointments = data;
+            renderTable(data);
+          },
+          error: function (xhr) {
+            console.error("Search Error:", xhr);
+            alert("查詢失敗");
+          }
+        });
+      });
+    }
+  </script>
+</body>
+
 </html>

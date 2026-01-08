@@ -21,6 +21,8 @@
         .sidebar-collapse .brand-text { display: none; }
         .box1 { display: flex; justify-content: space-between; align-items: center; }
         .form-control-static { padding-top: 7px; font-weight: 500; color: #333; }
+        /* 新增置中容器樣式 */
+        .box2 { display: flex; justify-content: center; align-items: center; }
     </style>
 </head>
 
@@ -49,7 +51,6 @@
             <div class="sidebar">
                 <nav class="mt-2">
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-                        
                         <li class="nav-item menu-open">
                             <a href="#" class="nav-link active">
                                 <i class="nav-icon fas fa-edit"></i>
@@ -64,32 +65,39 @@
                                 <li class="nav-item"><a href="FavoritesQueryAll.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>會員收藏清單</p></a></li>
                             </ul>
                         </li>
-
                         <li class="nav-item">
-                            <a href="../../AllProducts" class="nav-link">
+                            <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-edit"></i>
                                 <p>商品管理 <i class="right fas fa-angle-left"></i></p>
                             </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item"><a href="/admin/products" class="nav-link"><i class="far fa-circle nav-icon"></i><p>商品管理</p></a></li>
+                                <li class="nav-item"><a href="/admin/categories" class="nav-link"><i class="far fa-circle nav-icon"></i><p>類別管理</p></a></li>
+                            </ul>
                         </li>
-
                         <li class="nav-item">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-edit"></i>
                                 <p>訂單管理 <i class="right fas fa-angle-left"></i></p>
                             </a>
                             <ul class="nav nav-treeview">
-                                <li class="nav-item"><a href="../../orderList" class="nav-link"><i class="far fa-circle nav-icon"></i><p>查詢全部訂單</p></a></li>
-                                <li class="nav-item"><a href="../../shipmentsList" class="nav-link"><i class="far fa-circle nav-icon"></i><p>物流查詢</p></a></li>
-                                <li class="nav-item"><a href="../../orderItemsList" class="nav-link"><i class="far fa-circle nav-icon"></i><p>查詢全部訂單明細</p></a></li>
-                                <li class="nav-item"><a href="../order/shopping.jsp" class="nav-link"><i class="far fa-circle nav-icon"></i><p>新增訂單</p></a></li>
+                                <li class="nav-item"><a href="/orders/list" class="nav-link"><i class="far fa-circle nav-icon"></i><p>查詢全部訂單</p></a></li>
+                                <li class="nav-item"><a href="/shipment/list" class="nav-link"><i class="far fa-circle nav-icon"></i><p>物流查詢</p></a></li>
+                                <li class="nav-item"><a href="/ordersItem/list" class="nav-link"><i class="far fa-circle nav-icon"></i><p>查詢全部訂單明細</p></a></li>
+                                <li class="nav-item"><a href="/Cart/shopping" class="nav-link"><i class="far fa-circle nav-icon"></i><p>新增訂單</p></a></li>
                             </ul>
                         </li>
-
                         <li class="nav-item">
-                            <a href="../../AppointmentServlet.do" class="nav-link">
-                                <i class="nav-icon fas fa-edit"></i>
+                            <a href="#" class="nav-link"> <i class="nav-icon fas fa-edit"></i>
                                 <p>預約管理 <i class="right fas fa-angle-left"></i></p>
                             </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item"><a href="GetAllAppointments.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>寵物美容訂單管理</p></a></li>
+                                <li class="nav-item"><a href="GetAllLeaveRecords.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>美容師請假管理</p></a></li>
+                                <li class="nav-item"><a href="GetAllGroomers.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>美容師管理</p></a></li>
+                                <li class="nav-item"><a href="GetAllAppointmentDetails.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>預約訂單明細</p></a></li>
+                                <li class="nav-item"><a href="GetAllServiceItems.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>服務項目管理</p></a></li>
+                            </ul>
                         </li>
                     </ul>
                 </nav>
@@ -109,9 +117,9 @@
             </section>
 
             <section class="content">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-12">
+                <div class="container-fluid d-flex justify-content-center">
+                    <div class="row w-100 box2 justify-content-center">
+                        <div class="col-md-6">
                             <div class="card card-info">
                                 <div class="card-header">
                                     <h3 class="card-title">新增資料檢視</h3>
@@ -121,45 +129,43 @@
                                     <strong>新增成功!</strong>
                                 </div>
                                 
-                                <form class="form-horizontal">
-                                    <div class="card-body">
-                                        <div class="form-group row">
-                                            <label class="col-sm-2 col-form-label">ID:</label>
-                                            <div class="col-sm-10">
-                                                <p id="showAdminId" class="form-control-static">載入中...</p>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label class="col-sm-2 col-form-label">姓名:</label>
-                                            <div class="col-sm-10">
-                                                <p id="showName" class="form-control-static"></p>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label class="col-sm-2 col-form-label">Email:</label>
-                                            <div class="col-sm-10">
-                                                <p id="showEmail" class="form-control-static"></p>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label class="col-sm-2 col-form-label">電話:</label>
-                                            <div class="col-sm-10">
-                                                <p id="showPhone" class="form-control-static"></p>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label class="col-sm-2 col-form-label">權限:</label>
-                                            <div class="col-sm-10">
-                                                <p id="showRole" class="form-control-static"></p>
-                                            </div>
+                                <div class="card-body">
+                                    <div class="form-group row">
+                                        <label class="col-sm-4 col-form-label text-right">ID:</label>
+                                        <div class="col-sm-8">
+                                            <p id="showAdminId" class="form-control-static">載入中...</p>
                                         </div>
                                     </div>
-                                    <div class="card-footer">
-                                        <a href="AdminCreate.html" class="btn btn-info float-right">
-                                            <i class="fas fa-plus"></i> 繼續新增
-                                        </a>
+                                    <div class="form-group row">
+                                        <label class="col-sm-4 col-form-label text-right">姓名:</label>
+                                        <div class="col-sm-8">
+                                            <p id="showName" class="form-control-static"></p>
+                                        </div>
                                     </div>
-                                </form>
+                                    <div class="form-group row">
+                                        <label class="col-sm-4 col-form-label text-right">Email:</label>
+                                        <div class="col-sm-8">
+                                            <p id="showEmail" class="form-control-static"></p>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-4 col-form-label text-right">電話:</label>
+                                        <div class="col-sm-8">
+                                            <p id="showPhone" class="form-control-static"></p>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-4 col-form-label text-right">權限:</label>
+                                        <div class="col-sm-8">
+                                            <p id="showRole" class="form-control-static"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer text-right">
+                                    <a href="AdminCreate.html" class="btn btn-info">
+                                        <i class="fas fa-plus"></i> 繼續新增
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>

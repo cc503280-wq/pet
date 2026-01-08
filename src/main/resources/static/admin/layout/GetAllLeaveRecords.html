@@ -1,660 +1,590 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>預約管理</title>
 
-    <!-- Google Font: Source Sans Pro -->
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback"
-    />
-    <!-- Font Awesome -->
-    <link
-      rel="stylesheet"
-      href="../../plugins/fontawesome-free/css/all.min.css"
-    />
-    <!-- Theme style -->
-    <link rel="stylesheet" href="../../dist/css/adminlte.min.css" />
-    <link
-      rel="stylesheet"
-      href="../../plugins/datatables-bs4/css/dataTables.bootstrap4.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="../../plugins/datatables-responsive/css/responsive.bootstrap4.min.css"
-    />
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"
-    />
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>預約管理</title>
 
-    <style type="text/css">
-      /* 調整 sidebar logo 排版 */
-      .brand-link {
-        display: flex;
-        align-items: center;
-        justify-content: flex-start;
-        /* 展開時靠左 */
-        padding: 0.5rem 1rem;
-      }
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback" />
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="../../plugins/fontawesome-free/css/all.min.css" />
+  <!-- Theme style -->
+  <link rel="stylesheet" href="../../dist/css/adminlte.min.css" />
+  <link rel="stylesheet" href="../../plugins/datatables-bs4/css/dataTables.bootstrap4.min.css" />
+  <link rel="stylesheet" href="../../plugins/datatables-responsive/css/responsive.bootstrap4.min.css" />
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 
-      /* 收起 sidebar 時，icon 置中 */
-      .sidebar-collapse .brand-link {
-        justify-content: center;
-      }
+  <style type="text/css">
+    /* 調整 sidebar logo 排版 */
+    .brand-link {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      /* 展開時靠左 */
+      padding: 0.5rem 1rem;
+    }
 
-      /* 調整 icon 與文字間距 */
-      .brand-link i {
-        width: 1.5rem;
-        /* 固定寬度讓文字距離固定 */
-        text-align: center;
-      }
+    /* 收起 sidebar 時，icon 置中 */
+    .sidebar-collapse .brand-link {
+      justify-content: center;
+    }
 
-      /* 收起 sidebar 時文字隱藏 */
-      .sidebar-collapse .brand-text {
-        display: none;
-      }
+    /* 調整 icon 與文字間距 */
+    .brand-link i {
+      width: 1.5rem;
+      /* 固定寬度讓文字距離固定 */
+      text-align: center;
+    }
 
-      .box1 {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
+    /* 收起 sidebar 時文字隱藏 */
+    .sidebar-collapse .brand-text {
+      display: none;
+    }
 
-      .put-btn {
-        background-color: green;
-      }
+    .box1 {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-      .remove-btn {
-        background-color: red;
-      }
+    .put-btn {
+      background-color: green;
+    }
 
-      /* DataTable 所有欄位水平 + 垂直置中 */
-      #example2 td,
-      #example2 th {
-        text-align: center !important;
-        vertical-align: middle !important;
-        font-size: 0.8rem;
-        padding: 0.25rem 0.5rem;
-        white-space: nowrap;
-      }
-    </style>
-  </head>
+    .remove-btn {
+      background-color: red;
+    }
 
-  <body class="hold-transition sidebar-mini sidebar-collapse">
-    <!-- Site wrapper -->
-    <div class="wrapper">
-      <!-- Navbar -->
-      <nav class="main-header navbar navbar-expand navbar-white navbar-light">
-        <!-- Left navbar links -->
-        <ul class="navbar-nav">
-          <li class="nav-item">
-            <a class="nav-link" data-widget="pushmenu" href="#" role="button"
-              ><i class="fas fa-bars"></i
-            ></a>
-          </li>
-        </ul>
-        <!-- 右側 Navbar 按鈕 -->
-        <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a href="javascript:void(0)" id="logoutBtn" class="btn btn-secondary btn-sm">
-                        <i class="fas fa-sign-out-alt"></i> 登出
-                    </a>
-                </li>
-            </ul>
-      </nav>
-      <!-- /.navbar -->
+    /* DataTable 所有欄位水平 + 垂直置中 */
+    #example2 td,
+    #example2 th {
+      text-align: center !important;
+      vertical-align: middle !important;
+      font-size: 0.8rem;
+      padding: 0.25rem 0.5rem;
+      white-space: nowrap;
+    }
+  </style>
+</head>
 
-      <!-- Main Sidebar Container -->
-      <aside class="main-sidebar sidebar-dark-primary elevation-4">
-        <!-- Brand Logo -->
-        <a href="../../index3.html" class="brand-link">
-          <i class="fas fa-paw" style="color: #ffd43b; font-size: 1.5rem"></i>
-          <span class="brand-text font-weight-light"></span>
-        </a>
+<body class="hold-transition sidebar-mini sidebar-collapse">
+  <!-- Site wrapper -->
+  <div class="wrapper">
+    <!-- Navbar -->
+    <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+      <!-- Left navbar links -->
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+        </li>
+      </ul>
+      <!-- 右側 Navbar 按鈕 -->
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a href="javascript:void(0)" id="logoutBtn" class="btn btn-secondary btn-sm">
+            <i class="fas fa-sign-out-alt"></i> 登出
+          </a>
+        </li>
+      </ul>
+    </nav>
+    <!-- /.navbar -->
 
-        <!-- Sidebar -->
-        <div class="sidebar">
-          <div class="user-panel mt-3 pb-3 mb-3 d-flex"></div>
+    <!-- Main Sidebar Container -->
+    <aside class="main-sidebar sidebar-dark-primary elevation-4">
+      <!-- Brand Logo -->
+      <a href="Home.html" class="brand-link">
+        <i class="fas fa-paw" style="color: #ffd43b; font-size: 1.5rem"></i>
+        <span class="brand-text font-weight-light"></span>
+      </a>
 
-          <!-- Sidebar Menu -->
-          <nav class="mt-2">
-            <ul
-              class="nav nav-pills nav-sidebar flex-column"
-              data-widget="treeview"
-              role="menu"
-              data-accordion="false"
-            >
-              <!-- Add icons to the links using the .nav-icon class
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <div class="user-panel mt-3 pb-3 mb-3 d-flex"></div>
+
+        <!-- Sidebar Menu -->
+        <nav class="mt-2">
+          <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+            <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
-             		<li class="nav-item"><a href="#" class="nav-link"> <i
-								class="nav-icon fas fa-edit"></i>
-								<p>
-									會員管理 <i class="right fas fa-angle-left"></i>
-								</p>
-						</a>
-							<ul class="nav nav-treeview">
-								<li class="nav-item"><a href="AdminQueryAll.html"
-									class="nav-link"> <i class="far fa-circle nav-icon"></i>
-										<p>管理員資料</p>
-								</a></li>
-								<li class="nav-item"><a href="MemberQueryAll.html"
-									class="nav-link"> <i class="far fa-circle nav-icon"></i>
-										<p>會員基本資料</p>
-								</a></li>
-								<li class="nav-item"><a href="MemberPetQueryAll.html"
-									class="nav-link"> <i class="far fa-circle nav-icon"></i>
-										<p>會員寵物資料</p>
-								</a></li>
-								<li class="nav-item"><a href="CouponQueryAll.html"
-									class="nav-link"> <i class="far fa-circle nav-icon"></i>
-										<p>優惠券總覽</p>
-								</a></li>
-								<li class="nav-item"><a href="CouponUsersQueryAll.html"
-									class="nav-link"> <i class="far fa-circle nav-icon"></i>
-										<p>會員持有優惠券</p>
-								</a></li>
-								<li class="nav-item"><a href="FavoritesQueryAll.html"
-									class="nav-link"> <i class="far fa-circle nav-icon"></i>
-										<p>會員收藏清單</p>
-								</a></li>
-							</ul></li>
+            <li class="nav-item"><a href="#" class="nav-link"> <i class="nav-icon fas fa-edit"></i>
+                <p>
+                  會員管理 <i class="right fas fa-angle-left"></i>
+                </p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item"><a href="AdminQueryAll.html" class="nav-link"> <i
+                      class="far fa-circle nav-icon"></i>
+                    <p>管理員資料</p>
+                  </a></li>
+                <li class="nav-item"><a href="MemberQueryAll.html" class="nav-link"> <i
+                      class="far fa-circle nav-icon"></i>
+                    <p>會員基本資料</p>
+                  </a></li>
+                <li class="nav-item"><a href="MemberPetQueryAll.html" class="nav-link"> <i
+                      class="far fa-circle nav-icon"></i>
+                    <p>會員寵物資料</p>
+                  </a></li>
+                <li class="nav-item"><a href="CouponQueryAll.html" class="nav-link"> <i
+                      class="far fa-circle nav-icon"></i>
+                    <p>優惠券總覽</p>
+                  </a></li>
+                <li class="nav-item"><a href="CouponUsersQueryAll.html" class="nav-link"> <i
+                      class="far fa-circle nav-icon"></i>
+                    <p>會員持有優惠券</p>
+                  </a></li>
+                <li class="nav-item"><a href="FavoritesQueryAll.html" class="nav-link"> <i
+                      class="far fa-circle nav-icon"></i>
+                    <p>會員收藏清單</p>
+                  </a></li>
+              </ul>
+            </li>
 
-						<li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-edit"></i>
-                                <p>
-                                    商品管理
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                            	<li class="nav-item">
-								    <a href="/admin/products" class="nav-link">
-								        <i class="far fa-circle nav-icon"></i>
-								        <p>商品管理</p>
-								    </a>
-								</li>
-	                            <li class="nav-item">
-								    <a href="/admin/categories" class="nav-link">
-								        <i class="far fa-circle nav-icon"></i>
-								        <p>分類管理</p>
-								    </a>
-								</li>
-                            </ul>
-                        </li>
-						
-						
-						<li class="nav-item"><a href="#" class="nav-link"> <i
-								class="nav-icon fas fa-edit"></i>
-								<p>
-									訂單管理 <i class="right fas fa-angle-left"></i>
-								</p>
-						</a>
-							<ul class="nav nav-treeview">
-								<li class="nav-item"><a href="/orders/list"
-									class="nav-link"> <i class="far fa-circle nav-icon"></i>
-										<p>查詢全部訂單</p>
-								</a></li>
-								<li class="nav-item"><a href="/shipment/list"
-									class="nav-link"> <i class="far fa-circle nav-icon"></i>
-										<p>物流查詢</p>
-								</a></li>
-								<li class="nav-item"><a href="/ordersItem/list"
-									class="nav-link"> <i class="far fa-circle nav-icon"></i>
-										<p>查詢全部訂單明細</p>
-								</a></li>
-								<li class="nav-item"><a href="/Cart/shopping"
-									class="nav-link"> <i class="far fa-circle nav-icon"></i>
-										<p>新增訂單</p>
-								</a></li>
-							</ul></li>
-						<li class="nav-item"><a href="#"
-							class="nav-link"> <i class="nav-icon fas fa-edit"></i>
-								<p>
-									預約管理 <i class="right fas fa-angle-left"></i>
-								</p>
-						</a>
-						<ul class="nav nav-treeview">
-                  <li class="nav-item">
-                    <a href="GetAllAppointments.html" class="nav-link">
-                      <i class="far fa-circle nav-icon"></i>
-                      <p>寵物美容訂單管理</p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="GetAllLeaveRecords.html" class="nav-link">
-                      <i class="far fa-circle nav-icon"></i>
-                      <p>美容師請假管理</p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="GetAllGroomers.html" class="nav-link">
-                      <i class="far fa-circle nav-icon"></i>
-                      <p>美容師管理</p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="GetAllAppointmentDetails.html" class="nav-link">
-                      <i class="far fa-circle nav-icon"></i>
-                      <p>預約訂單明細</p>
-                    </a>
-                  </li>
-                   <li class="nav-item">
-                    <a href="GetAllServiceItems.html" class="nav-link">
-                      <i class="far fa-circle nav-icon"></i>
-                      <p>服務項目管理</p>
-                    </a>
-                  </li>
-                </ul>				
-				</li>
-				</ul>
-              </li>
-				</nav>
-				<!-- /.sidebar-menu -->
-        </div>
-        <!-- /.sidebar -->
-      </aside>
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="nav-icon fas fa-edit"></i>
+                <p>
+                  商品管理
+                  <i class="right fas fa-angle-left"></i>
+                </p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="/admin/products" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>商品管理</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="/admin/categories" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>分類管理</p>
+                  </a>
+                </li>
+              </ul>
+            </li>
 
-      <!-- Content Wrapper. Contains page content -->
-      <div class="content-wrapper">
-        <!-- Content Header (Page header) -->
-        <section class="content-header">
-          <div class="container-fluid">
-            <div class="row mb-2">
-              <div class="col-sm-12 box1">
-                <h1>美容師請假管理</h1>
-              </div>
-              <div class="col-sm-6"></div>
-            </div>
-          </div>
-          <!-- /.container-fluid -->
-        </section>
 
-        <!-- Main content -->
-        <section class="content">
-          <div class="container-fluid">
-            <div class="row">
-              <div class="col-12">
-                <div class="card">
-                  <div
-                    class="card-header d-flex align-items-center justify-content-between"
-                  >
-                    <h3 class="card-title me-auto">美容師請假列表</h3>
-
-                    <div class="d-flex align-items-center" style="gap: 0.5rem">
-                      <!-- 新增資料 -->
-                      <button
-                        onclick="openCreateModal()"
-                        class="btn btn-success btn-sm mr-2"
-                      >
-                        新增
-                      </button>
-                      <!-- .新增資料 -->
-                      
-                    
-
-                      <!-- 依美容師ID查詢 -->
-                      <div class="input-group input-group-sm" style="width: 140px;">
-        <input id="idSearchInput" type="text" class="form-control" placeholder="工號">
-    </div>
-
-    <div class="input-group input-group-sm" style="width: 200px;">
-        <div class="input-group-prepend">
-            <span class="input-group-text"><i class="far fa-calendar-alt"></i> </span>
-        </div>
-        <input type="text" class="form-control float-right" id="leaveDateRange" placeholder="請假日期範圍">
-    </div>
-
-    <div class="input-group input-group-sm" style="width: 200px;">
-        <div class="input-group-prepend">
-            <span class="input-group-text"><i class="far fa-clock"></i> </span>
-        </div>
-        <input type="text" class="form-control float-right" id="createDateRange" placeholder="創建日期範圍">
-    </div>
-
-    <button id="btnSearch" class="btn btn-primary btn-sm"><i class="fas fa-search"></i> 查詢</button>
-    
-    <button id="btnReset" class="btn btn-secondary btn-sm">重置</button>
-
-</div>
-                      <!-- .依美容師ID查詢 -->
-
-                      <!-- 預約狀態查詢 -->
-                      <!-- .預約狀態查詢 -->
-
-                      <!-- 預約日期區間查詢 -->
-                      <!-- .預約日期區間查詢 -->
-
-                      
-                
-                  </div>
-                  <!-- /.card-header -->
-                  <div class="card-body">
-                    <table
-                      id="example2"
-                      class="table table-bordered table-hover"
-                    >
-                      <thead>
-                        <tr>
-                          <th>ID</th>
-                          <th>美容師工號</th>
-                          <th>美容師</th>
-                          <th>請假日期</th>
-                          <th>請假原因</th>
-                          <th>請假單狀態</th>
-                          <th>創建日期</th>
-                          <th class="text-center">操作</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <!-- 資料呈現 -->
-                      </tbody>
-                    </table>
-                  </div>
-                  <!-- /.card-body -->
-                </div>
-                <!-- /.card -->
-              </div>
-            </div>
-          </div>
-        </section>
-        <!-- /.content -->
+            <li class="nav-item"><a href="#" class="nav-link"> <i class="nav-icon fas fa-edit"></i>
+                <p>
+                  訂單管理 <i class="right fas fa-angle-left"></i>
+                </p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item"><a href="/orders/list" class="nav-link"> <i class="far fa-circle nav-icon"></i>
+                    <p>查詢全部訂單</p>
+                  </a></li>
+                <li class="nav-item"><a href="/shipment/list" class="nav-link"> <i class="far fa-circle nav-icon"></i>
+                    <p>物流查詢</p>
+                  </a></li>
+                <li class="nav-item"><a href="/ordersItem/list" class="nav-link"> <i class="far fa-circle nav-icon"></i>
+                    <p>查詢全部訂單明細</p>
+                  </a></li>
+                <li class="nav-item"><a href="/Cart/shopping" class="nav-link"> <i class="far fa-circle nav-icon"></i>
+                    <p>新增訂單</p>
+                  </a></li>
+              </ul>
+            </li>
+            <li class="nav-item"><a href="#" class="nav-link"> <i class="nav-icon fas fa-edit"></i>
+                <p>
+                  預約管理 <i class="right fas fa-angle-left"></i>
+                </p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="GetAllAppointments.html" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>寵物美容訂單管理</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="GetAllLeaveRecords.html" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>美容師請假管理</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="GetAllGroomers.html" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>美容師管理</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="GetAllAppointmentDetails.html" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>預約訂單明細</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="GetAllServiceItems.html" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>服務項目管理</p>
+                  </a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+          </li>
+        </nav>
+        <!-- /.sidebar-menu -->
       </div>
-      <!-- /.content-wrapper -->
+      <!-- /.sidebar -->
+    </aside>
 
-      <footer class="main-footer">
-        <div class="float-right d-none d-sm-block"><b>Version</b> 3.2.0</div>
-        <strong
-          >Copyright &copy; 2014-2021
-          <a href="https://adminlte.io">AdminLTE.io</a>.
-        </strong>
-        All rights reserved.
-      </footer>
-
-      <!-- Control Sidebar -->
-      <aside class="control-sidebar control-sidebar-dark">
-        <!-- Control sidebar content goes here -->
-      </aside>
-      <!-- /.control-sidebar -->
-    </div>
-    <!-- ./wrapper -->
-    <!-- InsertServicelModal -->
-    <div
-      class="modal fade"
-      id="Modal"
-      tabindex="-1"
-      role="dialog"
-      aria-labelledby="modalTitle"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="modalTitle">新增請假單</h5>
-            <button
-              type="button"
-              class="close"
-              data-dismiss="modal"
-              aria-label="Close"
-            >
-              <span aria-hidden="true">&times;</span>
-            </button>
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+      <!-- Content Header (Page header) -->
+      <section class="content-header">
+        <div class="container-fluid">
+          <div class="row mb-2">
+            <div class="col-sm-12 box1">
+              <h1>美容師請假管理</h1>
+            </div>
+            <div class="col-sm-6"></div>
           </div>
-          <div class="modal-body">
-            <form id="Form">
-              <input type="hidden" id="modalLeaveId" />
+        </div>
+        <!-- /.container-fluid -->
+      </section>
 
-              <div class="form-group">
-                <label>美容師工號</label>
-                <select
-                  class="form-control"
-                  id="modalGroomerId"
-                  required
-                ></select>
-              </div>
+      <!-- Main content -->
+      <section class="content">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-12">
+              <div class="card">
+                <div class="card-header d-flex align-items-center justify-content-between">
+                  <h3 class="card-title me-auto">美容師請假列表</h3>
 
-              <div class="form-group row">
-                <label class="col-sm-3 col-form-label">請假日期</label>
-                <div class="col-sm-9">
-                  <input
-                    class="form-control"
-                    type="date"
-                    id="leaveDayInput"
-                    required
-                  />
+                  <div class="d-flex align-items-center" style="gap: 0.5rem">
+                    <!-- 新增資料 -->
+                    <button onclick="openCreateModal()" class="btn btn-success btn-sm mr-2">
+                      新增
+                    </button>
+                    <!-- .新增資料 -->
+
+
+
+                    <!-- 依美容師ID查詢 -->
+                    <div class="input-group input-group-sm" style="width: 140px;">
+                      <input id="idSearchInput" type="text" class="form-control" placeholder="工號">
+                    </div>
+
+                    <div class="input-group input-group-sm" style="width: 200px;">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="far fa-calendar-alt"></i> </span>
+                      </div>
+                      <input type="text" class="form-control float-right" id="leaveDateRange" placeholder="請假日期範圍">
+                    </div>
+
+                    <div class="input-group input-group-sm" style="width: 200px;">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="far fa-clock"></i> </span>
+                      </div>
+                      <input type="text" class="form-control float-right" id="createDateRange" placeholder="創建日期範圍">
+                    </div>
+
+                    <button id="btnSearch" class="btn btn-primary btn-sm"><i class="fas fa-search"></i> 查詢</button>
+
+                    <button id="btnReset" class="btn btn-secondary btn-sm">重置</button>
+
+                  </div>
+                  <!-- .依美容師ID查詢 -->
+
+                  <!-- 預約狀態查詢 -->
+                  <!-- .預約狀態查詢 -->
+
+                  <!-- 預約日期區間查詢 -->
+                  <!-- .預約日期區間查詢 -->
+
+
+
                 </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                  <table id="example2" class="table table-bordered table-hover">
+                    <thead>
+                      <tr>
+                        <th>ID</th>
+                        <th>美容師工號</th>
+                        <th>美容師</th>
+                        <th>請假日期</th>
+                        <th>請假原因</th>
+                        <th>請假單狀態</th>
+                        <th>創建日期</th>
+                        <th class="text-center">操作</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <!-- 資料呈現 -->
+                    </tbody>
+                  </table>
+                </div>
+                <!-- /.card-body -->
               </div>
+              <!-- /.card -->
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
 
-              <div class="form-group">
-                <label>請假原因</label>
-                <textarea
-                  class="form-control"
-                  id="modalReason"
-                  required
-                ></textarea>
+    <footer class="main-footer">
+      <div class="float-right d-none d-sm-block"><b>Version</b> 3.2.0</div>
+      <strong>Copyright &copy; 2014-2021
+        <a href="https://adminlte.io">AdminLTE.io</a>.
+      </strong>
+      All rights reserved.
+    </footer>
+
+    <!-- Control Sidebar -->
+    <aside class="control-sidebar control-sidebar-dark">
+      <!-- Control sidebar content goes here -->
+    </aside>
+    <!-- /.control-sidebar -->
+  </div>
+  <!-- ./wrapper -->
+  <!-- InsertServicelModal -->
+  <div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalTitle">新增請假單</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="Form">
+            <input type="hidden" id="modalLeaveId" />
+
+            <div class="form-group">
+              <label>美容師工號</label>
+              <select class="form-control" id="modalGroomerId" required></select>
+            </div>
+
+            <div class="form-group row">
+              <label class="col-sm-3 col-form-label">請假日期</label>
+              <div class="col-sm-9">
+                <input class="form-control" type="date" id="leaveDayInput" required />
               </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-dismiss="modal"
-            >
-              取消
-            </button>
-            <button type="button" class="btn btn-primary" id="btnSave">
-              儲存
-            </button>
-          </div>
+            </div>
+
+            <div class="form-group">
+              <label>請假原因</label>
+              <textarea class="form-control" id="modalReason" required></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">
+            取消
+          </button>
+          <button type="button" class="btn btn-primary" id="btnSave">
+            儲存
+          </button>
         </div>
       </div>
     </div>
+  </div>
 
-    <!-- .InsertServicelModal -->
+  <!-- .InsertServicelModal -->
 
-    <!-- jQuery -->
-    <script src="../../plugins/jquery/jquery.min.js"></script>
-    <!-- Bootstrap 4 -->
-    <script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <!-- DataTables  & Plugins -->
-    <script src="../../plugins/datatables/jquery.dataTables.min.js"></script>
-    <script src="../../plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
-    <script src="../../plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
-    <script src="../../plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
-    <script src="../../plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
-    <script src="../../plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
-    <script src="../../plugins/jszip/jszip.min.js"></script>
-    <script src="../../plugins/pdfmake/pdfmake.min.js"></script>
-    <script src="../../plugins/pdfmake/vfs_fonts.js"></script>
-    <script src="../../plugins/datatables-buttons/js/buttons.html5.min.js"></script>
-    <script src="../../plugins/datatables-buttons/js/buttons.print.min.js"></script>
-    <script src="../../plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
-    <script
-      type="text/javascript"
-      src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"
-    ></script>
-    <script
-      type="text/javascript"
-      src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"
-    ></script>
-    <!-- 登出 -->
-    <script src="../../dist/js/adminAuth.js"></script>
-    <!-- .登出 -->
-    <!-- AdminLTE App -->
-    <script src="../../dist/js/adminlte.min.js"></script>
-    <!-- AdminLTE for demo purposes
+  <!-- jQuery -->
+  <script src="../../plugins/jquery/jquery.min.js"></script>
+  <!-- Bootstrap 4 -->
+  <script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <!-- DataTables  & Plugins -->
+  <script src="../../plugins/datatables/jquery.dataTables.min.js"></script>
+  <script src="../../plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+  <script src="../../plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+  <script src="../../plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+  <script src="../../plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+  <script src="../../plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+  <script src="../../plugins/jszip/jszip.min.js"></script>
+  <script src="../../plugins/pdfmake/pdfmake.min.js"></script>
+  <script src="../../plugins/pdfmake/vfs_fonts.js"></script>
+  <script src="../../plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+  <script src="../../plugins/datatables-buttons/js/buttons.print.min.js"></script>
+  <script src="../../plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+  <!-- 登出 -->
+  <script src="../../dist/js/adminAuth.js"></script>
+  <!-- .登出 -->
+  <!-- AdminLTE App -->
+  <script src="../../dist/js/adminlte.min.js"></script>
+  <!-- AdminLTE for demo purposes
             <script src="../../dist/js/demo.js"></script> -->
-    <!-- Page specific script -->
-    <script>
-      // 1. 全域變數定義區
-      const GROOMER_LIST_API = "/groomers";
-      const LEAVERECORD_API = `${GROOMER_LIST_API}/leave-records`;
-      const SEARCH_API = "/groomers/leave-records/search";
-      let allLeaveRecords = [];
+  <!-- Page specific script -->
+  <script>
+    // 1. 全域變數定義區
+    const GROOMER_LIST_API = "/groomers";
+    const LEAVERECORD_API = `${GROOMER_LIST_API}/leave-records`;
+    const SEARCH_API = "/groomers/leave-records/search";
+    let allLeaveRecords = [];
 
-      // 2. 頁面載入完成後執行 (jQuery Ready)
-      $(function () {
-        console.log("=== 頁面載入完成 (jQuery Ready) ===");
+    // 2. 頁面載入完成後執行 (jQuery Ready)
+    $(function () {
+      console.log("=== 頁面載入完成 (jQuery Ready) ===");
 
-        // 初始化
-        initDataTable();
-        loadAllData();
-        handleToggleStatus();
-        loadGroomerOptions();
-        initDatePickers();
+      // 初始化
+      initDataTable();
+      loadAllData();
+      handleToggleStatus();
+      loadGroomerOptions();
+      initDatePickers();
+      doComplexSearch();
+      initDatePickers();
+
+
+      $("#btnSave").on("click", function () {
+        console.log(">> 儲存按鈕被點擊了！");
+        submitInfo();
+      });
+
+      $('#btnSearch').click(function () {
         doComplexSearch();
-        initDatePickers();
+      });
 
-      
-        $("#btnSave").on("click", function () {
-          console.log(">> 儲存按鈕被點擊了！");
-          submitInfo();
-        });
 
-        $('#btnSearch').click(function() {
-            doComplexSearch();
-        });
-        
-        
-        $('#btnReset').click(function() {
-            // 清空所有欄位
-            $('#idSearchInput').val('');
-            $('#leaveDateRange').val('');
-            $('#createDateRange').val('');
-            // 重新載入全部
-            loadAllData();
-        });
+      $('#btnReset').click(function () {
+        // 清空所有欄位
+        $('#idSearchInput').val('');
+        $('#leaveDateRange').val('');
+        $('#createDateRange').val('');
+        // 重新載入全部
+        loadAllData();
+      });
     });
-      
 
-      // --- 載入美容師選單 (你原本報錯找不到的就是這個) ---
-      function loadGroomerOptions() {
-        $.ajax({
-          url: GROOMER_LIST_API,
-          type: "GET",
-          success: function (list) {
-            console.log("美容師選單載入成功");
-            let options =
-              '<option value="" disabled selected>請選擇美容師</option>';
-            list.forEach((g) => {
-              options += `<option value="${g.groomerId}">${g.groomerId}: ${g.groomerName}</option>`;
-            });
-            $("#modalGroomerId").html(options);
-          },
-          error: function (xhr) {
-            console.error("無法載入美容師列表", xhr);
-          },
-        });
+
+    // --- 載入美容師選單 (你原本報錯找不到的就是這個) ---
+    function loadGroomerOptions() {
+      $.ajax({
+        url: GROOMER_LIST_API,
+        type: "GET",
+        success: function (list) {
+          console.log("美容師選單載入成功");
+          let options =
+            '<option value="" disabled selected>請選擇美容師</option>';
+          list.forEach((g) => {
+            options += `<option value="${g.groomerId}">${g.groomerId}: ${g.groomerName}</option>`;
+          });
+          $("#modalGroomerId").html(options);
+        },
+        error: function (xhr) {
+          console.error("無法載入美容師列表", xhr);
+        },
+      });
+    }
+
+    // --- 送出新增表單 ---
+    function submitInfo() {
+      console.log("=== 進入 submitInfo 函式 ===");
+      let leaveId = $("#modalLeaveId").val();
+      let groomerId = $("#modalGroomerId").val();
+      let leaveDate = $("#leaveDayInput").val();
+      let reason = $("#modalReason").val();
+
+      if (!groomerId) {
+        alert("錯誤：請選擇美容師！");
+        return;
+      }
+      if (!leaveDate) {
+        alert("錯誤：請選擇日期！");
+        return;
+      }
+      if (!reason) {
+        alert("錯誤：請填寫原因！");
+        return;
       }
 
-      // --- 送出新增表單 ---
-      function submitInfo() {
-        console.log("=== 進入 submitInfo 函式 ===");
-        let leaveId = $("#modalLeaveId").val();
-        let groomerId = $("#modalGroomerId").val();
-        let leaveDate = $("#leaveDayInput").val();
-        let reason = $("#modalReason").val();
+      let requestData = {
+        leaveId: leaveId ? parseInt(leaveId) : null,
+        groomerId: parseInt(groomerId),
+        leaveDate: leaveDate,
+        reason: reason,
+      };
 
-        if (!groomerId) {
-          alert("錯誤：請選擇美容師！");
-          return;
-        }
-        if (!leaveDate) {
-          alert("錯誤：請選擇日期！");
-          return;
-        }
-        if (!reason) {
-          alert("錯誤：請填寫原因！");
-          return;
-        }
+      $.ajax({
+        url: LEAVERECORD_API,
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(requestData),
+        success: function (res) {
+          alert("新增成功！");
+          $("#Modal").modal("hide");
+          loadAllData();
+        },
+        error: function (xhr) {
+          console.error("AJAX 失敗:", xhr);
+          alert("儲存失敗：" + (xhr.responseText || "未知錯誤"));
+        },
+      });
+    }
 
-        let requestData = {
-          leaveId: leaveId ? parseInt(leaveId) : null,
-          groomerId: parseInt(groomerId),
-          leaveDate: leaveDate,
-          reason: reason,
-        };
-
-        $.ajax({
-          url: LEAVERECORD_API,
-          type: "POST",
-          contentType: "application/json",
-          data: JSON.stringify(requestData),
-          success: function (res) {
-            alert("新增成功！");
-            $("#Modal").modal("hide");
-            loadAllData();
-          },
-          error: function (xhr) {
-            console.error("AJAX 失敗:", xhr);
-            alert("儲存失敗：" + (xhr.responseText || "未知錯誤"));
-          },
-        });
+    // --- 初始化 DataTable ---
+    function initDataTable() {
+      if ($.fn.DataTable.isDataTable("#example2")) {
+        $("#example2").DataTable().destroy();
       }
+      $("#example2").DataTable({
+        paging: true,
+        lengthChange: false,
+        searching: false,
+        ordering: true,
+        info: true,
+        autoWidth: true,
+        responsive: true,
+        dom: '<"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7 d-flex justify-content-end"p>>',
+      });
+    }
 
-      // --- 初始化 DataTable ---
-      function initDataTable() {
-        if ($.fn.DataTable.isDataTable("#example2")) {
-          $("#example2").DataTable().destroy();
-        }
-        $("#example2").DataTable({
-          paging: true,
-          lengthChange: false,
-          searching: false,
-          ordering: true,
-          info: true,
-          autoWidth: true,
-          responsive: true,
-          dom: '<"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7 d-flex justify-content-end"p>>',
-        });
+    // --- 載入所有資料 (加上 cache: false) ---
+    function loadAllData() {
+      $.ajax({
+        url: LEAVERECORD_API,
+        type: "GET",
+        dataType: "json",
+        cache: false, // ★ 防止快取導致畫面沒更新
+        success: function (data) {
+          console.log("資料載入成功，筆數:", data.length);
+          allLeaveRecords = data;
+          renderTable(data);
+        },
+        error: function (xhr) {
+          console.error("無法載入列表:", xhr);
+        },
+      });
+    }
+
+    // --- 渲染表格 ---
+    function renderTable(dataList) {
+      if ($.fn.DataTable.isDataTable("#example2")) {
+        $("#example2").DataTable().destroy();
       }
+      const tbody = $("#example2 tbody");
+      tbody.empty();
 
-      // --- 載入所有資料 (加上 cache: false) ---
-      function loadAllData() {
-        $.ajax({
-          url: LEAVERECORD_API,
-          type: "GET",
-          dataType: "json",
-          cache: false, // ★ 防止快取導致畫面沒更新
-          success: function (data) {
-            console.log("資料載入成功，筆數:", data.length);
-            allLeaveRecords = data;
-            renderTable(data);
-          },
-          error: function (xhr) {
-            console.error("無法載入列表:", xhr);
-          },
-        });
-      }
+      dataList.forEach(function (l) {
+        let isChecked =
+          l.isActive == 1 ? "checked" : "";
+        let isDisabled =
+          l.isActive == 0 ? "disabled" : "";
+        let statusText =
+          l.isActive == 1 ? "通過" : "駁回";
+        let statusColor =
+          l.isActive == 1
+            ? "text-success"
+            : "text-muted";
+        let statusMainText =
+          l.isActive == 1 ? "有效" : "無效"; // 用來顯示在表格前方的文字
 
-      // --- 渲染表格 ---
-      function renderTable(dataList) {
-        if ($.fn.DataTable.isDataTable("#example2")) {
-          $("#example2").DataTable().destroy();
-        }
-        const tbody = $("#example2 tbody");
-        tbody.empty();
-
-        dataList.forEach(function (l) {
-          let isChecked =
-            l.isActive == 1 ? "checked" : "";
-          let isDisabled =
-           l.isActive == 0 ? "disabled" : "";
-          let statusText =
-            l.isActive == 1 ? "通過" : "駁回";
-          let statusColor =
-            l.isActive == 1 
-              ? "text-success"
-              : "text-muted";
-          let statusMainText =
-            l.isActive == 1  ? "有效" : "無效"; // 用來顯示在表格前方的文字
-
-          const switchHtml = `
+        const switchHtml = `
             <div class="custom-control custom-switch">
                 <input type="checkbox" class="custom-control-input toggle-status-btn" 
                        id="switch_${l.leaveId}" data-id="${l.leaveId}" ${isChecked}${isDisabled}>
@@ -663,7 +593,7 @@
                 </label>
             </div>`;
 
-          const tr = `<tr>
+        const tr = `<tr>
                 <td>${l.leaveId}</td>
                 <td>${l.groomerId}</td>
                 <td>${l.groomerName || ""}</td>
@@ -673,133 +603,134 @@
                 <td>${l.createdAt || ""}</td>                
                 <td class="text-center">${switchHtml}</td>
             </tr>`;
-          tbody.append(tr);
+        tbody.append(tr);
+      });
+      initDataTable();
+    }
+
+    // --- 切換狀態 (同步更新文字) ---
+    function handleToggleStatus() {
+      $(document).on("change", ".toggle-status-btn", function (e) {
+        e.preventDefault();
+        let $input = $(this);
+        let leaveId = $input.data("id");
+        let newStatus = $input.is(":checked") ? true : false;
+
+        // 抓取同一列的狀態文字欄位 (第6格, index 5)
+        let $tr = $input.closest("tr");
+        let $statusTd = $tr.find("td:eq(5)");
+
+        $.ajax({
+          url: `${LEAVERECORD_API}/${leaveId}`,
+          type: "PUT",
+          contentType: "application/json",
+          data: JSON.stringify({ isActive: newStatus }),
+          success: function (response) {
+            let $label = $input.siblings("label");
+            if (newStatus === true) {
+              $label
+                .text("通過")
+                .removeClass("text-muted")
+                .addClass("text-success");
+              $statusTd.text("有效"); // 同步更新前方文字
+            } else {
+              $label
+                .text("駁回")
+                .removeClass("text-success")
+                .addClass("text-muted");
+              $statusTd.text("無效"); // 同步更新前方文字
+            }
+            console.log("狀態更新成功");
+            loadAllData(); // 重新載入確保資料一致
+          },
+          error: function (xhr) {
+            console.error("更新失敗:", xhr);
+            alert("更新失敗");
+            $input.prop("checked", !newStatus);
+          },
         });
-        initDataTable();
+      });
+    }
+
+    // --- 開啟 Modal ---
+    function openCreateModal() {
+      $("#Form")[0].reset();
+      $("#modalLeaveId").val("");
+      $("#modalGroomerId").val("");
+      $("#modalTitle").text("新增請假單");
+      $("#Modal").modal("show");
+    }
+
+    function initDatePickers() {
+      // 共用的設定
+      const pickerOptions = {
+        autoUpdateInput: false, // 預設不填入值，讓使用者看 placeholder
+        locale: {
+          cancelLabel: '清除',
+          applyLabel: '確定',
+          format: 'YYYY-MM-DD'
+        }
+      };
+
+      // 1. 請假日期
+      $('#leaveDateRange').daterangepicker(pickerOptions);
+
+      // 2. 創建日期
+      $('#createDateRange').daterangepicker(pickerOptions);
+
+      // 當使用者選好日期按「確定」時，把值填入 input
+      $('.form-control').on('apply.daterangepicker', function (ev, picker) {
+        $(this).val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
+      });
+
+      // 當使用者按「清除」時，把 input 清空
+      $('.form-control').on('cancel.daterangepicker', function (ev, picker) {
+        $(this).val('');
+      });
+    }
+
+    // --- 執行綜合查詢 ---
+    function doComplexSearch() {
+      let groomerId = $('#idSearchInput').val().trim();
+      let leaveRange = $('#leaveDateRange').val();
+      let createRange = $('#createDateRange').val();
+
+      // 準備參數物件
+      let params = {};
+
+      if (groomerId) params.groomerId = groomerId;
+
+      if (leaveRange) {
+        let dates = leaveRange.split(' - ');
+        params.leaveStartDate = dates[0];
+        params.leaveEndDate = dates[1];
       }
 
-      // --- 切換狀態 (同步更新文字) ---
-      function handleToggleStatus() {
-        $(document).on("change", ".toggle-status-btn", function (e) {
-          e.preventDefault();
-          let $input = $(this);
-          let leaveId = $input.data("id");
-          let newStatus = $input.is(":checked") ? true : false;
-
-          // 抓取同一列的狀態文字欄位 (第6格, index 5)
-          let $tr = $input.closest("tr");
-          let $statusTd = $tr.find("td:eq(5)");
-
-          $.ajax({
-            url: `${LEAVERECORD_API}/${leaveId}`,
-            type: "PUT",
-            contentType: "application/json",
-            data: JSON.stringify({ isActive: newStatus }),
-            success: function (response) {
-              let $label = $input.siblings("label");
-              if (newStatus === true) {
-                $label
-                  .text("通過")
-                  .removeClass("text-muted")    
-                  .addClass("text-success");
-                $statusTd.text("有效"); // 同步更新前方文字
-              } else {
-                $label
-                  .text("駁回")
-                  .removeClass("text-success")
-                  .addClass("text-muted");
-                $statusTd.text("無效"); // 同步更新前方文字
-              }
-              console.log("狀態更新成功");
-              loadAllData(); // 重新載入確保資料一致
-            },
-            error: function (xhr) {
-              console.error("更新失敗:", xhr);
-              alert("更新失敗");
-              $input.prop("checked", !newStatus);
-            },
-          });
-        });
+      if (createRange) {
+        let dates = createRange.split(' - ');
+        params.createStartDate = dates[0];
+        params.createEndDate = dates[1];
       }
 
-      // --- 開啟 Modal ---
-      function openCreateModal() {
-        $("#Form")[0].reset();
-        $("#modalLeaveId").val("");
-        $("#modalGroomerId").val("");
-        $("#modalTitle").text("新增請假單");
-        $("#Modal").modal("show");
-      }
+      // 發送 AJAX
+      $.ajax({
+        url: SEARCH_API,
+        type: "GET",
+        data: params,
+        dataType: "json",
+        success: function (data) {
+          if (data.length === 0) {
+            alert("目前無美容師請假紀錄");
+          }
+          renderTable(data);
+        },
+        error: function (xhr) {
+          console.error("查詢失敗:", xhr);
+          alert("查詢發生錯誤");
+        }
+      });
+    }
+  </script>
+</body>
 
-      function initDatePickers() {
-    	    // 共用的設定
-    	    const pickerOptions = {
-    	        autoUpdateInput: false, // 預設不填入值，讓使用者看 placeholder
-    	        locale: {
-    	            cancelLabel: '清除',
-    	            applyLabel: '確定',
-    	            format: 'YYYY-MM-DD'
-    	        }
-    	    };
-
-    	    // 1. 請假日期
-    	    $('#leaveDateRange').daterangepicker(pickerOptions);
-    	    
-    	    // 2. 創建日期
-    	    $('#createDateRange').daterangepicker(pickerOptions);
-
-    	    // 當使用者選好日期按「確定」時，把值填入 input
-    	    $('.form-control').on('apply.daterangepicker', function(ev, picker) {
-    	        $(this).val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
-    	    });
-
-    	    // 當使用者按「清除」時，把 input 清空
-    	    $('.form-control').on('cancel.daterangepicker', function(ev, picker) {
-    	        $(this).val('');
-    	    });
-    	}
-
-    	// --- 執行綜合查詢 ---
-    	function doComplexSearch() {
-    	    let groomerId = $('#idSearchInput').val().trim();
-    	    let leaveRange = $('#leaveDateRange').val();
-    	    let createRange = $('#createDateRange').val();
-
-    	    // 準備參數物件
-    	    let params = {};
-
-    	    if (groomerId) params.groomerId = groomerId;
-
-    	    if (leaveRange) {
-    	        let dates = leaveRange.split(' - ');
-    	        params.leaveStartDate = dates[0];
-    	        params.leaveEndDate = dates[1];
-    	    }
-
-    	    if (createRange) {
-    	        let dates = createRange.split(' - ');
-    	        params.createStartDate = dates[0];
-    	        params.createEndDate = dates[1];
-    	    }
-
-    	    // 發送 AJAX
-    	    $.ajax({
-    	        url: SEARCH_API,
-    	        type: "GET",
-    	        data: params, 
-    	        dataType: "json",
-    	        success: function (data) {
-    	            if (data.length === 0) {
-    	                alert("目前無美容師請假紀錄");
-    	            }
-    	            renderTable(data);
-    	        },
-    	        error: function (xhr) {
-    	            console.error("查詢失敗:", xhr);
-    	            alert("查詢發生錯誤");
-    	        }
-    	    });
-    	}
-    </script>
-  </body>
 </html>

@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="../../plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
     <link rel="stylesheet" href="../../plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-    
+
     <style type="text/css">
         /* 調整 sidebar logo 排版 */
         .brand-link {
@@ -58,18 +58,16 @@
             cursor: not-allowed !important;
             /* 滑鼠變禁止符號 */
         }
-        
+
         /* DataTable 所有欄位水平 + 垂直置中 */
-		#example2 td, 
-		#example2 th {
-		    text-align: center !important;
-		    vertical-align: middle !important;
-		    font-size: 0.8rem;
-		    padding: 0.25rem 0.5rem;
-		    white-space: nowrap;
-		}
-		
-		
+        #example2 td,
+        #example2 th {
+            text-align: center !important;
+            vertical-align: middle !important;
+            font-size: 0.8rem;
+            padding: 0.25rem 0.5rem;
+            white-space: nowrap;
+        }
     </style>
 </head>
 
@@ -84,8 +82,8 @@
                     <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
                 </li>
             </ul>
-		<!-- 右側 Navbar 按鈕 -->
-		    <ul class="navbar-nav ml-auto">
+            <!-- 右側 Navbar 按鈕 -->
+            <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
                     <a href="javascript:void(0)" id="logoutBtn" class="btn btn-secondary btn-sm">
                         <i class="fas fa-sign-out-alt"></i> 登出
@@ -99,7 +97,7 @@
         <!-- Main Sidebar Container -->
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <!-- Brand Logo -->
-            <a href="../../index3.html" class="brand-link">
+            <a href="Home.html" class="brand-link">
                 <i class="fas fa-paw" style="color: #FFD43B; font-size: 1.5rem;"></i>
                 <span class="brand-text font-weight-light"></span>
             </a>
@@ -165,54 +163,84 @@
                                 </li>
                             </ul>
                         <li class="nav-item">
-              <a href="../../AllProducts" class="nav-link">
-                <i class="nav-icon fas fa-edit"></i>
-                <p>
-                  商品管理
-                  <i class="right fas fa-angle-left"></i>
-                </p>
-              </a>
-            </li>
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-edit"></i>
+                                <p>商品管理 <i class="right fas fa-angle-left"></i></p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item"><a href="/admin/products" class="nav-link"><i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>商品管理</p>
+                                    </a></li>
+                                <li class="nav-item"><a href="/admin/categories" class="nav-link"><i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>類別管理</p>
+                                    </a></li>
+                            </ul>
+                        </li>
                         <li class="nav-item">
-            <a href="#" class="nav-link"> 
-            <i class="nav-icon fas fa-edit"></i>
-				<p>
-					訂單管理 <i class="right fas fa-angle-left"></i>
-				</p>
-			</a>
-			<ul class="nav nav-treeview">
-				<li class="nav-item"><a
-					href="../../orderList"
-					class="nav-link"> <i class="far fa-circle nav-icon"></i>
-						<p>查詢全部訂單</p>
-				</a></li>
-				<li class="nav-item"><a
-					href="../../shipmentsList"
-					class="nav-link"> <i class="far fa-circle nav-icon"></i>
-						<p>物流查詢</p>
-				</a></li>
-				<li class="nav-item"><a
-					href="../../orderItemsList"
-					class="nav-link"> <i class="far fa-circle nav-icon"></i>
-						<p>查詢全部訂單明細</p>
-				</a></li>
-				<li class="nav-item"><a
-					href="../order/shopping.jsp"
-					class="nav-link"> <i class="far fa-circle nav-icon"></i>
-						<p>新增訂單</p>
-				</a></li>
-			</ul></li>
-                        <li class="nav-item">
-              <a href="../../AppointmentServlet.do" class="nav-link">
-                <i class="nav-icon fas fa-edit"></i>
-                <p>
-                  預約管理
-                  <i class="right fas fa-angle-left"></i>
-                </p>
-              </a>
-            </li>
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-edit"></i>
+                                <p>訂單管理 <i class="right fas fa-angle-left"></i></p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item"><a href="/orders/list" class="nav-link"><i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>查詢全部訂單</p>
+                                    </a></li>
+                                <li class="nav-item"><a href="/shipment/list" class="nav-link"><i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>物流查詢</p>
+                                    </a></li>
+                                <li class="nav-item"><a href="/ordersItem/list" class="nav-link"><i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>查詢全部訂單明細</p>
+                                    </a></li>
+                                <li class="nav-item"><a href="/Cart/shopping" class="nav-link"><i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>新增訂單</p>
+                                    </a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item"><a href="#" class="nav-link"> <i class="nav-icon fas fa-edit"></i>
+                                <p>
+                                    預約管理 <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="GetAllAppointments.html" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>寵物美容訂單管理</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="GetAllLeaveRecords.html" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>美容師請假管理</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="GetAllGroomers.html" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>美容師管理</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="GetAllAppointmentDetails.html" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>預約訂單明細</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="GetAllServiceItems.html" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>服務項目管理</p>
+                                    </a>
+                                </li>
 
-                    </ul>
+                            </ul>
+                            </ul>
                 </nav>
                 <!-- /.sidebar-menu -->
             </div>
@@ -227,7 +255,7 @@
                     <div class="row mb-2">
                         <div class="col-sm-12 box1">
                             <h1>會員管理</h1>
-                            
+
                         </div>
                         <div class="col-sm-6">
 
@@ -247,28 +275,31 @@
                                     <h3 class="card-title me-auto">會員收藏列表</h3>
 
                                     <div class="d-flex align-items-center" style="gap: 0.5rem;">
-                                    	<a href="FavoritesQueryAll.html" class="btn btn-secondary btn-sm mr-2 btn-query-all">
+                                        <a href="FavoritesQueryAll.html"
+                                            class="btn btn-secondary btn-sm mr-2 btn-query-all">
                                             查詢全部
                                         </a>
                                         <!-- 依memberId查詢 -->
-									    <div class="input-group input-group-sm mr-2" style="width: 180px;">
-									        <input id="memberIdInput" type="text" class="form-control" placeholder="依會員ID查詢">
-									        <div class="input-group-append">
-									            <a href="#" id="memberIdSearchBtn" class="btn btn-secondary">
-									                <i class="fas fa-search"></i>
-									            </a>
-									        </div>
-									    </div>
+                                        <div class="input-group input-group-sm mr-2" style="width: 180px;">
+                                            <input id="memberIdInput" type="text" class="form-control"
+                                                placeholder="依會員ID查詢">
+                                            <div class="input-group-append">
+                                                <a href="#" id="memberIdSearchBtn" class="btn btn-secondary">
+                                                    <i class="fas fa-search"></i>
+                                                </a>
+                                            </div>
+                                        </div>
                                         <!-- 依productId查詢 -->
-									    <div class="input-group input-group-sm mr-2" style="width: 180px;">
-									        <input id="productIdInput" type="text" class="form-control" placeholder="依商品ID查詢">
-									        <div class="input-group-append">
-									            <a href="#" id="productIdSearchBtn" class="btn btn-secondary">
-									                <i class="fas fa-search"></i>
-									            </a>
-									        </div>
-									    </div>
-									
+                                        <div class="input-group input-group-sm mr-2" style="width: 180px;">
+                                            <input id="productIdInput" type="text" class="form-control"
+                                                placeholder="依商品ID查詢">
+                                            <div class="input-group-append">
+                                                <a href="#" id="productIdSearchBtn" class="btn btn-secondary">
+                                                    <i class="fas fa-search"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+
                                     </div>
                                 </div>
                                 <!-- /.card-header -->
@@ -335,7 +366,7 @@
     <script src="../../plugins/datatables-buttons/js/buttons.print.min.js"></script>
     <script src="../../plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
-	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <!-- AdminLTE App -->
     <script src="../../dist/js/adminlte.min.js"></script>
     <script src="../../dist/js/adminAuth.js"></script>
@@ -343,73 +374,80 @@
             <script src="../../dist/js/demo.js"></script> -->
     <!-- Page specific script -->
     <script>
-$(function () {
-    // 初始化 DataTable
-    $('#example2').DataTable({
-        "paging": true,
-        "lengthChange": false,
-        "searching": false,
-        "ordering": true,
-        "info": true,
-        "autoWidth": true,
-        "responsive": true,
-        "dom": '<"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7 d-flex justify-content-end"p>>'
-    });
+        $(function () {
+            // 初始化 DataTable
+            $('#example2').DataTable({
+                "paging": true,
+                "lengthChange": false,
+                "searching": false,
+                "ordering": true,
+                "info": true,
+                "autoWidth": true,
+                "responsive": true,
+                "dom": '<"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7 d-flex justify-content-end"p>>'
+            });
 
- // 依商品 ID 查詢 (RESTful 版本)
-    $('#productIdSearchBtn').on('click', function(e) {
-        e.preventDefault();
-        const productId = $('#productIdInput').val().trim();
-        if (!productId) return alert("請輸入商品 ID");
-
-        $.ajax({
-            url: `/favorites/product/${productId}`, 
-            method: 'GET',
-            dataType: 'json',
-            success: function(data) {
-                renderTable(data);
-            },
-            error: function(xhr) {
-                alert("查詢商品收藏失敗");
+            function clearOthers(currentId) {
+                if (currentId !== 'productIdInput') $('#productIdInput').val('');
+                if (currentId !== 'memberIdInput') $('#memberIdInput').val('');
             }
-        });
-    });
+            
+            // 依商品 ID 查詢 (RESTful 版本)
+            $('#productIdSearchBtn').on('click', function (e) {
+                e.preventDefault();
+                const productId = $('#productIdInput').val().trim();
+                if (!productId) return alert("請輸入商品 ID");
 
- // 依會員 ID 查詢 (RESTful 版本)
-    $('#memberIdSearchBtn').on('click', function(e) {
-        e.preventDefault();
-        const memberId = $('#memberIdInput').val().trim();
-        if (!memberId) return alert("請輸入會員 ID");
+                clearOthers('productIdInput');
+                $.ajax({
+                    url: `/favorites/product/${productId}`,
+                    method: 'GET',
+                    dataType: 'json',
+                    success: function (data) {
+                        renderTable(data);
+                    },
+                    error: function (xhr) {
+                        alert("查詢商品收藏失敗");
+                    }
+                });
+            });
 
-        $.ajax({
-            url: `/favorites/member/${memberId}`, 
-            method: 'GET',
-            dataType: 'json',
-            success: function(data) {
-                renderTable(data);
-            },
-            error: function(xhr) {
-                // 這裡會抓到 Service 丟出的「找不到會員」訊息
-                alert(xhr.responseText);
-            }
-        });
-    });
+            // 依會員 ID 查詢 (RESTful 版本)
+            $('#memberIdSearchBtn').on('click', function (e) {
+                e.preventDefault();
+                const memberId = $('#memberIdInput').val().trim();
+                if (!memberId) return alert("請輸入會員 ID");
 
-    
-    // 更新表格
-    function renderTable(list) {
-        const table = $('#example2');
-        if ($.fn.DataTable.isDataTable(table)) {
-            table.DataTable().clear().destroy();
-        }
-        const tbody = $('#example2 tbody');
-        tbody.empty();
+                clearOthers('memberIdInput');
+                $.ajax({
+                    url: `/favorites/member/${memberId}`,
+                    method: 'GET',
+                    dataType: 'json',
+                    success: function (data) {
+                        renderTable(data);
+                    },
+                    error: function (xhr) {
+                        // 這裡會抓到 Service 丟出的「找不到會員」訊息
+                        alert(xhr.responseText);
+                    }
+                });
+            });
 
-        // 如果後端回傳的是單一物件而非陣列，這裡要處理一下
-        const dataList = Array.isArray(list) ? list : [list];
 
-        dataList.forEach(item => {
-            tbody.append(`
+            // 更新表格
+            function renderTable(list) {
+                const table = $('#example2');
+                if ($.fn.DataTable.isDataTable(table)) {
+                    table.DataTable().clear().destroy();
+                }
+                const tbody = $('#example2 tbody');
+                tbody.empty();
+
+                // 如果後端回傳的是單一物件而非陣列，這裡要處理一下
+                const dataList = Array.isArray(list) ? list : [list];
+
+                dataList.forEach(item => {
+                    tbody.append(`
                 <tr>
                     <td>${item.favoriteId}</td>
                     <td>${item.memberId}</td>
@@ -418,39 +456,39 @@ $(function () {
                     <td>${item.price}</td>
                 </tr>
             `);
-        });
+                });
 
-        table.DataTable({
-            "paging": true,
-            "lengthChange": false,
-            "searching": false,
-            "ordering": true,
-            "info": true,
-            "autoWidth": true,
-            "responsive": true,
-            "dom": '<"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7 d-flex justify-content-end"p>>'
-        });
-    }
-
-    // 頁面載入就查詢全部
-    function loadAllFavorites() {
-        $.ajax({
-            url: '/favorites',
-            method: 'GET',
-            dataType: 'json',
-            success: function(data) {
-                renderTable(data);
-            },
-            error: function(xhr) {
-                console.error(xhr.responseText);
-                alert("無法載入收藏列表")
+                table.DataTable({
+                    "paging": true,
+                    "lengthChange": false,
+                    "searching": false,
+                    "ordering": true,
+                    "info": true,
+                    "autoWidth": true,
+                    "responsive": true,
+                    "dom": '<"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7 d-flex justify-content-end"p>>'
+                });
             }
-        });
-    }
 
-    loadAllFavorites();
-});
-</script>
+            // 頁面載入就查詢全部
+            function loadAllFavorites() {
+                $.ajax({
+                    url: '/favorites',
+                    method: 'GET',
+                    dataType: 'json',
+                    success: function (data) {
+                        renderTable(data);
+                    },
+                    error: function (xhr) {
+                        console.error(xhr.responseText);
+                        alert("無法載入收藏列表")
+                    }
+                });
+            }
+
+            loadAllFavorites();
+        });
+    </script>
 </body>
 
 </html>

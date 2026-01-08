@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="../../plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
     <link rel="stylesheet" href="../../plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-    
+
     <style type="text/css">
         /* 調整 sidebar logo 排版 */
         .brand-link {
@@ -58,18 +58,16 @@
             cursor: not-allowed !important;
             /* 滑鼠變禁止符號 */
         }
-        
+
         /* DataTable 所有欄位水平 + 垂直置中 */
-		#example2 td, 
-		#example2 th {
-		    text-align: center !important;
-		    vertical-align: middle !important;
-		    font-size: 0.8rem;
-		    padding: 0.25rem 0.5rem;
-		    white-space: nowrap;
-		}
-		
-		
+        #example2 td,
+        #example2 th {
+            text-align: center !important;
+            vertical-align: middle !important;
+            font-size: 0.8rem;
+            padding: 0.25rem 0.5rem;
+            white-space: nowrap;
+        }
     </style>
 </head>
 
@@ -84,8 +82,8 @@
                     <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
                 </li>
             </ul>
-		<!-- 右側 Navbar 按鈕 -->
-		    <ul class="navbar-nav ml-auto">
+            <!-- 右側 Navbar 按鈕 -->
+            <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
                     <a href="javascript:void(0)" id="logoutBtn" class="btn btn-secondary btn-sm">
                         <i class="fas fa-sign-out-alt"></i> 登出
@@ -99,7 +97,7 @@
         <!-- Main Sidebar Container -->
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <!-- Brand Logo -->
-            <a href="../../index3.html" class="brand-link">
+            <a href="Home.html" class="brand-link">
                 <i class="fas fa-paw" style="color: #FFD43B; font-size: 1.5rem;"></i>
                 <span class="brand-text font-weight-light"></span>
             </a>
@@ -165,54 +163,94 @@
                                 </li>
                             </ul>
                         <li class="nav-item">
-              <a href="../../AllProducts" class="nav-link">
-                <i class="nav-icon fas fa-edit"></i>
-                <p>
-                  商品管理
-                  <i class="right fas fa-angle-left"></i>
-                </p>
-              </a>
-            </li>
-                        <li class="nav-item">
-            <a href="#" class="nav-link"> 
-            <i class="nav-icon fas fa-edit"></i>
-				<p>
-					訂單管理 <i class="right fas fa-angle-left"></i>
-				</p>
-			</a>
-			<ul class="nav nav-treeview">
-				<li class="nav-item"><a
-					href="../../orderList"
-					class="nav-link"> <i class="far fa-circle nav-icon"></i>
-						<p>查詢全部訂單</p>
-				</a></li>
-				<li class="nav-item"><a
-					href="../../shipmentsList"
-					class="nav-link"> <i class="far fa-circle nav-icon"></i>
-						<p>物流查詢</p>
-				</a></li>
-				<li class="nav-item"><a
-					href="../../orderItemsList"
-					class="nav-link"> <i class="far fa-circle nav-icon"></i>
-						<p>查詢全部訂單明細</p>
-				</a></li>
-				<li class="nav-item"><a
-					href="../order/shopping.jsp"
-					class="nav-link"> <i class="far fa-circle nav-icon"></i>
-						<p>新增訂單</p>
-				</a></li>
-			</ul></li>
-                        <li class="nav-item">
-              <a href="../../AppointmentServlet.do" class="nav-link">
-                <i class="nav-icon fas fa-edit"></i>
-                <p>
-                  預約管理
-                  <i class="right fas fa-angle-left"></i>
-                </p>
-              </a>
-            </li>
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-edit"></i>
+                                <p>
+                                    商品管理
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="/admin/products" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>商品管理</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/admin/categories" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>分類管理</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
 
+
+                        <li class="nav-item"><a href="#" class="nav-link"> <i class="nav-icon fas fa-edit"></i>
+                                <p>
+                                    訂單管理 <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item"><a href="/orders/list" class="nav-link"> <i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>查詢全部訂單</p>
+                                    </a></li>
+                                <li class="nav-item"><a href="/shipment/list" class="nav-link"> <i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>物流查詢</p>
+                                    </a></li>
+                                <li class="nav-item"><a href="/ordersItem/list" class="nav-link"> <i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>查詢全部訂單明細</p>
+                                    </a></li>
+                                <li class="nav-item"><a href="/Cart/shopping" class="nav-link"> <i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>新增訂單</p>
+                                    </a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item"><a href="#" class="nav-link"> <i class="nav-icon fas fa-edit"></i>
+                                <p>
+                                    預約管理 <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="GetAllAppointments.html" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>寵物美容訂單管理</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="GetAllLeaveRecords.html" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>美容師請假管理</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="GetAllGroomers.html" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>美容師管理</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="GetAllAppointmentDetails.html" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>預約訂單明細</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="GetAllServiceItems.html" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>服務項目管理</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
                     </ul>
+                    </li>
                 </nav>
                 <!-- /.sidebar-menu -->
             </div>
@@ -227,7 +265,7 @@
                     <div class="row mb-2">
                         <div class="col-sm-12 box1">
                             <h1>會員管理</h1>
-                            
+
                         </div>
                         <div class="col-sm-6">
 
@@ -247,60 +285,63 @@
                                     <h3 class="card-title me-auto">寵物列表</h3>
 
                                     <div class="d-flex align-items-center" style="gap: 0.5rem;">
-                                    	<a href="MemberPetQueryAll.html" class="btn btn-secondary btn-sm mr-2 btn-query-all">
+                                        <a href="MemberPetQueryAll.html"
+                                            class="btn btn-secondary btn-sm mr-2 btn-query-all">
                                             查詢全部
                                         </a>
                                         <!-- 依petId查詢 -->
-									    <div class="input-group input-group-sm mr-2" style="width: 180px;">
-									        <input id="petIdInput" type="text" class="form-control" placeholder="依寵物ID查詢">
-									        <div class="input-group-append">
-									            <a href="#" id="petIdSearchBtn" class="btn btn-secondary">
-									                <i class="fas fa-search"></i>
-									            </a>
-									        </div>
-									    </div>
+                                        <div class="input-group input-group-sm mr-2" style="width: 180px;">
+                                            <input id="petIdInput" type="text" class="form-control"
+                                                placeholder="依寵物ID查詢">
+                                            <div class="input-group-append">
+                                                <a href="#" id="petIdSearchBtn" class="btn btn-secondary">
+                                                    <i class="fas fa-search"></i>
+                                                </a>
+                                            </div>
+                                        </div>
                                         <!-- 依memberId查詢 -->
-									    <div class="input-group input-group-sm mr-2" style="width: 180px;">
-									        <input id="memberIdInput" type="text" class="form-control" placeholder="依會員ID查詢">
-									        <div class="input-group-append">
-									            <a href="#" id="memberIdSearchBtn" class="btn btn-secondary">
-									                <i class="fas fa-search"></i>
-									            </a>
-									        </div>
-									    </div>
+                                        <div class="input-group input-group-sm mr-2" style="width: 180px;">
+                                            <input id="memberIdInput" type="text" class="form-control"
+                                                placeholder="依會員ID查詢">
+                                            <div class="input-group-append">
+                                                <a href="#" id="memberIdSearchBtn" class="btn btn-secondary">
+                                                    <i class="fas fa-search"></i>
+                                                </a>
+                                            </div>
+                                        </div>
                                         <!-- 種類查詢 -->
-										<div class="input-group input-group-sm mr-2" style="width: 180px;">
-										    <select id="typeSelect" class="form-control">
-										        <option value="">所有種類</option>
-										        <option value="狗">狗</option>
-										        <option value="貓">貓</option>
-										        <option value="其他">其他</option>
-										    </select>
-										</div>
-										
-										<!-- 年齡查詢 -->
-										<div class="input-group input-group-sm mr-2" style="width: 180px;">
-										    <select id="ageSelect" class="form-control">
-										        <option value="">所有年齡</option>
-										        <option value="幼年">幼年</option>
-										        <option value="成年">成年</option>
-										        <option value="老年">老年</option>
-										    </select>
-										</div>
-										
-										<!-- 體型查詢 -->
-										<div class="input-group input-group-sm mr-2" style="width: 180px;">
-										    <select id="sizeSelect" class="form-control">
-										        <option value="">所有體型</option>
-										        <option value="小型">小型</option>
-										        <option value="中型">中型</option>
-										        <option value="大型">大型</option>
-										    </select>
-										</div>
-										
-										<!-- 查詢按鈕 -->
-										<button id="searchBtn" class="btn btn-secondary btn-sm">查詢</button>
-									
+                                        <div class="input-group input-group-sm mr-2" style="width: 180px;">
+                                            <select id="typeSelect" class="form-control">
+                                                <option value="">所有種類</option>
+                                                <option value="狗">狗</option>
+                                                <option value="貓">貓</option>
+                                                <option value="其他">其他</option>
+                                            </select>
+                                        </div>
+
+                                        <!-- 年齡查詢 -->
+                                        <div class="input-group input-group-sm mr-2" style="width: 180px;">
+                                            <select id="ageSelect" class="form-control">
+                                                <option value="">所有年齡</option>
+                                                <option value="幼年">幼年</option>
+                                                <option value="成年">成年</option>
+                                                <option value="老年">老年</option>
+                                            </select>
+                                        </div>
+
+                                        <!-- 體型查詢 -->
+                                        <div class="input-group input-group-sm mr-2" style="width: 180px;">
+                                            <select id="sizeSelect" class="form-control">
+                                                <option value="">所有體型</option>
+                                                <option value="小型">小型</option>
+                                                <option value="中型">中型</option>
+                                                <option value="大型">大型</option>
+                                            </select>
+                                        </div>
+
+                                        <!-- 查詢按鈕 -->
+                                        <button id="searchBtn" class="btn btn-secondary btn-sm">查詢</button>
+
                                     </div>
                                 </div>
                                 <!-- /.card-header -->
@@ -369,7 +410,7 @@
     <script src="../../plugins/datatables-buttons/js/buttons.print.min.js"></script>
     <script src="../../plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
-	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <!-- AdminLTE App -->
     <script src="../../dist/js/adminlte.min.js"></script>
     <script src="../../dist/js/adminAuth.js"></script>
@@ -377,96 +418,114 @@
             <script src="../../dist/js/demo.js"></script> -->
     <!-- Page specific script -->
     <script>
-$(function () {
-    // 初始化 DataTable
-    $('#example2').DataTable({
-        "paging": true,
-        "lengthChange": false,
-        "searching": false,
-        "ordering": true,
-        "info": true,
-        "autoWidth": true,
-        "responsive": true,
-        "dom": '<"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7 d-flex justify-content-end"p>>'
-    });
+        $(function () {
+            // 初始化 DataTable
+            $('#example2').DataTable({
+                "paging": true,
+                "lengthChange": false,
+                "searching": false,
+                "ordering": true,
+                "info": true,
+                "autoWidth": true,
+                "responsive": true,
+                "dom": '<"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7 d-flex justify-content-end"p>>'
+            });
 
-    // 寵物 ID 查詢
-    $('#petIdSearchBtn').on('click', function(e) {
-        e.preventDefault();
-        const petId = $('#petIdInput').val().trim();
-        if (!petId) return alert("請輸入寵物 ID");
-
-        $.ajax({
-            url: `/memberPets/${petId}`,
-            method: 'GET',
-            dataType: 'json',
-            success: function(data) {
-                if (data) {
-                    renderTable([data]); 
-                } else {
-                    alert("查無此寵物");
-                    renderTable([]);
+            function clearOthers(currentGroup) {
+                // 如果目前的不是寵物ID組，就清掉寵物ID
+                if (currentGroup !== 'petId') $('#petIdInput').val('');
+                
+                // 如果目前的不是會員ID組，就清掉會員ID
+                if (currentGroup !== 'memberId') $('#memberIdInput').val('');
+                
+                // 如果目前的不是條件篩選組，就清掉三個下拉選單
+                if (currentGroup !== 'filters') {
+                    $('#typeSelect').val('');
+                    $('#ageSelect').val('');
+                    $('#sizeSelect').val('');
                 }
-            },
-            error: function(xhr) {
-                alert("查詢出錯");
             }
-        });
-    });
+            
+            // 寵物 ID 查詢
+            $('#petIdSearchBtn').on('click', function (e) {
+                e.preventDefault();
+                const petId = $('#petIdInput').val().trim();
+                if (!petId) return alert("請輸入寵物 ID");
 
-    // 會員 ID 查詢
-    $('#memberIdSearchBtn').on('click', function(e) {
-        e.preventDefault();
-        const memberId = $('#memberIdInput').val().trim();
-        if (!memberId) return alert("請輸入會員 ID");
+                clearOthers('petId');
+                $.ajax({
+                    url: `/memberPets/${petId}`,
+                    method: 'GET',
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data) {
+                            renderTable([data]);
+                        } else {
+                            alert("查無此寵物");
+                            renderTable([]);
+                        }
+                    },
+                    error: function (xhr) {
+                        alert("查詢出錯");
+                    }
+                });
+            });
 
-        $.ajax({
-            url: `/memberPets/member/${memberId}`,
-            method: 'GET',
-            dataType: 'json',
-            success: function(data) {
-                renderTable(data);
-            },
-            error: function(xhr) {
-            	alert("查詢會員寵物失敗");
-            }
-        });
-    });
+            // 會員 ID 查詢
+            $('#memberIdSearchBtn').on('click', function (e) {
+                e.preventDefault();
+                const memberId = $('#memberIdInput').val().trim();
+                if (!memberId) return alert("請輸入會員 ID");
 
-    // 條件查詢
-    $('#searchBtn').on('click', function() {
-        // 直接將參數物件丟給 data，jQuery 會自動幫你拼成 Query String
-        $.ajax({
-            url: '/memberPets/search', 
-            method: 'GET',
-            data: {
-                petType: $('#typeSelect').val(),
-                petAge: $('#ageSelect').val(),
-                petSize: $('#sizeSelect').val()
-            },
-            success: function(data) {
-                renderTable(data);
-            },
-            error: function(xhr) {
-                alert("條件查詢失敗");
-            }
-        });
-    });
+                clearOthers('memberId');
+                $.ajax({
+                    url: `/memberPets/member/${memberId}`,
+                    method: 'GET',
+                    dataType: 'json',
+                    success: function (data) {
+                        renderTable(data);
+                    },
+                    error: function (xhr) {
+                        alert("查詢會員寵物失敗");
+                    }
+                });
+            });
 
-    // 更新表格
-    function renderTable(list) {
-        const table = $('#example2');
-        if ($.fn.DataTable.isDataTable(table)) {
-            table.DataTable().clear().destroy();
-        }
-        const tbody = $('#example2 tbody');
-        tbody.empty();
-        
-        if (!list || list.length === 0) {
-            tbody.append('<tr><td colspan="7" class="text-center">暫無資料</td></tr>');
-        } else {
-            list.forEach(item => {
-                tbody.append(`
+            // 條件查詢
+            $('#searchBtn').on('click', function () {
+                // 直接將參數物件丟給 data，jQuery 會自動幫你拼成 Query String
+                clearOthers('filters');
+                $.ajax({
+                    url: '/memberPets/search',
+                    method: 'GET',
+                    data: {
+                        petType: $('#typeSelect').val(),
+                        petAge: $('#ageSelect').val(),
+                        petSize: $('#sizeSelect').val()
+                    },
+                    success: function (data) {
+                        renderTable(data);
+                    },
+                    error: function (xhr) {
+                        alert("條件查詢失敗");
+                    }
+                });
+            });
+
+            // 更新表格
+            function renderTable(list) {
+                const table = $('#example2');
+                if ($.fn.DataTable.isDataTable(table)) {
+                    table.DataTable().clear().destroy();
+                }
+                const tbody = $('#example2 tbody');
+                tbody.empty();
+
+                if (!list || list.length === 0) {
+                    tbody.append('<tr><td colspan="7" class="text-center">暫無資料</td></tr>');
+                } else {
+                    list.forEach(item => {
+                        tbody.append(`
                 		<tr>
                         <td>${item.petId}</td>
                         <td>${item.member ? item.member.memberId : '無'}</td>
@@ -477,40 +536,40 @@ $(function () {
                         <td>${item.petSize}</td>
                     </tr>
                 `);
-            });
-        }
-        
+                    });
+                }
 
-        table.DataTable({
-            "paging": true,
-            "lengthChange": false,
-            "searching": false,
-            "ordering": true,
-            "info": true,
-            "autoWidth": true,
-            "responsive": true,
-            "dom": '<"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7 d-flex justify-content-end"p>>'
-        });
-    }
 
-    // 頁面載入就查詢全部
-    function loadAllPets() {
-        $.ajax({
-            url: '/memberPets',
-            method: 'GET',
-            dataType: 'json',
-            success: function(data) {
-                renderTable(data);
-            },
-            error: function(xhr) {
-            	console.error("載入全部寵物失敗");
+                table.DataTable({
+                    "paging": true,
+                    "lengthChange": false,
+                    "searching": false,
+                    "ordering": true,
+                    "info": true,
+                    "autoWidth": true,
+                    "responsive": true,
+                    "dom": '<"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7 d-flex justify-content-end"p>>'
+                });
             }
-        });
-    }
 
-    loadAllPets();
-});
-</script>
+            // 頁面載入就查詢全部
+            function loadAllPets() {
+                $.ajax({
+                    url: '/memberPets',
+                    method: 'GET',
+                    dataType: 'json',
+                    success: function (data) {
+                        renderTable(data);
+                    },
+                    error: function (xhr) {
+                        console.error("載入全部寵物失敗");
+                    }
+                });
+            }
+
+            loadAllPets();
+        });
+    </script>
 </body>
 
 </html>

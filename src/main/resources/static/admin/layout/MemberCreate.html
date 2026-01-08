@@ -64,8 +64,8 @@
                     <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
                 </li>
             </ul>
-			<!-- 右側 Navbar 按鈕 -->
-		    <ul class="navbar-nav ml-auto">
+            <!-- 右側 Navbar 按鈕 -->
+            <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
                     <a href="javascript:void(0)" id="logoutBtn" class="btn btn-secondary btn-sm">
                         <i class="fas fa-sign-out-alt"></i> 登出
@@ -79,7 +79,7 @@
         <!-- Main Sidebar Container -->
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <!-- Brand Logo -->
-            <a href="../../index3.html" class="brand-link">
+            <a href="Home.html" class="brand-link">
                 <i class="fas fa-paw" style="color: #FFD43B; font-size: 1.5rem;"></i>
                 <span class="brand-text font-weight-light"></span>
             </a>
@@ -146,54 +146,94 @@
                             </ul>
 
                         <li class="nav-item">
-              <a href="../../AllProducts" class="nav-link">
-                <i class="nav-icon fas fa-edit"></i>
-                <p>
-                  商品管理
-                  <i class="right fas fa-angle-left"></i>
-                </p>
-              </a>
-            </li>
-                        <li class="nav-item">
-            <a href="#" class="nav-link"> 
-            <i class="nav-icon fas fa-edit"></i>
-				<p>
-					訂單管理 <i class="right fas fa-angle-left"></i>
-				</p>
-			</a>
-			<ul class="nav nav-treeview">
-				<li class="nav-item"><a
-					href="../../orderList"
-					class="nav-link"> <i class="far fa-circle nav-icon"></i>
-						<p>查詢全部訂單</p>
-				</a></li>
-				<li class="nav-item"><a
-					href="../../shipmentsList"
-					class="nav-link"> <i class="far fa-circle nav-icon"></i>
-						<p>物流查詢</p>
-				</a></li>
-				<li class="nav-item"><a
-					href="../../orderItemsList"
-					class="nav-link"> <i class="far fa-circle nav-icon"></i>
-						<p>查詢全部訂單明細</p>
-				</a></li>
-				<li class="nav-item"><a
-					href="../order/shopping.jsp"
-					class="nav-link"> <i class="far fa-circle nav-icon"></i>
-						<p>新增訂單</p>
-				</a></li>
-			</ul></li>
-                        <li class="nav-item">
-              <a href="../../AppointmentServlet.do" class="nav-link">
-                <i class="nav-icon fas fa-edit"></i>
-                <p>
-                  預約管理
-                  <i class="right fas fa-angle-left"></i>
-                </p>
-              </a>
-            </li>
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-edit"></i>
+                                <p>
+                                    商品管理
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="/admin/products" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>商品管理</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/admin/categories" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>分類管理</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
 
+
+                        <li class="nav-item"><a href="#" class="nav-link"> <i class="nav-icon fas fa-edit"></i>
+                                <p>
+                                    訂單管理 <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item"><a href="/orders/list" class="nav-link"> <i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>查詢全部訂單</p>
+                                    </a></li>
+                                <li class="nav-item"><a href="/shipment/list" class="nav-link"> <i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>物流查詢</p>
+                                    </a></li>
+                                <li class="nav-item"><a href="/ordersItem/list" class="nav-link"> <i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>查詢全部訂單明細</p>
+                                    </a></li>
+                                <li class="nav-item"><a href="/Cart/shopping" class="nav-link"> <i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>新增訂單</p>
+                                    </a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item"><a href="#" class="nav-link"> <i class="nav-icon fas fa-edit"></i>
+                                <p>
+                                    預約管理 <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="GetAllAppointments.html" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>寵物美容訂單管理</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="GetAllLeaveRecords.html" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>美容師請假管理</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="GetAllGroomers.html" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>美容師管理</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="GetAllAppointmentDetails.html" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>預約訂單明細</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="GetAllServiceItems.html" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>服務項目管理</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
                     </ul>
+                    </li>
                 </nav>
                 <!-- /.sidebar-menu -->
             </div>
@@ -238,7 +278,8 @@
                                             <div class="form-group row">
                                                 <label for="inputEmail3" class="col-sm-2 col-form-label">姓名:</label>
                                                 <div class="col-sm-10">
-                                                    <input type="text" class="form-control" id="name" placeholder="姓名:" autocomplete="off">
+                                                    <input type="text" class="form-control" id="name" placeholder="姓名:"
+                                                        autocomplete="off">
                                                 </div>
                                             </div>
                                             <div class="form-group row">
@@ -259,29 +300,33 @@
                                             <div class="form-group row">
                                                 <label class="col-sm-2 col-form-label">性別:</label>
                                                 <div class="col-sm-10">
-                                                    <select class="form-control select2" style="width: 100%;" id="gender">
+                                                    <select class="form-control select2" style="width: 100%;"
+                                                        id="gender">
                                                         <option value="M">男</option>
                                                         <option value="F" selected>女</option>
                                                     </select>
                                                 </div>
                                             </div>
                                             <div class="form-group row">
-						                        <label class="col-sm-2 col-form-label">生日:</label>
-						                        <div class="col-sm-10">
-						                          <div class="input-group date" id="reservationdate" data-target-input="nearest">
-						                            <input type="text" class="form-control datetimepicker-input" id="birthday"
-						                              data-target="#reservationdate" />
-						                            <div class="input-group-append" data-target="#reservationdate" data-toggle="datetimepicker">
-						                              <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-						                            </div>
-						                          </div>
-						                        </div>
-						                      </div>
+                                                <label class="col-sm-2 col-form-label">生日:</label>
+                                                <div class="col-sm-10">
+                                                    <div class="input-group date" id="reservationdate"
+                                                        data-target-input="nearest">
+                                                        <input type="text" class="form-control datetimepicker-input"
+                                                            id="birthday" data-target="#reservationdate" />
+                                                        <div class="input-group-append" data-target="#reservationdate"
+                                                            data-toggle="datetimepicker">
+                                                            <div class="input-group-text"><i class="fa fa-calendar"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                             <div class="form-group row">
                                                 <label for="inputPassword3" class="col-sm-2 col-form-label">電話:</label>
                                                 <div class="col-sm-10">
-                                                    <input type="text" class="form-control" id="phone"
-                                                        placeholder="電話:" autocomplete="off">
+                                                    <input type="text" class="form-control" id="phone" placeholder="電話:"
+                                                        autocomplete="off">
                                                 </div>
                                             </div>
                                             <div class="form-group row">
@@ -292,19 +337,22 @@
                                                 </div>
                                             </div>
                                             <div class="form-group row">
-					                        <label for="inputPassword3" class="col-sm-2 col-form-label">大頭貼上傳:</label>
-					                        <div class="col-sm-10">
-					                          <div class="input-group">
-					                            <div class="custom-file">
-					                              <input type="file" class="form-control custom-file-input" id="picture" name="pictureFile">
-					                              <label class="custom-file-label" for="picture">Choose file</label>
-					                            </div>
-					                            <div class="input-group-append">
-					                              <span class="input-group-text">Upload</span>
-					                            </div>
-					                          </div>
-					                        </div>
-					                      </div>
+                                                <label for="inputPassword3"
+                                                    class="col-sm-2 col-form-label">大頭貼上傳:</label>
+                                                <div class="col-sm-10">
+                                                    <div class="input-group">
+                                                        <div class="custom-file">
+                                                            <input type="file" class="form-control custom-file-input"
+                                                                id="picture" name="pictureFile">
+                                                            <label class="custom-file-label" for="picture">Choose
+                                                                file</label>
+                                                        </div>
+                                                        <div class="input-group-append">
+                                                            <span class="input-group-text">Upload</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                         <!-- /.card-body -->
                                         <div class="card-footer">
@@ -368,100 +416,100 @@
             <script src="../../dist/js/demo.js"></script> -->
     <!-- Page specific script -->
     <script>
-    $(function () {
-        // 顯示選擇的檔案名稱 (保持原樣)
-        $('.custom-file-input').on('change', function(e){
-            var fileName = e.target.files[0] ? e.target.files[0].name : "選擇檔案";
-            $(this).next('.custom-file-label').html(fileName);
-        });
+        $(function () {
+            // 顯示選擇的檔案名稱 (保持原樣)
+            $('.custom-file-input').on('change', function (e) {
+                var fileName = e.target.files[0] ? e.target.files[0].name : "選擇檔案";
+                $(this).next('.custom-file-label').html(fileName);
+            });
 
-        // 啟用 DatePicker (保持原樣)
-        $('#reservationdate').datetimepicker({
-            format: 'YYYY-MM-DD', // 修改為標準 ISO 格式，後端 LocalDate 接收更穩定
-            useCurrent: false,
-            minDate: moment('1900-01-01'),
-            maxDate: moment(),
-        });
+            // 啟用 DatePicker (保持原樣)
+            $('#reservationdate').datetimepicker({
+                format: 'YYYY-MM-DD', // 修改為標準 ISO 格式，後端 LocalDate 接收更穩定
+                useCurrent: false,
+                minDate: moment('1900-01-01'),
+                maxDate: moment(),
+            });
 
-        // ----------- 驗證函式 -----------
-        function isValidEmail(email) {
-            const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return regex.test(email);
-        }
-
-        function validatePassword() {
-            let password = $('#password').val().trim();
-            if (password.length < 8) {
-                alert('密碼不得小於 8 碼');
-                return false;
-            }
-            if (!/[0-9]/.test(password)) {
-                alert('密碼必須包含數字');
-                return false;
-            }
-            if (!/[A-Za-z]/.test(password)) {
-                alert('密碼必須包含英文字母');
-                return false;
-            }
-            return true;
-        }
-
-        // 表單提交
-        $('form').on('submit', function (e) {
-            e.preventDefault();
-
-            // 取得表單值
-            const name = $('#name').val().trim();
-            const email = $('#email').val().trim();
-            const password = $('#password').val().trim();
-            const phone = $('#phone').val().trim();
-            const address = $('#address').val().trim();
-            const gender = $('#gender').val();
-            const birthday = $('#birthday').val(); // 格式應為 YYYY-MM-DD
-            const pictureFile = $('#picture')[0].files[0];
-
-            // 基本驗證
-            if (email === '') { alert('Email不得為空白'); return; }
-            if (!isValidEmail(email)) { alert('Email 格式不正確'); return; }
-            if (!validatePassword()) { return; }
-
-            // 建立 FormData 對象
-            const formData = new FormData();
-            formData.append('name', name);
-            formData.append('email', email);
-            formData.append('password', password);
-            formData.append('phone', phone);
-            formData.append('address', address);
-            formData.append('gender', gender);
-            formData.append('birthday', birthday);
-            
-            //  欄位名需與 Controller 的 @RequestParam("pictureFile") 一致
-            if (pictureFile) {
-                formData.append('pictureFile', pictureFile); 
+            // ----------- 驗證函式 -----------
+            function isValidEmail(email) {
+                const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return regex.test(email);
             }
 
-            // AJAX 上傳
-            $.ajax({
-                url: '/members',  
-                type: 'POST',         
-                data: formData,
-                contentType: false,    
-                processData: false,    
-                success: function(res) {
-                    console.log('成功!', res);
-                    
-                    // 【關鍵改動】：將回傳的物件轉成 JSON 字串存入 sessionStorage
-                    sessionStorage.setItem('newMember', JSON.stringify(res));
-                    
-                    // 跳轉時不帶任何參數
-                    window.location.href = 'MemberCreateDone.html';
-                },
-                error: function(xhr) {
-                    alert('新增失敗，請檢查 Email 是否重複或資料格式');
+            function validatePassword() {
+                let password = $('#password').val().trim();
+                if (password.length < 8) {
+                    alert('密碼不得小於 8 碼');
+                    return false;
                 }
+                if (!/[0-9]/.test(password)) {
+                    alert('密碼必須包含數字');
+                    return false;
+                }
+                if (!/[A-Za-z]/.test(password)) {
+                    alert('密碼必須包含英文字母');
+                    return false;
+                }
+                return true;
+            }
+
+            // 表單提交
+            $('form').on('submit', function (e) {
+                e.preventDefault();
+
+                // 取得表單值
+                const name = $('#name').val().trim();
+                const email = $('#email').val().trim();
+                const password = $('#password').val().trim();
+                const phone = $('#phone').val().trim();
+                const address = $('#address').val().trim();
+                const gender = $('#gender').val();
+                const birthday = $('#birthday').val(); // 格式應為 YYYY-MM-DD
+                const pictureFile = $('#picture')[0].files[0];
+
+                // 基本驗證
+                if (email === '') { alert('Email不得為空白'); return; }
+                if (!isValidEmail(email)) { alert('Email 格式不正確'); return; }
+                if (!validatePassword()) { return; }
+
+                // 建立 FormData 對象
+                const formData = new FormData();
+                formData.append('name', name);
+                formData.append('email', email);
+                formData.append('password', password);
+                formData.append('phone', phone);
+                formData.append('address', address);
+                formData.append('gender', gender);
+                formData.append('birthday', birthday);
+
+                //  欄位名需與 Controller 的 @RequestParam("pictureFile") 一致
+                if (pictureFile) {
+                    formData.append('pictureFile', pictureFile);
+                }
+
+                // AJAX 上傳
+                $.ajax({
+                    url: '/members',
+                    type: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (res) {
+                        console.log('成功!', res);
+
+                        // 【關鍵改動】：將回傳的物件轉成 JSON 字串存入 sessionStorage
+                        sessionStorage.setItem('newMember', JSON.stringify(res));
+
+                        // 跳轉時不帶任何參數
+                        window.location.href = 'MemberCreateDone.html';
+                    },
+                    error: function (xhr) {
+                        alert('新增失敗，請檢查 Email 是否重複或資料格式');
+                    }
+                });
             });
         });
-    });
     </script>
 </body>
 

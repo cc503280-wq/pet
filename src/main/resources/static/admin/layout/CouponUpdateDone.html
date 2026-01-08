@@ -6,17 +6,49 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>CouponUpdateDone</title>
 
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <link rel="stylesheet" href="../../plugins/fontawesome-free/css/all.min.css">
     <link rel="stylesheet" href="../../dist/css/adminlte.min.css">
     <style type="text/css">
-        .brand-link { display: flex; align-items: center; justify-content: flex-start; padding: 0.5rem 1rem; }
-        .sidebar-collapse .brand-link { justify-content: center; }
-        .brand-link i { width: 1.5rem; text-align: center; }
-        .sidebar-collapse .brand-text { display: none; }
-        .box1 { display: flex; justify-content: space-between; align-items: center; }
-        .form-control-static { padding-top: 7px; margin-bottom: 0; font-weight: bold; color: #333; }
-        .box2 { display: flex; justify-content: center; align-items: center; }
+        .brand-link {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 0.5rem 1rem;
+        }
+
+        .sidebar-collapse .brand-link {
+            justify-content: center;
+        }
+
+        .brand-link i {
+            width: 1.5rem;
+            text-align: center;
+        }
+
+        .sidebar-collapse .brand-text {
+            display: none;
+        }
+
+        .box1 {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .form-control-static {
+            padding-top: 7px;
+            margin-bottom: 0;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .box2 {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
     </style>
 </head>
 
@@ -44,50 +76,119 @@
             </a>
             <div class="sidebar">
                 <nav class="mt-2">
-                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-                        
+                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
+                        data-accordion="false">
+
                         <li class="nav-item menu-open">
                             <a href="#" class="nav-link active">
                                 <i class="nav-icon fas fa-edit"></i>
                                 <p>會員管理 <i class="right fas fa-angle-left"></i></p>
                             </a>
                             <ul class="nav nav-treeview">
-                                <li class="nav-item"><a href="AdminQueryAll.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>管理員資料</p></a></li>
-                                <li class="nav-item"><a href="MemberQueryAll.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>會員基本資料</p></a></li>
-                                <li class="nav-item"><a href="MemberPetQueryAll.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>會員寵物資料</p></a></li>
-                                <li class="nav-item"><a href="CouponQueryAll.html" class="nav-link active"><i class="far fa-circle nav-icon"></i><p>優惠券總覽</p></a></li>
-                                <li class="nav-item"><a href="CouponUsersQueryAll.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>會員持有優惠券</p></a></li>
-                                <li class="nav-item"><a href="FavoritesQueryAll.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>會員收藏清單</p></a></li>
+                                <li class="nav-item"><a href="AdminQueryAll.html" class="nav-link"><i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>管理員資料</p>
+                                    </a></li>
+                                <li class="nav-item"><a href="MemberQueryAll.html" class="nav-link"><i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>會員基本資料</p>
+                                    </a></li>
+                                <li class="nav-item"><a href="MemberPetQueryAll.html" class="nav-link"><i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>會員寵物資料</p>
+                                    </a></li>
+                                <li class="nav-item"><a href="CouponQueryAll.html" class="nav-link active"><i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>優惠券總覽</p>
+                                    </a></li>
+                                <li class="nav-item"><a href="CouponUsersQueryAll.html" class="nav-link"><i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>會員持有優惠券</p>
+                                    </a></li>
+                                <li class="nav-item"><a href="FavoritesQueryAll.html" class="nav-link"><i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>會員收藏清單</p>
+                                    </a></li>
                             </ul>
                         </li>
 
                         <li class="nav-item">
-                            <a href="../../AllProducts" class="nav-link">
+                            <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-edit"></i>
                                 <p>商品管理 <i class="right fas fa-angle-left"></i></p>
                             </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item"><a href="/admin/products" class="nav-link"><i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>商品管理</p>
+                                    </a></li>
+                                <li class="nav-item"><a href="/admin/categories" class="nav-link"><i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>類別管理</p>
+                                    </a></li>
+                            </ul>
                         </li>
-
                         <li class="nav-item">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-edit"></i>
                                 <p>訂單管理 <i class="right fas fa-angle-left"></i></p>
                             </a>
                             <ul class="nav nav-treeview">
-                                <li class="nav-item"><a href="../../orderList" class="nav-link"><i class="far fa-circle nav-icon"></i><p>查詢全部訂單</p></a></li>
-                                <li class="nav-item"><a href="../../shipmentsList" class="nav-link"><i class="far fa-circle nav-icon"></i><p>物流查詢</p></a></li>
-                                <li class="nav-item"><a href="../../orderItemsList" class="nav-link"><i class="far fa-circle nav-icon"></i><p>查詢全部訂單明細</p></a></li>
-                                <li class="nav-item"><a href="../order/shopping.jsp" class="nav-link"><i class="far fa-circle nav-icon"></i><p>新增訂單</p></a></li>
+                                <li class="nav-item"><a href="/orders/list" class="nav-link"><i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>查詢全部訂單</p>
+                                    </a></li>
+                                <li class="nav-item"><a href="/shipment/list" class="nav-link"><i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>物流查詢</p>
+                                    </a></li>
+                                <li class="nav-item"><a href="/ordersItem/list" class="nav-link"><i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>查詢全部訂單明細</p>
+                                    </a></li>
+                                <li class="nav-item"><a href="/Cart/shopping" class="nav-link"><i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>新增訂單</p>
+                                    </a></li>
                             </ul>
                         </li>
-
-                        <li class="nav-item">
-                            <a href="../../AppointmentServlet.do" class="nav-link">
-                                <i class="nav-icon fas fa-edit"></i>
-                                <p>預約管理 <i class="right fas fa-angle-left"></i></p>
+                        <li class="nav-item"><a href="#" class="nav-link"> <i class="nav-icon fas fa-edit"></i>
+                                <p>
+                                    預約管理 <i class="right fas fa-angle-left"></i>
+                                </p>
                             </a>
-                        </li>
-                    </ul>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="GetAllAppointments.html" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>寵物美容訂單管理</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="GetAllLeaveRecords.html" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>美容師請假管理</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="GetAllGroomers.html" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>美容師管理</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="GetAllAppointmentDetails.html" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>預約訂單明細</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="GetAllServiceItems.html" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>服務項目管理</p>
+                                    </a>
+                                </li>
+                            </ul>
                 </nav>
             </div>
         </aside>
@@ -112,58 +213,73 @@
                                 <div class="card-header">
                                     <h3 class="card-title">修改資料檢視</h3>
                                 </div>
-                                
+
                                 <div class="alert alert-success mx-4 mt-3 py-2">
                                     <i class="icon fas fa-check-circle"></i>
                                     <strong>修改成功!</strong>
                                 </div>
 
                                 <div class="card-body">
-								    <div class="form-group row">
-								        <label class="col-sm-4 col-form-label">ID:</label>
-								        <div class="col-sm-8"><p class="form-control-static" id="view-couponId"></p></div>
-								    </div>
-								    <div class="form-group row">
-								        <label class="col-sm-4 col-form-label">折扣碼:</label>
-								        <div class="col-sm-8"><p class="form-control-static" id="view-code"></p></div>
-								    </div>
-								    <div class="form-group row">
-								        <label class="col-sm-4 col-form-label">折扣類型:</label>
-								        <div class="col-sm-8"><p class="form-control-static" id="view-discountType"></p></div>
-								    </div>
-								    <div class="form-group row">
-								        <label class="col-sm-4 col-form-label">折扣值:</label>
-								        <div class="col-sm-8"><p class="form-control-static" id="view-discountValue"></p></div>
-								    </div>
-								    <div class="form-group row">
-								        <label class="col-sm-4 col-form-label">總發放量:</label>
-								        <div class="col-sm-8"><p class="form-control-static" id="view-totalAmount"></p></div>
-								    </div>
-								    <div class="form-group row">
-								        <label class="col-sm-4 col-form-label">已發放數量:</label>
-								        <div class="col-sm-8"><p class="form-control-static" id="view-issuedAmount"></p></div>
-								    </div>
-								    <div class="form-group row">
-								        <label class="col-sm-4 col-form-label">發放期間:</label>
-								        <div class="col-sm-8">
-								            <p class="form-control-static">
-								                <span id="view-issueStartAt"></span> ~ <span id="view-issueEndAt"></span>
-								            </p>
-								        </div>
-								    </div>
-								    <div class="form-group row">
-								        <label class="col-sm-4 col-form-label">使用期間:</label>
-								        <div class="col-sm-8">
-								            <p class="form-control-static">
-								                <span id="view-useStartAt"></span> ~ <span id="view-useEndAt"></span>
-								            </p>
-								        </div>
-								    </div>
-								    <div class="form-group row">
-								        <label class="col-sm-4 col-form-label">最低消費:</label>
-								        <div class="col-sm-8"><p class="form-control-static" id="view-minPurchase"></p></div>
-								    </div>
-								</div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-4 col-form-label">ID:</label>
+                                        <div class="col-sm-8">
+                                            <p class="form-control-static" id="view-couponId"></p>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-4 col-form-label">折扣碼:</label>
+                                        <div class="col-sm-8">
+                                            <p class="form-control-static" id="view-code"></p>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-4 col-form-label">折扣類型:</label>
+                                        <div class="col-sm-8">
+                                            <p class="form-control-static" id="view-discountType"></p>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-4 col-form-label">折扣值:</label>
+                                        <div class="col-sm-8">
+                                            <p class="form-control-static" id="view-discountValue"></p>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-4 col-form-label">總發放量:</label>
+                                        <div class="col-sm-8">
+                                            <p class="form-control-static" id="view-totalAmount"></p>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-4 col-form-label">已發放數量:</label>
+                                        <div class="col-sm-8">
+                                            <p class="form-control-static" id="view-issuedAmount"></p>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-4 col-form-label">發放期間:</label>
+                                        <div class="col-sm-8">
+                                            <p class="form-control-static">
+                                                <span id="view-issueStartAt"></span> ~ <span
+                                                    id="view-issueEndAt"></span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-4 col-form-label">使用期間:</label>
+                                        <div class="col-sm-8">
+                                            <p class="form-control-static">
+                                                <span id="view-useStartAt"></span> ~ <span id="view-useEndAt"></span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-4 col-form-label">最低消費:</label>
+                                        <div class="col-sm-8">
+                                            <p class="form-control-static" id="view-minPurchase"></p>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -184,10 +300,10 @@
     <script>
         $(function () {
             const couponDataString = sessionStorage.getItem('lastUpdatedCoupon');
-            
+
             if (couponDataString) {
                 const coupon = JSON.parse(couponDataString);
-                
+
                 $('#view-couponId').text(coupon.couponId || 'N/A');
                 $('#view-code').text(coupon.code || 'N/A');
                 $('#view-discountType').text(coupon.discountType || 'N/A');
@@ -207,4 +323,5 @@
         });
     </script>
 </body>
+
 </html>

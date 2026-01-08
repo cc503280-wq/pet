@@ -2,171 +2,205 @@
 <html lang="zh-TW" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>商品管理系統</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>商品管理系統</title>
 
-<link rel="stylesheet"
-	href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-<link rel="stylesheet"
-	th:href="@{/plugins/fontawesome-free/css/all.min.css}">
-<link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
-<link rel="stylesheet"
-	th:href="@{/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css}">
-<link rel="stylesheet"
-	th:href="@{/plugins/datatables-responsive/css/responsive.bootstrap4.min.css}">
+	<link rel="stylesheet"
+		href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+	<link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
+	<link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
+	<link rel="stylesheet" th:href="@{/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css}">
+	<link rel="stylesheet" th:href="@{/plugins/datatables-responsive/css/responsive.bootstrap4.min.css}">
 
-<style>
-.brand-link {
-	display: flex;
-	align-items: center;
-	justify-content: flex-start;
-	padding: 0.5rem 1rem;
-}
+	<style>
+		.brand-link {
+			display: flex;
+			align-items: center;
+			justify-content: flex-start;
+			padding: 0.5rem 1rem;
+		}
 
-.sidebar-collapse .brand-link {
-	justify-content: center;
-}
+		.sidebar-collapse .brand-link {
+			justify-content: center;
+		}
 
-.brand-link i {
-	width: 1.5rem;
-	text-align: center;
-}
+		.brand-link i {
+			width: 1.5rem;
+			text-align: center;
+		}
 
-.box1 {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-}
+		.box1 {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
 
-.table-img {
-	width: 50px;
-	height: 50px;
-	object-fit: cover;
-	border-radius: 4px;
-}
-</style>
+		.table-img {
+			width: 50px;
+			height: 50px;
+			object-fit: cover;
+			border-radius: 4px;
+		}
+	</style>
 </head>
 
 <body class="hold-transition sidebar-mini sidebar-collapse">
 	<div class="wrapper">
-		<nav
-			class="main-header navbar navbar-expand navbar-white navbar-light">
+		<nav class="main-header navbar navbar-expand navbar-white navbar-light">
 			<ul class="navbar-nav ml-auto">
-				<li class="nav-item"><a href="javascript:void(0)"
-					id="logoutBtn" class="btn btn-secondary btn-sm"> <i
-						class="fas fa-sign-out-alt"></i> 登出
-				</a></li>
+				<li class="nav-item"><a href="javascript:void(0)" id="logoutBtn" class="btn btn-secondary btn-sm"> <i
+							class="fas fa-sign-out-alt"></i> 登出
+					</a></li>
 			</ul>
 		</nav>
 
 		<aside class="main-sidebar sidebar-dark-primary elevation-4">
 			<!-- Brand Logo -->
-			<a href="/admin/layout/Home.html" class="brand-link"> <i
-				class="fas fa-paw" style="color: #FFD43B; font-size: 1.5rem;"></i> <span
-				class="brand-text font-weight-light"></span>
+			<a href="/admin/layout/Home.html" class="brand-link"> <i class="fas fa-paw"
+					style="color: #FFD43B; font-size: 1.5rem;"></i> <span class="brand-text font-weight-light"></span>
 			</a>
 			<!-- Sidebar -->
 			<div class="sidebar">
 				<div class="user-panel mt-3 pb-3 mb-3 d-flex"></div>
 				<!-- Sidebar Menu -->
 				<nav class="mt-2">
-					<ul class="nav nav-pills nav-sidebar flex-column"
-						data-widget="treeview" role="menu" data-accordion="false">
+					<ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
+						data-accordion="false">
 						<!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
 						<li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-edit"></i>
-                                <p>
-                                    會員管理
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="/admin/layout/AdminQueryAll.html" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>管理員資料</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="/admin/layout/MemberQueryAll.html" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>會員基本資料</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="/admin/layout/MemberPetQueryAll.html" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>會員寵物資料</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="/admin/layout/CouponQueryAll.html" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>優惠券總覽</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="/admin/layout/CouponUsersQueryAll.html" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>會員持有優惠券</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="/admin/layout/FavoritesQueryAll.html" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>會員收藏清單</p>
-                                    </a>
-                                </li>
-                            </ul>
+							<a href="#" class="nav-link">
+								<i class="nav-icon fas fa-edit"></i>
+								<p>
+									會員管理
+									<i class="right fas fa-angle-left"></i>
+								</p>
+							</a>
+							<ul class="nav nav-treeview">
+								<li class="nav-item">
+									<a href="/admin/layout/AdminQueryAll.html" class="nav-link">
+										<i class="far fa-circle nav-icon"></i>
+										<p>管理員資料</p>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="/admin/layout/MemberQueryAll.html" class="nav-link">
+										<i class="far fa-circle nav-icon"></i>
+										<p>會員基本資料</p>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="/admin/layout/MemberPetQueryAll.html" class="nav-link">
+										<i class="far fa-circle nav-icon"></i>
+										<p>會員寵物資料</p>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="/admin/layout/CouponQueryAll.html" class="nav-link">
+										<i class="far fa-circle nav-icon"></i>
+										<p>優惠券總覽</p>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="/admin/layout/CouponUsersQueryAll.html" class="nav-link">
+										<i class="far fa-circle nav-icon"></i>
+										<p>會員持有優惠券</p>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="/admin/layout/FavoritesQueryAll.html" class="nav-link">
+										<i class="far fa-circle nav-icon"></i>
+										<p>會員收藏清單</p>
+									</a>
+								</li>
+							</ul>
 						</li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-edit"></i>
-                                <p>
-                                    商品管理
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                            	<li class="nav-item">
-								    <a th:href="@{/admin/products}" class="nav-link">
-								        <i class="far fa-circle nav-icon"></i>
-								        <p>商品管理</p>
-								    </a>
+						<li class="nav-item">
+							<a href="#" class="nav-link">
+								<i class="nav-icon fas fa-edit"></i>
+								<p>
+									商品管理
+									<i class="right fas fa-angle-left"></i>
+								</p>
+							</a>
+							<ul class="nav nav-treeview">
+								<li class="nav-item">
+									<a th:href="@{/admin/products}" class="nav-link">
+										<i class="far fa-circle nav-icon"></i>
+										<p>商品管理</p>
+									</a>
 								</li>
-	                            <li class="nav-item">
-								    <a th:href="@{/admin/categories}" class="nav-link">
-								        <i class="far fa-circle nav-icon"></i>
-								        <p>分類管理</p>
-								    </a>
+								<li class="nav-item">
+									<a th:href="@{/admin/categories}" class="nav-link">
+										<i class="far fa-circle nav-icon"></i>
+										<p>分類管理</p>
+									</a>
 								</li>
-                            </ul>
-                        </li>
-                       <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-edit"></i>
-                                <p>訂單管理 <i class="right fas fa-angle-left"></i></p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item"><a href="/orders/list" class="nav-link"><i class="far fa-circle nav-icon"></i><p>查詢全部訂單</p></a></li>
-                                <li class="nav-item"><a href="/shipment/list" class="nav-link"><i class="far fa-circle nav-icon"></i><p>物流查詢</p></a></li>
-                                <li class="nav-item"><a href="/ordersItem/list" class="nav-link"><i class="far fa-circle nav-icon"></i><p>查詢全部訂單明細</p></a></li>
-                                <li class="nav-item"><a href="/Cart/shopping" class="nav-link"><i class="far fa-circle nav-icon"></i><p>新增訂單</p></a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a href="../../AppointmentServlet.do" class="nav-link">
-                                <i class="nav-icon fas fa-edit"></i>
-                                <p>
-                                    預約管理
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                        </li>
-
+							</ul>
+						</li>
+						<li class="nav-item">
+							<a href="#" class="nav-link">
+								<i class="nav-icon fas fa-edit"></i>
+								<p>訂單管理 <i class="right fas fa-angle-left"></i></p>
+							</a>
+							<ul class="nav nav-treeview">
+								<li class="nav-item"><a href="/orders/list" class="nav-link"><i
+											class="far fa-circle nav-icon"></i>
+										<p>查詢全部訂單</p>
+									</a></li>
+								<li class="nav-item"><a href="/shipment/list" class="nav-link"><i
+											class="far fa-circle nav-icon"></i>
+										<p>物流查詢</p>
+									</a></li>
+								<li class="nav-item"><a href="/ordersItem/list" class="nav-link"><i
+											class="far fa-circle nav-icon"></i>
+										<p>查詢全部訂單明細</p>
+									</a></li>
+								<li class="nav-item"><a href="/Cart/shopping" class="nav-link"><i
+											class="far fa-circle nav-icon"></i>
+										<p>新增訂單</p>
+									</a></li>
+							</ul>
+						</li>
+						<li class="nav-item"><a href="#" class="nav-link"> <i class="nav-icon fas fa-edit"></i>
+								<p>
+									預約管理 <i class="right fas fa-angle-left"></i>
+								</p>
+							</a>
+							<ul class="nav nav-treeview">
+								<li class="nav-item">
+									<a th:href="@{/admin/layout/GetAllAppointments.html}" class="nav-link">
+										<i class="far fa-circle nav-icon"></i>
+										<p>寵物美容訂單管理</p>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a th:href="@{/admin/layout/GetAllLeaveRecords.html}" class="nav-link">
+										<i class="far fa-circle nav-icon"></i>
+										<p>美容師請假管理</p>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a th:href="@{/admin/layout/GetAllGroomers.html}" class="nav-link">
+										<i class="far fa-circle nav-icon"></i>
+										<p>美容師管理</p>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a th:href="@{/admin/layout/GetAllAppointmentDetails.html}" class="nav-link">
+										<i class="far fa-circle nav-icon"></i>
+										<p>預約訂單明細</p>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a th:href="@{/admin/layout/GetAllServiceItems.html}" class="nav-link">
+										<i class="far fa-circle nav-icon"></i>
+										<p>服務項目管理</p>
+									</a>
+								</li>
+							</ul>
+						</li>
 					</ul>
 				</nav>
 				<!-- /.sidebar-menu -->
@@ -182,8 +216,7 @@
 							<h1 class="m-0">分類管理</h1>
 						</div>
 						<div class="col-sm-6">
-							<button onclick="openCreateModal()"
-								class="btn btn-success float-sm-right">
+							<button onclick="openCreateModal()" class="btn btn-success float-sm-right">
 								<i class="fas fa-plus"></i> 新增分類
 							</button>
 						</div>
@@ -195,8 +228,7 @@
 				<div class="container-fluid">
 					<div class="card">
 						<div class="card-body">
-							<table id="categoriesTable"
-								class="table table-bordered table-hover">
+							<table id="categoriesTable" class="table table-bordered table-hover">
 								<thead>
 									<tr>
 										<th style="width: 10%">ID</th>
@@ -213,14 +245,12 @@
 			</section>
 		</div>
 
-		<div class="modal fade" id="categoryModal" tabindex="-1"
-			aria-hidden="true">
+		<div class="modal fade" id="categoryModal" tabindex="-1" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
 						<h5 class="modal-title" id="modalTitle">新增分類</h5>
-						<button type="button" class="close" data-dismiss="modal"
-							aria-label="Close">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
 					</div>
@@ -229,16 +259,14 @@
 							<input type="hidden" id="modalCategoryId">
 
 							<div class="form-group">
-								<label>分類名稱</label> <input type="text" class="form-control"
-									id="modalCategoryName" required>
+								<label>分類名稱</label> <input type="text" class="form-control" id="modalCategoryName"
+									required>
 							</div>
 						</form>
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-secondary"
-							data-dismiss="modal">取消</button>
-						<button type="button" class="btn btn-primary"
-							onclick="submitCategory()">儲存</button>
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+						<button type="button" class="btn btn-primary" onclick="submitCategory()">儲存</button>
 					</div>
 				</div>
 			</div>
@@ -254,26 +282,26 @@
 	<script th:src="@{/dist/js/adminlte.min.js}"></script>
 
 	<script th:inline="javascript">
-    /*<![CDATA[*/
-    // API 路徑 (對應 CategoryController)
-    const API_BASE = /*[[@{/categories}]]*/ '/categories';
+		/*<![CDATA[*/
+		// API 路徑 (對應 CategoryController)
+		const API_BASE = /*[[@{/categories}]]*/ '/categories';
 
-    $(function() {
-        loadAllCategories();
-    });
+		$(function () {
+			loadAllCategories();
+		});
 
-    // 1. 載入列表
-    function loadAllCategories() {
-	    $.ajax({
-	        url: API_BASE, // GET /categories
-	        type: 'GET',
-	        success: function(data) {
-	            const tableBody = $('#tableBody');
-	            tableBody.empty();
-	
-	            $.each(data, function(index, c) {
-	                // 修改處：只保留「修改」按鈕，移除「刪除」按鈕
-	                let row = `
+		// 1. 載入列表
+		function loadAllCategories() {
+			$.ajax({
+				url: API_BASE, // GET /categories
+				type: 'GET',
+				success: function (data) {
+					const tableBody = $('#tableBody');
+					tableBody.empty();
+
+					$.each(data, function (index, c) {
+						// 修改處：只保留「修改」按鈕，移除「刪除」按鈕
+						let row = `
 	                    <tr>
 	                        <td>${c.categoryId}</td>
 	                        <td>${c.categoryName}</td>
@@ -284,69 +312,69 @@
 	                        </td>
 	                    </tr>
 	                `;
-	                tableBody.append(row);
-	            });
-	        },
-	        error: function(err) {
-	            console.error(err);
-	            alert('無法載入分類資料');
-	        }
-	    });
-	}
+						tableBody.append(row);
+					});
+				},
+				error: function (err) {
+					console.error(err);
+					alert('無法載入分類資料');
+				}
+			});
+		}
 
-    // 2. 打開新增視窗
-    function openCreateModal() {
-        $('#categoryForm')[0].reset();
-        $('#modalCategoryId').val(''); // 清空 ID
-        $('#modalTitle').text('新增分類');
-        $('#categoryModal').modal('show');
-    }
+		// 2. 打開新增視窗
+		function openCreateModal() {
+			$('#categoryForm')[0].reset();
+			$('#modalCategoryId').val(''); // 清空 ID
+			$('#modalTitle').text('新增分類');
+			$('#categoryModal').modal('show');
+		}
 
-    // 3. 打開修改視窗
-    function openEditModal(id) {
-        $.ajax({
-            url: API_BASE + '/' + id, // 假設後端有 GET /categories/{id}
-            type: 'GET',
-            success: function(c) {
-                $('#modalCategoryId').val(c.categoryId);
-                $('#modalCategoryName').val(c.categoryName);
-                
-                $('#modalTitle').text('修改分類');
-                $('#categoryModal').modal('show');
-            }
-        });
-    }
+		// 3. 打開修改視窗
+		function openEditModal(id) {
+			$.ajax({
+				url: API_BASE + '/' + id, // 假設後端有 GET /categories/{id}
+				type: 'GET',
+				success: function (c) {
+					$('#modalCategoryId').val(c.categoryId);
+					$('#modalCategoryName').val(c.categoryName);
 
-    // 4. 送出資料 (新增或修改)
-    function submitCategory() {
-        let formData = new FormData();
-        formData.append('categoryName', $('#modalCategoryName').val());
+					$('#modalTitle').text('修改分類');
+					$('#categoryModal').modal('show');
+				}
+			});
+		}
 
-        let id = $('#modalCategoryId').val();
-        let url = id ? (API_BASE + '/update/' + id) : (API_BASE + '/create');
+		// 4. 送出資料 (新增或修改)
+		function submitCategory() {
+			let formData = new FormData();
+			formData.append('categoryName', $('#modalCategoryName').val());
 
-        $.ajax({
-            url: url,
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function() {
-                alert('儲存成功！'); // 成功提示
-                $('#categoryModal').modal('hide');
-                loadAllCategories();
-            },
-            // 修改這裡：接收後端的錯誤訊息
-            error: function(xhr) {
-                console.error(xhr);
-                // xhr.responseText 會拿到後端 e.getMessage() 的內容
-                // 例如：「分類名稱已存在: 罐頭」
-                alert(xhr.responseText || '儲存失敗'); 
-            }
-        });
-    }
+			let id = $('#modalCategoryId').val();
+			let url = id ? (API_BASE + '/update/' + id) : (API_BASE + '/create');
 
-    /*]]>*/
+			$.ajax({
+				url: url,
+				type: 'POST',
+				data: formData,
+				processData: false,
+				contentType: false,
+				success: function () {
+					alert('儲存成功！'); // 成功提示
+					$('#categoryModal').modal('hide');
+					loadAllCategories();
+				},
+				// 修改這裡：接收後端的錯誤訊息
+				error: function (xhr) {
+					console.error(xhr);
+					// xhr.responseText 會拿到後端 e.getMessage() 的內容
+					// 例如：「分類名稱已存在: 罐頭」
+					alert(xhr.responseText || '儲存失敗');
+				}
+			});
+		}
+
+		/*]]>*/
 	</script>
 </body>
 

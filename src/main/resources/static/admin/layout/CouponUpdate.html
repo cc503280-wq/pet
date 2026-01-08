@@ -6,19 +6,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>CouponUpdate</title>
 
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <link rel="stylesheet" href="../../plugins/fontawesome-free/css/all.min.css">
     <link rel="stylesheet" href="../../dist/css/adminlte.min.css">
     <link rel="stylesheet" href="../../plugins/select2/css/select2.min.css">
     <link rel="stylesheet" href="../../plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-    
+
     <style type="text/css">
-        .brand-link { display: flex; align-items: center; justify-content: flex-start; padding: 0.5rem 1rem; }
-        .sidebar-collapse .brand-link { justify-content: center; }
-        .brand-link i { width: 1.5rem; text-align: center; }
-        .sidebar-collapse .brand-text { display: none; }
-        .box1 { display: flex; justify-content: space-between; align-items: center; }
+        .brand-link {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 0.5rem 1rem;
+        }
+
+        .sidebar-collapse .brand-link {
+            justify-content: center;
+        }
+
+        .brand-link i {
+            width: 1.5rem;
+            text-align: center;
+        }
+
+        .sidebar-collapse .brand-text {
+            display: none;
+        }
+
+        .box1 {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
     </style>
 </head>
 
@@ -46,49 +67,118 @@
             </a>
             <div class="sidebar">
                 <nav class="mt-2">
-                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
+                        data-accordion="false">
                         <li class="nav-item menu-open">
                             <a href="#" class="nav-link active">
                                 <i class="nav-icon fas fa-edit"></i>
                                 <p>會員管理 <i class="right fas fa-angle-left"></i></p>
                             </a>
                             <ul class="nav nav-treeview">
-                                <li class="nav-item"><a href="AdminQueryAll.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>管理員資料</p></a></li>
-                                <li class="nav-item"><a href="MemberQueryAll.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>會員基本資料</p></a></li>
-                                <li class="nav-item"><a href="MemberPetQueryAll.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>會員寵物資料</p></a></li>
-                                <li class="nav-item"><a href="CouponQueryAll.html" class="nav-link active"><i class="far fa-circle nav-icon"></i><p>優惠券總覽</p></a></li>
-                                <li class="nav-item"><a href="CouponUsersQueryAll.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>會員持有優惠券</p></a></li>
-                                <li class="nav-item"><a href="FavoritesQueryAll.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>會員收藏清單</p></a></li>
+                                <li class="nav-item"><a href="AdminQueryAll.html" class="nav-link"><i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>管理員資料</p>
+                                    </a></li>
+                                <li class="nav-item"><a href="MemberQueryAll.html" class="nav-link"><i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>會員基本資料</p>
+                                    </a></li>
+                                <li class="nav-item"><a href="MemberPetQueryAll.html" class="nav-link"><i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>會員寵物資料</p>
+                                    </a></li>
+                                <li class="nav-item"><a href="CouponQueryAll.html" class="nav-link active"><i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>優惠券總覽</p>
+                                    </a></li>
+                                <li class="nav-item"><a href="CouponUsersQueryAll.html" class="nav-link"><i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>會員持有優惠券</p>
+                                    </a></li>
+                                <li class="nav-item"><a href="FavoritesQueryAll.html" class="nav-link"><i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>會員收藏清單</p>
+                                    </a></li>
                             </ul>
                         </li>
 
                         <li class="nav-item">
-                            <a href="../../AllProducts" class="nav-link">
+                            <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-edit"></i>
                                 <p>商品管理 <i class="right fas fa-angle-left"></i></p>
                             </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item"><a href="/admin/products" class="nav-link"><i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>商品管理</p>
+                                    </a></li>
+                                <li class="nav-item"><a href="/admin/categories" class="nav-link"><i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>類別管理</p>
+                                    </a></li>
+                            </ul>
                         </li>
-
                         <li class="nav-item">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-edit"></i>
                                 <p>訂單管理 <i class="right fas fa-angle-left"></i></p>
                             </a>
                             <ul class="nav nav-treeview">
-                                <li class="nav-item"><a href="../../orderList" class="nav-link"><i class="far fa-circle nav-icon"></i><p>查詢全部訂單</p></a></li>
-                                <li class="nav-item"><a href="../../shipmentsList" class="nav-link"><i class="far fa-circle nav-icon"></i><p>物流查詢</p></a></li>
-                                <li class="nav-item"><a href="../../orderItemsList" class="nav-link"><i class="far fa-circle nav-icon"></i><p>查詢全部訂單明細</p></a></li>
-                                <li class="nav-item"><a href="../order/shopping.jsp" class="nav-link"><i class="far fa-circle nav-icon"></i><p>新增訂單</p></a></li>
+                                <li class="nav-item"><a href="/orders/list" class="nav-link"><i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>查詢全部訂單</p>
+                                    </a></li>
+                                <li class="nav-item"><a href="/shipment/list" class="nav-link"><i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>物流查詢</p>
+                                    </a></li>
+                                <li class="nav-item"><a href="/ordersItem/list" class="nav-link"><i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>查詢全部訂單明細</p>
+                                    </a></li>
+                                <li class="nav-item"><a href="/Cart/shopping" class="nav-link"><i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>新增訂單</p>
+                                    </a></li>
                             </ul>
                         </li>
-
-                        <li class="nav-item">
-                            <a href="../../AppointmentServlet.do" class="nav-link">
-                                <i class="nav-icon fas fa-edit"></i>
-                                <p>預約管理 <i class="right fas fa-angle-left"></i></p>
+                        <li class="nav-item"><a href="#" class="nav-link"> <i class="nav-icon fas fa-edit"></i>
+                                <p>
+                                    預約管理 <i class="right fas fa-angle-left"></i>
+                                </p>
                             </a>
-                        </li>
-                    </ul>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="GetAllAppointments.html" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>寵物美容訂單管理</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="GetAllLeaveRecords.html" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>美容師請假管理</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="GetAllGroomers.html" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>美容師管理</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="GetAllAppointmentDetails.html" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>預約訂單明細</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="GetAllServiceItems.html" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>服務項目管理</p>
+                                    </a>
+                                </li>
+                            </ul>
                 </nav>
             </div>
         </aside>
@@ -114,7 +204,7 @@
                                     <h3 class="card-title">修改優惠券資料</h3>
                                 </div>
                                 <form class="form-horizontal" id="updateForm">
-                                    <input type="hidden" id="couponId"> 
+                                    <input type="hidden" id="couponId">
                                     <div class="card-body">
                                         <div class="form-group row">
                                             <label for="code" class="col-sm-2 col-form-label">折扣碼:</label>
@@ -125,7 +215,8 @@
                                         <div class="form-group row">
                                             <label class="col-sm-2 col-form-label">折扣類型:</label>
                                             <div class="col-sm-10">
-                                                <select class="form-control select2" style="width: 100%;" id="discountType">
+                                                <select class="form-control select2" style="width: 100%;"
+                                                    id="discountType">
                                                     <option value="amount">固定金額 (amount)</option>
                                                     <option value="percent">百分比 (percent)</option>
                                                 </select>
@@ -134,13 +225,15 @@
                                         <div class="form-group row">
                                             <label for="discountValue" class="col-sm-2 col-form-label">折扣金額/百分比:</label>
                                             <div class="col-sm-10">
-                                                <input type="number" step="0.05" class="form-control" id="discountValue" required>
+                                                <input type="number" step="0.05" class="form-control" id="discountValue"
+                                                    required>
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <label class="col-sm-2 col-form-label">是否限量:</label>
                                             <div class="col-sm-10">
-                                                <select class="form-control select2" style="width: 100%;" id="isLimited">
+                                                <select class="form-control select2" style="width: 100%;"
+                                                    id="isLimited">
                                                     <option value="0">0:不限量</option>
                                                     <option value="1">1:限量</option>
                                                 </select>
@@ -182,8 +275,8 @@
                                         </div>
                                     </div>
                                     <div class="card-footer">
-                                            <button type="submit" class="btn btn-info">送出</button>
-                                            <button type="reset" class="btn btn-default float-right">清除</button>
+                                        <button type="submit" class="btn btn-info">送出</button>
+                                        <button type="reset" class="btn btn-default float-right">清除</button>
                                     </div>
                                 </form>
                             </div>
@@ -224,7 +317,7 @@
 
             $('#issueRange, #useRange').daterangepicker(datePickerConfig);
 
-            $('#issueRange, #useRange').on('apply.daterangepicker', function(ev, picker) {
+            $('#issueRange, #useRange').on('apply.daterangepicker', function (ev, picker) {
                 $(this).val(picker.startDate.format('YYYY-MM-DD') + ' ~ ' + picker.endDate.format('YYYY-MM-DD'));
                 const prefix = this.id.replace('Range', '');
                 $(`#${prefix}StartAt`).val(picker.startDate.format('YYYY-MM-DD'));
@@ -244,13 +337,13 @@
                     $('#totalAmount').val(coupon.totalAmount);
                     $('#issuedAmount').val(coupon.issuedAmount);
                     $('#minPurchase').val(coupon.minPurchase);
-                    
-                    if(coupon.issueStartAt && coupon.issueEndAt) {
+
+                    if (coupon.issueStartAt && coupon.issueEndAt) {
                         $('#issueRange').val(`${coupon.issueStartAt} ~ ${coupon.issueEndAt}`);
                         $('#issueStartAt').val(coupon.issueStartAt);
                         $('#issueEndAt').val(coupon.issueEndAt);
                     }
-                    if(coupon.useStartAt && coupon.useEndAt) {
+                    if (coupon.useStartAt && coupon.useEndAt) {
                         $('#useRange').val(`${coupon.useStartAt} ~ ${coupon.useEndAt}`);
                         $('#useStartAt').val(coupon.useStartAt);
                         $('#useEndAt').val(coupon.useEndAt);
@@ -265,14 +358,14 @@
 
             // --- 3. 限量控制邏輯 ---
             function toggleQuantityInputs() {
-			    const status = $('#isLimited').val(); 
-			    if (status === "1") { 
-			        $('#totalAmount').prop('disabled', false);
-			    } else {
-			        $('#totalAmount').prop('disabled', true).val('');
-			    }
-			}
-            
+                const status = $('#isLimited').val();
+                if (status === "1") {
+                    $('#totalAmount').prop('disabled', false);
+                } else {
+                    $('#totalAmount').prop('disabled', true).val('');
+                }
+            }
+
             $('#isLimited').on('change', toggleQuantityInputs);
 
             // --- 4. 送出更新 ---
@@ -311,4 +404,5 @@
         });
     </script>
 </body>
+
 </html>

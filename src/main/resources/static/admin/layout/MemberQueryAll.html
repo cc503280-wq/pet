@@ -56,13 +56,13 @@
             cursor: not-allowed !important;
             /* 滑鼠變禁止符號 */
         }
-        
+
         /* DataTable 所有欄位水平 + 垂直置中 */
-		#example2 td, 
-		#example2 th {
-		    text-align: center !important;
-		    vertical-align: middle !important;
-		}
+        #example2 td,
+        #example2 th {
+            text-align: center !important;
+            vertical-align: middle !important;
+        }
     </style>
 </head>
 
@@ -77,8 +77,8 @@
                     <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
                 </li>
             </ul>
-		<!-- 右側 Navbar 按鈕 -->
-		    <ul class="navbar-nav ml-auto">
+            <!-- 右側 Navbar 按鈕 -->
+            <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
                     <a href="javascript:void(0)" id="logoutBtn" class="btn btn-secondary btn-sm">
                         <i class="fas fa-sign-out-alt"></i> 登出
@@ -92,7 +92,7 @@
         <!-- Main Sidebar Container -->
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <!-- Brand Logo -->
-            <a href="../../index3.html" class="brand-link">
+            <a href="Home.html" class="brand-link">
                 <i class="fas fa-paw" style="color: #FFD43B; font-size: 1.5rem;"></i>
                 <span class="brand-text font-weight-light"></span>
             </a>
@@ -158,54 +158,94 @@
                                 </li>
                             </ul>
                         <li class="nav-item">
-              <a href="../../AllProducts" class="nav-link">
-                <i class="nav-icon fas fa-edit"></i>
-                <p>
-                  商品管理
-                  <i class="right fas fa-angle-left"></i>
-                </p>
-              </a>
-            </li>
-            <li class="nav-item">
-            <a href="#" class="nav-link"> 
-            <i class="nav-icon fas fa-edit"></i>
-				<p>
-					訂單管理 <i class="right fas fa-angle-left"></i>
-				</p>
-			</a>
-			<ul class="nav nav-treeview">
-				<li class="nav-item"><a
-					href="../../orderList"
-					class="nav-link"> <i class="far fa-circle nav-icon"></i>
-						<p>查詢全部訂單</p>
-				</a></li>
-				<li class="nav-item"><a
-					href="../../shipmentsList"
-					class="nav-link"> <i class="far fa-circle nav-icon"></i>
-						<p>物流查詢</p>
-				</a></li>
-				<li class="nav-item"><a
-					href="../../orderItemsList"
-					class="nav-link"> <i class="far fa-circle nav-icon"></i>
-						<p>查詢全部訂單明細</p>
-				</a></li>
-				<li class="nav-item"><a
-					href="../order/shopping.jsp"
-					class="nav-link"> <i class="far fa-circle nav-icon"></i>
-						<p>新增訂單</p>
-				</a></li>
-			</ul></li>
-                        <li class="nav-item">
-              <a href="../../AppointmentServlet.do" class="nav-link">
-                <i class="nav-icon fas fa-edit"></i>
-                <p>
-                  預約管理
-                  <i class="right fas fa-angle-left"></i>
-                </p>
-              </a>
-            </li>
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-edit"></i>
+                                <p>
+                                    商品管理
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="/admin/products" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>商品管理</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/admin/categories" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>分類管理</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
 
+
+                        <li class="nav-item"><a href="#" class="nav-link"> <i class="nav-icon fas fa-edit"></i>
+                                <p>
+                                    訂單管理 <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item"><a href="/orders/list" class="nav-link"> <i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>查詢全部訂單</p>
+                                    </a></li>
+                                <li class="nav-item"><a href="/shipment/list" class="nav-link"> <i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>物流查詢</p>
+                                    </a></li>
+                                <li class="nav-item"><a href="/ordersItem/list" class="nav-link"> <i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>查詢全部訂單明細</p>
+                                    </a></li>
+                                <li class="nav-item"><a href="/Cart/shopping" class="nav-link"> <i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>新增訂單</p>
+                                    </a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item"><a href="#" class="nav-link"> <i class="nav-icon fas fa-edit"></i>
+                                <p>
+                                    預約管理 <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="GetAllAppointments.html" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>寵物美容訂單管理</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="GetAllLeaveRecords.html" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>美容師請假管理</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="GetAllGroomers.html" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>美容師管理</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="GetAllAppointmentDetails.html" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>預約訂單明細</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="GetAllServiceItems.html" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>服務項目管理</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
                     </ul>
+                    </li>
                 </nav>
                 <!-- /.sidebar-menu -->
             </div>
@@ -220,7 +260,7 @@
                     <div class="row mb-2">
                         <div class="col-sm-12 box1">
                             <h1>會員管理</h1>
-                            
+
                         </div>
                         <div class="col-sm-6">
 
@@ -244,12 +284,12 @@
                                             新增資料
                                         </a>
                                         <div class="input-group input-group-sm mr-2" style="width: 150px;">
-										    <select id="statusSelect" class="form-control">
-										        <option value="all">查詢全部</option>
-										        <option value="active">查詢啟用中</option>
-										        <option value="disabled">查詢停用</option>
-										    </select>
-										</div>
+                                            <select id="statusSelect" class="form-control">
+                                                <option value="all">查詢全部</option>
+                                                <option value="active">查詢啟用中</option>
+                                                <option value="disabled">查詢停用</option>
+                                            </select>
+                                        </div>
 
                                         <div class="input-group input-group-sm mr-2" style="width: 150px;">
                                             <input id="idSearchInput" type="text" class="form-control"
@@ -265,8 +305,7 @@
                                             <input id="fuzzySearchInput" type="text" class="form-control"
                                                 placeholder="依姓名查詢">
                                             <div class="input-group-append">
-                                                <a href="#" id="fuzzySearchBtn" type="button"
-                                                    class="btn btn-secondary">
+                                                <a href="#" id="fuzzySearchBtn" type="button" class="btn btn-secondary">
                                                     <i class="fas fa-search"></i>
                                                 </a>
                                             </div>
@@ -350,134 +389,143 @@
             <script src="../../dist/js/demo.js"></script> -->
     <!-- Page specific script -->
     <script>
-    $(function () {
-        // 1. 初始化 DataTable (共用設定)
-        const dataTableConfig = {
-            "paging": true,
-            "lengthChange": false,
-            "searching": false,
-            "ordering": true,
-            "info": true,
-            "autoWidth": true,
-            "responsive": true,
-            "dom": '<"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7 d-flex justify-content-end"p>>'
-        };
+        $(function () {
+            // 1. 初始化 DataTable (共用設定)
+            const dataTableConfig = {
+                "paging": true,
+                "lengthChange": false,
+                "searching": false,
+                "ordering": true,
+                "info": true,
+                "autoWidth": true,
+                "responsive": true,
+                "dom": '<"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7 d-flex justify-content-end"p>>'
+            };
 
-        $('#example2').DataTable(dataTableConfig);
+            $('#example2').DataTable(dataTableConfig);
 
-        // 2. 查詢全部、啟用中、停用
-        $('#statusSelect').on('change', function() {
-            const status = $(this).val(); 
-            loadMembersByStatus(status);
-        });
-
-        function loadMembersByStatus(status = 'all') {
-        	const url = (status === 'all') ? '/members' : `/members?status=${status}`;
-            $.ajax({
-                url: url, 
-                method: 'GET',
-                dataType: 'json',
-                success: function(data) {
-                    renderTable(data);
-                },
-                error: function(xhr) {
-                    console.error("載入失敗:", xhr.responseText);
-                }
+            function clearOthers(currentId) {
+                if (currentId !== 'statusSelect') $('#statusSelect').val('all');
+                if (currentId !== 'idSearchInput') $('#idSearchInput').val('');
+                if (currentId !== 'fuzzySearchInput') $('#fuzzySearchInput').val('');
+            }
+            
+            // 2. 查詢全部、啟用中、停用
+            $('#statusSelect').on('change', function () {
+                const status = $(this).val();
+                clearOthers('statusSelect');
+                loadMembersByStatus(status);
             });
-        }
 
-        // 3. 依 ID 查詢
-        $('#idSearchBtn').on('click', function (e) {
-            e.preventDefault();
-            const id = $('#idSearchInput').val().trim();
-            if (!id) return alert("請輸入 ID");
+            function loadMembersByStatus(status = 'all') {
+                const url = (status === 'all') ? '/members' : `/members?status=${status}`;
+                $.ajax({
+                    url: url,
+                    method: 'GET',
+                    dataType: 'json',
+                    success: function (data) {
+                        renderTable(data);
+                    },
+                    error: function (xhr) {
+                        console.error("載入失敗:", xhr.responseText);
+                    }
+                });
+            }
 
-            $.ajax({
-                url: `/members/${id}`, 
-                method: 'GET',
-                dataType: 'json',
-                success: function (data) {
-                    if (data) {
-                        renderTable([data]); 
-                    } else {
+            // 3. 依 ID 查詢
+            $('#idSearchBtn').on('click', function (e) {
+                e.preventDefault();
+                const id = $('#idSearchInput').val().trim();
+                if (!id) return alert("請輸入 ID");
+
+                clearOthers('idSearchInput');
+                $.ajax({
+                    url: `/members/${id}`,
+                    method: 'GET',
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data) {
+                            renderTable([data]);
+                        } else {
+                            alert("查無此會員");
+                        }
+                    },
+                    error: function () {
                         alert("查無此會員");
                     }
-                },
-                error: function() {
-                    alert("查無此會員");
-                }
+                });
             });
-        });
 
-        // 4. 模糊查詢
-        $('#fuzzySearchBtn').on('click', function (e) {
-            e.preventDefault();
-            const name = $('#fuzzySearchInput').val().trim();
-            if (!name) return alert("請輸入姓名");
+            // 4. 模糊查詢
+            $('#fuzzySearchBtn').on('click', function (e) {
+                e.preventDefault();
+                const name = $('#fuzzySearchInput').val().trim();
+                if (!name) return alert("請輸入姓名");
 
-            $.ajax({
-                url: `/members/search`, 
-                method: 'GET',
-                data: { name: name },
-                dataType: 'json',
-                success: function (data) {
-                    renderTable(data);
-                }
-            });
-        });
-
-        // 5. 修改按鈕 (跳轉頁面)
-        $(document).on('click', '.btn-edit', function (e) {
-            e.preventDefault();
-            const id = $(this).data("id");
-            window.location.href = `MemberUpdate.html?memberId=${id}`;
-        });
-
-        // 6. 停用啟用 (PATCH 請求)
-        $(document).on('click', '.btn-toggle-status', function(e) {
-            e.preventDefault();
-            const id = $(this).data('id');
-            const currentStatus = $(this).data('status');
-            const confirmMsg = currentStatus === 'active' ? '確定要停用？' : '確定要啟用？';
-            
-            if (!confirm(confirmMsg)) return;
-
-            $.ajax({
-                url: `/members/${id}/toggle`, 
-                method: 'PATCH', 
-                success: function(success) {
-                    if(success) {
-                        const status = $('#statusSelect').val();
-                        loadMembersByStatus(status);
+                clearOthers('fuzzySearchInput');
+                $.ajax({
+                    url: `/members/search`,
+                    method: 'GET',
+                    data: { name: name },
+                    dataType: 'json',
+                    success: function (data) {
+                        renderTable(data);
                     }
-                },
-                error: function(xhr) {
-                    alert("切換失敗: " + xhr.responseText);
-                }
+                });
             });
-        });
 
-        // 7. 更新表格 (Render)
-        function renderTable(list) {
-            const table = $('#example2');
-            if ($.fn.DataTable.isDataTable(table)) {
-                table.DataTable().clear().destroy();
-            }
-            const tbody = $('#example2 tbody');
-            tbody.empty();
+            // 5. 修改按鈕 (跳轉頁面)
+            $(document).on('click', '.btn-edit', function (e) {
+                e.preventDefault();
+                const id = $(this).data("id");
+                window.location.href = `MemberUpdate.html?memberId=${id}`;
+            });
 
-            // 如果 list 是 null
-            if (!list || list.length === 0) {
-                table.DataTable(dataTableConfig);
-                return;
-            }
+            // 6. 停用啟用 (PATCH 請求)
+            $(document).on('click', '.btn-toggle-status', function (e) {
+                e.preventDefault();
+                const id = $(this).data('id');
+                const currentStatus = $(this).data('status');
+                const confirmMsg = currentStatus === 'active' ? '確定要停用？' : '確定要啟用？';
 
-            list.forEach(item => {
-                const actionText = item.status === 'active' ? '停用' : '啟用';
-                // 處理大頭貼路徑：資料庫存的是 /memberImages/xxx.jpg，WebConfig 會映射
-                const picUrl = item.picture ? item.picture : 'https://via.placeholder.com/40';
+                if (!confirm(confirmMsg)) return;
 
-                tbody.append(`
+                $.ajax({
+                    url: `/members/${id}/toggle`,
+                    method: 'PATCH',
+                    success: function (success) {
+                        if (success) {
+                            const status = $('#statusSelect').val();
+                            loadMembersByStatus(status);
+                        }
+                    },
+                    error: function (xhr) {
+                        alert("切換失敗: " + xhr.responseText);
+                    }
+                });
+            });
+
+            // 7. 更新表格 (Render)
+            function renderTable(list) {
+                const table = $('#example2');
+                if ($.fn.DataTable.isDataTable(table)) {
+                    table.DataTable().clear().destroy();
+                }
+                const tbody = $('#example2 tbody');
+                tbody.empty();
+
+                // 如果 list 是 null
+                if (!list || list.length === 0) {
+                    table.DataTable(dataTableConfig);
+                    return;
+                }
+
+                list.forEach(item => {
+                    const actionText = item.status === 'active' ? '停用' : '啟用';
+                    // 處理大頭貼路徑：資料庫存的是 /memberImages/xxx.jpg，WebConfig 會映射
+                    const picUrl = item.picture ? item.picture : 'https://via.placeholder.com/40';
+
+                    tbody.append(`
                     <tr>
                         <td>${item.memberId}</td>
                         <td>
@@ -499,13 +547,13 @@
                         </td>
                     </tr>
                 `);
-            });
+                });
 
-            table.DataTable(dataTableConfig);
-        }
+                table.DataTable(dataTableConfig);
+            }
 
-        loadMembersByStatus('all');
-    });
+            loadMembersByStatus('all');
+        });
     </script>
 </body>
 
