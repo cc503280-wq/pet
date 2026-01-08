@@ -79,12 +79,12 @@
             </ul>
 		<!-- 右側 Navbar 按鈕 -->
 		    <ul class="navbar-nav ml-auto">
-		        <li class="nav-item">
-		            <a href="../../AdminLogoutServlet" class="btn btn-secondary btn-sm">
-		                <i class="fas fa-sign-out-alt"></i> 登出
-		            </a>
-		        </li>
-		    </ul>
+                <li class="nav-item">
+                    <a href="javascript:void(0)" id="logoutBtn" class="btn btn-secondary btn-sm">
+                        <i class="fas fa-sign-out-alt"></i> 登出
+                    </a>
+                </li>
+            </ul>
 
         </nav>
         <!-- /.navbar -->
@@ -345,175 +345,167 @@
     <script src="../../plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
     <!-- AdminLTE App -->
     <script src="../../dist/js/adminlte.min.js"></script>
+    <script src="../../dist/js/adminAuth.js"></script>
     <!-- AdminLTE for demo purposes
             <script src="../../dist/js/demo.js"></script> -->
     <!-- Page specific script -->
     <script>
-        $(function () {
-            //初始化DataTable	
-            $('#example2').DataTable({
-                "paging": true,
-                "lengthChange": false, // 關閉每頁筆數選項
-                "searching": false,    // 關閉搜索框
-                "ordering": true,
-                "info": true,          // 顯示資訊文字
-                "autoWidth": true,
-                "responsive": true,
+    $(function () {
+        // 1. 初始化 DataTable (共用設定)
+        const dataTableConfig = {
+            "paging": true,
+            "lengthChange": false,
+            "searching": false,
+            "ordering": true,
+            "info": true,
+            "autoWidth": true,
+            "responsive": true,
+            "dom": '<"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7 d-flex justify-content-end"p>>'
+        };
 
-                // **【關鍵修正】使用 dom 屬性強制分頁 (p) 靠右 (col-md-7)**
-                // 結構: 表格本體(t) / 新的一行: [資訊(i) - 左 5 欄] [分頁(p) - 右 7 欄]
-                "dom": '<"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7 d-flex justify-content-end"p>>'
+        $('#example2').DataTable(dataTableConfig);
 
+        // 2. 查詢全部、啟用中、停用
+        $('#statusSelect').on('change', function() {
+            const status = $(this).val(); 
+            loadMembersByStatus(status);
+        });
+
+        function loadMembersByStatus(status = 'all') {
+        	const url = (status === 'all') ? '/members' : `/members?status=${status}`;
+            $.ajax({
+                url: url, 
+                method: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    renderTable(data);
+                },
+                error: function(xhr) {
+                    console.error("載入失敗:", xhr.responseText);
+                }
             });
-            
-            //查詢全部、啟用中、停用
-            $('#statusSelect').on('change', function() {
-			    const status = $(this).val(); // 取得選擇值: all / active / disabled
-			    loadMembersByStatus(status);
-			});
-			
-			function loadMembersByStatus(status) {
-			    $.ajax({
-			        url: `/pet/MemberServlet?action=list&status=${status}`,
-			        method: 'GET',
-			        dataType: 'json',
-			        success: function(data) {
-			            renderTable(data);
-			        },
-			        error: function(xhr, status, error) {
-			            console.error(xhr.responseText);
-			        }
-			    });
-			}
+        }
 
-            //依ID查詢
-            $('#idSearchBtn').on('click', function (e) {
-                e.preventDefault();
+        // 3. 依 ID 查詢
+        $('#idSearchBtn').on('click', function (e) {
+            e.preventDefault();
+            const id = $('#idSearchInput').val().trim();
+            if (!id) return alert("請輸入 ID");
 
-                const id = $('#idSearchInput').val().trim();
-                if (!id) return alert("請輸入 ID");
-
-                $.ajax({
-                    url: `/pet/MemberServlet?action=queryById&memberId=${id}`,
-                    method: 'GET',
-                    dataType: 'json',
-                    success: function (data) {
-                        renderTable([data]);
-                        // 單筆用陣列包起來
+            $.ajax({
+                url: `/members/${id}`, 
+                method: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    if (data) {
+                        renderTable([data]); 
+                    } else {
+                        alert("查無此會員");
                     }
-                });
+                },
+                error: function() {
+                    alert("查無此會員");
+                }
             });
-            //模糊查詢
-            $('#fuzzySearchBtn').on('click', function (e) {
-                e.preventDefault();
+        });
 
-                const name = $('#fuzzySearchInput').val().trim();
-                if (!name) return alert("請輸入姓名");
+        // 4. 模糊查詢
+        $('#fuzzySearchBtn').on('click', function (e) {
+            e.preventDefault();
+            const name = $('#fuzzySearchInput').val().trim();
+            if (!name) return alert("請輸入姓名");
 
-                $.ajax({
-                    url: `/pet/MemberServlet?action=queryLikeName&name=${name}`,
-                    method: 'GET',
-                    dataType: 'json',
-                    success: function (data) {
-                        renderTable(data);
-                    }
-                });
+            $.ajax({
+                url: `/members/search`, 
+                method: 'GET',
+                data: { name: name },
+                dataType: 'json',
+                success: function (data) {
+                    renderTable(data);
+                }
             });
-            //修改
-            $(document).on('click', '.btn-edit', function (e) {
-                e.preventDefault();
+        });
 
-                const id = $(this).data("id");
+        // 5. 修改按鈕 (跳轉頁面)
+        $(document).on('click', '.btn-edit', function (e) {
+            e.preventDefault();
+            const id = $(this).data("id");
+            window.location.href = `MemberUpdate.html?memberId=${id}`;
+        });
 
-                // 跳頁
-                window.location.href = `MemberUpdate.jsp?memberId=${id}`;
-            });
+        // 6. 停用啟用 (PATCH 請求)
+        $(document).on('click', '.btn-toggle-status', function(e) {
+            e.preventDefault();
+            const id = $(this).data('id');
+            const currentStatus = $(this).data('status');
+            const confirmMsg = currentStatus === 'active' ? '確定要停用？' : '確定要啟用？';
             
-            //停用啟用
-            $(document).on('click', '.btn-toggle-status', function(e) {
-			    e.preventDefault();
-			    const id = $(this).data('id');
-			    const currentStatus = $(this).data('status');
-			    const newStatus = currentStatus == 'active' ? 'disabled' : 'active';
-			    const confirmMsg = newStatus == 'disabled' ? '確定要停用？' : '確定要啟用？';
-			    if (!confirm(confirmMsg)) return;
-			
-			    $.ajax({
-			        url: `/pet/MemberServlet?action=toggleStatus&memberId=${id}&status=${newStatus}`,
-			        method: 'POST',
-			        success: function() {
-			            loadAllMembers(); // 重新載入表格
-			        },
-			        error: function(xhr) {
-			            console.error(xhr.responseText);
-			        }
-			    });
-			});
-            //更新表格
-            function renderTable(list) {
-			    const table = $('#example2');
-			    if ($.fn.DataTable.isDataTable(table)) {
-			        table.DataTable().clear().destroy();
-			    }
-			    const tbody = $('#example2 tbody');
-			    tbody.empty();
-			
-			    list.forEach(item => {
-			        const actionText = item.status === 'active' ? '停用' : '啟用';
-			        tbody.append(`
-			            <tr>
-			                <td>${item.memberId}</td>
-			                <td>
-			                    <img src="${item.picture || 'https://via.placeholder.com/40'}" 
-			                         alt="avatar" 
-			                         style="width:40px; height:40px; border-radius:50%; object-fit:cover; margin-right:5px;">
-			                </td>
-			                <td>${item.email}</td>
-			                <td>${item.name}</td>
-			                <td>${item.gender}</td>
-			                <td>${item.birthday}</td>
-			                <td>${item.phone}</td>
-			                <td>${item.address}</td>
-			                <td>${item.points}</td>
-			                <td>${item.status}</td>
-			                <td class="text-center">
-			                    <a href="#" class="btn btn-secondary btn-sm btn-edit" data-id="${item.memberId}">修改</a>
-			                    <a href="#" class="btn btn-secondary btn-sm btn-toggle-status" data-id="${item.memberId}" data-status="${item.status}">${actionText}</a>
-			                </td>
-			            </tr>
-			        `);
-			    });
-			
-			    table.DataTable({
-			        "paging": true,
-			        "lengthChange": false,
-			        "searching": false,
-			        "ordering": true,
-			        "info": true,
-			        "autoWidth": true,
-			        "responsive": true,
-			        "dom": '<"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7 d-flex justify-content-end"p>>'
-			    });
-			}
+            if (!confirm(confirmMsg)) return;
 
-            
-            function loadAllMembers() {
-                $.ajax({
-                    url: '/pet/MemberServlet?action=list',
-                    method: 'GET',
-                    dataType: 'json',
-                    success: function(data) {
-                        renderTable(data);
-                    },
-                    error: function(xhr, status, error) {
-                        console.error(xhr.responseText);
+            $.ajax({
+                url: `/members/${id}/toggle`, 
+                method: 'PATCH', 
+                success: function(success) {
+                    if(success) {
+                        const status = $('#statusSelect').val();
+                        loadMembersByStatus(status);
                     }
-                });
+                },
+                error: function(xhr) {
+                    alert("切換失敗: " + xhr.responseText);
+                }
+            });
+        });
+
+        // 7. 更新表格 (Render)
+        function renderTable(list) {
+            const table = $('#example2');
+            if ($.fn.DataTable.isDataTable(table)) {
+                table.DataTable().clear().destroy();
+            }
+            const tbody = $('#example2 tbody');
+            tbody.empty();
+
+            // 如果 list 是 null
+            if (!list || list.length === 0) {
+                table.DataTable(dataTableConfig);
+                return;
             }
 
-            // 頁面一載入就呼叫
-            loadAllMembers();
-        });
+            list.forEach(item => {
+                const actionText = item.status === 'active' ? '停用' : '啟用';
+                // 處理大頭貼路徑：資料庫存的是 /memberImages/xxx.jpg，WebConfig 會映射
+                const picUrl = item.picture ? item.picture : 'https://via.placeholder.com/40';
+
+                tbody.append(`
+                    <tr>
+                        <td>${item.memberId}</td>
+                        <td>
+                            <img src="${picUrl}" 
+                                 alt="avatar" 
+                                 style="width:40px; height:40px; border-radius:50%; object-fit:cover;">
+                        </td>
+                        <td>${item.email}</td>
+                        <td>${item.name}</td>
+                        <td>${item.gender}</td>
+                        <td>${item.birthday || ''}</td>
+                        <td>${item.phone || ''}</td>
+                        <td>${item.address || ''}</td>
+                        <td>${item.points}</td>
+                        <td>${item.status}</td>
+                        <td class="text-center">
+                            <a href="#" class="btn btn-secondary btn-sm btn-edit" data-id="${item.memberId}">修改</a>
+                            <a href="#" class="btn btn-secondary btn-sm btn-toggle-status" data-id="${item.memberId}" data-status="${item.status}">${actionText}</a>
+                        </td>
+                    </tr>
+                `);
+            });
+
+            table.DataTable(dataTableConfig);
+        }
+
+        loadMembersByStatus('all');
+    });
     </script>
 </body>
 

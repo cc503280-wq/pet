@@ -5,6 +5,8 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import jakarta.persistence.*;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -49,7 +51,7 @@ public class Product {
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "category_id")
 	@NonNull
-	private Categories categories;
+	private Category category;
 
 	@Column(name = "image_url") // DB 通常是下底線，Java 用駝峰
 	private String imageUrl;
@@ -60,12 +62,14 @@ public class Product {
 	@Column(name = "is_active")
 	private Boolean isActive; // 對應 SQL 的 BIT (0或1)，Java 用 Boolean (true/false)
 
-	@CreatedDate // Spring 看到這個註解，會在 "新增" 時自動填入當下時間
-	@Column(name = "created_at", updatable = false) // 建立後就不能改
-	private LocalDateTime createdAt; // ✅ 不需要 @Temporal 了
+	@CreatedDate 
+	@Column(name = "created_at", updatable = false) 
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+	private LocalDateTime createdAt; 
 
-	@LastModifiedDate // Spring 看到這個註解，會在 "每次修改" 時自動更新時間
-	@Column(name = "updated_at") // ✅ 把 updatable=false 拿掉了，這樣才能更新！
+	@LastModifiedDate 
+	@Column(name = "updated_at") 
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	private LocalDateTime updatedAt;
 
 }

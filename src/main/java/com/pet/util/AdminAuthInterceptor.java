@@ -10,10 +10,10 @@ import jakarta.servlet.http.HttpSession;
 @Component
 public class AdminAuthInterceptor implements HandlerInterceptor {
 
-	@Override
-	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
-			throws Exception {
-		HttpSession session = request.getSession(false);
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+            throws Exception {
+        HttpSession session = request.getSession(false);
         boolean loggedIn = (session != null) && (session.getAttribute("adminId") != null);
 
         if (loggedIn) {
@@ -23,7 +23,6 @@ public class AdminAuthInterceptor implements HandlerInterceptor {
         // 未登入，轉跳登入頁 (根據你的路徑調整)
         response.sendRedirect(request.getContextPath() + "/admin/layout/Login.html");
         return false;
-	}
+    }
 
-	
 }

@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="zh-TW" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>商品管理系統</title>
+
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
+    <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
+    <link rel="stylesheet" th:href="@{/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css}">
+    <link rel="stylesheet" th:href="@{/plugins/datatables-responsive/css/responsive.bootstrap4.min.css}">
+
+    <style>
+        .brand-link {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 0.5rem 1rem;
+        }
+
+        .sidebar-collapse .brand-link {
+            justify-content: center;
+        }
+
+        .brand-link i {
+            width: 1.5rem;
+            text-align: center;
+        }
+
+        .box1 {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<body class="hold-transition sidebar-mini sidebar-collapse">
+    <div class="wrapper">
+        <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a href="javascript:void(0)" id="logoutBtn" class="btn btn-secondary btn-sm">
+                        <i class="fas fa-sign-out-alt"></i> 登出
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <aside class="main-sidebar sidebar-dark-primary elevation-4">
+            <!-- Brand Logo -->
+            <a href="/admin/layout/Home.html" class="brand-link">
+                <i class="fas fa-paw" style="color: #FFD43B; font-size: 1.5rem;"></i>
+                <span class="brand-text font-weight-light"></span>
+            </a>
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+                </div>
+                <!-- Sidebar Menu -->
+                <nav class="mt-2">
+                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
+                        data-accordion="false">
+                        <!-- Add icons to the links using the .nav-icon class
+               with font-awesome or any other icon font library -->
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-edit"></i>
+                                <p>
+                                    會員管理
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="AdminQueryAll.html" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>管理員資料</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="MemberQueryAll.html" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>會員基本資料</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="MemberPetQueryAll.html" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>會員寵物資料</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="CouponQueryAll.html" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>優惠券總覽</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="CouponUsersQueryAll.html" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>會員持有優惠券</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="FavoritesQueryAll.html" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>會員收藏清單</p>
+                                    </a>
+                                </li>
+                            </ul>
+						</li>
+                        <li class="nav-item">
+                            <a href="/admin/products" class="nav-link">
+                                <i class="nav-icon fas fa-edit"></i>
+                                <p>
+                                    商品管理
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                            	<li class="nav-item">
+								    <a th:href="@{/admin/products}" class="nav-link">
+								        <i class="far fa-circle nav-icon"></i>
+								        <p>商品管理</p>
+								    </a>
+								</li>
+	                            <li class="nav-item">
+								    <a th:href="@{/admin/categories}" class="nav-link">
+								        <i class="far fa-circle nav-icon"></i>
+								        <p>分類管理</p>
+								    </a>
+								</li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-edit"></i>
+                                <p>
+                                    訂單管理 <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item"><a href="../../orderList" class="nav-link"> <i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>查詢全部訂單</p>
+                                    </a></li>
+                                <li class="nav-item"><a href="../../shipmentsList" class="nav-link"> <i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>物流查詢</p>
+                                    </a></li>
+                                <li class="nav-item"><a href="../../orderItemsList" class="nav-link"> <i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>查詢全部訂單明細</p>
+                                    </a></li>
+                                <li class="nav-item"><a href="../order/shopping.jsp" class="nav-link"> <i
+                                            class="far fa-circle nav-icon"></i>
+                                        <p>新增訂單</p>
+                                    </a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a href="../../AppointmentServlet.do" class="nav-link">
+                                <i class="nav-icon fas fa-edit"></i>
+                                <p>
+                                    預約管理
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                        </li>
+
+                    </ul>
+                </nav>
+                <!-- /.sidebar-menu -->
+            </div>
+            <!-- /.sidebar -->
+        </aside>
+
+        <div class="content-wrapper">
+            <section class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-12 box1">
+                            <h1>商品管理</h1>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header d-flex align-items-center">
+                                    <h3 class="card-title">商品列表</h3>
+
+                                    <div class="d-flex align-items-center ml-auto">
+                                        <button onclick="openCreateModal()" class="btn btn-success btn-sm mr-2">
+                                            <i class="fas fa-plus"></i> 新增
+                                        </button>
+                                        <button onclick="loadAllProducts()" class="btn btn-info btn-sm mr-2">
+                                            <i class="fas fa-list"></i> 全部
+                                        </button>
+                                        <button onclick="loadInactiveProducts()" class="btn btn-warning btn-sm mr-2">
+                                            <i class="fas fa-archive"></i> 未上架
+                                        </button>
+
+                                        <div class="input-group input-group-sm mr-2" style="width: 150px;">
+                                            <select id="categorySelect" class="form-control"
+                                                onchange="filterByCategory()">
+                                                <option value="" disabled selected>選擇分類</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="input-group input-group-sm" style="width: 150px;">
+                                            <input type="text" id="searchInput" class="form-control"
+                                                placeholder="輸入關鍵字...">
+                                            <div class="input-group-append">
+                                                <button class="btn btn-secondary" onclick="searchProducts()">
+                                                    <i class="fas fa-search"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="card-body">
+                                    <table id="productTable" class="table table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>圖片</th>
+                                                <th>名稱</th>
+                                                <th>價格</th>
+                                                <th>庫存</th>
+                                                <th>類別</th>
+                                                <th>狀態</th>
+                                                <th class="text-center">操作</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tableBody">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <footer class="main-footer">
+            <strong>Copyright &copy; 2026 Pet Shop.</strong>
+        </footer>
+    </div>
+
+	<div class="modal fade" id="productModal" tabindex="-1" aria-hidden="true">
+	    <div class="modal-dialog">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                <h5 class="modal-title" id="modalTitle">新增商品</h5>
+	                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	                    <span aria-hidden="true">&times;</span>
+	                </button>
+	            </div>
+	            <div class="modal-body">
+	                <form id="productForm">
+					    <input type="hidden" id="modalProductId">
+					
+					    <div class="form-group">
+					        <label>商品名稱</label>
+					        <input type="text" class="form-control" id="modalProductName" required>
+					    </div>
+					
+					    <div class="form-group">
+					        <label>商品描述</label>
+					        <textarea class="form-control" id="modalDescription" rows="3"></textarea>
+					    </div>
+					
+					    <div class="form-row">
+					        <div class="form-group col-md-6">
+					            <label>價格</label>
+					            <input type="number" class="form-control" id="modalPrice" required>
+					        </div>
+					        <div class="form-group col-md-6">
+					            <label>庫存</label>
+					            <input type="number" class="form-control" id="modalStock" required>
+					        </div>
+					    </div>
+					
+					    <div class="form-group">
+					        <label>類別</label>
+					        <select class="form-control" id="modalCategoryId">
+					            <option value="" disabled selected>請選擇分類</option>
+					        </select>
+					    </div>
+					
+					    <div class="form-group">
+					        <label>倒數日期</label>
+					        <input type="datetime-local" class="form-control" id="modalExpireDate">
+					    </div>
+					
+					    <div class="form-group">
+					        <label>商品圖片</label>
+					        <input type="file" class="form-control-file" id="modalImageFile" accept="image/*" onchange="previewImage()">
+					        <div class="mt-2">
+					            <img id="modalImagePreview" src="" style="max-width: 200px; display: none;" class="img-thumbnail">
+					        </div>
+					    </div>
+					</form>
+	            </div>
+	            <div class="modal-footer">
+	                <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+	                <button type="button" class="btn btn-primary" onclick="submitProduct()">儲存</button>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+
+    <div class="modal fade" id="viewModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-info text-white">
+                    <h5 class="modal-title">單筆資料檢視</h5>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">ID:</label>
+                            <div class="col-sm-10">
+                                <p class="form-control-static font-weight-bold" id="viewId"></p>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">名稱:</label>
+                            <div class="col-sm-10">
+                                <p class="form-control-static" id="viewName"></p>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">價格:</label>
+                            <div class="col-sm-10">
+                                <p class="form-control-static text-danger" id="viewPrice"></p>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">庫存:</label>
+                            <div class="col-sm-10">
+                                <p class="form-control-static" id="viewStock"></p>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">類別:</label>
+                            <div class="col-sm-10">
+                                <span class="badge badge-secondary" id="viewCategory"></span>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">封面:</label>
+                            <div class="col-sm-10">
+                                <img id="viewImage" src="" width="200" class="img-thumbnail" style="display:none;">
+                                <span id="noImageText" class="text-muted">無圖片</span>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">商品描述:</label>
+                            <div class="col-sm-10">
+                                <p class="form-control-static" id="viewDescription"></p>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">創建日期:</label>
+                            <div class="col-sm-10">
+                                <p class="form-control-static small text-muted" id="viewCreatedAt"></p>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script th:src="@{/plugins/jquery/jquery.min.js}"></script>
+    <script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+    <script th:src="@{/dist/js/adminAuth.js}"></script>
+    <script th:src="@{/dist/js/adminlte.min.js}"></script>
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+
+        // 設定 API 基礎路徑 (Thymeleaf 會自動解析 @{...} 為正確的 ContextPath)
+        const API_BASE = /*[[@{/products}]]*/ '/products';
+        const API_CATEGORY = /*[[@{/categories}]]*/ '/categories';
+        const IMAGE_BASE_URL = '';
+
+        // 頁面載入完成後執行
+        $(document).ready(function () {
+            loadCategories();   // 1. 載入分類下拉選單
+            loadAllProducts();  // 2. 載入所有商品
+            loadCreateCategories();
+            // 綁定搜尋框 Enter 事件
+            $('#searchInput').keypress(function (e) {
+                if (e.which == 13) searchProducts();
+            });
+        });
+
+        // ==========================================
+        // 1. 載入資料的通用函式 (GET)
+        // ==========================================
+        function loadData(url) {
+            $('#tableBody').html('<tr><td colspan="8" class="text-center">載入中...</td></tr>');
+
+            $.ajax({
+                url: url,
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    renderTable(data);
+                },
+                error: function (xhr) {
+                    console.error(xhr);
+                    // 這裡可以加強錯誤處理
+                    $('#tableBody').html('<tr><td colspan="8" class="text-center text-danger">載入失敗</td></tr>');
+                }
+            });
+        }
+
+        // ==========================================
+        // 2. 渲染表格 HTML (把 JSON 變成 <tr>)
+        // ==========================================
+        function renderTable(products) {
+            let html = '';
+            if (products.length === 0) {
+                html = '<tr><td colspan="8" class="text-center">沒有找到相關資料</td></tr>';
+            } else {
+                $.each(products, function (index, p) {
+                    // 防止 null 錯誤
+                    let categoryName = (p.category && p.category.categoryName) ? p.category.categoryName : '未分類';
+                    let imgUrl = p.imageUrl ? p.imageUrl : 'https://via.placeholder.com/50';
+                    let statusBadge = p.isActive ? '<span class="badge badge-success">上架中</span>' : '<span class="badge badge-secondary">已下架</span>';
+
+                    let btnClass = p.isActive ? 'btn-danger' : 'btn-success';
+                    let btnIcon = p.isActive ? 'fa-arrow-down' : 'fa-arrow-up';
+                    let btnText = p.isActive ? '下架' : '上架';
+
+                    html += `
+                        <tr>
+                            <td>${p.productId}</td>
+                            <td><img src="${imgUrl}" class="table-img"></td>
+                            <td>${p.productName}</td>
+                            <td>$${p.price}</td>
+                            <td class="${p.stock < 10 ? 'text-danger font-weight-bold' : ''}">${p.stock}</td>
+                            <td>${categoryName}</td>
+                            <td>${statusBadge}</td>
+                            <td class="text-center">
+                            	<button class="btn btn-info btn-sm mr-1" onclick="viewProduct(${p.productId})">
+                            		<i class="fas fa-eye"></i> 查看
+                        		</button>
+                            	<button class="btn btn-secondary btn-sm mr-1" onclick="openEditModal(${p.productId})">
+                            	    <i class="fas fa-edit"></i> 修改
+                            	</button>
+                                <button class="btn ${btnClass} btn-sm" onclick="toggleStatus(${p.productId})">
+                                    <i class="fas ${btnIcon}"></i> ${btnText}
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            }
+            $('#tableBody').html(html);
+        }
+
+        
+     	// ==========================================
+        // 自動載入分類下拉選單
+        // ==========================================
+        function loadCreateCategories() {
+            $.ajax({
+                url: API_CATEGORY, // 這是之前定義的 const API_CATEGORY = '/categories'
+                type: 'GET',
+                success: function(categories) {
+                    // 1. 抓到下拉選單元素
+                    const select = $('#modalCategoryId');
+                    
+                    // 2. 清空現有選項，只保留「請選擇分類」
+                    select.empty();
+                    select.append('<option value="" disabled selected>請選擇分類</option>');
+
+                    // 3. 跑迴圈，把後端回傳的每一個分類加進去
+                    // 假設分類物件是 { categoryId: 1, categoryName: '貓食' }
+                    $.each(categories, function(index, category) {
+                        let option = `<option value="${category.categoryId}">${category.categoryName}</option>`;
+                        select.append(option);
+                    });
+                },
+                error: function(err) {
+                    console.error('無法載入分類:', err);
+                }
+            });
+        }
+        
+     	
+     	// ==========================================
+        // 打開「修改」視窗
+        // ==========================================
+        function openEditModal(id) {
+            // 1. 先去後端抓資料 (跟查看詳情一樣)
+            $.ajax({
+                url: API_BASE + '/' + id, // GET /products/101
+                type: 'GET',
+                success: function(p) {
+                    // 2. 填入資料到表單
+                    $('#modalProductId').val(p.productId); // 🔴 最重要！存 ID
+                    $('#modalProductName').val(p.productName);
+                    $('#modalDescription').val(p.description);
+                    $('#modalPrice').val(p.price);
+                    $('#modalStock').val(p.stock);
+                    
+                    // 填入日期 (資料庫存的是字串 "2026-01-05T14:30"，剛好對應 datetime-local)
+                    $('#modalExpireDate').val(p.expireDate);
+
+                    // 填入分類 (注意: 後端回傳的可能是物件，要取 ID)
+                    if (p.category) {
+                        $('#modalCategoryId').val(p.category.categoryId);
+                    }
+
+                    // 處理圖片預覽
+                    // 清空檔案選擇器 (因為使用者可能不打算換圖)
+                    $('#modalImageFile').val(''); 
+                    
+                    if (p.imageUrl) {
+                        // 顯示舊圖片
+                        $('#modalImagePreview').attr('src', IMAGE_BASE_URL + p.imageUrl).show();
+                    } else {
+                        $('#modalImagePreview').hide();
+                    }
+
+                    // 3. 改標題並顯示
+                    $('#modalTitle').text('修改商品');
+                    $('#productModal').modal('show');
+                },
+                error: function(err) {
+                    alert('無法載入商品資料');
+                }
+            });
+        }
+     	
+        // ==========================================
+        // 3. 各種功能按鈕
+        // ==========================================
+
+        function loadAllProducts() {
+            loadData(API_BASE + '/admin/all');
+        }
+
+        function loadInactiveProducts() {
+            loadData(API_BASE + '/admin/inactive');
+        }
+
+        function searchProducts() {
+            let keyword = $('#searchInput').val();
+            if (keyword.trim() === '') {
+                loadAllProducts();
+            } else {
+                loadData(API_BASE + '/search?keyword=' + encodeURIComponent(keyword));
+            }
+        }
+
+        function filterByCategory() {
+            let catId = $('#categorySelect').val();
+            if (catId) {
+                loadData(API_BASE + '/category/' + catId);
+            }
+        }
+
+        function toggleStatus(id) {
+            if (!confirm('確定要變更此商品的上下架狀態嗎？')) return;
+
+            $.ajax({
+                url: API_BASE + '/' + id + '/status',
+                type: 'PUT',
+                success: function (response) {
+                    alert('更新成功！');
+                    loadAllProducts(); // 重新整理列表
+                },
+                error: function (xhr) {
+                    alert('更新失敗：' + (xhr.responseJSON ? xhr.responseJSON.message : '未知錯誤'));
+                }
+            });
+        }
+
+        function loadCategories() {
+            $.ajax({
+                url: API_CATEGORY,
+                type: 'GET',
+                dataType: 'json',
+                success: function (cats) {
+                    let options = '<option value="" disabled selected>選擇分類</option>';
+                    $.each(cats, function (i, cat) {
+                        options += '<option value="' + cat.categoryId + '">' + cat.categoryName + '</option>';
+                    });
+                    $('#categorySelect').html(options);
+                }
+            });
+        }
+
+        function openCreateModal() {
+            $('#productForm')[0].reset();
+            $('#modalProductId').val(''); 
+            $('#modalTitle').text('新增商品');
+            
+            // 🔴 新增：清空圖片預覽
+            $('#modalImageFile').val(''); // 清空檔案欄位
+            $('#modalImagePreview').attr('src', '').hide(); // 隱藏預覽圖
+
+            $('#productModal').modal('show');
+        }
+
+        
+        function submitProduct() {
+            // 1. 建立 FormData
+            let formData = new FormData();
+
+            // 2. 塞入欄位
+            formData.append('productName', $('#modalProductName').val());
+            formData.append('description', $('#modalDescription').val());
+            formData.append('price', $('#modalPrice').val());
+            formData.append('stock', $('#modalStock').val());
+            formData.append('categoryId', $('#modalCategoryId').val());
+            
+            let expireDate = $('#modalExpireDate').val();
+            if(expireDate) {
+                formData.append('expireDate', expireDate);
+            }
+
+            // 處理圖片
+            const fileInput = $('#modalImageFile')[0];
+            if (fileInput.files && fileInput.files[0]) {
+                formData.append('file', fileInput.files[0]); 
+            }
+
+            // 判斷是新增還是修改
+            // 取得隱藏的 ID
+            let id = $('#modalProductId').val(); 
+            
+            // 決定網址：如果有 ID 就是 Update，沒有就是 Create
+            let url = (id) ? (API_BASE + '/update/' + id) : (API_BASE + '/create');
+
+            // 4. 發送 AJAX
+            $.ajax({
+                url: url, // 🟢 這裡改成變數 url
+                type: 'POST',  
+                data: formData,
+                processData: false, 
+                contentType: false, 
+                success: function(res) {
+                    // 提示訊息也可以動態一下
+                    let msg = (id) ? '修改成功！' : '新增成功！';
+                    alert(msg);
+                    
+                    $('#productModal').modal('hide');
+                    loadAllProducts(); 
+                },
+                error: function(xhr) {
+                    console.error(xhr);
+                    alert('儲存失敗：' + (xhr.responseText || '未知錯誤'));
+                }
+            });
+        }
+        
+        function viewProduct(id) {
+            // 1. 發送 AJAX 請求抓取單筆資料
+            $.ajax({
+                url: API_BASE + '/' + id, // 對應後端的 @GetMapping("/{id}")
+                type: 'GET',
+                success: function (p) {
+                    // 2. 填入資料到 Modal
+                    $('#viewId').text(p.productId);
+                    $('#viewName').text(p.productName);
+                    $('#viewPrice').text('$' + p.price);
+                    $('#viewStock').text(p.stock);
+                    $('#viewDescription').text(p.description || '無描述'); // 防止 null
+
+                    // 處理日期 (如果後端回傳的是字串或時間戳記)
+                    $('#viewCreatedAt').text(p.createdAt || p.updatedAt || '未知');
+
+                    // 處理分類
+                    if (p.category) {
+                        $('#viewCategory').text(p.category.categoryName);
+                    } else {
+                        $('#viewCategory').text('未分類');
+                    }
+
+                    // 處理圖片
+                    if (p.imageUrl) {
+                        $('#viewImage').attr('src', p.imageUrl).show();
+                        $('#noImageText').hide();
+                    } else {
+                        $('#viewImage').hide();
+                        $('#noImageText').show();
+                    }
+
+                    // 3. 顯示 Modal
+                    $('#viewModal').modal('show');
+                },
+                error: function (err) {
+                    alert('無法讀取商品資料');
+                }
+            });
+        }
+
+        function previewImage() {
+            const fileInput = $('#modalImageFile')[0];
+            const preview = $('#modalImagePreview');
+
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    preview.attr('src', e.target.result);
+                    preview.show(); // 顯示圖片
+                }
+
+                reader.readAsDataURL(fileInput.files[0]);
+            } else {
+                preview.hide(); // 沒選圖片就藏起來
+            }
+        }
+        
+
+        /*]]>*/
+    </script>
+</body>
+
+</html>
