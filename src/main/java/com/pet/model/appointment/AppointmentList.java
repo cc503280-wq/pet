@@ -24,6 +24,8 @@ public class AppointmentList {
 	private String mainService;
 	@Column(name = "addon_items")
 	private String addonItem;
+	@Column(name = "groomer_Id")
+	private String groomerId;
 	@Column(name = "groomer_name")
 	private String groomerName;
 	@Column(name = "appointment_date")
