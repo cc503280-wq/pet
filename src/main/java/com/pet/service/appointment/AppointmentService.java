@@ -134,6 +134,20 @@ public class AppointmentService {
 	@Transactional
 	public void saveAppointment(AppointmentRequest request) {
 		
+		LocalTime newStartTime = LocalTime.parse(request.getStartTime());
+        LocalTime newEndTime = LocalTime.parse(request.getEndTime());
+        
+        int conflictCount = appointmentRepository.countPetActiveAppointments(
+                request.getPetId(),
+                request.getAppointmentDate(),
+                newStartTime,
+                newEndTime
+            );
+        
+        if (conflictCount > 0) {
+            throw new RuntimeException("預約失敗：該寵物在此时段已有其他預約！");
+        }
+        
 		Appointment appointment = new Appointment();
 		
 		String lockStartTime = request.getStartTime();		

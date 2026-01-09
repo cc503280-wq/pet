@@ -386,6 +386,19 @@
 	          timeGridHalfHourLine: { borderBottom: '1px dotted #e5e5e5' },
 	        },
 	      },
+
+	      template: {
+	          time: function(event) {
+	              const appt = event.raw; 
+	             
+	              return `<span style="font-weight: bold;">${appt.startTime}</span><br>
+                  <span style="font-size: 12px;">${appt.groomerName}</span><br>
+                  <span style="font-size: 12px;">${appt.petName}</span>`;
+	          },
+	          allday: function(event) {
+	               return `<span>${event.title}</span>`;
+	          }
+	      },
 	      
 	      //預留給後面加工塞入資料
 	      calendars: []
