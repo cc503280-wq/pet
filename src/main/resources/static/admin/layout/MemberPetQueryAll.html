@@ -521,21 +521,19 @@
                 const tbody = $('#example2 tbody');
                 tbody.empty();
 
-                if (!list || list.length === 0) {
-                    tbody.append('<tr><td colspan="7" class="text-center">暫無資料</td></tr>');
-                } else {
+                if (list && list.length > 0) {
                     list.forEach(item => {
                         tbody.append(`
-                		<tr>
-                        <td>${item.petId}</td>
-                        <td>${item.member ? item.member.memberId : '無'}</td>
-                        <td>${item.petName}</td>
-                        <td>${item.petType}</td>
-                        <td>${item.petBreed}</td>
-                        <td>${item.petAge}</td>
-                        <td>${item.petSize}</td>
-                    </tr>
-                `);
+                            <tr>
+                                <td>${item.petId}</td>
+                                <td>${item.member ? item.member.memberId : '無'}</td>
+                                <td>${item.petName}</td>
+                                <td>${item.petType}</td>
+                                <td>${item.petBreed}</td>
+                                <td>${item.petAge}</td>
+                                <td>${item.petSize}</td>
+                            </tr>
+                        `);
                     });
                 }
 
