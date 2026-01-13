@@ -1,6 +1,7 @@
 package com.pet.service.member;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -13,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.pet.dao.member.MemberRepository;
+import com.pet.dto.member.RegistrationStatsDTO;
 import com.pet.model.member.Member;
 
 
@@ -26,20 +28,6 @@ public class MemberService {
 	@Autowired
 	private Cloudinary cloudinary;
 	
-	// 上傳到雲端的小工具
-    private String saveImageToCloud(MultipartFile file) throws IOException {
-        if (file == null || file.isEmpty()) return null;
-
-        Map params = ObjectUtils.asMap(
-            "folder", "pet_shop_members", // 雲端資料夾名稱
-            "use_filename", true,
-            "unique_filename", true
-        );
-
-        Map uploadResult = cloudinary.uploader().upload(file.getBytes(), params);
-        return (String) uploadResult.get("secure_url"); // 直接回傳 https 網址
-    }
-    
 	public List<Member> getAllMembers() {
         return memberRepository.findAllByOrderByMemberIdAsc();
     }
@@ -114,5 +102,57 @@ public class MemberService {
             return true;
         }
         return false;
+    }
+    
+	 // 上傳到雲端的小工具
+	    private String saveImageToCloud(MultipartFile file) throws IOException {
+	        if (file == null || file.isEmpty()) return null;
+	
+	        Map params = ObjectUtils.asMap(
+	            "folder", "pet_shop_members", // 雲端資料夾名稱
+	            "use_filename", true,
+	            "unique_filename", true
+	        );
+	
+	        Map uploadResult = cloudinary.uploader().upload(file.getBytes(), params);
+	        return (String) uploadResult.get("secure_url"); // 直接回傳 https 網址
+	    }
+    
+    /**
+     * 根據前端傳來的 period 參數，回傳對應的統計數據
+     */
+    public RegistrationStatsDTO getMemberRegistrationStats(String period) {
+        List<Object[]> rawData;
+        
+        if (period.startsWith("all_")) {
+            // 處理鑽取：擷取 all_ 之後的年份
+            int year = Integer.parseInt(period.split("_")[1]);
+            rawData = memberRepository.getStatsBySpecificYear(year);
+        } else {
+            switch (period) {
+                case "all":
+                    // 點擊「歷年總覽」按鈕，回傳各年份總量
+                    rawData = memberRepository.getAllTimeYearlyStats();
+                    break;
+                case "1y":
+                    rawData = memberRepository.getThisYearStats();
+                    break;
+                case "6m":
+                default:
+                    rawData = memberRepository.getRecentSixMonthsStats();
+                    break;
+            }
+        }
+
+        // 2. 將 List<Object[]> 拆解成前端 Chart.js 好用的格式
+        List<String> labels = new ArrayList<>();
+        List<Long> data = new ArrayList<>();
+
+        for (Object[] row : rawData) {
+            labels.add(String.valueOf(row[0])); // 月份 (例如 "2023-12")
+            data.add(((Number) row[1]).longValue()); // 數量
+        }
+
+        return new RegistrationStatsDTO(labels, data);
     }
 }

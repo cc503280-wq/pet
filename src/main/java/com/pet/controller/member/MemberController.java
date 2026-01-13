@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.pet.dto.member.RegistrationStatsDTO;
 import com.pet.model.member.Member;
 import com.pet.service.member.MemberService;
 
@@ -24,8 +25,6 @@ public class MemberController {
 
 	@Autowired
     private MemberService memberService;
-
-//    private final String UPLOAD_PATH = "C:/memberImages/";
 
     // 查詢 (含狀態篩選)
     @GetMapping
@@ -69,6 +68,13 @@ public class MemberController {
     public boolean toggleMemberStatus(@PathVariable Integer id) {
         return memberService.toggleStatus(id);
     }
+    
+    
+      //圖表專用 API：獲取會員註冊統計，路徑：GET /members/stats?period=6m
+    @GetMapping("/stats")
+    public RegistrationStatsDTO getStats(@RequestParam(defaultValue = "6m") String period) {
+        return memberService.getMemberRegistrationStats(period);
+    }
 
 //    // 私有方法：處理照片存檔 
 //    private void processImage(Member member, MultipartFile file) throws IOException {
@@ -84,4 +90,5 @@ public class MemberController {
 //            member.setPicture("/memberImages/" + fileName);
 //        }
 //    }
+    
 }
