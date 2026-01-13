@@ -20,7 +20,7 @@ public class AdminAuthInterceptor implements HandlerInterceptor {
             return true; // 已登入，放行
         }
 
-        // 未登入，轉跳登入頁 (根據你的路徑調整)
+        // 未登入，轉跳登入頁
         response.sendRedirect(request.getContextPath() + "/admin/layout/Login.html");
         return false;
     }

@@ -26,8 +26,6 @@ public class MemberController {
 	@Autowired
     private MemberService memberService;
 
-//    private final String UPLOAD_PATH = "C:/memberImages/";
-
     // 查詢 (含狀態篩選)
     @GetMapping
     public List<Member> list(@RequestParam(defaultValue = "all") String status) {

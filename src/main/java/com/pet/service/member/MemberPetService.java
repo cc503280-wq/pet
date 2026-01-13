@@ -40,14 +40,14 @@ public class MemberPetService {
      * 根據前端傳來的 type 參數，回傳對應的寵物統計數據
      */
     public PetStatsDTO getPetStats(String type) {
-        // 1. 處理堆疊長條圖 (種類 + 體型)
+        // 堆疊長條圖 (種類 + 體型)
         if ("stacked".equals(type)) {
             List<Object[]> rawData = memberPetRepository.countTypeAndSizeGrouped();
             List<String> labels = new ArrayList<>();
             List<Long> data = new ArrayList<>();
 
             for (Object[] row : rawData) {
-                // 將 種類 與 體型 用逗號合併成標籤，交給前端拆解
+                // 將種類與體型用逗號合併成標籤，交給前端拆解
                 // row[0]=種類, row[1]=體型, row[2]=數量
                 labels.add(row[0] + "," + row[1]);
                 data.add(((Number) row[2]).longValue());
@@ -55,8 +55,8 @@ public class MemberPetService {
             return new PetStatsDTO(labels, data);
         }
 
-        // 2. 處理年齡分布 (圓餅圖：包含全體與特定種類連動)
-        // 此時 type 可能是 null (全體) 或 "狗"、"貓" (特定種類)
+        // 圓餅圖(年齡分布)
+        // type 可能是null(全體)或 "狗"、"貓" (特定種類)
         List<Object[]> rawData = memberPetRepository.countAgeStatsBySpecificType(type);
         List<String> labels = new ArrayList<>();
         List<Long> data = new ArrayList<>();

@@ -9,7 +9,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import com.pet.util.AdminAuthInterceptor;
 
 public class WebConfig implements WebMvcConfigurer {
-    
+
     @Autowired
     private AdminAuthInterceptor authInterceptor;
 
