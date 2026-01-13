@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pet.dto.member.PetStatsDTO;
 import com.pet.model.member.MemberPet;
 import com.pet.service.member.MemberPetService;
 
@@ -44,5 +45,11 @@ public class MemberPetController {
             @RequestParam(required = false) String petAge,
             @RequestParam(required = false) String petSize) {
         return memberPetService.getPetsByConditions(petType, petAge, petSize);
+    }
+    
+    //寵物圖表分析
+    @GetMapping("/stats")
+    public PetStatsDTO getStats(@RequestParam(required = false) String type) {
+        return memberPetService.getPetStats(type);
     }
 }

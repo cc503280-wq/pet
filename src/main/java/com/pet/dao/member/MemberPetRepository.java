@@ -28,6 +28,14 @@ public interface MemberPetRepository extends JpaRepository<MemberPet, Integer> {
 			+ "ORDER BY p.petId")
 	List<MemberPet> findPetsByConditions(@Param("type") String type, @Param("age") String age, @Param("size") String size);
 	
+    // 根據種類過濾年齡分布 (用於連動圓餅圖)
+    @Query("SELECT p.petAge, COUNT(p) FROM MemberPet p WHERE (:type IS NULL OR p.petType = :type) GROUP BY p.petAge")
+    List<Object[]> countAgeStatsBySpecificType(@Param("type") String type);
+
+    //查詢種類跟體型
+    @Query("SELECT p.petType, p.petSize, COUNT(p) FROM MemberPet p GROUP BY p.petType, p.petSize")
+    List<Object[]> countTypeAndSizeGrouped();
+	
 	//預約
 	List<MemberPet> findByMemberMemberId(Integer memberId);
 }
