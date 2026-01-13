@@ -334,19 +334,16 @@
             // 1. 初始化寵物統計 (種類 + 體型堆疊圖)
             async function initPetStats() {
                 try {
-                    // 修正 1：路徑對應後端的 @GetMapping("/stats")，並傳入參數 type=stacked
                     const res = await $.getJSON('/memberPets/stats', { type: 'stacked' });
                     
                     // 後端回傳PetStatsDTO { labels: ["狗,小型", "狗,中型"...], data: [10, 20...] }
                     const rawLabels = res.labels;
                     const rawData = res.data;
 
-                    // 定義顯示順序與顏色
                     const typeOrder = ['狗', '貓', '其他'];
                     const sizeOrder = ['小型', '中型', '大型'];
                     const colors = { '小型': '#f56954', '中型': '#00a65a', '大型': '#f39c12' };
 
-                    // 修正 2：將後端扁平化的 labels ("種類,體型") 重新結構化，以符合 Chart.js 堆疊圖格式
                     let groupedData = {};
                     typeOrder.forEach(t => {
                         groupedData[t] = { '小型': 0, '中型': 0, '大型': 0 };

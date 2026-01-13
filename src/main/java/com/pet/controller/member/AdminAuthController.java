@@ -35,12 +35,12 @@ public class AdminAuthController {
             // 登入成功：權限存入 session
             session.setAttribute("adminId", admin.getAdminId());
             session.setAttribute("role", admin.getRole());
-            session.setAttribute("adminName", admin.getName()); // 新增
+            session.setAttribute("adminName", admin.getName()); 
 
             response.put("status", "success");
             response.put("role", admin.getRole());
-            response.put("name", admin.getName());       // 新增
-            response.put("adminId", String.valueOf(admin.getAdminId())); // 新增 (轉成字串)
+            response.put("name", admin.getName());       
+            response.put("adminId", String.valueOf(admin.getAdminId())); 
         } else {
             // 登入失敗
             response.put("status", "fail");

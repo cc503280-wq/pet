@@ -1,7 +1,6 @@
 package com.pet.service.member;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -29,20 +28,6 @@ public class MemberService {
 	@Autowired
 	private Cloudinary cloudinary;
 	
-	// 上傳到雲端的小工具
-    private String saveImageToCloud(MultipartFile file) throws IOException {
-        if (file == null || file.isEmpty()) return null;
-
-        Map params = ObjectUtils.asMap(
-            "folder", "pet_shop_members", // 雲端資料夾名稱
-            "use_filename", true,
-            "unique_filename", true
-        );
-
-        Map uploadResult = cloudinary.uploader().upload(file.getBytes(), params);
-        return (String) uploadResult.get("secure_url"); // 直接回傳 https 網址
-    }
-    
 	public List<Member> getAllMembers() {
         return memberRepository.findAllByOrderByMemberIdAsc();
     }
@@ -118,6 +103,20 @@ public class MemberService {
         }
         return false;
     }
+    
+	 // 上傳到雲端的小工具
+	    private String saveImageToCloud(MultipartFile file) throws IOException {
+	        if (file == null || file.isEmpty()) return null;
+	
+	        Map params = ObjectUtils.asMap(
+	            "folder", "pet_shop_members", // 雲端資料夾名稱
+	            "use_filename", true,
+	            "unique_filename", true
+	        );
+	
+	        Map uploadResult = cloudinary.uploader().upload(file.getBytes(), params);
+	        return (String) uploadResult.get("secure_url"); // 直接回傳 https 網址
+	    }
     
     /**
      * 根據前端傳來的 period 參數，回傳對應的統計數據

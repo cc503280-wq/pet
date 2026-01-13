@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PetStatsDTO {
-    private List<String> labels; // 圖表標籤 (如: 狗, 貓, 其他 或 幼年, 成年)
-    private List<Long> data;     // 統計數值
+    private List<String> labels; // 圖表標籤 (如: 狗, 貓, 其他, 幼年, 成年)
+    private List<Long> data;     // 統計數值 
 }
