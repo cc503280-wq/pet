@@ -3,6 +3,7 @@ package com.pet.controller.product;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,8 +29,14 @@ public class ProductController {
 	// 取得所有商品 (後台管理用)
 	// 網址: GET /products/admin/all
 	@GetMapping("/admin/all")
-	public List<Product> getAllProducts() {
-		return pService.findAllProducts();
+	public ResponseEntity<Page<Product>> getAllProducts(
+	        @RequestParam(defaultValue = "0") int page, 
+	        @RequestParam(defaultValue = "10") int size
+	) {
+	    // 🟢 呼叫 Service，而不是自己去 new PageRequest
+	    Page<Product> result = pService.getAllProductsWithPagination(page, size);
+	    
+	    return ResponseEntity.ok(result);
 	}
 
 	// 取得上架商品

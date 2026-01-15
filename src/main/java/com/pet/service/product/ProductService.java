@@ -11,6 +11,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -247,4 +251,13 @@ public class ProductService {
 	        }
 	    }
 	}
+	
+	public Page<Product> getAllProductsWithPagination(int page, int size) {
+        // 1. 設定分頁與排序 (依照 ID 倒序，讓新商品在最上面)
+        Pageable pageable = PageRequest.of(page, size, Sort.by("productId").ascending());
+        
+        // 2. 呼叫 Repository
+        return pRepos.findAll(pageable);
+    }
+	
 }

@@ -49,6 +49,17 @@ public class ProductImageService {
         // Case C: 如果 maxOrder 是 5 (有封面+4張圖)，currentOrder 就是 5。迴圈進去後第一張變 6。
         int currentOrder = (maxOrder == null) ? 0 : maxOrder;
         
+        // 如果 maxOrder 不是 null (代表已經有圖)，下一張要 +1
+        // 如果 maxOrder 是 null (currentOrder=0)，下一張還是 0 (第一張就是封面)
+        if (maxOrder != null) {
+            currentOrder = maxOrder + 1;
+        } else {
+            currentOrder = 0;
+        }
+        // 用來標記「是否需要更新商品主圖」
+        // 如果原本的 image_url 是空的，代表我們要把第一張新圖設為封面
+        boolean needUpdateProductCover = (product.getImageUrl() == null || product.getImageUrl().trim().isEmpty());
+        
         for (MultipartFile file : files) {
             try {                
                 // 1. 準備參數
@@ -64,11 +75,18 @@ public class ProductImageService {
                 ProductImage img = new ProductImage();
                 img.setProduct(product);
                 img.setImageUrl(imageUrl); // 這裡存進去的就是網址了！
+                img.setSortOrder(currentOrder);
+
+                if (needUpdateProductCover && currentOrder == 0) {
+                    product.setImageUrl(imageUrl);
+                    productRepository.save(product); // 更新商品主檔
+                    
+                    // 設定為 false，確保同一次批次上傳的第二、第三張圖不會覆蓋掉第一張
+                    needUpdateProductCover = false; 
+                }
                 
                 // 每次存檔前，先把序號 +1
                 currentOrder++; 
-                img.setSortOrder(currentOrder);
-                
                 productImageRepository.save(img);
 
             } catch (IOException e) {
@@ -83,6 +101,7 @@ public class ProductImageService {
 	    ProductImage img = productImageRepository.findById(imageId)
 	            .orElseThrow(() -> new RuntimeException("找不到圖片 ID: " + imageId));
 
+	    Product product = img.getProduct();
 	    Integer productId = img.getProduct().getProductId();
 	    // 2. 嘗試刪除 Cloudinary 上的檔案
 	    try {
@@ -118,6 +137,19 @@ public class ProductImageService {
 	            productImageRepository.save(p);
 	        }
 	    }
+	 // 🟢 5. 【新增邏輯】同步更新 Products 表格的封面圖
+	    if (remainingImages.isEmpty()) {
+	        // 情況 A: 圖片全刪光了，封面設為 null 或預設圖
+	        product.setImageUrl(null); 
+	    } else {
+	        // 情況 B: 有剩下的圖，第一張 (index 0) 就是新的封面
+	        // 因為上面迴圈已經把它的 sortOrder 改成 0 了
+	        String newCoverUrl = remainingImages.get(0).getImageUrl();
+	        product.setImageUrl(newCoverUrl);
+	    }
+
+	    // 6. 儲存商品 (更新 image_url 欄位)
+	    productRepository.save(product);
     }
 	
 	// 輔助方法：從完整網址中解析出 public_id
