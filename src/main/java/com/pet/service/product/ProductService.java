@@ -19,6 +19,7 @@ import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.pet.dao.product.CategoryRepository;
 import com.pet.dao.product.ProductRepository;
+import com.pet.dto.product.ProductStockDTO;
 import com.pet.model.product.Category;
 import com.pet.model.product.Product;
 
@@ -124,6 +125,7 @@ public class ProductService {
 		return pRepos.findByCategory_CategoryId(categoryId);
 	}
 
+	// 新增商品	
 	public Product createProductWithImage(String name, String desc, Integer price, Integer stock, Integer catId,
 			String expireDate, MultipartFile file) throws IOException {
 
@@ -217,4 +219,32 @@ public class ProductService {
 		return pRepos.save(p);
 	}
 
+	public void batchUpdateStock(List<ProductStockDTO> stockList) {
+		
+		
+	    for (ProductStockDTO dto : stockList) {
+	    	// 如果是負數，直接跳過這筆，不處理
+	    	if (dto.getStock() < 0) {
+	            continue; 
+	        }
+	    	
+	        // 1. 先抓出商品
+	        Product product = pRepos.findById(dto.getProductId())
+	            .orElse(null); // 如果找不到就跳過，或拋出異常看你需求
+	        
+	        if (product != null) {
+	            // 更新庫存
+	            product.setStock(dto.getStock());
+	            
+	            // 庫存歸零自動下架
+	            if (dto.getStock() == 0) {
+	                product.setIsActive(false); 
+	            }else if (dto.getStock() > 0) {
+	                product.setIsActive(true); 
+	            }
+	            // 儲存 
+	            pRepos.save(product);
+	        }
+	    }
+	}
 }

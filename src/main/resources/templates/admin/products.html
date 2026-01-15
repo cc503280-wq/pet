@@ -235,6 +235,9 @@
                                         <button onclick="openCreateModal()" class="btn btn-success btn-sm mr-2">
                                             <i class="fas fa-plus"></i> 新增
                                         </button>
+                                        <button onclick="saveBatchStock()" class="btn btn-primary btn-sm mr-2">
+										    <i class="fas fa-save"></i> 批量庫存變更
+										</button>
                                         <button onclick="loadAllProducts()" class="btn btn-info btn-sm mr-2">
                                             <i class="fas fa-list"></i> 全部
                                         </button>
@@ -424,6 +427,38 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="galleryModal" tabindex="-1">
+	    <div class="modal-dialog modal-lg">
+	        <div class="modal-content">
+	            <div class="modal-header bg-warning">
+	                <h5 class="modal-title">管理附圖 - <span id="galleryProductName" class="font-weight-bold"></span></h5>
+	                <button type="button" class="close" data-dismiss="modal">&times;</button>
+	            </div>
+	            <div class="modal-body">
+	                
+	                <div class="mb-4 p-3 bg-light rounded border">
+	                    <label class="font-weight-bold"><i class="fas fa-cloud-upload-alt"></i> 新增圖片 (可多選)</label>
+	                    <div class="input-group">
+	                        <input type="file" class="form-control" id="galleryFileInput" multiple accept="image/*" style="height: auto;">
+	                        <div class="input-group-append">
+	                            <button class="btn btn-primary" onclick="uploadGalleryImages()">
+	                                <i class="fas fa-upload"></i> 上傳
+	                            </button>
+	                        </div>
+	                    </div>
+	                    <small class="text-muted">按住 Ctrl 可選擇多張圖片</small>
+	                </div>
+	                <hr>
+	                <h6 class="font-weight-bold mb-3"><i class="fas fa-images"></i> 現有圖片</h6>
+	                <div class="row" id="galleryContainer">
+	                    </div>
+	            </div>
+	            <div class="modal-footer">
+	                <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+	            </div>
+	        </div>
+	    </div>
+	</div>
     <script th:src="@{/plugins/jquery/jquery.min.js}"></script>
     <script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
     <script th:src="@{/dist/js/adminAuth.js}"></script>
@@ -489,20 +524,33 @@
 
                     html += `
                         <tr>
-                            <td>${p.productId}</td>
+                            <td>
+                                <a href="javascript:void(0)" onclick="viewProduct(${p.productId})" class="font-weight-bold text-primary">
+                                    ${p.productId}
+                                </a>
+                            </td>
+
                             <td><img src="${imgUrl}" class="table-img"></td>
                             <td>${p.productName}</td>
                             <td>$${p.price}</td>
-                            <td class="${p.stock < 10 ? 'text-danger font-weight-bold' : ''}">${p.stock}</td>
+                            
+                            <td>
+                                <input type="number" class="form-control form-control-sm stock-input" 
+                                       data-id="${p.productId}" 
+                                       value="${p.stock}" 
+                                       style="width: 80px;" min="0">
+                            </td>
+
                             <td>${categoryName}</td>
                             <td>${statusBadge}</td>
+                            
                             <td class="text-center">
-                            	<button class="btn btn-info btn-sm mr-1" onclick="viewProduct(${p.productId})">
-                            		<i class="fas fa-eye"></i> 查看
-                        		</button>
-                            	<button class="btn btn-secondary btn-sm mr-1" onclick="openEditModal(${p.productId})">
-                            	    <i class="fas fa-edit"></i> 修改
-                            	</button>
+                                <button class="btn btn-warning btn-sm mr-1" onclick="openGalleryModal(${p.productId}, '${p.productName}')">
+                                    <i class="fas fa-images"></i> 圖庫
+                                </button>
+                                <button class="btn btn-secondary btn-sm mr-1" onclick="openEditModal(${p.productId})">
+                                    <i class="fas fa-edit"></i> 修改
+                                </button>
                                 <button class="btn ${btnClass} btn-sm" onclick="toggleStatus(${p.productId})">
                                     <i class="fas ${btnIcon}"></i> ${btnText}
                                 </button>
@@ -770,7 +818,173 @@
                 preview.hide(); // 沒選圖片就藏起來
             }
         }
+        
+     	// ==========================================
+        // 圖庫管理相關函式
+        // ==========================================
 
+        let currentGalleryProductId = null;
+
+        // 1. 打開圖庫 Modal
+        function openGalleryModal(productId, productName) {
+            currentGalleryProductId = productId;
+            $('#galleryProductName').text(productName);
+            $('#galleryFileInput').val(''); // 清空選擇的檔案
+            
+            // 載入圖片
+            loadGalleryImages();
+            
+            $('#galleryModal').modal('show');
+        }
+
+        // 2. 載入圖片列表 (AJAX GET)
+        function loadGalleryImages() {
+            $.ajax({
+                url: '/api/product-images/' + currentGalleryProductId, // 對應後端 Controller
+                type: 'GET',
+                success: function(images) {
+                    let container = $('#galleryContainer');
+                    container.empty(); // 清空舊內容
+
+                    if (images.length === 0) {
+                        container.append('<div class="col-12 text-center text-muted py-3">暫無其他圖片</div>');
+                        return;
+                    }
+
+                    // 跑迴圈產生圖片卡片
+                    $.each(images, function(index, img) {
+                        let card = `
+                            <div class="col-md-3 col-6 mb-3">
+                                <div class="card h-100 shadow-sm">
+                                    <div style="position: relative;">
+                                        <img src="${img.imageUrl}" class="card-img-top" style="height: 120px; object-fit: cover;">
+                                    </div>
+                                    <div class="card-body text-center p-2">
+                                        <button class="btn btn-danger btn-sm w-100" onclick="deleteGalleryImage(${img.imageId})">
+                                            <i class="fas fa-trash-alt"></i> 刪除
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        container.append(card);
+                    });
+                },
+                error: function(xhr) {
+                    console.error(xhr);
+                    alert('無法載入圖片列表');
+                }
+            });
+        }
+
+        // 3. 上傳圖片 (AJAX POST)
+        function uploadGalleryImages() {
+            let fileInput = $('#galleryFileInput')[0];
+            if (fileInput.files.length === 0) {
+                alert('請先選擇至少一張圖片');
+                return;
+            }
+
+            let formData = new FormData();
+            // 將所有檔案加入 FormData (後端接收 List<MultipartFile> files)
+            for (let i = 0; i < fileInput.files.length; i++) {
+                formData.append('files', fileInput.files[i]);
+            }
+
+            // 顯示上傳中提示 (非必要但體驗較好)
+            let uploadBtn = $(event.target); // 取得按鈕
+            let originalText = uploadBtn.html();
+            uploadBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> 上傳中...');
+
+            $.ajax({
+                url: '/api/product-images/upload/' + currentGalleryProductId,
+                type: 'POST',
+                data: formData,
+                processData: false, // 重要：告訴 jQuery 不要處理資料
+                contentType: false, // 重要：告訴 jQuery 不要設定 Content-Type
+                success: function() {
+                    alert('上傳成功！');
+                    $('#galleryFileInput').val(''); // 清空
+                    loadGalleryImages(); // 重新整理圖片列表
+                },
+                error: function(xhr) {
+                    alert('上傳失敗: ' + (xhr.responseText || '未知錯誤'));
+                },
+                complete: function() {
+                    // 恢復按鈕狀態
+                    uploadBtn.prop('disabled', false).html(originalText);
+                }
+            });
+        }
+
+        // 4. 刪除圖片 (AJAX DELETE)
+        function deleteGalleryImage(imageId) {
+            if (!confirm('確定要刪除這張圖片嗎？')) return;
+
+            $.ajax({
+                url: '/api/product-images/' + imageId,
+                type: 'DELETE',
+                success: function() {
+                    loadGalleryImages(); // 重新整理列表
+                },
+                error: function() {
+                    alert('刪除失敗');
+                }
+            });
+        }
+        
+	     // ==========================================
+	     // 🟢 批量更新庫存邏輯
+	     // ==========================================
+	     function saveBatchStock() {
+	         let stockList = []; // 準備一個空陣列
+	
+	         // 1. 抓取畫面上所有的庫存輸入框
+	         $('.stock-input').each(function() {
+	             let input = $(this);
+	             let id = input.data('id'); // 從 data-id 屬性拿 ID
+	             let val = input.val();     // 拿輸入框的值
+	             
+	             // 簡單驗證：必須是數字且大於等於 0
+	             if (val !== '' && val >= 0) {
+	                 stockList.push({
+	                     productId: id,
+	                     stock: parseInt(val)
+	                 });
+	             }
+	         });
+	
+	         // 如果陣列是空的，就不送出
+	         if (stockList.length === 0) {
+	             alert('沒有資料可更新');
+	             return;
+	         }
+	
+	         // 2. 發送 AJAX
+	         // 讓按鈕變成 loading 狀態，避免重複點擊
+	         let btn = $(event.target); // 抓到被點擊的按鈕
+	         let originalText = btn.html();
+	         btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> 儲存中...');
+	
+	         $.ajax({
+	             url: API_BASE + '/batch-stock', // 對應後端 /api/products/batch-stock
+	             type: 'POST',
+	             contentType: 'application/json', // 🟢 重要：告訴後端我傳的是 JSON
+	             data: JSON.stringify(stockList), // 🟢 重要：把 JS 陣列轉成 JSON 字串
+	             success: function(response) {
+	                 alert('庫存批量更新成功！');
+	                 loadAllProducts(); // 重新載入表格，確保資料同步
+	             },
+	             error: function(xhr) {
+	                 console.error(xhr);
+	                 alert('更新失敗');
+	             },
+	             complete: function() {
+	                 // 恢復按鈕狀態
+	                 btn.prop('disabled', false).html(originalText);
+	             }
+	         });
+	     }
 
         /*]]>*/
     </script>

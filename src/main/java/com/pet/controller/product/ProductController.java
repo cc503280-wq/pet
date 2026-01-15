@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.pet.dto.product.ProductStockDTO;
 import com.pet.model.product.Product;
 import com.pet.service.product.ProductService;
 
@@ -131,5 +132,19 @@ public class ProductController {
 			return ResponseEntity.status(500).body("更新失敗: " + e.getMessage());
 		}
 	}
+	
+	// 批量更新庫存
+    // POST /products/batch-stock
+    // Body: [ {"productId": 1, "newStock": 50}, {"productId": 2, "newStock": 99} ]
+    @PostMapping("/batch-stock")
+    public ResponseEntity<?> updateBatchStock(@RequestBody List<ProductStockDTO> stockList) {
+        try {
+            pService.batchUpdateStock(stockList);
+            return ResponseEntity.ok("庫存批量更新成功！");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("更新失敗: " + e.getMessage());
+        }
+    }
+	
 
 }
