@@ -2,6 +2,8 @@ package com.pet.dao.product;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -25,4 +27,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     @Transactional
     @Query("UPDATE Product p SET p.isActive = :isActive WHERE p.productId = :id")
     void updateStatus(Integer id, Boolean isActive);  // 軟刪除 上下架變更
+	
+	Page<Product> findByIsActiveTrue(Pageable pageable);
+	
 }

@@ -260,4 +260,10 @@ public class ProductService {
         return pRepos.findAll(pageable);
     }
 	
+	// 前台功能
+	public Page<Product> getActiveProducts(int page, int size) {
+	    // 依 ID 新到舊排序
+	    Pageable pageable = PageRequest.of(page, size, Sort.by("productId").descending());
+	    return pRepos.findByIsActiveTrue(pageable);
+	}
 }

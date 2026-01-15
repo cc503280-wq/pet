@@ -154,4 +154,14 @@ public class ProductController {
     }
 	
 
+ // 給前台用的 API：只抓上架商品
+    @GetMapping("/store/all") // 路徑隨你定，區分一下是給前台用的就好
+    public ResponseEntity<Page<Product>> getStoreProducts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "12") int size // 前台通常一頁顯示多一點，例如 12 個
+    ) {
+    	
+        Page<Product> products = pService.getActiveProducts(page, size);
+        return ResponseEntity.ok(products);
+    }
 }
