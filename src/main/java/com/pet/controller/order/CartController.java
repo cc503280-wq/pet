@@ -1,6 +1,7 @@
 package com.pet.controller.order;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.pet.dao.member.CouponUsersRealRepository;
 import com.pet.model.member.Coupon;
 import com.pet.model.member.CouponUsers;
 import com.pet.model.member.Member;
@@ -20,6 +22,7 @@ import com.pet.model.order.Order;
 import com.pet.model.order.OrderItem;
 import com.pet.model.order.Shipment;
 import com.pet.model.product.Product;
+import com.pet.service.member.CouponUsersRealService;
 import com.pet.service.member.CouponUsersService;
 import com.pet.service.member.MemberService;
 import com.pet.service.order.OrderItemService;
@@ -50,6 +53,8 @@ public class CartController {
 	private OrderItemService oiService;
 	@Autowired
 	private ShipmentService shipmentService;
+	@Autowired
+	private CouponUsersRealService curService;
 
    
 @GetMapping("/shopping")
@@ -83,8 +88,8 @@ public String step1(
 }
 @GetMapping("/byMember")
 @ResponseBody
-public List<CouponUsers> getCouponsByMember(@RequestParam Integer memberId){
-	return cService.getCouponUsersByMemberId(memberId);
+public List<CouponUsers> getCouponsByMember(@RequestParam Integer memberId,@RequestParam BigDecimal totalPrice){
+	return cService.getOrderCouponUsers(memberId, totalPrice);
 }
 
 @PostMapping("/insertOrder")
@@ -102,7 +107,8 @@ public String insertOrder(
         @RequestParam("finalAmount") Integer finalAmount,
         @RequestParam("recipientName") String recipientName,
         @RequestParam("recipientPhone") String recipientPhone,
-        @RequestParam("shippingAddress") String shippingAddress
+        @RequestParam("shippingAddress") String shippingAddress,
+        @RequestParam("couponUserId") Integer couponUserId
 ) {
 
     // 1. 建立訂單主表
@@ -143,6 +149,9 @@ public String insertOrder(
     shipping.setShippingFee(fee);
     shipping.setStatus("未出貨");
     shipmentService.insertShipment(shipping);
+    //4.修改優惠券狀態
+    
+    curService.CouponUsersUpdate(couponUserId, "used", LocalDate.now());
 
     return "redirect:/orders/list";
 }

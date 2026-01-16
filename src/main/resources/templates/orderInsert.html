@@ -301,8 +301,6 @@
 													</div>
 												</div>
 											</div>
-
-
 											<hr>
 
 											<div class="form-group row">
@@ -326,7 +324,8 @@
 														style="width: 100%;">
 														<option value="">請選擇會員</option>
 														<option th:each="member:${session.members}"
-															th:value="${member.memberId}" th:text="${member.name}">
+															th:value="${member.memberId}" th:text="${member.name}"
+															th:data-value="${member.points}">
 														</option>
 													</select>
 												</div>
@@ -340,6 +339,8 @@
 														style="width: 100%;" name="coupon_id">
 														<option value="0" data-type="" data-value="0">目前無優惠券</option>
 													</select>
+													<input type="hidden" name="couponUserId" id="couponUserId"
+														value="" />
 												</div>
 											</div>
 
@@ -351,11 +352,36 @@
 												</div>
 											</div>
 											<hr>
+											<div class="form-group row">
+												<label class="col-sm-2 col-form-label">持有會員幣量:</label>
+												<div class="col-sm-10">
+													<input type="number" class="form-control" name="" value=""
+														id="memberPoint" readonly>
+												</div>
+											</div>
+
+											<div class="form-group row">
+												<label class="col-sm-2 col-form-label">是否使用會員幣:</label>
+												<div class="col-sm-10">
+													<input type="checkbox" class="form-control" id="memberPointUse">
+												</div>
+											</div>
+											<div class="form-group row">
+
+
+												<label class="col-sm-2 col-form-label">會員幣折扣後價格:</label>
+												<div class="col-sm-10">
+													<input type="number" class="form-control"
+														name="totalAmountDiscountPoints" value=""
+														id="totalAmountDiscountPoints" readonly>
+													<input type="hidden" value="" id="usedPoint" name="usedPoint">
+												</div>
+											</div>
 
 
 
 
-
+											<hr>
 											<div class="form-group row">
 												<label class="col-sm-2 col-form-label">物流方式:</label>
 												<div class="col-sm-10">
@@ -552,15 +578,35 @@
 			function finalAmount() {
 				let discountPrice = parseFloat($("#discountPrice").val());
 				let fee = parseFloat($("#fee").val());
-				$('#finalAmount').val(fee + discountPrice);
+				let memberpoint = $("#memberPoint").val()
+
+				let total = discountPrice - memberpoint;
+
+
+				if ($("#memberPointUse").is(":checked")) {
+					$('#finalAmount').val(total + fee);
+					$('#totalAmountDiscountPoints').val(total);
+					if(memberpoint>=discountPrice){
+						$('#usedPoint').val(discountPrice)
+					}else{
+						$('#usedPoint').val(memberpoint)
+					}
+				} else {
+					$('#finalAmount').val(fee + discountPrice);
+				}
+
+
 			}
 
 			finalAmount()
 
+			$('#method').on('change', function () {
+				updateFee();
+			});
 
 
 
-			// 選會員自動帶入會員編號
+			// 選會員自動帶入會員優惠券以及會員持有剩餘的會員幣
 			$("#member_id").change(function () {
 				let memberId = $(this).val();
 				if (!memberId || memberId == 0) {
@@ -570,7 +616,10 @@
 				$.ajax({
 					url: "/Cart/byMember",
 					type: "GET",
-					data: { memberId: memberId },
+					data: {
+						memberId: memberId,
+						totalPrice: $("#total_price").val()
+					},
 					success: function (coupons) {
 						renderCoupons(coupons);
 					},
@@ -578,6 +627,8 @@
 						alert("讀取失敗");
 					}
 				})
+				$("#memberPoint").val($(this).find("option:selected").data("value"))
+
 			});
 
 			function renderCoupons(coupons) {
@@ -600,10 +651,12 @@
 					$select.append(`
 			            <option value="${c.couponId}"
 			                    data-type="${c.discountType}"
-			                    data-value="${c.discountValue}">
+			                    data-value="${c.discountValue}"
+			                    data-id="${c.id}">
 			                ${c.discountType} ${c.discountValue}
 			            </option>
 			        `);
+
 				});
 			}
 
@@ -616,6 +669,7 @@
 			$("#couponSelect").on("change", function () {
 				let type = $(this).find("option:selected").data("type");
 				let value = parseFloat($(this).find("option:selected").data("value")) || 0;
+				let couponUserId = $(this).find("option:selected").data("id");
 
 				let total = parseFloat($("#total_price").val()) || 0;
 				let discounted = total;
@@ -628,8 +682,14 @@
 				discounted = Math.round(discounted);
 
 				$("#discountPrice").val(discounted.toFixed(2));
+				$("#couponUserId").val(couponUserId)
 
 				// 更新最後總金額
+				finalAmount();
+			});
+			//會員幣使用
+			$("#memberPointUse").on("change", function () {
+
 				finalAmount();
 			});
 
