@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.pet.dto.product.ProductStockDTO;
+import com.pet.model.product.Category;
 import com.pet.model.product.Product;
 import com.pet.service.product.ProductService;
 
@@ -29,14 +30,12 @@ public class ProductController {
 	// 取得所有商品 (後台管理用)
 	// 網址: GET /products/admin/all
 	@GetMapping("/admin/all")
-	public ResponseEntity<Page<Product>> getAllProducts(
-	        @RequestParam(defaultValue = "0") int page, 
-	        @RequestParam(defaultValue = "10") int size
-	) {
-	    // 🟢 呼叫 Service，而不是自己去 new PageRequest
-	    Page<Product> result = pService.getAllProductsWithPagination(page, size);
-	    
-	    return ResponseEntity.ok(result);
+	public ResponseEntity<Page<Product>> getAllProducts(@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "10") int size) {
+		// 🟢 呼叫 Service，而不是自己去 new PageRequest
+		Page<Product> result = pService.getAllProductsWithPagination(page, size);
+
+		return ResponseEntity.ok(result);
 	}
 
 	// 取得上架商品
@@ -121,7 +120,7 @@ public class ProductController {
 			@RequestParam(value = "expireDate", required = false) String expireDate,
 			// 圖片是選填的，如果沒傳代表不改圖
 			@RequestParam(value = "file", required = false) MultipartFile file) {
-		
+
 		if (stock < 0) {
 			stock = 0;
 		}
@@ -139,29 +138,36 @@ public class ProductController {
 			return ResponseEntity.status(500).body("更新失敗: " + e.getMessage());
 		}
 	}
-	
-	// 批量更新庫存
-    // POST /products/batch-stock
-    // Body: [ {"productId": 1, "newStock": 50}, {"productId": 2, "newStock": 99} ]
-    @PostMapping("/batch-stock")
-    public ResponseEntity<?> updateBatchStock(@RequestBody List<ProductStockDTO> stockList) {
-        try {
-            pService.batchUpdateStock(stockList);
-            return ResponseEntity.ok("庫存批量更新成功！");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("更新失敗: " + e.getMessage());
-        }
-    }
-	
 
- // 給前台用的 API：只抓上架商品
-    @GetMapping("/store/all") // 路徑隨你定，區分一下是給前台用的就好
-    public ResponseEntity<Page<Product>> getStoreProducts(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "12") int size // 前台通常一頁顯示多一點，例如 12 個
-    ) {
-    	
-        Page<Product> products = pService.getActiveProducts(page, size);
-        return ResponseEntity.ok(products);
-    }
+	// 批量更新庫存
+	// POST /products/batch-stock
+	// Body: [ {"productId": 1, "newStock": 50}, {"productId": 2, "newStock": 99} ]
+	@PostMapping("/batch-stock")
+	public ResponseEntity<?> updateBatchStock(@RequestBody List<ProductStockDTO> stockList) {
+		try {
+			pService.batchUpdateStock(stockList);
+			return ResponseEntity.ok("庫存批量更新成功！");
+		} catch (Exception e) {
+			return ResponseEntity.badRequest().body("更新失敗: " + e.getMessage());
+		}
+	}
+
+	// 給前台用的 API：只抓上架商品
+	@GetMapping("/store/all")
+	public ResponseEntity<Page<Product>> getStoreProducts(
+	        @RequestParam(defaultValue = "0") int page,
+	        @RequestParam(defaultValue = "9") int size,
+	        @RequestParam(required = false) Integer categoryId ,
+	        @RequestParam(required = false) String keyword,
+	        @RequestParam(required = false) Integer minPrice,
+	        @RequestParam(required = false) Integer maxPrice,
+	        @RequestParam(defaultValue = "new") String sort // 排序代號
+	) {
+		return ResponseEntity.ok(pService.getStoreProducts(page, size, categoryId, keyword, minPrice, maxPrice, sort));
+	}
+
+	@GetMapping("/store/categories")
+	public ResponseEntity<List<Category>> getCategories() { // 回傳型態變了
+	    return ResponseEntity.ok(pService.getAllCategories());
+	}
 }
