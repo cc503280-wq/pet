@@ -8,13 +8,25 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.pet.util.AdminAuthInterceptor;
+import com.pet.util.LoginUserHandlerMethodArgumentResolver;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import java.util.List;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
     @Autowired
     private AdminAuthInterceptor authInterceptor;
+    
+    @Autowired
+    private LoginUserHandlerMethodArgumentResolver loginUserResolver;
 
+    //註冊 @LoginUser
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+        resolvers.add(loginUserResolver);
+    }
+    
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authInterceptor)
