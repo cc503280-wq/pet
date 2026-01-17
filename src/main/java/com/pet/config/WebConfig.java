@@ -32,6 +32,7 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addInterceptor(authInterceptor)
                 .addPathPatterns("/**") // 攔截所有路徑
                 .excludePathPatterns(
+                		"/shop/**",
                         "/auth/login", // 排除登入 API
                         "/auth/logout", // 排除登出 API
                         "/admin/layout/Login.html", // 排除登入頁面

@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +16,7 @@ import com.pet.dto.member.LoginRequest;
 import com.pet.model.member.Member;
 import com.pet.service.member.MemberService;
 import com.pet.util.JwtUtils;
+import com.pet.util.LoginUser;
 
 @RestController
 @RequestMapping("/shop/members")
@@ -50,4 +52,9 @@ public class ShopMemberController {
             return ResponseEntity.status(401).body("帳號或密碼錯誤");
         }
     }
+    @GetMapping("/me")
+    public ResponseEntity<?> testLogin(@LoginUser Integer userId) {
+        return ResponseEntity.ok("驗證成功！你的會員 ID 是: " + userId);
+    }
+    
 }
