@@ -1,5 +1,7 @@
 package com.pet.config;
 
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -8,6 +10,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
 
 @Configuration
 @EnableWebSecurity
@@ -18,6 +21,16 @@ public class SecurityConfig {
         http
             // 1. 只攔截路徑開頭為 /shop 的請求
             .securityMatcher("/shop/**") 
+            
+            //開啟CORS支持
+            .cors(cors -> cors.configurationSource(request -> {
+                var corsConfiguration = new CorsConfiguration();
+                corsConfiguration.setAllowedOrigins(List.of("http://localhost:5173")); // 允許前端網址
+                corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+                corsConfiguration.setAllowedHeaders(List.of("*"));
+                corsConfiguration.setAllowCredentials(true);
+                return corsConfiguration;
+            }))
             
             // 2. 關閉 CSRF 跨站請求偽造 (因為前後端分離使用 JWT，不需要這個)
             .csrf(csrf -> csrf.disable())
