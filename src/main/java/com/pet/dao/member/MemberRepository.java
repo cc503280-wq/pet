@@ -1,6 +1,7 @@
 package com.pet.dao.member;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -20,6 +21,9 @@ public interface MemberRepository extends JpaRepository<Member, Integer> {
 
     // 依姓名模糊查詢
     List<Member> findByNameContainingOrderByMemberIdAsc(String name);
+    
+    // 透過 Email 查詢會員 
+    Optional<Member> findByEmail(String email);
     
     // 固定查詢「近六個月」的註冊統計
     @Query(value = "SELECT FORMAT(created_at, 'yyyy-MM') as month, COUNT(*) as count " +

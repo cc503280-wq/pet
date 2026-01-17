@@ -44,6 +44,10 @@ public class MemberService {
         return memberRepository.findByNameContainingOrderByMemberIdAsc(name);
     }
 
+    public Member findMemberByEmail(String email) {
+        return memberRepository.findByEmail(email).orElse(null);
+    }
+    
     public Member createMemberWithImage(Member input, MultipartFile file) throws IOException {
     	// 先處理圖片得到網址
     	String imageUrl = saveImageToCloud(file);
