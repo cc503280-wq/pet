@@ -11,12 +11,15 @@
 		href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback" />
 	<!-- Font Awesome -->
 	<link rel="stylesheet" href="../../plugins/fontawesome-free/css/all.min.css" />
-	<!-- Theme style -->
+	<!-- Theme style (AdminLTE) -->
 	<link rel="stylesheet" href="../../dist/css/adminlte.min.css" />
+    <!-- DataTables 樣式 -->
 	<link rel="stylesheet" href="../../plugins/datatables-bs4/css/dataTables.bootstrap4.min.css" />
 	<link rel="stylesheet" href="../../plugins/datatables-responsive/css/responsive.bootstrap4.min.css" />
+    <!-- DateRangePicker 樣式 -->
 	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 
+	<!-- TOAST UI Calendar (行事曆套件) -->
 	<link rel="stylesheet" href="https://uicdn.toast.com/calendar/latest/toastui-calendar.min.css" />
 	<script src="https://uicdn.toast.com/calendar/latest/toastui-calendar.min.js"></script>
 
@@ -26,23 +29,18 @@
 			display: flex;
 			align-items: center;
 			justify-content: flex-start;
-			/* 展開時靠左 */
 			padding: 0.5rem 1rem;
 		}
 
-		/* 收起 sidebar 時，icon 置中 */
 		.sidebar-collapse .brand-link {
 			justify-content: center;
 		}
 
-		/* 調整 icon 與文字間距 */
 		.brand-link i {
 			width: 1.5rem;
-			/* 固定寬度讓文字距離固定 */
 			text-align: center;
 		}
 
-		/* 收起 sidebar 時文字隱藏 */
 		.sidebar-collapse .brand-text {
 			display: none;
 		}
@@ -55,11 +53,8 @@
 
 		.disabled-btn {
 			pointer-events: none !important;
-			/* 禁止滑鼠事件 */
 			opacity: 0.5;
-			/* 變淡灰色 */
 			cursor: not-allowed !important;
-			/* 滑鼠變禁止符號 */
 		}
 
 		/* DataTable 所有欄位水平 + 垂直置中 */
@@ -71,20 +66,47 @@
 			padding: 0.25rem 0.5rem;
 			white-space: nowrap;
 		}
+
+		/* Custom Event Tooltip (行事曆懸停提示框樣式) */
+		.calendar-tooltip {
+			position: fixed;
+			background: #333;
+			color: #fff;
+			padding: 12px 16px;
+			border-radius: 6px;
+			font-size: 13px;
+			max-width: 300px;
+			z-index: 99999;
+			box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+			pointer-events: none;
+			display: none;
+		}
+		.calendar-tooltip strong {
+			display: block;
+			margin-bottom: 6px;
+			font-size: 14px;
+			color: #90cdf4;
+		}
+		.calendar-tooltip .tooltip-row {
+			margin: 3px 0;
+		}
+		.calendar-tooltip .tooltip-label {
+			color: #a0aec0;
+			margin-right: 5px;
+		}
 	</style>
 </head>
 
 <body class="hold-transition sidebar-mini sidebar-collapse">
-	<!-- Site wrapper -->
+	<!-- Wrapper: AdminLTE 的主要容器 -->
 	<div class="wrapper">
-		<!-- Navbar -->
+		<!-- Navbar: 頂部導覽列 -->
 		<nav class="main-header navbar navbar-expand navbar-white navbar-light">
-			<!-- Left navbar links -->
 			<ul class="navbar-nav">
+                <!-- 漢堡選單按鈕 (控制 Sidebar 收合) -->
 				<li class="nav-item"><a class="nav-link" data-widget="pushmenu" href="#" role="button"><i
 							class="fas fa-bars"></i></a></li>
 			</ul>
-			<!-- 右側 Navbar 按鈕 -->
 			<ul class="navbar-nav ml-auto">
 				<li class="nav-item">
 					<a href="javascript:void(0)" id="logoutBtn" class="btn btn-secondary btn-sm">
@@ -93,157 +115,130 @@
 				</li>
 			</ul>
 		</nav>
-		<!-- /.navbar -->
 
-		<!-- Main Sidebar Container -->
+		<!-- Main Sidebar: 左側選單 -->
 		<aside class="main-sidebar sidebar-dark-primary elevation-4">
-			<!-- Brand Logo -->
 			<a href="Home.html" class="brand-link"> <i class="fas fa-paw" style="color: #ffd43b; font-size: 1.5rem"></i>
 				<span class="brand-text font-weight-light"></span>
 			</a>
 
-			<!-- Sidebar -->
 			<div class="sidebar">
 				<div class="user-panel mt-3 pb-3 mb-3 d-flex"></div>
 
-				<!-- Sidebar Menu -->
-				<nav class="mt-2">
-					<ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
-						data-accordion="false">
-						<!-- Add icons to the links using the .nav-icon class
-               with font-awesome or any other icon font library -->
-						<li class="nav-item"><a href="#" class="nav-link"> <i class="nav-icon fas fa-edit"></i>
-								<p>
-									會員管理 <i class="right fas fa-angle-left"></i>
-								</p>
-							</a>
-							<ul class="nav nav-treeview">
-								<li class="nav-item"><a href="AdminQueryAll.html" class="nav-link"> <i
-											class="far fa-circle nav-icon"></i>
-										<p>管理員資料</p>
-									</a></li>
-								<li class="nav-item"><a href="MemberQueryAll.html" class="nav-link"> <i
-											class="far fa-circle nav-icon"></i>
-										<p>會員基本資料</p>
-									</a></li>
-								<li class="nav-item"><a href="MemberPetQueryAll.html" class="nav-link"> <i
-											class="far fa-circle nav-icon"></i>
-										<p>會員寵物資料</p>
-									</a></li>
-								<li class="nav-item"><a href="CouponQueryAll.html" class="nav-link"> <i
-											class="far fa-circle nav-icon"></i>
-										<p>優惠券總覽</p>
-									</a></li>
-								<li class="nav-item"><a href="CouponUsersQueryAll.html" class="nav-link"> <i
-											class="far fa-circle nav-icon"></i>
-										<p>會員持有優惠券</p>
-									</a></li>
-								<li class="nav-item"><a href="FavoritesQueryAll.html" class="nav-link"> <i
-											class="far fa-circle nav-icon"></i>
-										<p>會員收藏清單</p>
-									</a></li>
-							</ul>
-						</li>
+                <!-- Sidebar Menu (選單結構) -->
+                <nav class="mt-2">
+                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                        <!-- 會員管理 -->
+                        <li class="nav-item"><a href="#" class="nav-link"> <i class="nav-icon fas fa-edit"></i>
+                                <p>會員管理 <i class="right fas fa-angle-left"></i></p></a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item"><a href="AdminQueryAll.html" class="nav-link"> <i class="far fa-circle nav-icon"></i><p>管理員資料</p></a></li>
+                                <li class="nav-item"><a href="MemberQueryAll.html" class="nav-link"> <i class="far fa-circle nav-icon"></i><p>會員基本資料</p></a></li>
+                                <li class="nav-item"><a href="MemberPetQueryAll.html" class="nav-link"> <i class="far fa-circle nav-icon"></i><p>會員寵物資料</p></a></li>
+                                <li class="nav-item"><a href="CouponQueryAll.html" class="nav-link"> <i class="far fa-circle nav-icon"></i><p>優惠券總覽</p></a></li>
+                                <li class="nav-item"><a href="CouponUsersQueryAll.html" class="nav-link"> <i class="far fa-circle nav-icon"></i><p>會員持有優惠券</p></a></li>
+                                <li class="nav-item"><a href="FavoritesQueryAll.html" class="nav-link"> <i class="far fa-circle nav-icon"></i><p>會員收藏清單</p></a></li>
+                            </ul>
+                        </li>
 
-						<li class="nav-item">
-							<a href="#" class="nav-link">
-								<i class="nav-icon fas fa-edit"></i>
-								<p>商品管理 <i class="right fas fa-angle-left"></i></p>
-							</a>
-							<ul class="nav nav-treeview">
-								<li class="nav-item"><a href="/admin/products" class="nav-link"><i
-											class="far fa-circle nav-icon"></i>
-										<p>商品管理</p>
-									</a></li>
-								<li class="nav-item"><a href="/admin/categories" class="nav-link"><i
-											class="far fa-circle nav-icon"></i>
-										<p>類別管理</p>
-									</a></li>
-							</ul>
-						</li>
-						<li class="nav-item">
-							<a href="#" class="nav-link">
-								<i class="nav-icon fas fa-edit"></i>
-								<p>訂單管理 <i class="right fas fa-angle-left"></i></p>
-							</a>
-							<ul class="nav nav-treeview">
-								<li class="nav-item"><a href="/orders/list" class="nav-link"><i
-											class="far fa-circle nav-icon"></i>
-										<p>查詢全部訂單</p>
-									</a></li>
-								<li class="nav-item"><a href="/shipment/list" class="nav-link"><i
-											class="far fa-circle nav-icon"></i>
-										<p>物流查詢</p>
-									</a></li>
-								<li class="nav-item"><a href="/ordersItem/list" class="nav-link"><i
-											class="far fa-circle nav-icon"></i>
-										<p>查詢全部訂單明細</p>
-									</a></li>
-								<li class="nav-item"><a href="/Cart/shopping" class="nav-link"><i
-											class="far fa-circle nav-icon"></i>
-										<p>新增訂單</p>
-									</a></li>
-							</ul>
-						</li>
-						<li class="nav-item"><a href="#" class="nav-link"> <i class="nav-icon fas fa-edit"></i>
-								<p>
-									預約管理 <i class="right fas fa-angle-left"></i>
-								</p>
-							</a>
-							<ul class="nav nav-treeview">
-								<li class="nav-item">
-									<a href="GetAllAppointments.html" class="nav-link">
-										<i class="far fa-circle nav-icon"></i>
-										<p>寵物美容訂單管理</p>
-									</a>
-								</li>
-								<li class="nav-item">
-									<a href="GetAllLeaveRecords.html" class="nav-link">
-										<i class="far fa-circle nav-icon"></i>
-										<p>美容師請假管理</p>
-									</a>
-								</li>
-								<li class="nav-item">
-									<a href="GetAllGroomers.html" class="nav-link">
-										<i class="far fa-circle nav-icon"></i>
-										<p>美容師管理</p>
-									</a>
-								</li>
-								<li class="nav-item">
-									<a href="GetAllAppointmentDetails.html" class="nav-link">
-										<i class="far fa-circle nav-icon"></i>
-										<p>預約訂單明細</p>
-									</a>
-								</li>
-								<li class="nav-item">
-									<a href="GetAllServiceItems.html" class="nav-link">
-										<i class="far fa-circle nav-icon"></i>
-										<p>服務項目管理</p>
-									</a>
-								</li>
-							</ul>
-						</li>
-					</ul>
-					</li>
-				</nav>
-				<!-- /.sidebar-menu -->
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                              <i class="nav-icon fas fa-edit"></i>
+                              <p>
+                                商品管理
+                                <i class="right fas fa-angle-left"></i>
+                              </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                              <li class="nav-item">
+                                <a href="/admin/products" class="nav-link">
+                                  <i class="far fa-circle nav-icon"></i>
+                                  <p>商品管理</p>
+                                </a>
+                              </li>
+                              <li class="nav-item">
+                                <a href="/admin/categories" class="nav-link">
+                                  <i class="far fa-circle nav-icon"></i>
+                                  <p>分類管理</p>
+                                </a>
+                              </li>
+                            </ul>
+                          </li>
+              
+              
+                          <li class="nav-item"><a href="#" class="nav-link"> <i class="nav-icon fas fa-edit"></i>
+                              <p>
+                                訂單管理 <i class="right fas fa-angle-left"></i>
+                              </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                              <li class="nav-item"><a href="/orders/list" class="nav-link"> <i class="far fa-circle nav-icon"></i>
+                                  <p>查詢全部訂單</p>
+                                </a></li>
+                              <li class="nav-item"><a href="/shipment/list" class="nav-link"> <i class="far fa-circle nav-icon"></i>
+                                  <p>物流查詢</p>
+                                </a></li>
+                              <li class="nav-item"><a href="/ordersItem/list" class="nav-link"> <i class="far fa-circle nav-icon"></i>
+                                  <p>查詢全部訂單明細</p>
+                                </a></li>
+                              <li class="nav-item"><a href="/Cart/shopping" class="nav-link"> <i class="far fa-circle nav-icon"></i>
+                                  <p>新增訂單</p>
+                                </a></li>
+                            </ul>
+                          </li>
+
+                        <!-- 預約管理 (目前所在區域) -->
+                        <li class="nav-item"><a href="#" class="nav-link"> <i class="nav-icon fas fa-edit"></i>
+                                <p>預約管理 <i class="right fas fa-angle-left"></i></p></a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="GetAllDailySchedules.html" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i><p>班表總覽</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="GetAllAppointments.html" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i><p>預約訂單列表</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="GetAllAppointmentDetails.html" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i><p>預約明細</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="GetAllServiceItems.html" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i><p>服務項目</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        
+                        <!-- 人員管理 -->
+                        <li class="nav-item">
+                            <a href="#" class="nav-link"><i class="nav-icon fas fa-edit"></i>
+                                <p>人員管理 <i class="right fas fa-angle-left"></i></p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item"><a href="GetAllGroomers.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>美容師列表</p></a></li>
+                                <li class="nav-item"><a href="GetAllLeaveRecords.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>休假審核</p></a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </nav>
 			</div>
-			<!-- /.sidebar -->
 		</aside>
 
-		<!-- Content Wrapper. Contains page content -->
+		<!-- Content Wrapper: 主要內容區塊 -->
 		<div class="content-wrapper">
-			<!-- Content Header (Page header) -->
 			<section class="content-header">
 				<div class="container-fluid">
 					<div class="row mb-2">
 						<div class="col-sm-12 box1">
-							<h1>寵物美容訂單管理</h1>
+							<h1>預約管理</h1>
 						</div>
-						<div class="col-sm-6"></div>
 					</div>
 				</div>
-				<!-- /.container-fluid -->
 			</section>
 
 			<!-- Main content -->
@@ -252,63 +247,66 @@
 					<div class="row">
 						<div class="col-12">
 							<div class="card">
-								<div class="card-header d-flex align-items-center justify-content-between">
-									<h3 class="card-title me-auto">寵物美容訂單收藏列表</h3>
-
-									<div class="d-flex align-items-center" style="gap: 0.5rem">
-										<!-- 新增資料 -->
-										<a href="/appointments/insert" class="btn btn-success btn-sm mr-2"> 新增 </a>
-										<!-- .新增資料 -->
-
-
-										<!-- 依memberPhone查詢 -->
-										<div class="input-group input-group-sm mr-2" style="width: 180px">
-											<input id="memberPhoneInput" type="text" class="form-control"
-												placeholder="依會員電話查詢" />
-
-											<div class="input-group-append">
-												<a href="#" id="searchByPhoneBtn" class="btn btn-secondary">
-													<i class="fas fa-search"></i>
-												</a>
-											</div>
+								<div class="card-header">
+									<!-- Row 1: 標題 & 主要操作按鈕 -->
+									<div class="d-flex justify-content-between align-items-center mb-2">
+										<h3 class="card-title">預約訂單列表</h3>
+										<div>
+											<!-- 新增 + 查看班表 -->
+                                            <!-- 連結到後端 Controller /appointments/insert 回傳 HTML -->
+											<a href="/appointments/insert" class="btn btn-success btn-sm shadow-sm">
+												<i class="fas fa-plus"></i> 新增預約
+											</a>
+											<button type="button" class="btn btn-info btn-sm shadow-sm ml-2" data-toggle="modal"
+												data-target="#scheduleModal">
+												<i class="fas fa-calendar-alt"></i> 查看班表
+											</button>
 										</div>
-										<!-- .依memberPhone查詢 -->
+									</div>
 
-										<!-- 預約狀態查詢 -->
-										<div class="input-group input-group-sm mr-2" style="width: 180px;">
-											<select id="statusSelect" class="form-control">
-												<option value="">預約訂單狀態查詢</option>
-												<option value="預約確認">預約確認</option>
-												<option value="已取消">已取消</option>
-												<option value="已完成">已完成</option>
-											</select>
+									<!-- Row 2: 複合篩選工具列 -->
+									<div class="bg-light p-2 rounded border d-flex align-items-center flex-wrap" style="gap: 0.8rem;">
+										<span class="text-muted text-sm"><i class="fas fa-filter"></i> 篩選條件:</span>
+
+										<!-- 條件欄位 -->
+										<div class="input-group input-group-sm" style="width: 160px;">
+											<input id="memberPhoneInput" type="text" class="form-control" placeholder="會員電話" />
 										</div>
-										<!-- .預約狀態查詢 -->
-
-										<!-- 預約日期區間查詢 -->
-										<div class="input-group input-group-sm mr-2" style="width: 220px;">
+										<select id="statusSelect" class="form-control form-control-sm border-secondary" style="width: 120px;">
+											<option value="">訂單狀態</option>
+											<option value="預約確認">預約確認</option>
+											<option value="已取消">已取消</option>
+											<option value="已完成">已完成</option>
+										</select>
+										<select id="groomerSelect" class="form-control form-control-sm border-secondary" style="width: 120px;">
+											<option value="">美容師</option>
+										</select>
+										<div class="input-group input-group-sm" style="width: 200px;">
 											<div class="input-group-prepend">
-												<span class="input-group-text bg-white"> <i
-														class="far fa-calendar-alt"></i>
-												</span>
+												<span class="input-group-text bg-white"><i class="far fa-calendar-alt"></i></span>
 											</div>
-
-											<input type="text" id="appointmentRange"
-												class="form-control float-right border-left-0 bg-white"
-												placeholder="選擇預約日期區間" style="cursor: pointer;" readonly />
+											<input type="text" id="appointmentRange" class="form-control" placeholder="預約日期範圍" readonly />
+										</div>
+										<div class="input-group input-group-sm" style="width: 200px;">
+											<div class="input-group-prepend">
+												<span class="input-group-text bg-white"><i class="fas fa-clock"></i></span>
+											</div>
+											<input type="text" id="createdAtRange" class="form-control" placeholder="建立時間範圍" readonly />
 										</div>
 
-										<!-- .預約日期區間查詢 -->
-
-										<!-- 查詢全部 -->
-										<a href="#" class="btn btn-secondary btn-sm mr-2 btn-query-all">
-											查詢全部 </a>
-										<!-- .查詢全部 -->
-
+										<!-- 查詢/重置按鈕 -->
+										<button id="btn-search-confirm" class="btn btn-primary btn-sm ml-auto">
+											<i class="fas fa-search"></i> 查詢
+										</button>
+										<button class="btn btn-outline-secondary btn-sm btn-query-all">
+											<i class="fas fa-redo"></i> 重置條件
+										</button>
 									</div>
 								</div>
-								<!-- /.card-header -->
+                                
+								<!-- 表格區塊 -->
 								<div class="card-body">
+                                    <!-- 使用 DataTables 套件管理 -->
 									<table id="example2" class="table table-bordered table-hover">
 										<thead>
 											<tr>
@@ -319,118 +317,82 @@
 												<th>預約日期</th>
 												<th>開始時間</th>
 												<th>狀態</th>
+												<th>建立時間</th>
 												<th class="text-center">操作</th>
 											</tr>
 										</thead>
 										<tbody>
-											<!-- 資料呈現 -->
+											<!-- JS 動態渲染 -->
 										</tbody>
 									</table>
 								</div>
-								<!-- /.card-body -->
 							</div>
-							<!-- /.card -->
 						</div>
 					</div>
 				</div>
 			</section>
-			<!-- /.content -->
 		</div>
-		<!-- /.content-wrapper -->
 
 		<footer class="main-footer">
-			<div class="float-right d-none d-sm-block">
-				<b>Version</b> 3.2.0
-			</div>
-			<strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.
-			</strong> All rights reserved.
+			<div class="float-right d-none d-sm-block"><b>Version</b> 3.2.0</div>
+			<strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.</strong> All rights reserved.
 		</footer>
-
-		<!-- Control Sidebar -->
-		<aside class="control-sidebar control-sidebar-dark">
-			<!-- Control sidebar content goes here -->
-		</aside>
-		<!-- /.control-sidebar -->
 	</div>
-	<!-- ./wrapper -->
 
-	<!-- Button trigger modal -->
-
-	<!-- Modal -->
-
+	<!-- Modal: 預約詳情彈窗 -->
 	<div class="modal fade" id="viewModal" tabindex="-1" role="dialog" aria-labelledby="viewModalLabel">
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h5 class="modal-title" id="viewModalLabel">預約詳細資料</h5>
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
+					<h5 class="modal-title">預約詳細資料</h5>
+					<button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
 				</div>
 				<div class="modal-body">
 					<form>
+                        <!-- 唯讀欄位，僅供檢視 -->
 						<div class="form-group row">
-							<label class="col-sm-4 col-form-label">寵物</label>
-							<div class="col-sm-8">
-								<input type="text" class="form-control" id="modal-pet-name" readonly />
-							</div>
-						</div>
-
-						<div class="form-group row">
-							<label class="col-sm-4 col-form-label">寵物類型</label>
-							<div class="col-sm-8">
-								<input type="text" class="form-control" id="modal-pet-type" readonly />
-							</div>
-						</div>
-
-						<div class="form-group row">
-							<label class="col-sm-4 col-form-label">寵物體型</label>
-							<div class="col-sm-8">
-								<input type="text" class="form-control" id="modal-pet-size" readonly />
-							</div>
+							<label class="col-sm-4 col-form-label">預約編號</label>
+							<div class="col-sm-8"><input type="text" class="form-control" id="modal-appointment-id" readonly /></div>
 						</div>
 						<div class="form-group row">
+							<label class="col-sm-4 col-form-label">寵物名稱</label>
+							<div class="col-sm-8"><input type="text" class="form-control" id="modal-pet-name" readonly /></div>
+						</div>
+                        <div class="form-group row">
+							<label class="col-sm-4 col-form-label">寵物種類</label>
+							<div class="col-sm-8"><input type="text" class="form-control" id="modal-pet-type" readonly /></div>
+						</div>
+                        <div class="form-group row">
+							<label class="col-sm-4 col-form-label">體型</label>
+							<div class="col-sm-8"><input type="text" class="form-control" id="modal-pet-size" readonly /></div>
+						</div>
+                        <div class="form-group row">
 							<label class="col-sm-4 col-form-label">主要服務</label>
-							<div class="col-sm-8">
-								<input type="text" class="form-control" id="modal-main-service" readonly />
-							</div>
+							<div class="col-sm-8"><input type="text" class="form-control" id="modal-main-service" readonly /></div>
 						</div>
-						<div class="form-group row">
-							<label class="col-sm-4 col-form-label">加購服務</label>
-							<div class="col-sm-8">
-								<input type="text" class="form-control" id="modal-addon-item" readonly />
-							</div>
+                         <div class="form-group row">
+							<label class="col-sm-4 col-form-label">加購項目</label>
+							<div class="col-sm-8"><input type="text" class="form-control" id="modal-addon-item" readonly /></div>
 						</div>
 
-						<div class="form-group row">
+                         <div class="form-group row">
 							<label class="col-sm-4 col-form-label">預約時間</label>
-							<div class="col-sm-8">
-								<input type="text" class="form-control" id="modal-appointment-time" readonly />
-							</div>
+							<div class="col-sm-8"><input type="text" class="form-control" id="modal-appointment-time" readonly /></div>
+						</div>
+                         <div class="form-group row">
+							<label class="col-sm-4 col-form-label">預估時長</label>
+							<div class="col-sm-8"><input type="text" class="form-control" id="modal-duration-minutes" readonly /></div>
 						</div>
 
-						<div class="form-group row">
-							<label class="col-sm-4 col-form-label">時長</label>
-							<div class="col-sm-8">
-								<input type="text" class="form-control" id="modal-duration-minutes" readonly />
-							</div>
-						</div>
-
-						<div class="form-group row">
-							<label class="col-sm-4 col-form-label">價格</label>
-							<div class="col-sm-8">
-								<input type="text" class="form-control" id="modal-price" readonly />
-							</div>
+                         <div class="form-group row">
+							<label class="col-sm-4 col-form-label">總價格</label>
+							<div class="col-sm-8"><input type="text" class="form-control" id="modal-price" readonly /></div>
 						</div>
 
 						<div class="form-group row">
 							<label class="col-sm-4 col-form-label">會員備註</label>
-							<div class="col-sm-8">
-								<textarea class="form-control" id="modal-member-note" rows="3" readonly>
-				  </textarea>
-							</div>
+							<div class="col-sm-8"><textarea class="form-control" id="modal-member-note" rows="3" readonly></textarea></div>
 						</div>
-
 						<div class="form-group row">
 							<div class="col-sm-12 text-right">
 								<button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
@@ -440,57 +402,81 @@
 				</div>
 			</div>
 		</div>
-		<!-- /.modal -->
-	</div>
 	</div>
 
-	<!-- jQuery -->
+	<!-- Modal: 美容師班表彈窗 (Toast UI Calendar) -->
+	<div class="modal fade" id="scheduleModal" tabindex="-1" role="dialog" aria-labelledby="scheduleModalLabel">
+		<div class="modal-dialog modal-xl" role="document">
+			<div class="modal-content">
+				<div class="modal-header bg-info text-white">
+					<h5 class="modal-title"><i class="fas fa-calendar-alt mr-2"></i>美容師班表總覽</h5>
+					<button type="button" class="close text-white" data-dismiss="modal"><span>&times;</span></button>
+				</div>
+				<div class="modal-body" style="padding: 1rem;">
+    				<!-- 行事曆控制區 -->
+    				<div class="d-flex align-items-center mb-3 flex-wrap" style="gap: 0.5rem;">
+    					<div class="btn-group mr-2">
+    						<button type="button" class="btn btn-outline-secondary btn-sm" id="schedule-btn-prev"><i class="fas fa-chevron-left"></i></button>
+    						<button type="button" class="btn btn-outline-secondary btn-sm" id="schedule-btn-today">Today</button>
+    						<button type="button" class="btn btn-outline-secondary btn-sm" id="schedule-btn-next"><i class="fas fa-chevron-right"></i></button>
+    					</div>
+    					<h5 class="m-0 mr-3" id="schedule-date-range">載入中...</h5>
+
+
+    					<!-- 班表篩選 -->
+    					<div class="input-group input-group-sm" style="width: 150px;">
+    						<select id="scheduleGroomerFilter" class="form-control">
+    							<option value="">全部美容師</option>
+    						</select>
+    					</div>
+    				</div>
+					<!-- Calendar 容器 -->
+					<div id="scheduleCalendar" style="height: 500px;"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Tooltip 容器 -->
+	<div id="calendarTooltip" class="calendar-tooltip"></div>
+
+	<!-- JS Libraries -->
 	<script src="../../plugins/jquery/jquery.min.js"></script>
-	<!-- Bootstrap 4 -->
 	<script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-	<!-- DataTables  & Plugins -->
 	<script src="../../plugins/datatables/jquery.dataTables.min.js"></script>
 	<script src="../../plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
 	<script src="../../plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
 	<script src="../../plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
-	<script src="../../plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
-	<script src="../../plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
-	<script src="../../plugins/jszip/jszip.min.js"></script>
-	<script src="../../plugins/pdfmake/pdfmake.min.js"></script>
-	<script src="../../plugins/pdfmake/vfs_fonts.js"></script>
-	<script src="../../plugins/datatables-buttons/js/buttons.html5.min.js"></script>
-	<script src="../../plugins/datatables-buttons/js/buttons.print.min.js"></script>
-	<script src="../../plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
-	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
 	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-	<!-- 登出 -->
 	<script src="../../dist/js/adminAuth.js"></script>
-	<!-- .登出 -->
-	<!-- AdminLTE App -->
 	<script src="../../dist/js/adminlte.min.js"></script>
-	<!-- AdminLTE for demo purposes
-            <script src="../../dist/js/demo.js"></script> -->
-	<!-- Page specific script -->
+
+	<!-- Page Script -->
 	<script>
+        // DOM 載入後執行
 		$(function () {
-			initDataTable();
-			loadAllAppointments();
-			handleViewButtonClick();
-			handleDeleteButtonClick();
-			handleQueryAllButtonClick();
-			handleSearchPhoneButtonClick(); //id=searchByPhoneBtn
-			SelectedAppointmentStatus(); //id=statusSelect
+			initDataTable(); // 初始化表格設定
+			loadAllAppointments(); // 載入所有預約資料
+			loadGroomers();  // 載入搜尋用的美容師選單
+			handleViewButtonClick(); // 綁定「查看」按鈕
+			handleDeleteButtonClick(); // 綁定「取消」按鈕
+			handleQueryAllButtonClick(); // 綁定「重置」按鈕
+			handleBatchSearch(); // 綁定「查詢」按鈕
 		});
 
-		//初始化畫面
+		// 全域變數，存放後端回傳的所有資料 (供 Modal 查詢詳情用)
+        let allAppointments = [];
+
+		// 初始化 DataTables
 		function initDataTable() {
 			if ($.fn.DataTable.isDataTable("#example2")) {
-				$("#example2").DataTable().destroy();
+				$("#example2").DataTable().destroy(); // 若已存在則先銷毀，避免重複綁定
 			}
 			$("#example2").DataTable({
 				paging: true,
 				lengthChange: false,
-				searching: false,
+				searching: false, // 關閉內建搜尋 (改用自訂的後端搜尋)
 				ordering: true,
 				info: true,
 				autoWidth: true,
@@ -499,15 +485,15 @@
 			});
 		}
 
-		//呼叫後端，獲取資料
+		// 載入所有資料 (GET /appointments)
 		function loadAllAppointments() {
 			$.ajax({
-				url: "/appointments",
+				url: "/shop/appointments",
 				type: "GET",
 				dataType: "json",
 				success: function (data) {
-					allAppointments = data;
-					renderTable(data);
+					allAppointments = data; // 存入全域變數
+					renderTable(data); // 渲染畫面
 				},
 				error: function (xhr) {
 					console.error("Error:", xhr);
@@ -516,27 +502,34 @@
 			});
 		}
 
-		//取消預約
+		// 取消預約 (PATCH /appointments/cancel/{id})
 		function cancelAppointments(appointmentId) {
 			$.ajax({
-				url: "/appointments/cancel/" + appointmentId,
+				url: "/shop/appointments/cancel/" + appointmentId,
 				type: "PATCH",
-
 				success: function (data) {
-
-					loadAllAppointments();
+					loadAllAppointments(); // 成功後重新整理列表
 					alert("預約已成功取消！");
 				},
 				error: function (xhr) {
 					console.error("Error:", xhr);
-					alert("Error: 無法載入資料，請確認後端 Server 是否啟動");
+					alert("操作失敗，請稍後再試");
 				},
 			});
 		}
 
-		//渲染表格
+		// 格式化日期時間 helper
+		function formatDateTime(dateTimeStr) {
+			if (!dateTimeStr) return '';
+			return dateTimeStr.substring(0, 16); // 取前16字元 (YYYY-MM-DD HH:mm)
+		}
+
+		// 渲染表格 (將 JSON 資料轉為 HTML)
 		function renderTable(dataList) {
+            // == 分頁狀態保存邏輯 ==
+			let currentPage = 0;
 			if ($.fn.DataTable.isDataTable("#example2")) {
+				currentPage = $("#example2").DataTable().page(); // 記下當前頁碼
 				$("#example2").DataTable().destroy();
 			}
 
@@ -546,21 +539,18 @@
 			dataList.forEach(function (app) {
 				let isCancelled = (app.appointmentStatus === "已取消");
 
-
 				let deleteBtnHtml = "";
+				const btnStyle = 'width: 80px;';
 
+                // 根據狀態決定按鈕樣式
 				if (isCancelled) {
-
-					deleteBtnHtml = `
-          	<button class="btn btn-secondary btn-sm disabled-btn" disabled>
-              已取消
-          	</button>`;
-				} else {
-					deleteBtnHtml = `
-          	<a href="#" class="btn btn-danger btn-sm btn-delete" data-id="${app.appointmentId}">
-              取消預約
-          	</a>`;
+					deleteBtnHtml = `<button class="btn btn-secondary btn-sm disabled-btn" style="${btnStyle}" disabled>已取消</button>`;
+				} else if (app.appointmentStatus === "已完成") {
+                    deleteBtnHtml = `<button class="btn btn-success btn-sm disabled-btn" style="${btnStyle}" disabled>已完成</button>`;
+                } else {
+					deleteBtnHtml = `<a href="#" class="btn btn-danger btn-sm btn-delete" data-id="${app.appointmentId}" style="${btnStyle}">取消預約</a>`;
 				}
+                
 				const tr = `
                          <tr>
                             <td>${app.appointmentId}</td>
@@ -570,38 +560,38 @@
                             <td>${app.appointmentDate}</td>
                             <td>${app.startTime}</td>
                             <td>${app.appointmentStatus}</td>
+							<td>${formatDateTime(app.createdAt)}</td>
                             <td class="text-center">
-                            <a href="#" class="btn btn-secondary btn-sm btn-modal" data-id="${app.appointmentId}">查看</a>
-							<div class="btn-group">
-                                ${deleteBtnHtml}
+								<div class="d-flex justify-content-center align-items-center" style="gap: 5px;">
+                            		<a href="#" class="btn btn-secondary btn-sm btn-modal" data-id="${app.appointmentId}">查看</a>
+                                	${deleteBtnHtml}
                                 </div>
                             </td>
                         </tr>
                     `;
-				//載入表格資料
 				tbody.append(tr);
 			});
 
-			initDataTable();
+			initDataTable(); // 重新初始化 DataTable
+
+            // == 恢復頁碼 ==
+			if (currentPage > 0) {
+				$("#example2").DataTable().page(currentPage).draw('page');
+			}
 		}
 
-		//點擊查看按鈕，彈出Modal並顯示資料
+		// 查看詳情 (Modal)
 		function handleViewButtonClick() {
 			$(document).on("click", ".btn-modal", function (e) {
 				e.preventDefault();
-
-				// 1. 取得按鈕上的 ID
 				let id = $(this).data("id");
-
-				// 2. 從全域變數 allAppointments 裡面找到那一筆資料
-				// 這裡要注意：data-id 抓出來可能是字串，需轉型比對，或用 == (不嚴格比對)
-				let appData = allAppointments.find(
-					(item) => item.appointmentId == id
-				);
+				// 從全域變數找資料，減少 API 請求
+				let appData = allAppointments.find((item) => item.appointmentId == id);
 
 				if (appData) {
-					// 3. 把資料填入 Modal 的欄位中
+					$("#modal-appointment-id").val(appData.appointmentId);
 					$("#modal-pet-name").val(appData.petName);
+                    // ... 填入欄位
 					$("#modal-pet-type").val(appData.petType);
 					$("#modal-pet-size").val(appData.petSize);
 					$("#modal-main-service").val(appData.mainService);
@@ -610,22 +600,15 @@
 					$("#modal-duration-minutes").val(appData.durationMinutes);
 					$("#modal-price").val(appData.price);
 					$("#modal-member-note").val(appData.notes);
-
-					// 4. 顯示 Modal
 					$("#viewModal").modal("show");
-				} else {
-					alert("找不到該筆資料！");
 				}
 			});
-
 		}
 
-		// 處理取預約按鈕點擊
+		// 取消按鈕事件
 		function handleDeleteButtonClick() {
 			$(document).on("click", ".btn-delete", function (e) {
 				e.preventDefault();
-
-				// 1. 取得按鈕上的 ID
 				let appointmentId = $(this).data("id");
 				if (confirm("確定要取消此預約訂單嗎？(將設定為取消狀態)")) {
 					cancelAppointments(appointmentId);
@@ -633,33 +616,44 @@
 			});
 		}
 
+		// 複合搜尋 (按下查詢按鈕時)
+		function handleBatchSearch() {
+			$(document).on("click", "#btn-search-confirm", function (e) {
+				e.preventDefault();
+				doComplexSearch();
+			});
+		}
 
-		//查詢總機
+        // 執行複合查詢
 		function doComplexSearch() {
-
 			let phone = $("#memberPhoneInput").val().trim();
 			let status = $("#statusSelect").val();
+			let groomerId = $("#groomerSelect").val();
 			let dateRange = $("#appointmentRange").val();
-
-			let startDate = "";
-			let endDate = "";
-
+			let createdAtRange = $("#createdAtRange").val();
+			let startDate = "", endDate = "";
+			let createdAtStart = "", createdAtEnd = "";
 
 			if (dateRange) {
 				let dates = dateRange.split(' ~ ');
-				startDate = dates[0]
-				endDate = dates[1]
+				startDate = dates[0]; endDate = dates[1];
+			}
+			if (createdAtRange) {
+				let dates = createdAtRange.split(' ~ ');
+				createdAtStart = dates[0]; createdAtEnd = dates[1];
 			}
 
-
 			$.ajax({
-				url: "/appointments/search",
+				url: "/shop/appointments/search",
 				type: "GET",
 				data: {
 					memberPhone: phone,
 					status: status,
 					startDate: startDate,
-					endDate: endDate
+					endDate: endDate,
+					groomerId: groomerId,
+					createdAtStart: createdAtStart,
+					createdAtEnd: createdAtEnd
 				},
 				dataType: "json",
 				success: function (data) {
@@ -673,59 +667,289 @@
 			});
 		}
 
-		//依會員電話查詢 
-		function handleSearchPhoneButtonClick() {
-			$(document).on("click", "#searchByPhoneBtn", function (e) {
-				e.preventDefault();
-				doComplexSearch();
+		// 載入搜尋選單的美容師
+		function loadGroomers() {
+			$.ajax({
+				url: "/shop/groomers",
+				type: "GET",
+				dataType: "json",
+				success: function (data) {
+					let select = $("#groomerSelect");
+					select.empty().append('<option value="">選擇美容師</option>');
+					data.forEach(function (groomer) {
+						select.append(`<option value="${groomer.groomerId}">${groomer.groomerName}</option>`);
+					});
+				}
 			});
 		}
 
-		//查詢預約狀態 
-		function SelectedAppointmentStatus() {
-			$(document).on("change", "#statusSelect", function (e) {
-				console.log("statusSelect changed");
-				doComplexSearch();
-			});
-		}
-
-		// 預約日期區間設定
-		$('#appointmentRange').daterangepicker({
+		// 初始化 DateRangePicker
+        const pickerOptions = {
 			autoUpdateInput: false,
-			locale: {
-				format: 'YYYY-MM-DD',
-				applyLabel: "確定",
-				cancelLabel: "清除"
-			}
-		});
+			locale: { format: 'YYYY-MM-DD', applyLabel: "確定", cancelLabel: "清除" }
+		};
 
-		// 預約日期區間設定 - 確定
-		$('#appointmentRange').on('apply.daterangepicker', function (ev, picker) {
+		$('#appointmentRange, #createdAtRange').daterangepicker(pickerOptions);
+
+        // 綁定 apply/cancel 事件
+		$('#appointmentRange, #createdAtRange').on('apply.daterangepicker', function (ev, picker) {
 			$(this).val(picker.startDate.format('YYYY-MM-DD') + ' ~ ' + picker.endDate.format('YYYY-MM-DD'));
-			doComplexSearch();
 		});
-		// 預約日期區間設定 - 清除
-		$('#appointmentRange').on('cancel.daterangepicker', function (ev, picker) {
+		$('#appointmentRange, #createdAtRange').on('cancel.daterangepicker', function (ev, picker) {
 			$(this).val('');
-			doComplexSearch();
 		});
 
-		//查詢全部
+		// 重置搜尋按鈕
 		function handleQueryAllButtonClick() {
 			$(document).on("click", ".btn-query-all", function (e) {
 				e.preventDefault();
+                // 清空所有欄位
 				$("#memberPhoneInput").val("");
 				$("#statusSelect").val("");
+				$("#groomerSelect").val("");
 				$("#appointmentRange").val("");
-				doComplexSearch();
+				$("#createdAtRange").val("");
+				doComplexSearch(); // 重新查全部
 			});
 		}
 
+		// ============ 班表 Modal 行事曆邏輯 ============
+		let scheduleCalendar = null;
+        let allScheduleEvents = { appointments: [], leaves: [] }; // 儲存班表資料供篩選
+		const colorPalette = [
+			{ bg: '#ff5583', border: '#ff5583' },
+			{ bg: '#03bd9e', border: '#03bd9e' },
+			{ bg: '#bbdc00', border: '#bbdc00' },
+			{ bg: '#9e5fff', border: '#9e5fff' },
+			{ bg: '#00a9ff', border: '#00a9ff' },
+			{ bg: '#ffbb3b', border: '#ffbb3b' }
+		];
 
+        // 綁定 Modal 顯示事件
+		$('#scheduleModal').on('shown.bs.modal', function () {
+			if (!scheduleCalendar) {
+				initScheduleCalendar(); // 初始化月曆
+			} else {
+				scheduleCalendar.render(); // 重新渲染
+			}
+			loadScheduleData(); // 載入資料
+            
+             // 載入 Modal 內的下拉選單 (這裡重用載入邏輯)
+            loadScheduleGroomerFilter();
+		});
 
+        
+        // 載入 Modal 內的美容師篩選選單
+        function loadScheduleGroomerFilter() {
+			$.ajax({
+				url: "/shop/groomers",
+				type: "GET",
+				dataType: "json",
+				success: function (list) {
+					let $select = $('#scheduleGroomerFilter');
+					$select.empty().append('<option value="">全部美容師</option>');
+					list.forEach(g => {
+						$select.append(`<option value="${g.groomerId}">${g.groomerName}</option>`);
+					});
+				}
+			});
+		}
 
+		function initScheduleCalendar() {
+			const Calendar = tui.Calendar;
+			const container = document.getElementById('scheduleCalendar');
 
+			scheduleCalendar = new Calendar(container, {
+				defaultView: 'week',
+				isReadOnly: true,
+				week: { startDayOfWeek: 1, hourStart: 7, hourEnd: 22, taskView: false },
+				theme: { week: { timeGridHalfHourLine: { borderBottom: '1px dotted #e5e5e5' } } },
+				template: {
+					time: function (event) {
+						const appt = event.raw;
+						return `<span style="font-weight: bold;">${appt.startTime || ''}</span><br>
+							<span style="font-size: 11px;">${appt.groomerName || ''}</span>`;
+					},
+					allday: function (event) { return `<span>${event.title}</span>`; }
+				},
+				calendars: []
+			});
 
+			// 綁定懸停 Tooltip
+			scheduleCalendar.on('mouseEnter', function(info) { showEventTooltip(info); }); // 注意：Toast UI 新版事件不同，這裡以自訂 bindCalendarEventHover 為主
+			// 按鈕事件
+			$('#schedule-btn-prev').click(function () { scheduleCalendar.prev(); updateScheduleDateRange(); });
+			$('#schedule-btn-next').click(function () { scheduleCalendar.next(); updateScheduleDateRange(); });
+			$('#schedule-btn-today').click(function () { scheduleCalendar.today(); updateScheduleDateRange(); });
+		}
+
+		function updateScheduleDateRange() {
+			const start = scheduleCalendar.getDateRangeStart();
+			const end = scheduleCalendar.getDateRangeEnd();
+			$('#schedule-date-range').text(`${moment(start.getTime()).format('YYYY/MM/DD')} ~ ${moment(end.getTime()).format('YYYY/MM/DD')}`);
+		}
+
+		function loadScheduleData() {
+            // 1. 取得美容師清單 (產生顏色 Key)
+			$.ajax({
+				url: "/shop/groomers",
+				type: "GET",
+				dataType: "json",
+				success: function (groomerList) {
+					const calendarList = groomerList.map((g, i) => {
+						const colorSet = colorPalette[i % colorPalette.length];
+						return {
+							id: String(g.groomerId),
+							name: g.groomerName,
+							color: '#ffffff',
+							backgroundColor: colorSet.bg,
+							borderColor: colorSet.border
+						};
+					});
+					scheduleCalendar.setCalendars(calendarList);
+
+					// 2. 平行載入預約 與 假單
+					Promise.all([
+						$.ajax({ url: "/shop/appointments", type: "GET", dataType: "json" }),
+						$.ajax({ url: "/shop/groomers/leave-records", type: "GET", dataType: "json", cache: false })
+					]).then(function ([appointments, leaves]) {
+                        // 儲存原始資料供篩選
+						allScheduleEvents.appointments = appointments;
+						allScheduleEvents.leaves = leaves;
+                        // 渲染
+						filterScheduleEvents();
+						updateScheduleDateRange();
+					});
+				}
+			});
+		}
+        
+        // 篩選班表事件
+        $(document).on('change', '#scheduleGroomerFilter', function () {
+			filterScheduleEvents();
+		});
+
+		function filterScheduleEvents() {
+			let selectedGroomerId = $('#scheduleGroomerFilter').val();
+			let filteredAppts = allScheduleEvents.appointments;
+			let filteredLeaves = allScheduleEvents.leaves;
+
+			if (selectedGroomerId) {
+				filteredAppts = filteredAppts.filter(a => String(a.groomerId) === selectedGroomerId);
+				filteredLeaves = filteredLeaves.filter(l => String(l.groomerId) === selectedGroomerId);
+			}
+			renderScheduleEvents(filteredAppts, filteredLeaves);
+		}
+
+		function renderScheduleEvents(appointments, leaves) {
+			let events = [];
+
+			appointments.forEach(appt => {
+				if (appt.appointmentStatus !== '已取消') {
+					events.push({
+						id: 'appt-' + appt.appointmentId,
+						calendarId: String(appt.groomerId),
+						title: appt.groomerName,
+						category: 'time',
+						start: `${appt.appointmentDate}T${appt.startTime}:00`,
+						end: `${appt.appointmentDate}T${appt.endTime}:00`,
+						raw: appt // 綁定原始資料供 Tooltip 用
+					});
+				}
+			});
+
+			leaves.forEach(leave => {
+				if (leave.isActive) {
+					events.push({
+						id: 'leave-' + leave.leaveId,
+						calendarId: String(leave.groomerId),
+						title: `${leave.groomerName} (休假)`,
+						category: 'allday',
+						start: leave.startDate,
+						end: leave.endDate,
+						isAllday: true,
+						backgroundColor: '#666666',
+						borderColor: '#666666',
+						raw: leave
+					});
+				}
+			});
+
+			scheduleCalendar.clear();
+			scheduleCalendar.createEvents(events);
+
+			// 建立索引供 Tooltip 快速查找
+			window.calendarEventMap = {};
+			events.forEach(e => { window.calendarEventMap[e.id] = e; });
+			
+            // 重新綁定 Tooltip 事件
+			setTimeout(bindCalendarEventHover, 500);
+		}
+
+		// Tooltip 滑鼠事件綁定
+		function bindCalendarEventHover() {
+			$(document).off('mouseenter.caltooltip mouseleave.caltooltip mousemove.caltooltip');
+			// 針對 Calendar 內部的事件區塊綁定
+			$(document).on('mouseenter.caltooltip', '#scheduleCalendar .toastui-calendar-event-time, #scheduleCalendar .toastui-calendar-weekday-event', function(e) {
+				var $el = $(this);
+				var eventId = findEventId($el);
+				if (eventId && window.calendarEventMap && window.calendarEventMap[eventId]) {
+					showEventTooltipFromData(window.calendarEventMap[eventId]);
+				}
+			});
+			$(document).on('mouseleave.caltooltip', '#scheduleCalendar .toastui-calendar-event-time, #scheduleCalendar .toastui-calendar-weekday-event', function() {
+				hideEventTooltip();
+			});
+			$(document).on('mousemove.caltooltip', '#scheduleCalendar', function(e) {
+				$('#calendarTooltip').css({ left: e.pageX + 15, top: e.pageY + 15 });
+			});
+		}
+
+        // 輔助：從 DOM 元素找回 Event ID
+		function findEventId($el) {
+			var id = $el.attr('data-event-id');
+			if (id) return id;
+            // 若無 data ID (ToastUI 有時不直接給)，則嘗試用文字匹配 (Fallback)
+			var text = $el.text().replace(/\s+/g, ' ').trim();
+			if (window.calendarEventMap) {
+				for (var key in window.calendarEventMap) {
+					var evt = window.calendarEventMap[key];
+					var raw = evt.raw;
+					if (key.startsWith('appt-') && raw) {
+						if ((raw.startTime && text.includes(raw.startTime)) || (raw.groomerName && text.includes(raw.groomerName))) return key;
+					}
+					if (key.startsWith('leave-') && evt.title) {
+						if (text.includes(evt.title.substring(0, 5))) return key;
+					}
+				}
+			}
+			return null;
+		}
+
+		function showEventTooltipFromData(eventData) {
+			if (!eventData || !eventData.raw) return;
+			var raw = eventData.raw;
+			var html = '';
+
+			if (eventData.id.startsWith('appt-')) {
+				html = `<strong>📅 預約 #${raw.appointmentId}</strong>
+					<div class="tooltip-row"><span class="tooltip-label">寵物:</span>${raw.petName || '-'}</div>
+					<div class="tooltip-row"><span class="tooltip-label">美容師:</span>${raw.groomerName || '-'}</div>
+					<div class="tooltip-row"><span class="tooltip-label">時間:</span>${raw.startTime} ~ ${raw.endTime}</div>
+					<div class="tooltip-row"><span class="tooltip-label">狀態:</span>${raw.appointmentStatus}</div>
+					<div class="tooltip-row"><span class="tooltip-label">價格:</span>$${raw.price || 0}</div>`;
+			} else if (eventData.id.startsWith('leave-')) {
+				html = `<strong>🏖️ 休假</strong>
+					<div class="tooltip-row"><span class="tooltip-label">美容師:</span>${raw.groomerName}</div>
+					<div class="tooltip-row"><span class="tooltip-label">日期:</span>${raw.startDate} ~ ${raw.endDate}</div>
+					<div class="tooltip-row"><span class="tooltip-label">原因:</span>${raw.reason || '無'}</div>`;
+			}
+			if (html) $('#calendarTooltip').html(html).show();
+		}
+
+		function hideEventTooltip() {
+			$('#calendarTooltip').hide();
+		}
 	</script>
 </body>
 

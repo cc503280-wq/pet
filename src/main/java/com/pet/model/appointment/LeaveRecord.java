@@ -5,11 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.time.LocalDate;
-import java.time.LocalTime;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
-
 import java.time.LocalDateTime;
+
 
 @Data
 @Entity
@@ -23,24 +21,29 @@ public class LeaveRecord {
     @Column(name = "leave_id")
     private Integer leaveId;
 
-    @Column(name = "groomer_id", nullable = false)
+    @Column(name = "groomer_id")
     private Integer groomerId;
 
-    @Column(name = "leave_date", nullable = false)
+    @Column(name = "start_date")
     @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDate leaveDate;
+    private LocalDate startDate; 
 
+    @Column(name = "end_date")
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate endDate; 
 
-    @Column(nullable = false, length = 100)
-    private String reason;
+    @Column(name ="reason")
+    private String reason; 
     
     @Column(name="is_active")
-	private Boolean isActive;
+	private Boolean isActive; 
 
     @Column(name = "created_at", insertable = false, updatable = false)
+    @JsonFormat(pattern = "yyyy/MM/dd HH:mm")
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at", insertable = false, updatable = false)
+    @JsonFormat(pattern = "yyyy/MM/dd HH:mm")
     private LocalDateTime updatedAt;
     
     @ManyToOne

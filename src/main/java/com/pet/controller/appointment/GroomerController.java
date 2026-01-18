@@ -22,21 +22,62 @@ import com.pet.model.appointment.LeaveRecoredGroomerView;
 import com.pet.service.appointment.GroomerService;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * GroomerController: 處理「美容師」相關 API
+ * 包含：登入/登出、資料 CRUD、搜尋、以及「請假單」的管理
+ */
 @RestController 
-@RequestMapping("/groomers") 
+@RequestMapping("/shop/groomers") // 基礎路徑 /groomers
 @Slf4j
 public class GroomerController {
 
    	@Autowired
 	private GroomerService groomerService;
 
- 
-	@GetMapping
+    
+	@GetMapping 
 	public List<Groomer> getAllGroomer() {
 		return groomerService.getAllGroomer();
 	}
 	
-	@GetMapping("/search")
+
+	//登入登出應該另外寫在一個Controller
+    // 美容師登入 (Authentication)
+	@PostMapping("/login") // POST /groomers/login
+	public ResponseEntity<?> login(@RequestBody java.util.Map<String, String> credentials) {
+		String email = credentials.get("email");
+		String password = credentials.get("password");
+		
+		if (email == null || password == null) {
+			return ResponseEntity.badRequest().body("Email 和密碼不能為空");
+		}
+		
+		try {
+            // 呼叫 Service 驗證帳密 (含 BCrypt 比對)
+			Groomer groomer = groomerService.groomerLogin(email, password);
+			if (groomer != null) {
+				return ResponseEntity.ok(groomer);
+			} else {
+				return ResponseEntity.status(401).body("帳號或密碼錯誤");
+			}
+		} catch (RuntimeException e) {
+			if ("ACCOUNT_DISABLED".equals(e.getMessage())) {
+				return ResponseEntity.status(403).body("帳號已被停用，無法登入");
+			}
+			throw e;
+		}
+	}
+	
+    // 美容師登出
+	@PostMapping("/logout") // POST /groomers/logout
+	public ResponseEntity<?> logout(@RequestBody java.util.Map<String, Object> payload) {
+		// 前端使用 Pinia 管理登入狀態，這裡僅做紀錄
+		log.info("美容師登出: {}", payload.get("groomerId"));
+		return ResponseEntity.ok().body("{\"message\": \"登出成功\"}");
+	}
+	
+    // 複合條件搜尋美容師
+	@GetMapping("/search") // GET /groomers/search
     public ResponseEntity<List<Groomer>> searchGroomers(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
@@ -48,11 +89,13 @@ public class GroomerController {
     }
 	
 	
-	@PostMapping("/insert")
+    // 新增美容師 (含檔案上傳)
+	@PostMapping("/insert") // POST /groomers/insert
 	public ResponseEntity<?> insertGroomer(
 	        @RequestParam("groomerName") String groomerName,
 	        @RequestParam("phone") String phone,
 	        @RequestParam("email") String email,
+	        @RequestParam("password") String password,
 	        @RequestParam("hiredate") LocalDate hiredate,
 	        @RequestParam(value = "file", required = false) MultipartFile file) {
 	    try {
@@ -60,6 +103,7 @@ public class GroomerController {
 	        groomer.setGroomerName(groomerName);
 	        groomer.setPhone(phone);
 	        groomer.setEmail(email);
+	        groomer.setPassword(password);
 	        groomer.setHiredate(hiredate);       
 
 	        groomerService.saveGroomerInfo(groomer,file);
@@ -80,6 +124,7 @@ public class GroomerController {
         }
     }
 	
+    // 更新美容師資料
 	@PostMapping("/update/{id}") 
     public ResponseEntity<?> updateGroomerInfo(
             @PathVariable Integer id, 
@@ -87,6 +132,7 @@ public class GroomerController {
             @RequestParam("phone") String phone,
             @RequestParam("email") String email,
             @RequestParam("hiredate") LocalDate hiredate,
+            @RequestParam(value = "password", required = false) String password,
             @RequestParam(value = "file", required = false) MultipartFile file) {
         try {
           
@@ -95,6 +141,12 @@ public class GroomerController {
             groomer.setPhone(phone);
             groomer.setEmail(email);
             groomer.setHiredate(hiredate);
+            
+            // 如果有傳入密碼，則設定密碼（Service 層會加密）
+            if (password != null && !password.isEmpty()) {
+                groomer.setPassword(password);
+            }
+            
             groomerService.updateGroomerInfo(id, groomer, file);
             
             return ResponseEntity.ok().body("{\"message\": \"美容師資料更新成功\"}");
@@ -104,11 +156,13 @@ public class GroomerController {
         }
     }
 	
+    // 更新美容師狀態 (在職/離職)
 	@PatchMapping("/{id}/status")
     public ResponseEntity<?> updateGroomerStatus(
             @PathVariable Integer id,
             @RequestParam Boolean isActive) {
         try {
+            // Service 會檢查是否有未來預約，避免錯誤停權
             groomerService.updateGroomerStatus(id, isActive);
             return ResponseEntity.ok().body("{\"message\": \"狀態更新成功\"}");
         } catch (Exception e) {
@@ -117,13 +171,27 @@ public class GroomerController {
         }
     }
 	
-	//============請假=======//
+	//============ 請假單管理 (Leave Records) =======//
 	
+    // 取得所有請假紀錄 (View)
 	@GetMapping(path = "/leave-records")
 	public List<LeaveRecoredGroomerView> getAllLeaveRecords() {
 		return groomerService.getAllLeaveRecords();
 	}
 	
+    // 批次新增請假單 (前端現在呼叫這個)
+	@PostMapping("/leave-records/batch")
+    public ResponseEntity<?> createLeaveRecordBatch(@RequestBody com.pet.dto.appointment.LeaveRequestDto request) {
+        try {
+            groomerService.createLeaveRecordsBatch(request);
+            return ResponseEntity.ok().body("{\"message\": \"請假申請已提交\"}");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body("請假申請失敗：" + e.getMessage());
+        }
+    }
+	
+    // 新增單筆請假單
 	@PostMapping("/leave-records")
 	public ResponseEntity<?> createLeaveRecord(@RequestBody LeaveRecord leaveRecord) {
 	    try {
@@ -137,6 +205,7 @@ public class GroomerController {
 	    }
 	}
 	
+    // 更新請假單 (如：審核通過、駁回)
 	@PutMapping("/leave-records/{id}")
 	public ResponseEntity<?> updateLeaveRecord(
 	        @PathVariable Integer id, 
@@ -153,6 +222,7 @@ public class GroomerController {
 	    }
 	}
 	
+    // 搜尋請假紀錄
 	@GetMapping("/leave-records/search")
     public ResponseEntity<List<LeaveRecoredGroomerView>> searchLeaveRecords(
             @RequestParam(required = false) Integer groomerId,

@@ -5,9 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.Set;
-
 import com.pet.model.member.MemberPet;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -23,10 +21,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
+
 
 @Data
 @Entity
@@ -38,54 +36,54 @@ public class Appointment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "appointment_id")
-    private Integer appointmentId;
+    private Integer appointmentId; 
 
     @Column(name = "pet_id")
-    private Integer petId;
+    private Integer petId; 
 
     @Column(name = "groomer_id")
-    private Integer groomerId;
+    private Integer groomerId;  
 
-    @Column(name = "appointment_date", nullable = false)
-    private LocalDate appointmentDate;
+    @Column(name = "appointment_date")
+    private LocalDate appointmentDate; 
 
-    @Column(name = "start_time", nullable = false)
-    private LocalTime startTime;
+    @Column(name = "start_time")
+    private LocalTime startTime; 
 
-    @Column(name = "end_time", nullable = false)
+    @Column(name = "end_time")
     private LocalTime endTime;
     
     @Column(name = "notes")
-    private String notes;
+    private String notes; 
 
-    @Column(name = "appointment_status", nullable = false, length = 20)
+    // 狀態 (預約確認, 已完成, 已取消, 已報到, 未到場)
+    @Column(name = "appointment_status")
     private String appointmentStatus;
 
-    @Column(name = "final_price", nullable = false, precision = 10, scale = 2)
-    private BigDecimal finalPrice;
+    @Column(name = "final_price")
+    private BigDecimal finalPrice; 
 
+   
     @Column(name = "created_at", insertable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    
     @Column(name = "updated_at", insertable = false, updatable = false)
     private LocalDateTime updatedAt;
     
+   
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "appointment", cascade = CascadeType.ALL)
-    @EqualsAndHashCode.Exclude // 加上這行
+    @EqualsAndHashCode.Exclude // 避免 Lombok 產生StackOverflow
     @ToString.Exclude
 	private Set<AppointmentDetails> appointmentDetails = new HashSet<AppointmentDetails>();
+    
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pet_id", insertable = false, updatable = false)
     private MemberPet memberPet;
     
+    
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "groomer_id", insertable = false, updatable = false) 
     private Groomer groomer;
-
-	
-    
-
-
-	
 }

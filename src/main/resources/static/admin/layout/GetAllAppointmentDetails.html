@@ -104,7 +104,7 @@
       <div class="sidebar">
         <div class="user-panel mt-3 pb-3 mb-3 d-flex"></div>
 
-        <!-- Sidebar Menu -->
+      <!-- Sidebar Menu -->
         <nav class="mt-2">
           <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
             <!-- Add icons to the links using the .nav-icon class
@@ -145,33 +145,44 @@
             <li class="nav-item">
               <a href="#" class="nav-link">
                 <i class="nav-icon fas fa-edit"></i>
-                <p>商品管理 <i class="right fas fa-angle-left"></i></p>
+                <p>
+                  商品管理
+                  <i class="right fas fa-angle-left"></i>
+                </p>
               </a>
               <ul class="nav nav-treeview">
-                <li class="nav-item"><a href="/admin/products" class="nav-link"><i class="far fa-circle nav-icon"></i>
+                <li class="nav-item">
+                  <a href="/admin/products" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
                     <p>商品管理</p>
-                  </a></li>
-                <li class="nav-item"><a href="/admin/categories" class="nav-link"><i class="far fa-circle nav-icon"></i>
-                    <p>類別管理</p>
-                  </a></li>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="/admin/categories" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>分類管理</p>
+                  </a>
+                </li>
               </ul>
             </li>
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="nav-icon fas fa-edit"></i>
-                <p>訂單管理 <i class="right fas fa-angle-left"></i></p>
+
+
+            <li class="nav-item"><a href="#" class="nav-link"> <i class="nav-icon fas fa-edit"></i>
+                <p>
+                  訂單管理 <i class="right fas fa-angle-left"></i>
+                </p>
               </a>
               <ul class="nav nav-treeview">
-                <li class="nav-item"><a href="/orders/list" class="nav-link"><i class="far fa-circle nav-icon"></i>
+                <li class="nav-item"><a href="/orders/list" class="nav-link"> <i class="far fa-circle nav-icon"></i>
                     <p>查詢全部訂單</p>
                   </a></li>
-                <li class="nav-item"><a href="/shipment/list" class="nav-link"><i class="far fa-circle nav-icon"></i>
+                <li class="nav-item"><a href="/shipment/list" class="nav-link"> <i class="far fa-circle nav-icon"></i>
                     <p>物流查詢</p>
                   </a></li>
-                <li class="nav-item"><a href="/ordersItem/list" class="nav-link"><i class="far fa-circle nav-icon"></i>
+                <li class="nav-item"><a href="/ordersItem/list" class="nav-link"> <i class="far fa-circle nav-icon"></i>
                     <p>查詢全部訂單明細</p>
                   </a></li>
-                <li class="nav-item"><a href="/Cart/shopping" class="nav-link"><i class="far fa-circle nav-icon"></i>
+                <li class="nav-item"><a href="/Cart/shopping" class="nav-link"> <i class="far fa-circle nav-icon"></i>
                     <p>新增訂單</p>
                   </a></li>
               </ul>
@@ -183,36 +194,52 @@
               </a>
               <ul class="nav nav-treeview">
                 <li class="nav-item">
+                  <a href="GetAllDailySchedules.html" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>班表總覽
+                    </p>
+                  </a>
+                </li>
+                <li class="nav-item">
                   <a href="GetAllAppointments.html" class="nav-link">
                     <i class="far fa-circle nav-icon"></i>
-                    <p>寵物美容訂單管理</p>
+                    <p>預約訂單列表</p>
                   </a>
                 </li>
-                <li class="nav-item">
-                  <a href="GetAllLeaveRecords.html" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>美容師請假管理</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="GetAllGroomers.html" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>美容師管理</p>
-                  </a>
-                </li>
+
                 <li class="nav-item">
                   <a href="GetAllAppointmentDetails.html" class="nav-link">
                     <i class="far fa-circle nav-icon"></i>
-                    <p>預約訂單明細</p>
+                    <p>預約明細</p>
                   </a>
                 </li>
                 <li class="nav-item">
                   <a href="GetAllServiceItems.html" class="nav-link">
                     <i class="far fa-circle nav-icon"></i>
-                    <p>服務項目管理</p>
+                    <p>服務項目</p>
                   </a>
                 </li>
+              </ul>
+            </li>
 
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="nav-icon fas fa-edit"></i>
+                <p>人員管理 <i class="right fas fa-angle-left"></i></p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="GetAllGroomers.html" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>美容師列表</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="GetAllLeaveRecords.html" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>休假審核</p>
+                  </a>
+                </li>
               </ul>
             </li>
           </ul>
@@ -230,7 +257,7 @@
         <div class="container-fluid">
           <div class="row mb-2">
             <div class="col-sm-12 box1">
-              <h1>預約訂單明細管理</h1>
+              <h1>預約管理</h1>
             </div>
             <div class="col-sm-6"></div>
           </div>
@@ -245,7 +272,7 @@
             <div class="col-12">
               <div class="card">
                 <div class="card-header d-flex align-items-center justify-content-between">
-                  <h3 class="card-title me-auto">預約訂單明細列表</h3>
+                  <h3 class="card-title me-auto">訂單明細</h3>
 
                   <div class="d-flex align-items-center" style="gap: 0.5rem">
                     <!-- 新增資料 -->
@@ -317,6 +344,67 @@
   </div>
   <!-- ./wrapper -->
 
+  <!-- Appointment Details Modal -->
+  <div class="modal fade" id="appointmentDetailModal" tabindex="-1" role="dialog" aria-labelledby="appointmentDetailLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="appointmentDetailLabel">預約訂單詳情</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">訂單編號</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" id="modal-appt-id" readonly>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">會員姓名</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" id="modal-member-name" readonly>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">寵物名</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" id="modal-pet-name" readonly>
+                </div>
+            </div>
+             <div class="form-group row">
+                <label class="col-sm-4 col-form-label">寵物種類</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" id="modal-pet-type" readonly>
+                </div>
+            </div>
+             <div class="form-group row">
+                <label class="col-sm-4 col-form-label">預約時間</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" id="modal-appt-time" readonly>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">預約服務</label>
+                <div class="col-sm-8">
+                    <textarea class="form-control" id="modal-services" rows="3" readonly></textarea>
+                </div>
+            </div>
+             <div class="form-group row">
+                <label class="col-sm-4 col-form-label">總價格</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" id="modal-total-price" readonly>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 
 
   <!-- jQuery -->
@@ -344,8 +432,7 @@
   <!-- .登出 -->
   <!-- AdminLTE App -->
   <script src="../../dist/js/adminlte.min.js"></script>
-  <!-- AdminLTE for demo purposes
-            <script src="../../dist/js/demo.js"></script> -->
+  <!-- AdminLTE for demo purposes-->
   <!-- Page specific script -->
   <script>
     $(function () {
@@ -355,7 +442,7 @@
       handleQueryAllButtonClick();
     });
 
-    const APPOINTMENTDETAIL_API = "/appointments/details";
+    const APPOINTMENTDETAIL_API = "/shop/appointments/details";
 
     //初始化畫面
     function initDataTable() {
@@ -429,31 +516,46 @@
     }
 
     //點擊查看按鈕，彈出Modal並顯示資料
+    //點擊查看按鈕，彈出Modal並顯示資料 (原本的服務詳情Modal)
     function handleViewButtonClick() {
-      $(document).on("click", ".sdetail-btn", function (e) {
+      // 處理預約ID點擊事件
+      $(document).on("click", ".appointment-link", function (e) {
         e.preventDefault();
+        let appointmentId = $(this).data("id");
+        
+        // 呼叫後端 API 取得預約詳情 (使用 AppointmentList 資料)
+        $.ajax({
+            url: `/shop/appointments/${appointmentId}`, // GET /appointments/{id}
+            type: "GET",
+            dataType: "json",
+            success: function(appt) {
+                if(appt) {
+                    $("#modal-appt-id").val(appt.appointmentId);
+                    $("#modal-member-name").val(appt.memberName);
+                    $("#modal-pet-name").val(appt.petName);
+                    $("#modal-pet-type").val(`${appt.petType} (${appt.petSize})`); // 組合顯示
+                    $("#modal-appt-time").val(`${appt.appointmentDate} ${appt.startTime} ~ ${appt.endTime}`);
+                    
+                    // 組合服務項目與加購項目
+                    let services = appt.mainService;
+                    if(appt.addonItem) {
+                        services += `\n加購項目: ${appt.addonItem}`;
+                    }
+                    if(appt.notes) {
+                         services += `\n備註: ${appt.notes}`;
+                    }
 
-        // 1. 取得按鈕上的 ID
-        let id = $(this).data("id");
-
-        // 2. 從全域變數 allAppointments 裡面找到那一筆資料
-        // 這裡要注意：data-id 抓出來可能是字串，需轉型比對，或用 == (不嚴格比對)
-        let serviceData = allServiceItems.find(
-          (item) => item.serviceId == id
-        );
-
-        if (serviceData) {
-          // 3. 把資料填入 Modal 的欄位中
-          $("#modal-service-name").val(serviceData.serviceName);
-          $("#modal-target-pet-info").val(
-            `${serviceData.targetPetType} / ${serviceData.targetPetSize}`
-          );
-          $("#modal-service-description").val(serviceData.description);
-          // 4. 顯示 Modal
-          $("#serviceDetailModal").modal("show");
-        } else {
-          alert("找不到該筆資料！");
-        }
+                    $("#modal-services").val(services);
+                    $("#modal-total-price").val(appt.price);
+                    
+                    $("#appointmentDetailModal").modal("show");
+                }
+            },
+            error: function(err) {
+                console.error(err);
+                alert("無法取得預約資料");
+            }
+        });
       });
     }
 
@@ -497,6 +599,38 @@
           }
         });
       });
+    }
+
+    //重新定義 renderTable 以覆蓋舊的 (因tab/space混用導致無法取代)
+    function renderTable(dataList) {
+      if ($.fn.DataTable.isDataTable("#example2")) {
+        $("#example2").DataTable().destroy();
+      }
+
+      const tbody = $("#example2 tbody");
+      tbody.empty();
+
+      dataList.forEach(function (ad) {
+        const tr = `
+                         <tr>
+ 							             <td>${ad.detailId}</td>
+                           <td>
+                              <a href="#" class="appointment-link" data-id="${ad.appointmentId}" style="text-decoration: underline; color: blue;">
+                                ${ad.appointmentId}
+                              </a>
+                           </td>
+                           <td>${ad.serviceName}</td>
+                           <td>${ad.isAddon ? "加購服務" : "主要服務"}</td>
+ 							             <td>${ad.durationMinutes}</td>	
+                           <td>${ad.price}</td>	
+ 							             <td>${ad.createdAt}</td>                         
+                        </tr>
+                    `;
+        //載入表格資料
+        tbody.append(tr);
+      });
+
+      initDataTable();
     }
   </script>
 </body>

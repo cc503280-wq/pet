@@ -4,9 +4,9 @@ $(function () {
     // 權限攔截：沒登入就踢回登入頁
     // 取得當前檔名
     const currentPage = window.location.pathname.split("/").pop();
-    if (!adminRole && currentPage !== 'Login.html') {
-        window.location.href = 'Login.html';
-    }
+//    if (!adminRole && currentPage !== 'Login.html') {
+//        window.location.href = 'Login.html';
+//    }
 
     // 登出點擊事件
     $(document).on('click', '#logoutBtn', function (e) {

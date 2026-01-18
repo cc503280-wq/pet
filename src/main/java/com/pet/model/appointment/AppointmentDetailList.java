@@ -1,6 +1,5 @@
 package com.pet.model.appointment;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Column;
@@ -20,25 +19,25 @@ public class AppointmentDetailList {
 	
 	@Id
     @Column(name = "detail_id")
-    private Integer detailId;
+    private Integer detailId; 
 
     @Column(name = "appointment_id")
-    private Integer appointmentId;
+    private Integer appointmentId; 
 
     @Column(name = "service_id")
-    private Integer serviceId;
+    private Integer serviceId; 
     
     @Column(name = "service_name")
-    private String serviceName;
+    private String serviceName; 
 
     @Column(name="price")
-    private Integer price;
+    private Integer price; 
     
     @Column(name="is_addon")
-	private Boolean isAddon;
+	private Boolean isAddon; 
 
     @Column(name = "duration_minutes")
-    private Integer durationMinutes;
+    private Integer durationMinutes; 
 
     @Column(name = "created_at")
     @JsonFormat(pattern = "yyyy/MM/dd HH:mm")

@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>預約管理</title>
+  <title>人員管理</title>
 
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet"
@@ -16,6 +16,10 @@
   <link rel="stylesheet" href="../../plugins/datatables-bs4/css/dataTables.bootstrap4.min.css" />
   <link rel="stylesheet" href="../../plugins/datatables-responsive/css/responsive.bootstrap4.min.css" />
   <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+  
+  <!-- TOAST UI Calendar -->
+  <link rel="stylesheet" href="https://uicdn.toast.com/calendar/latest/toastui-calendar.min.css" />
+  <script src="https://uicdn.toast.com/calendar/latest/toastui-calendar.min.js"></script>
 
   <style type="text/css">
     /* 調整 sidebar logo 排版 */
@@ -67,6 +71,34 @@
       padding: 0.25rem 0.5rem;
       white-space: nowrap;
     }
+    
+    /* Custom Event Tooltip */
+    .calendar-tooltip {
+        position: fixed;
+        background: #333;
+        color: #fff;
+        padding: 12px 16px;
+        border-radius: 6px;
+        font-size: 13px;
+        max-width: 300px;
+        z-index: 99999;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        pointer-events: none;
+        display: none;
+    }
+    .calendar-tooltip strong {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 14px;
+        color: #90cdf4;
+    }
+    .calendar-tooltip .tooltip-row {
+        margin: 3px 0;
+    }
+    .calendar-tooltip .tooltip-label {
+        color: #a0aec0;
+        margin-right: 5px;
+    }
   </style>
 </head>
 
@@ -104,7 +136,7 @@
       <div class="sidebar">
         <div class="user-panel mt-3 pb-3 mb-3 d-flex"></div>
 
-        <!-- Sidebar Menu -->
+      <!-- Sidebar Menu -->
         <nav class="mt-2">
           <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
             <!-- Add icons to the links using the .nav-icon class
@@ -194,33 +226,50 @@
               </a>
               <ul class="nav nav-treeview">
                 <li class="nav-item">
+                  <a href="GetAllDailySchedules.html" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>班表總覽
+                    </p>
+                  </a>
+                </li>
+                <li class="nav-item">
                   <a href="GetAllAppointments.html" class="nav-link">
                     <i class="far fa-circle nav-icon"></i>
-                    <p>寵物美容訂單管理</p>
+                    <p>預約訂單列表</p>
                   </a>
                 </li>
-                <li class="nav-item">
-                  <a href="GetAllLeaveRecords.html" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>美容師請假管理</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="GetAllGroomers.html" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>美容師管理</p>
-                  </a>
-                </li>
+
                 <li class="nav-item">
                   <a href="GetAllAppointmentDetails.html" class="nav-link">
                     <i class="far fa-circle nav-icon"></i>
-                    <p>預約訂單明細</p>
+                    <p>預約明細</p>
                   </a>
                 </li>
                 <li class="nav-item">
                   <a href="GetAllServiceItems.html" class="nav-link">
                     <i class="far fa-circle nav-icon"></i>
-                    <p>服務項目管理</p>
+                    <p>服務項目</p>
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="nav-icon fas fa-edit"></i>
+                <p>人員管理 <i class="right fas fa-angle-left"></i></p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="GetAllGroomers.html" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>美容師列表</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="GetAllLeaveRecords.html" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>休假審核</p>
                   </a>
                 </li>
               </ul>
@@ -240,7 +289,7 @@
         <div class="container-fluid">
           <div class="row mb-2">
             <div class="col-sm-12 box1">
-              <h1>美容師請假管理</h1>
+              <h1>人員管理</h1>
             </div>
             <div class="col-sm-6"></div>
           </div>
@@ -255,7 +304,7 @@
             <div class="col-12">
               <div class="card">
                 <div class="card-header d-flex align-items-center justify-content-between">
-                  <h3 class="card-title me-auto">美容師請假列表</h3>
+                  <h3 class="card-title me-auto">請假審核</h3>
 
                   <div class="d-flex align-items-center" style="gap: 0.5rem">
                     <!-- 新增資料 -->
@@ -263,6 +312,9 @@
                       新增
                     </button>
                     <!-- .新增資料 -->
+
+                    
+
 
 
 
@@ -289,15 +341,12 @@
 
                     <button id="btnReset" class="btn btn-secondary btn-sm">重置</button>
 
-                  </div>
-                  <!-- .依美容師ID查詢 -->
-
-                  <!-- 預約狀態查詢 -->
-                  <!-- .預約狀態查詢 -->
-
-                  <!-- 預約日期區間查詢 -->
-                  <!-- .預約日期區間查詢 -->
-
+                    <!-- 查看班表 -->
+                    <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#scheduleModal">
+                      <i class="fas fa-calendar-alt"></i> 查看班表
+                    </button>
+                    <!-- .查看班表 -->
+                  </div> 
 
 
                 </div>
@@ -310,6 +359,7 @@
                         <th>美容師工號</th>
                         <th>美容師</th>
                         <th>請假日期</th>
+                        <th>請假天數</th>
                         <th>請假原因</th>
                         <th>請假單狀態</th>
                         <th>創建日期</th>
@@ -366,10 +416,13 @@
               <select class="form-control" id="modalGroomerId" required></select>
             </div>
 
-            <div class="form-group row">
-              <label class="col-sm-3 col-form-label">請假日期</label>
-              <div class="col-sm-9">
-                <input class="form-control" type="date" id="leaveDayInput" required />
+            <div class="form-group">
+              <label>請假日期</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                </div>
+                <input type="text" class="form-control float-right" id="modalLeaveDateRange" required>
               </div>
             </div>
 
@@ -392,6 +445,51 @@
   </div>
 
   <!-- .InsertServicelModal -->
+
+  <!-- Schedule Modal (班表彈窗) -->
+  <div class="modal fade" id="scheduleModal" tabindex="-1" role="dialog" aria-labelledby="scheduleModalLabel">
+    <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content">
+        <div class="modal-header bg-info text-white">
+          <h5 class="modal-title" id="scheduleModalLabel"><i class="fas fa-calendar-alt mr-2"></i>美容師班表總覽</h5>
+          <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" style="padding: 1rem;">
+          <!-- 控制按鈕 -->
+          <div class="d-flex align-items-center mb-3 flex-wrap" style="gap: 0.5rem;">
+            <div class="btn-group mr-2">
+              <button type="button" class="btn btn-outline-secondary btn-sm" id="schedule-btn-prev">
+                <i class="fas fa-chevron-left"></i>
+              </button>
+              <button type="button" class="btn btn-outline-secondary btn-sm" id="schedule-btn-today">Today</button>
+              <button type="button" class="btn btn-outline-secondary btn-sm" id="schedule-btn-next">
+                <i class="fas fa-chevron-right"></i>
+              </button>
+            </div>
+            <h5 class="m-0 mr-3" id="schedule-date-range">載入中...</h5>
+
+            <!-- 美容師篩選 -->
+            <div class="input-group input-group-sm" style="width: 150px;">
+              <select id="scheduleGroomerFilter" class="form-control">
+                <option value="">全部美容師</option>
+              </select>
+            </div>
+          </div>
+          <!-- Toast UI Calendar 容器 -->
+          <div id="scheduleCalendar" style="height: 500px;"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- /.Schedule Modal -->
+
+  <!-- Calendar Tooltip -->
+  <div id="calendarTooltip" class="calendar-tooltip"></div>
 
   <!-- jQuery -->
   <script src="../../plugins/jquery/jquery.min.js"></script>
@@ -422,9 +520,10 @@
   <!-- Page specific script -->
   <script>
     // 1. 全域變數定義區
-    const GROOMER_LIST_API = "/groomers";
+    const GROOMER_LIST_API = "/shop/groomers";
     const LEAVERECORD_API = `${GROOMER_LIST_API}/leave-records`;
-    const SEARCH_API = "/groomers/leave-records/search";
+    const BATCH_API = `${LEAVERECORD_API}/batch`; // 批量請假 API
+    const SEARCH_API = "/shop/groomers/leave-records/search";
     let allLeaveRecords = [];
 
     // 2. 頁面載入完成後執行 (jQuery Ready)
@@ -437,8 +536,9 @@
       handleToggleStatus();
       loadGroomerOptions();
       initDatePickers();
-      doComplexSearch();
-      initDatePickers();
+      
+      // 確保 doComplexSearch 已定義，移除重複呼叫
+      // doComplexSearch(); 
 
 
       $("#btnSave").on("click", function () {
@@ -462,7 +562,7 @@
     });
 
 
-    // --- 載入美容師選單 (你原本報錯找不到的就是這個) ---
+    // --- 載入美容師選單 (只顯示在職人員) ---
     function loadGroomerOptions() {
       $.ajax({
         url: GROOMER_LIST_API,
@@ -471,7 +571,8 @@
           console.log("美容師選單載入成功");
           let options =
             '<option value="" disabled selected>請選擇美容師</option>';
-          list.forEach((g) => {
+          // 過濾掉離職人員 (isActive = false 或 0)
+          list.filter(g => g.isActive === true || g.isActive === 1).forEach((g) => {
             options += `<option value="${g.groomerId}">${g.groomerId}: ${g.groomerName}</option>`;
           });
           $("#modalGroomerId").html(options);
@@ -485,17 +586,17 @@
     // --- 送出新增表單 ---
     function submitInfo() {
       console.log("=== 進入 submitInfo 函式 ===");
-      let leaveId = $("#modalLeaveId").val();
+      let leaveId = $("#modalLeaveId").val(); // 保留但不一定用到
       let groomerId = $("#modalGroomerId").val();
-      let leaveDate = $("#leaveDayInput").val();
+      let dateRange = $("#modalLeaveDateRange").val();
       let reason = $("#modalReason").val();
 
       if (!groomerId) {
         alert("錯誤：請選擇美容師！");
         return;
       }
-      if (!leaveDate) {
-        alert("錯誤：請選擇日期！");
+      if (!dateRange) {
+        alert("錯誤：請選擇日期範圍！");
         return;
       }
       if (!reason) {
@@ -503,15 +604,23 @@
         return;
       }
 
+      // 解析日期範圍
+      let dates = dateRange.split(' - ');
+      let startDate = dates[0];
+      let endDate = dates[1];
+
+      // 構建 DTO 對象
       let requestData = {
-        leaveId: leaveId ? parseInt(leaveId) : null,
         groomerId: parseInt(groomerId),
-        leaveDate: leaveDate,
-        reason: reason,
+        startDate: startDate,
+        endDate: endDate,
+        reason: reason
       };
 
+      // 這裡假設後端有提供批量新增的 API，或者單筆 API
+      // 為了支援多天請假，我們使用批量 API
       $.ajax({
-        url: LEAVERECORD_API,
+        url: BATCH_API, // 改用 BATCH_API
         type: "POST",
         contentType: "application/json",
         data: JSON.stringify(requestData),
@@ -564,7 +673,9 @@
 
     // --- 渲染表格 ---
     function renderTable(dataList) {
+      let currentPage = 0;
       if ($.fn.DataTable.isDataTable("#example2")) {
+        currentPage = $("#example2").DataTable().page();
         $("#example2").DataTable().destroy();
       }
       const tbody = $("#example2 tbody");
@@ -593,11 +704,19 @@
                 </label>
             </div>`;
 
+        // 修正：使用 startDate 和 endDate
+        // 如果 startDate 和 endDate 相同，只顯示一天，否則顯示範圍
+        let dateDisplay = l.startDate;
+        if (l.endDate && l.startDate !== l.endDate) {
+           dateDisplay = `${l.startDate} ~ ${l.endDate}`;
+        }
+
         const tr = `<tr>
                 <td>${l.leaveId}</td>
                 <td>${l.groomerId}</td>
                 <td>${l.groomerName || ""}</td>
-                <td>${l.leaveDate}</td>
+                <td>${dateDisplay}</td>
+                <td>${calculateDays(l.startDate, l.endDate)}</td>
                 <td>${l.reason}</td>
                 <td>${statusMainText}</td> 
                 <td>${l.createdAt || ""}</td>                
@@ -606,6 +725,20 @@
         tbody.append(tr);
       });
       initDataTable();
+
+      // 若原本不在第一頁，則切換回該頁
+      if (currentPage > 0) {
+        $("#example2").DataTable().page(currentPage).draw('page');
+      }
+    }
+
+    // 計算天數 (startDate, endDate 若為 null 則回傳 1)
+    function calculateDays(start, end) {
+        if (!start) return 0;
+        if (!end) return 1;
+        const s = moment(start);
+        const e = moment(end);
+        return e.diff(s, 'days') + 1;
     }
 
     // --- 切換狀態 (同步更新文字) ---
@@ -657,6 +790,7 @@
       $("#Form")[0].reset();
       $("#modalLeaveId").val("");
       $("#modalGroomerId").val("");
+      $("#modalLeaveDateRange").val(""); // 清空日期範圍
       $("#modalTitle").text("新增請假單");
       $("#Modal").modal("show");
     }
@@ -672,11 +806,17 @@
         }
       };
 
-      // 1. 請假日期
+      // 1. 查詢用：請假日期
       $('#leaveDateRange').daterangepicker(pickerOptions);
 
-      // 2. 創建日期
+      // 2. 查詢用：創建日期
       $('#createDateRange').daterangepicker(pickerOptions);
+      
+      // 3. 新增用：請假日期範圍
+      $('#modalLeaveDateRange').daterangepicker({
+          ...pickerOptions,
+          minDate: moment().format('YYYY-MM-DD') // 只能選今天以後的
+      });
 
       // 當使用者選好日期按「確定」時，把值填入 input
       $('.form-control').on('apply.daterangepicker', function (ev, picker) {
@@ -730,6 +870,303 @@
         }
       });
     }
+    // ============ 班表 Modal 行事曆邏輯 ============
+		let scheduleCalendar = null;
+		const colorPalette = [
+			{ bg: '#ff5583', border: '#ff5583' },
+			{ bg: '#03bd9e', border: '#03bd9e' },
+			{ bg: '#bbdc00', border: '#bbdc00' },
+			{ bg: '#9e5fff', border: '#9e5fff' },
+			{ bg: '#00a9ff', border: '#00a9ff' },
+			{ bg: '#ffbb3b', border: '#ffbb3b' }
+		];
+
+    // 全域變數：儲存所有事件供篩選用
+		let allScheduleEvents = { appointments: [], leaves: [] };
+
+		// 當 Modal 打開時初始化行事曆
+		$('#scheduleModal').on('shown.bs.modal', function () {
+			if (!scheduleCalendar) {
+				initScheduleCalendar();
+			} else {
+				scheduleCalendar.render();
+			}
+      // 載入美容師下拉選單
+			loadScheduleGroomerFilter();
+			loadScheduleData();
+      
+      // 初始化日期選擇器 (如果有用到的話，這裡暫時沒有 scheduleJumpDate input，如果需要可以補上)
+		});
+
+		function initScheduleCalendar() {
+			const Calendar = tui.Calendar;
+			const container = document.getElementById('scheduleCalendar');
+
+			scheduleCalendar = new Calendar(container, {
+				defaultView: 'week',
+				isReadOnly: true,
+				week: {
+					startDayOfWeek: 1,
+					hourStart: 7,
+					hourEnd: 22,
+					taskView: false
+				},
+				theme: {
+					week: {
+						timeGridHalfHourLine: { borderBottom: '1px dotted #e5e5e5' }
+					}
+				},
+				template: {
+					time: function (event) {
+						const appt = event.raw;
+						return `<span style="font-weight: bold;">${appt.startTime || ''}</span><br>
+							<span style="font-size: 11px;">${appt.groomerName || ''}</span>`;
+					},
+					allday: function (event) {
+						return `<span>${event.title}</span>`;
+					}
+				},
+				calendars: []
+			});
+
+			// 控制按鈕
+			$('#schedule-btn-prev').click(function () {
+				scheduleCalendar.prev();
+				updateScheduleDateRange();
+			});
+			$('#schedule-btn-next').click(function () {
+				scheduleCalendar.next();
+				updateScheduleDateRange();
+			});
+			$('#schedule-btn-today').click(function () {
+				scheduleCalendar.today();
+				updateScheduleDateRange();
+			});
+		}
+
+		function updateScheduleDateRange() {
+			const start = scheduleCalendar.getDateRangeStart();
+			const end = scheduleCalendar.getDateRangeEnd();
+			const startStr = moment(start.getTime()).format('YYYY/MM/DD');
+			const endStr = moment(end.getTime()).format('YYYY/MM/DD');
+			$('#schedule-date-range').text(`${startStr} ~ ${endStr}`);
+		}
+
+		function loadScheduleData() {
+			// 先載入美容師
+			$.ajax({
+				url: "/shop/groomers",
+				type: "GET",
+				dataType: "json",
+				success: function (groomerList) {
+					const calendarList = groomerList.map((g, i) => {
+						const colorSet = colorPalette[i % colorPalette.length];
+						return {
+							id: String(g.groomerId),
+							name: g.groomerName,
+							color: '#ffffff',
+							backgroundColor: colorSet.bg,
+							borderColor: colorSet.border
+						};
+					});
+					scheduleCalendar.setCalendars(calendarList);
+
+					// 載入預約和請假
+					Promise.all([
+						$.ajax({ url: "/shop/appointments", type: "GET", dataType: "json" }),
+						$.ajax({ url: "/shop/groomers/leave-records", type: "GET", dataType: "json", cache: false })
+					]).then(function ([appointments, leaves]) {
+            allScheduleEvents.appointments = appointments;
+					  allScheduleEvents.leaves = leaves;
+						renderScheduleEvents(appointments, leaves);
+						updateScheduleDateRange();
+            
+            // 立即執行一次篩選 (如果已有選取值)
+            filterScheduleEvents();
+					});
+				}
+			});
+		}
+    
+    // 載入美容師下拉選單
+		function loadScheduleGroomerFilter() {
+			$.ajax({
+				url: "/shop/groomers",
+				type: "GET",
+				dataType: "json",
+				success: function (list) {
+					let $select = $('#scheduleGroomerFilter');
+					$select.empty().append('<option value="">全部美容師</option>');
+					list.forEach(g => {
+						$select.append(`<option value="${g.groomerId}">${g.groomerName}</option>`);
+					});
+				}
+			});
+		}
+    
+    // 美容師篩選
+		$(document).on('change', '#scheduleGroomerFilter', function () {
+			filterScheduleEvents();
+		});
+
+		// 篩選事件
+		function filterScheduleEvents() {
+			let selectedGroomerId = $('#scheduleGroomerFilter').val();
+			let filteredAppts = allScheduleEvents.appointments;
+			let filteredLeaves = allScheduleEvents.leaves;
+
+			if (selectedGroomerId) {
+				filteredAppts = filteredAppts.filter(a => String(a.groomerId) === selectedGroomerId);
+				filteredLeaves = filteredLeaves.filter(l => String(l.groomerId) === selectedGroomerId);
+			}
+
+			renderScheduleEvents(filteredAppts, filteredLeaves);
+		}
+
+		function renderScheduleEvents(appointments, leaves) {
+			let events = [];
+
+			appointments.forEach(appt => {
+        // 只顯示未取消的預約
+        if (appt.appointmentStatus !== '已取消') {
+  				events.push({
+  					id: 'appt-' + appt.appointmentId,
+  					calendarId: String(appt.groomerId),
+  					title: appt.groomerName,
+  					category: 'time',
+  					start: `${appt.appointmentDate}T${appt.startTime}:00`,
+  					end: `${appt.appointmentDate}T${appt.endTime}:00`,
+  					raw: appt
+  				});
+        }
+			});
+
+			leaves.forEach(leave => {
+        // 只顯示有效(未取消)的假單? 或全部?
+        // 這裡可以過濾 !isActive 的，但原版似乎沒特別過濾? 
+        // 假設顯示全部，但用顏色區分? 或這裡只顯示 effective 
+        // 為了簡單，先全部顯示，或者根據狀態決定
+        if(leave.isActive) {
+  				events.push({
+  					id: 'leave-' + leave.leaveId,
+  					calendarId: String(leave.groomerId),
+  					title: `${leave.groomerName} (休假)`,
+  					category: 'allday',
+  					start: leave.startDate,
+  					end: leave.endDate,
+  					isAllday: true,
+  					backgroundColor: '#666666',
+  					borderColor: '#666666',
+  					raw: leave
+  				});
+        }
+			});
+
+			scheduleCalendar.clear();
+			scheduleCalendar.createEvents(events);
+
+			// 儲存事件資料供 Tooltip 查詢
+			window.calendarEventMap = {};
+			events.forEach(e => {
+				window.calendarEventMap[e.id] = e;
+			});
+
+			// 動態綁定滑鼠事件到日曆事件元素
+			setTimeout(bindCalendarEventHover, 500);
+		}
+
+		// 綁定滑鼠懸停事件
+		function bindCalendarEventHover() {
+			// 移除舊的事件
+			$(document).off('mouseenter.caltooltip mouseleave.caltooltip mousemove.caltooltip');
+
+			// 綁定新事件 - 目標是 Toast UI Calendar 的事件區塊
+			$(document).on('mouseenter.caltooltip', '#scheduleCalendar .toastui-calendar-event-time, #scheduleCalendar .toastui-calendar-weekday-event', function(e) {
+				var $el = $(this);
+				var eventId = findEventId($el);
+				if (eventId && window.calendarEventMap && window.calendarEventMap[eventId]) {
+					showEventTooltipFromData(window.calendarEventMap[eventId]);
+				}
+			});
+
+			$(document).on('mouseleave.caltooltip', '#scheduleCalendar .toastui-calendar-event-time, #scheduleCalendar .toastui-calendar-weekday-event', function() {
+				hideEventTooltip();
+			});
+
+			$(document).on('mousemove.caltooltip', '#scheduleCalendar', function(e) {
+				$('#calendarTooltip').css({
+					left: e.pageX + 15,
+					top: e.pageY + 15
+				});
+			});
+		}
+
+		// 從元素找到事件 ID
+		function findEventId($el) {
+			// Toast UI Calendar 會在 data 屬性中儲存事件資訊
+			var id = $el.attr('data-event-id');
+			if (id) return id;
+
+			// 取得元素的文字內容（移除換行符號轉為空白）
+			var text = $el.text().replace(/\s+/g, ' ').trim();
+			
+			if (window.calendarEventMap) {
+				for (var key in window.calendarEventMap) {
+					var evt = window.calendarEventMap[key];
+					var raw = evt.raw;
+					
+					// 預約事件
+					if (key.startsWith('appt-') && raw) {
+						if ((raw.startTime && text.includes(raw.startTime)) ||
+							(raw.groomerName && text.includes(raw.groomerName)) ||
+							(raw.petName && text.includes(raw.petName))) {
+							return key;
+						}
+					}
+					
+					// 休假事件
+					if (key.startsWith('leave-') && evt.title) {
+            // 比對 title 前幾個字
+						if (text.includes(evt.title.substring(0, 4))) {
+							return key;
+						}
+					}
+				}
+			}
+			return null;
+		}
+
+		// 顯示 Tooltip
+		function showEventTooltipFromData(eventData) {
+			if (!eventData || !eventData.raw) return;
+			var raw = eventData.raw;
+			var html = '';
+
+			if (eventData.id && eventData.id.startsWith('appt-')) {
+				html = `
+					<strong>📅 預約 #${raw.appointmentId || ''}</strong>
+					<div class="tooltip-row"><span class="tooltip-label">寵物:</span>${raw.petName || '-'}</div>
+					<div class="tooltip-row"><span class="tooltip-label">美容師:</span>${raw.groomerName || '-'}</div>
+					<div class="tooltip-row"><span class="tooltip-label">時間:</span>${raw.startTime || ''} ~ ${raw.endTime || ''}</div>
+					<div class="tooltip-row"><span class="tooltip-label">狀態:</span>${raw.appointmentStatus || '-'}</div>
+				`;
+			} else if (eventData.id && eventData.id.startsWith('leave-')) {
+				html = `
+					<strong>🏖️ 休假 #${raw.leaveId || ''}</strong>
+					<div class="tooltip-row"><span class="tooltip-label">美容師:</span>${raw.groomerName || '-'}</div>
+					<div class="tooltip-row"><span class="tooltip-label">日期:</span>${raw.startDate || ''} ~ ${raw.endDate || raw.startDate || ''}</div>
+					<div class="tooltip-row"><span class="tooltip-label">原因:</span>${raw.reason || '無'}</div>
+				`;
+			}
+
+			if (html) {
+				$('#calendarTooltip').html(html).show();
+			}
+		}
+
+		function hideEventTooltip() {
+			$('#calendarTooltip').hide();
+		}
   </script>
 </body>
 

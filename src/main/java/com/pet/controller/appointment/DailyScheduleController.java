@@ -9,21 +9,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.pet.service.appointment.DailyScheduleService;
 
-@RestController
-@RequestMapping("/schedule")
+
+@RestController 
+@RequestMapping("/shop/schedule") 
 public class DailyScheduleController {
 
 	@Autowired
 	private DailyScheduleService dailyScheduleService;
 
-	@GetMapping("/available")
+	@GetMapping("/available") 
 	public Object getAvailableSlots(
 			@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
 			@RequestParam int duration) {
-
 		return dailyScheduleService.getAvailableTimeSlots(date, duration);
 	}
-	
-	
 	
 }

@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>預約管理</title>
+
+    <!-- Google Font: Source Sans Pro -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback"
+    />
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="../../plugins/fontawesome-free/css/all.min.css"
+    />
+    <!-- Theme style -->
+    <link rel="stylesheet" href="../../dist/css/adminlte.min.css" />
+    <link
+      rel="stylesheet"
+      href="../../plugins/datatables-bs4/css/dataTables.bootstrap4.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="../../plugins/datatables-responsive/css/responsive.bootstrap4.min.css"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"
+    />
+
+    <!-- Vis-Timeline CSS -->
+     <link
+      rel="stylesheet"
+      href="https://unpkg.com/vis-timeline@7.7.3/styles/vis-timeline-graph2d.min.css"
+    />
+
+    <style type="text/css">
+      /* 調整 sidebar logo 排版 */
+      .brand-link {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        /* 展開時靠左 */
+        padding: 0.5rem 1rem;
+      }
+      /* 收起 sidebar 時，icon 置中 */
+      .sidebar-collapse .brand-link {
+        justify-content: center;
+      }
+
+      /* 調整 icon 與文字間距 */
+      .brand-link i {
+        width: 1.5rem;
+        /* 固定寬度讓文字距離固定 */
+        text-align: center;
+      }
+
+      /* 收起 sidebar 時文字隱藏 */
+      .sidebar-collapse .brand-text {
+        display: none;
+      }
+
+      .box1 {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .disabled-btn {
+        pointer-events: none !important;
+        /* 禁止滑鼠事件 */
+        opacity: 0.5;
+        /* 變淡灰色 */
+        cursor: not-allowed !important;
+        /* 滑鼠變禁止符號 */
+      }
+
+      /* DataTable 所有欄位水平 + 垂直置中 */
+      #example2 td,
+      #example2 th {
+        text-align: center !important;
+        vertical-align: middle !important;
+        font-size: 0.8rem;
+        padding: 0.25rem 0.5rem;
+        white-space: nowrap;
+      }
+
+      /* ========== Custom Timeline Styles (Vis-Timeline 客製化樣式) ========== */
+      
+      /* Timeline Controls Layout (操作列：日期導航 & 視圖切換) */
+      .controls-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-bottom: 20px;
+        padding: 10px 0;
+        border-bottom: 1px solid #dee2e6;
+      }
+
+      .date-nav {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .date-nav button {
+        min-width: 36px;
+      }
+
+      #currentDateDisplay {
+        font-weight: 600;
+        font-size: 1rem;
+        color: #495057;
+        margin-left: 12px;
+        padding: 4px 12px;
+        background: #f8f9fa;
+        border-radius: 4px;
+      }
+
+      /* View Controls (切換 日/週/月 視圖) */
+      .view-controls {
+        display: flex;
+        gap: 5px;
+      }
+
+      .view-controls .btn.active {
+        background-color: #007bff;
+        color: white;
+        border-color: #007bff;
+      }
+
+      /* Timeline Legend (圖例：預約 vs 休假) */
+      .timeline-legend {
+        display: flex;
+        gap: 25px;
+        margin-bottom: 15px;
+        padding: 8px 12px;
+        background: #f8f9fa;
+        border-radius: 6px;
+        font-size: 0.9rem;
+      }
+
+      .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .legend-color {
+        width: 20px;
+        height: 14px;
+        border-radius: 3px;
+      }
+
+      /* 預約顏色：綠色漸層 */
+      .legend-color.appointment {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+      }
+      
+      /* 休假顏色：橘黃漸層 */
+      .legend-color.leave {
+        background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
+      }
+
+      /* Timeline Items Setting (Vis-Timeline 項目設定) */
+      .vis-item.appointment {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        border: none;
+        border-radius: 4px;
+        color: white;
+        font-weight: 500;
+        box-shadow: 0 2px 4px rgba(40, 167, 69, 0.3);
+      }
+
+      .vis-item.leave {
+        background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
+        border: none;
+        border-radius: 4px;
+        color: #212529;
+        font-weight: 500;
+        box-shadow: 0 2px 4px rgba(255, 193, 7, 0.3);
+      }
+
+      .vis-item.appointment:hover,
+      .vis-item.leave:hover {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        transform: translateY(-1px);
+      }
+
+      /* Groomer Label (左側美容師標籤) */
+      .groomer-label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 4px 0;
+      }
+
+      /* Loading Overlay (載入遮罩) */
+      .loading-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.9);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+      }
+
+      /* Timeline Container */
+      #timeline {
+        min-height: 400px;
+      }
+
+      .vis-labelset .vis-label {
+        padding: 8px 12px;
+      }
+    </style>
+  </head>
+
+  <body class="hold-transition sidebar-mini sidebar-collapse">
+    <!-- Site wrapper -->
+    <div class="wrapper">
+      <!-- Navbar -->
+      <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+        <!-- Left navbar links -->
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" data-widget="pushmenu" href="#" role="button"
+              ><i class="fas fa-bars"></i
+            ></a>
+          </li>
+        </ul>
+        <!-- 右側 Navbar 按鈕 -->
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a
+              href="javascript:void(0)"
+              id="logoutBtn"
+              class="btn btn-secondary btn-sm"
+            >
+              <i class="fas fa-sign-out-alt"></i> 登出
+            </a>
+          </li>
+        </ul>
+      </nav>
+      <!-- /.navbar -->
+
+      <!-- Main Sidebar Container -->
+      <aside class="main-sidebar sidebar-dark-primary elevation-4">
+        <!-- Brand Logo -->
+        <a href="Home.html" class="brand-link">
+          <i class="fas fa-paw" style="color: #ffd43b; font-size: 1.5rem"></i>
+          <span class="brand-text font-weight-light"></span>
+        </a>
+
+        <!-- Sidebar -->
+        <div class="sidebar">
+          <div class="user-panel mt-3 pb-3 mb-3 d-flex"></div>
+
+      <!-- Sidebar Menu -->
+        <nav class="mt-2">
+          <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+            <!-- Add icons to the links using the .nav-icon class
+               with font-awesome or any other icon font library -->
+            <li class="nav-item"><a href="#" class="nav-link"> <i class="nav-icon fas fa-edit"></i>
+                <p>
+                  會員管理 <i class="right fas fa-angle-left"></i>
+                </p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item"><a href="AdminQueryAll.html" class="nav-link"> <i
+                      class="far fa-circle nav-icon"></i>
+                    <p>管理員資料</p>
+                  </a></li>
+                <li class="nav-item"><a href="MemberQueryAll.html" class="nav-link"> <i
+                      class="far fa-circle nav-icon"></i>
+                    <p>會員基本資料</p>
+                  </a></li>
+                <li class="nav-item"><a href="MemberPetQueryAll.html" class="nav-link"> <i
+                      class="far fa-circle nav-icon"></i>
+                    <p>會員寵物資料</p>
+                  </a></li>
+                <li class="nav-item"><a href="CouponQueryAll.html" class="nav-link"> <i
+                      class="far fa-circle nav-icon"></i>
+                    <p>優惠券總覽</p>
+                  </a></li>
+                <li class="nav-item"><a href="CouponUsersQueryAll.html" class="nav-link"> <i
+                      class="far fa-circle nav-icon"></i>
+                    <p>會員持有優惠券</p>
+                  </a></li>
+                <li class="nav-item"><a href="FavoritesQueryAll.html" class="nav-link"> <i
+                      class="far fa-circle nav-icon"></i>
+                    <p>會員收藏清單</p>
+                  </a></li>
+              </ul>
+            </li>
+            
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="nav-icon fas fa-edit"></i>
+                <p>
+                  商品管理
+                  <i class="right fas fa-angle-left"></i>
+                </p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="/admin/products" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>商品管理</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="/admin/categories" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>分類管理</p>
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+
+            <li class="nav-item"><a href="#" class="nav-link"> <i class="nav-icon fas fa-edit"></i>
+                <p>
+                  訂單管理 <i class="right fas fa-angle-left"></i>
+                </p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item"><a href="/orders/list" class="nav-link"> <i class="far fa-circle nav-icon"></i>
+                    <p>查詢全部訂單</p>
+                  </a></li>
+                <li class="nav-item"><a href="/shipment/list" class="nav-link"> <i class="far fa-circle nav-icon"></i>
+                    <p>物流查詢</p>
+                  </a></li>
+                <li class="nav-item"><a href="/ordersItem/list" class="nav-link"> <i class="far fa-circle nav-icon"></i>
+                    <p>查詢全部訂單明細</p>
+                  </a></li>
+                <li class="nav-item"><a href="/Cart/shopping" class="nav-link"> <i class="far fa-circle nav-icon"></i>
+                    <p>新增訂單</p>
+                  </a></li>
+              </ul>
+            </li>
+            <li class="nav-item"><a href="#" class="nav-link"> <i class="nav-icon fas fa-edit"></i>
+                <p>
+                  預約管理 <i class="right fas fa-angle-left"></i>
+                </p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="GetAllDailySchedules.html" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>班表總覽
+                    </p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="GetAllAppointments.html" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>預約訂單列表</p>
+                  </a>
+                </li>
+
+                <li class="nav-item">
+                  <a href="GetAllAppointmentDetails.html" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>預約明細</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="GetAllServiceItems.html" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>服務項目</p>
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="nav-icon fas fa-edit"></i>
+                <p>人員管理 <i class="right fas fa-angle-left"></i></p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="GetAllGroomers.html" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>美容師列表</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="GetAllLeaveRecords.html" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>休假審核</p>
+                  </a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+          </li>
+        </nav>
+        <!-- /.sidebar-menu -->
+      </div>
+      <!-- /.sidebar -->
+    </aside>
+
+      <!-- Content Wrapper. Contains page content -->
+
+      <!-- Content Header (Page header) -->
+      <!-- Content Wrapper -->
+      <div class="content-wrapper">
+        <section class="content-header">
+          <div class="container-fluid">
+            <div class="row mb-2">
+              <div class="col-sm-6">
+                <h1>預約管理</h1>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Main Content (主內容區) -->
+        <section class="content">
+          <div class="container-fluid">
+            <div class="card card-primary card-outline">
+              <!-- Card Header -->
+              <div class="card-header">
+                <h3 class="card-title">班表總覽
+                </h3>
+                <div class="card-tools">
+                   <!-- 刷新按鈕 -->
+                  <button class="btn btn-sm btn-primary" id="btnRefresh">
+                    <i class="fas fa-sync-alt"></i> 刷新
+                  </button>
+                </div>
+              </div>
+
+              <div class="card-body" style="position: relative">
+                <!-- Controls Row (頂部控制列) -->
+                <div class="controls-row">
+                  <!-- Date Navigation (日期導航) -->
+                  <div class="date-nav">
+                    <button
+                      class="btn btn-sm btn-outline-secondary"
+                      id="btnPrevWeek"
+                      title="上一週"
+                    >
+                      <i class="fas fa-angle-double-left"></i>
+                    </button>
+                    <button
+                      class="btn btn-sm btn-outline-secondary"
+                      id="btnPrevDay"
+                      title="前一天"
+                    >
+                      <i class="fas fa-angle-left"></i>
+                    </button>
+                    <button class="btn btn-sm btn-info" id="btnToday">
+                      今天
+                    </button>
+                    <button
+                      class="btn btn-sm btn-outline-secondary"
+                      id="btnNextDay"
+                      title="後一天"
+                    >
+                      <i class="fas fa-angle-right"></i>
+                    </button>
+                    <button
+                      class="btn btn-sm btn-outline-secondary"
+                      id="btnNextWeek"
+                      title="下一週"
+                    >
+                      <i class="fas fa-angle-double-right"></i>
+                    </button>
+                    <!-- 顯示當前日期範圍 -->
+                    <span id="currentDateDisplay"></span>
+                  </div>
+
+                  <!-- View Toggle (視圖切換：日/週/月) -->
+                  <div class="view-controls">
+                    <button
+                      class="btn btn-sm btn-outline-primary active"
+                      data-view="day"
+                    >
+                      日視圖
+                    </button>
+                    <button
+                      class="btn btn-sm btn-outline-primary"
+                      data-view="week"
+                    >
+                      週視圖
+                    </button>
+                    <button
+                      class="btn btn-sm btn-outline-primary"
+                      data-view="month"
+                    >
+                      月視圖
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Legend (圖例說明) -->
+                <div class="timeline-legend">
+                  <div class="legend-item">
+                    <div class="legend-color appointment"></div>
+                    <span>預約 (Appointment)</span>
+                  </div>
+                  <div class="legend-item">
+                    <div class="legend-color leave"></div>
+                    <span>休假 (Leave)</span>
+                  </div>
+                </div>
+
+                <!-- Timeline Container (Vis-Timeline 容器) -->
+                <div style="position: relative">
+                  <!-- 資料載入中的遮罩 -->
+                  <div class="loading-overlay" id="loadingOverlay">
+                    <div
+                      class="spinner-border text-primary mb-2"
+                      role="status"
+                    ></div>
+                    <span>載入中...</span>
+                  </div>
+                  <!-- Timeline 主體 -->
+                  <div id="timeline"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <footer class="main-footer">
+        <div class="float-right d-none d-sm-block"><b>Version</b> 1.0.0</div>
+        <strong>Pet Shop Admin</strong>
+      </footer>
+    </div>
+
+    <!-- jQuery -->
+    <script src="../../plugins/jquery/jquery.min.js"></script>
+    <!-- Bootstrap 4 -->
+    <script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="../../dist/js/adminlte.min.js"></script>
+    <!-- Auth -->
+    <script src="../../dist/js/adminAuth.js"></script>
+    <!-- Moment.js -->
+    <script src="../../plugins/moment/moment.min.js"></script>
+    <!-- Daterangepicker -->
+    <script src="../../plugins/daterangepicker/daterangepicker.js"></script>
+
+    <!-- Vis-Timeline JS (時間軸套件) -->
+    <script src="https://unpkg.com/vis-timeline@7.7.3/standalone/umd/vis-timeline-graph2d.min.js"></script>
+
+    <script>
+      // ========== 全域變數 ==========
+      let timeline = null;
+      let groups = null;
+      let items = null;
+      let currentView = "day"; // 目前視圖：day, week, month
+
+      // ========== 初始化 ==========
+      $(function () {
+        initTimeline();      // 初始化 Vis-Timeline 實例
+        loadDataAndRender(); // 載入資料並渲染
+        bindEvents();        // 綁定按鈕事件
+      });
+
+      // 綁定 DOM 事件
+      function bindEvents() {
+        $("#btnRefresh").click(() => loadDataAndRender());
+        $("#btnToday").click(() => goToToday());
+        
+        // 日期導航按鈕
+        $("#btnPrevDay").click(() => moveWindow(-1, "days"));
+        $("#btnNextDay").click(() => moveWindow(1, "days"));
+        $("#btnPrevWeek").click(() => moveWindow(-7, "days"));
+        $("#btnNextWeek").click(() => moveWindow(7, "days"));
+
+        // 視圖切換按鈕
+        $(".view-controls .btn").click(function () {
+          $(".view-controls .btn").removeClass("active");
+          $(this).addClass("active");
+          currentView = $(this).data("view");
+          setTimelineView(currentView);
+        });
+      }
+
+      // 初始化 Vis-Timeline
+      function initTimeline() {
+        const container = document.getElementById("timeline");
+
+        // 建立空的 DataSets (Vis-Timeline 專用的資料結構，支援動態更新)
+        groups = new vis.DataSet(); // 美容師群組
+        items = new vis.DataSet();  // 預約與班表項目
+
+        // 設定選項
+        const options = {
+          orientation: "top", // 時間軸在上方
+          stack: true,        // 項目堆疊 (避免重疊)
+          showCurrentTime: true, // 顯示目前時間紅線
+          zoomMin: 1000 * 60 * 60, // 最小縮放：1小時
+          zoomMax: 1000 * 60 * 60 * 24 * 31, // 最大縮放：31天
+          margin: { item: 5 }, // 項目間距
+          groupOrder: "id",   // 群組排序
+          tooltip: {
+            followMouse: true,
+            overflowMethod: "flip",
+          },
+          // 預設視野：今天
+          start: moment().startOf("day").toDate(),
+          end: moment().endOf("day").toDate(),
+          // 自訂日期格式
+          format: {
+            minorLabels: {
+              hour: "HH:mm",
+              day: "D",
+              weekday: "ddd D",
+              month: "MMM",
+              year: "YYYY",
+            },
+            majorLabels: {
+              hour: "YYYY/MM/DD (ddd)",
+              day: "YYYY年 MMMM",
+              weekday: "YYYY年 MMMM",
+              month: "YYYY年",
+              year: "",
+            },
+          },
+        };
+
+        // 建立 Timeline 實體
+        timeline = new vis.Timeline(container, items, groups, options);
+
+        // 事件監聽：當時間範圍改變時 (拖曳或縮放)，更新標題日期顯示
+        timeline.on("rangechanged", updateDateDisplay);
+
+        updateDateDisplay();
+      }
+
+      // 更新日期顯示字串
+      function updateDateDisplay() {
+        const range = timeline.getWindow();
+        const start = moment(range.start);
+        const end = moment(range.end);
+
+        if (currentView === "day") {
+          $("#currentDateDisplay").text(start.format("YYYY年MM月DD日 (ddd)"));
+        } else {
+          $("#currentDateDisplay").text(
+            `${start.format("YYYY/MM/DD")} ~ ${end.format("MM/DD")}`
+          );
+        }
+      }
+
+      // 設定視圖範圍 (Day/Week/Month)
+      function setTimelineView(view) {
+        const now = moment();
+        let start, end;
+
+        switch (view) {
+          case "day":
+            // 日視圖：顯示 08:00 ~ 21:00 (工作時間) 比較友善
+            start = now.clone().startOf("day").add(8, "hours");
+            end = now.clone().startOf("day").add(21, "hours");
+            break;
+          case "week":
+            start = now.clone().startOf("week");
+            end = now.clone().endOf("week");
+            break;
+          case "month":
+            start = now.clone().startOf("month");
+            end = now.clone().endOf("month");
+            break;
+        }
+
+        timeline.setWindow(start.toDate(), end.toDate());
+      }
+
+      // 跳轉回今天
+      function goToToday() {
+        setTimelineView(currentView);
+      }
+
+      // 移動時間視窗 (前後跳轉)
+      function moveWindow(amount, unit) {
+        const range = timeline.getWindow();
+        const start = moment(range.start).add(amount, unit);
+        const end = moment(range.end).add(amount, unit);
+        timeline.setWindow(start.toDate(), end.toDate());
+      }
+
+      // ========== 資料載入與渲染 ==========
+      function loadDataAndRender() {
+        $("#loadingOverlay").show(); // 顯示遮罩
+
+        // 平行載入所有必要資料：美容師、預約、請假紀錄
+        Promise.all([
+          $.ajax({ url: "/shop/groomers", type: "GET", dataType: "json" }),
+          $.ajax({ url: "/shop/appointments", type: "GET", dataType: "json" }),
+          $.ajax({
+            url: "/shop/groomers/leave-records",
+            type: "GET",
+            dataType: "json",
+            cache: false,
+          }),
+        ])
+          .then(function ([groomersData, appointmentsData, leavesData]) {
+            // 資料處理完成後渲染
+            renderTimeline(
+              groomersData || [],
+              appointmentsData || [],
+              leavesData || []
+            );
+          })
+          .catch(function (err) {
+            console.error("Data Load Error:", err);
+            alert("載入資料失敗，請稍後再試。");
+          })
+          .finally(function () {
+            $("#loadingOverlay").hide(); // 隱藏遮罩
+          });
+      }
+
+      /**
+       * 渲染核心邏輯
+       * 1.Groups: 建立美容師群組
+       * 2.Items: 將預約 (Appointment) 與 請假 (Leave) 轉為時間軸項目
+       */
+      function renderTimeline(groomersData, appointmentsData, leavesData) {
+        // 清空現有資料
+        groups.clear();
+        items.clear();
+
+        // 1. 建立 Groups (只顯示在職美容師)
+        const activeGroomers = groomersData.filter((g) => g.isActive !== false);
+        const groupsArray = activeGroomers.map((g) => ({
+          id: g.groomerId,
+          // 左側標籤內容 HTML
+          content: `<div class="groomer-label">
+                        ${g.groomerName}
+                      </div>`,
+        }));
+        groups.add(groupsArray);
+
+        // 2. 建立 Items
+        const itemsArray = [];
+
+        // (A) 處理預約資料 - 使用 'appt_' 作為 ID 前綴避免衝突
+        appointmentsData
+          .filter((appt) => appt.appointmentStatus !== "已取消") // 過濾已取消的
+          .forEach((appt) => {
+            if (!appt.appointmentDate || !appt.startTime || !appt.endTime)
+              return;
+
+            const start = moment(`${appt.appointmentDate}T${appt.startTime}`);
+            const end = moment(`${appt.appointmentDate}T${appt.endTime}`);
+
+            // 根據狀態設定不同樣式 (已完成 vs 未完成)
+            const statusClass =
+              appt.appointmentStatus === "已完成"
+                ? "appointment completed"
+                : "appointment";
+
+            itemsArray.push({
+              id: `appt_${appt.appointmentId}`,
+              group: appt.groomerId, // 對應美容師 Group ID
+              content: `<i class="fas fa-paw mr-1"></i>${
+                appt.petName || "預約"
+              } (${appt.petType || "-"})`,
+              start: start.toDate(),
+              end: end.toDate(),
+              className: statusClass,
+              // Tooltip 內容
+              title: `<b>預約 #${appt.appointmentId}</b><br>
+                        寵物: ${appt.petName || "-"}<br>
+                        時間: ${appt.startTime} ~ ${appt.endTime}<br>
+                        狀態: ${appt.appointmentStatus || "-"}`,
+            });
+          });
+
+        // (B) 處理請假資料 - 使用 'leave_' 作為 ID 前綴
+        leavesData
+          .filter((leave) => leave.isActive !== false) // 過濾無效請假
+          .forEach((leave) => {
+            if (!leave.startDate) return;
+
+            // 請假為「全天」事件，設定時間為 00:00 ~ 23:59
+            const start = moment(leave.startDate).startOf("day");
+            const end = moment(leave.endDate || leave.startDate).endOf("day");
+
+            itemsArray.push({
+              id: `leave_${leave.leaveId}`,
+              group: leave.groomerId,
+              content: `<i class="fas fa-umbrella-beach mr-1"></i>休假`,
+              start: start.toDate(),
+              end: end.toDate(),
+              className: "leave", // 對應 CSS .vis-item.leave
+              title: `<b>休假 #${leave.leaveId}</b><br>
+                        美容師: ${leave.groomerName || "-"}<br>
+                        日期: ${leave.startDate} ~ ${leave.endDate || leave.startDate}<br>
+                        原因: ${leave.reason || "無"}`,
+            });
+          });
+
+        // 批次新增所有項目到 DataSet
+        items.add(itemsArray);
+
+        // 若無資料，維持目前視圖；若有資料，Vis-Timeline 會自動重繪
+        if (itemsArray.length === 0) {
+          setTimelineView(currentView);
+        }
+      }
+    </script>
+  </body>
+</html>

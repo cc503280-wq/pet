@@ -1,4 +1,5 @@
 package com.pet.model.appointment;
+import org.hibernate.annotations.Immutable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -12,22 +13,25 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity 
 @Table(name = "appointment_list_view")
+@Immutable // 標記為唯讀實體，JPA 就不會嘗試對此 View 進行更新
 public class AppointmentList {
 	@Id
     @Column(name = "appointment_id")
 	private Integer appointmentId;
+	@Column(name = "member_id")
+	private String memberId;
 	@Column(name = "member_name")
 	private String memberName;
 	@Column(name = "pet_name")
-	private String petName;
+	private String petName; 
 	@Column(name = "main_service")
-	private String mainService;
+	private String mainService; 
 	@Column(name = "addon_items")
-	private String addonItem;
+	private String addonItem; 
 	@Column(name = "groomer_Id")
 	private String groomerId;
 	@Column(name = "groomer_name")
-	private String groomerName;
+	private String groomerName; 
 	@Column(name = "appointment_date")
 	private String appointmentDate;
 	@Column(name = "start_time")

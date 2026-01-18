@@ -201,33 +201,50 @@
               </a>
               <ul class="nav nav-treeview">
                 <li class="nav-item">
+                  <a href="GetAllDailySchedules.html" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>班表總覽
+                    </p>
+                  </a>
+                </li>
+                <li class="nav-item">
                   <a href="GetAllAppointments.html" class="nav-link">
                     <i class="far fa-circle nav-icon"></i>
-                    <p>寵物美容訂單管理</p>
+                    <p>預約訂單列表</p>
                   </a>
                 </li>
-                <li class="nav-item">
-                  <a href="GetAllLeaveRecords.html" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>美容師請假管理</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="GetAllGroomers.html" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>美容師管理</p>
-                  </a>
-                </li>
+
                 <li class="nav-item">
                   <a href="GetAllAppointmentDetails.html" class="nav-link">
                     <i class="far fa-circle nav-icon"></i>
-                    <p>預約訂單明細</p>
+                    <p>預約明細</p>
                   </a>
                 </li>
                 <li class="nav-item">
                   <a href="GetAllServiceItems.html" class="nav-link">
                     <i class="far fa-circle nav-icon"></i>
-                    <p>服務項目管理</p>
+                    <p>服務項目</p>
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="nav-icon fas fa-edit"></i>
+                <p>人員管理 <i class="right fas fa-angle-left"></i></p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="GetAllGroomers.html" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>美容師列表</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="GetAllLeaveRecords.html" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>休假審核</p>
                   </a>
                 </li>
               </ul>
@@ -247,7 +264,7 @@
         <div class="container-fluid">
           <div class="row mb-2">
             <div class="col-sm-12 box1">
-              <h1>服務項目管理</h1>
+              <h1>預約管理</h1>
             </div>
             <div class="col-sm-6"></div>
           </div>
@@ -262,7 +279,7 @@
             <div class="col-12">
               <div class="card">
                 <div class="card-header d-flex align-items-center justify-content-between">
-                  <h3 class="card-title me-auto">服務項目列表</h3>
+                  <h3 class="card-title me-auto">服務項目</h3>
 
                   <div class="d-flex align-items-center" style="gap: 0.5rem">
                     <!-- 新增資料 -->
@@ -331,7 +348,7 @@
                         <th>服務類型</th>
                         <th>時長</th>
                         <th>定價</th>
-                        <th>上架狀態</th>
+                        <th>服務狀態</th>
                         <th>更新日期</th>
                         <th class="text-center">操作</th>
                       </tr>
@@ -535,7 +552,7 @@
       bindPetTypeLinkage("#modalTargetPetType", "#modalTargetPetSize");
     });
 
-    const SERVICEITEM_API = "/serviceitems";
+    const SERVICEITEM_API = "/shop/serviceitems";
     const IMAGE_BASE_URL = "";
 
     //初始化畫面
@@ -574,7 +591,9 @@
 
     //渲染表格
     function renderTable(dataList) {
+      let currentPage = 0;
       if ($.fn.DataTable.isDataTable("#example2")) {
+        currentPage = $("#example2").DataTable().page();
         $("#example2").DataTable().destroy();
       }
 
@@ -597,12 +616,10 @@
 							              <td>${s.isAddon ? "加購服務" : "主要服務"}</td>
                             <td>${s.durationMinutes}</td>
                             <td>${s.price}</td>							
-							              <td>${s.isActive ? "上架" : "下架"}</td>
+							              <td>${s.isActive ? "上架中" : "已下架"}</td>
 							              <td>${s.updatedAt}</td>                          
                             <td class="text-center">
-                            <a href="#" class="btn btn-secondary btn-sm mr-2 sdetail-btn" data-id="${s.serviceId
-          }">查看</a>
-							              
+                            <a href="#" class="btn btn-secondary btn-sm mr-2 sdetail-btn" data-id="${s.serviceId}">查看</a>
 							               <button class="btn ${btnClass} btn-sm status-toggle-btn" 
                                     data-id="${s.serviceId}" 
                                     title="點擊切換狀態">
@@ -615,6 +632,11 @@
       });
 
       initDataTable();
+
+      // 如果原本不在第一頁，則跳回原本的頁碼
+      if (currentPage > 0) {
+        $("#example2").DataTable().page(currentPage).draw('page');
+      }
     }
 
     //點擊查看按鈕，彈出Modal並顯示資料
@@ -626,7 +648,7 @@
         let id = $(this).data("id");
 
         // 2. 從全域變數 allAppointments 裡面找到那一筆資料
-        // 這裡要注意：data-id 抓出來可能是字串，需轉型比對，或用 == (不嚴格比對)
+        // 這裡要注意：data-id 抓出來可能是字串，需轉型比對
         let serviceData = allServiceItems.find(
           (item) => item.serviceId == id
         );
@@ -646,62 +668,20 @@
       });
     }
 
-    //預留
-    // function openEditModal(id) {
-    //   $.ajax({
-    //     url: SERVICEITEM_API + "/" + id,
-    //     type: "GET",
-    //     success: function (s) {
-    //       // 2. 填入資料到表單
-    //       $("#modalServiceId").val(s.serviceId);
-    //       $("#modalServiceName").val(s.serviceName);
-    //       $("#modalTargetPetType").val(s.targetPetType).trigger('change');;
-    //       $("#modalTargetPetSize").val(s.targetPetSize);
-    //       $("#modalIsAddon").val(s.isAddon.toString());
-    //       $("#modalDurationMinutes").val(s.durationMinutes);
-    //       $("#modalPrice").val(s.price);
-    //       $("#modalDescription").val(s.description);
-
-    //       // 處理圖片預覽
-    //       // 清空檔案選擇器 (因為使用者可能不打算換圖)
-    //       $("#modalImageFile").val("");
-
-    //       if (s.picture) {
-    //         // 顯示舊圖片
-    //         $("#modalImagePreview")
-    //           .attr("src", IMAGE_BASE_URL + s.picture)
-    //           .show();
-    //       } else {
-    //         $("#modalImagePreview").hide();
-    //       }
-
-    //       // 3. 改標題並顯示
-    //       $("#modalTitle").text("修改服務項目資料");
-    //       $("#Modal").modal("show");
-    //     },
-    //     error: function (err) {
-    //       alert("無法載入服務項目資料");
-    //     },
-    //   });
-    // }
-
     function openCreateModal() {
       $("#serviceItemForm")[0].reset();
       $("#modalServiceId").val("");
       $("#modalTitle").text("新增服務項目");
-
-      $("#modalImageFile").val(""); // 清空檔案欄位
-      $("#modalImagePreview").attr("src", "").hide(); // 隱藏預覽圖
-
+      $("#modalImageFile").val(""); 
+      $("#modalImagePreview").attr("src", "").hide(); 
       $("#Modal").modal("show");
     }
 
-    //儲存資料
+    //當使用者在Modal中按下確認按鈕
     function submitInfo() {
-      // 1. 建立 FormData
       let formData = new FormData();
 
-      // 2. 塞入欄位
+      // 將欄位欄位加進formData
       formData.append("serviceName", $("#modalServiceName").val());
       formData.append("targetPetType", $("#modalTargetPetType").val());
       formData.append("targetPetSize", $("#modalTargetPetSize").val());
@@ -718,9 +698,7 @@
 
       let id = $("#modalServiceId").val();
 
-      let url = id
-        ? SERVICEITEM_API + "/update/" + id
-        : SERVICEITEM_API + "/insert";
+      let url = SERVICEITEM_API + "/insert";
 
       $.ajax({
         url: url,
@@ -761,6 +739,8 @@
         preview.hide();
       }
     }
+
+
 
     function doServiceSearch() {
       const params = {
@@ -807,11 +787,12 @@
       loadAllData();
     }
 
-    $(document).on("click", ".status-toggle-btn", function () {
+    $(document).on("click", ".status-toggle-btn", function (e) {
+      e.preventDefault(); // 防止任何預設行為 (例如跳轉或提交)
       const serviceId = $(this).data("id");
       const $btn = $(this); // 抓取當前按鈕物件
 
-      // 禁用按鈕防止重複點擊
+      // 禁用按鈕，防止重複點擊
       $btn.prop("disabled", true);
 
       $.ajax({
@@ -819,9 +800,26 @@
         type: "PUT",
         data: { type: "active" },
         success: function (newStatus) {
-          alert(newStatus ? "服務已上架" : "服務已下架");
+            // 更新按鈕樣式與文字
+            if (newStatus) {
+                $btn.removeClass("btn-outline-danger").addClass("btn-success");
+                $btn.html('<i class="fas fa-check-circle"></i> 上架中');
+            } else {
+                $btn.removeClass("btn-success").addClass("btn-outline-danger");
+                $btn.html('<i class="fas fa-times-circle"></i> 已下架');
+            }
 
-          loadAllData();
+            // 更新表格中的狀態欄位 (第9欄, index 8)
+            const $tr = $btn.closest("tr");
+            $tr.find("td").eq(8).text(newStatus ? "上架中" : "已下架");
+            
+            // 更新全域資料 (以免查看詳情時狀態不對)
+            if (typeof allServiceItems !== 'undefined') {
+                const item = allServiceItems.find(s => s.serviceId == serviceId);
+                if (item) item.isActive = newStatus;
+            }
+            
+            // alert(newStatus ? "服務已上架" : "服務已下架"); // 移除 alert 避免干擾
         },
         error: function (xhr) {
           console.error("狀態切換失敗", xhr);
@@ -833,6 +831,8 @@
       });
     });
 
+
+    //鎖定貓或其他，只能選擇小型或者不分體型
     function bindPetTypeLinkage(typeSelector, sizeSelector) {
       const $typeSelect = $(typeSelector);
       const $sizeSelect = $(sizeSelector);

@@ -6,9 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.hibernate.annotations.Immutable;
+
 
 
 @Data
@@ -16,27 +16,32 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Immutable // 唯讀視圖
 public class LeaveRecoredGroomerView {
 	@Id
     @Column(name = "leave_id")
-    private Integer leaveId;
+    private Integer leaveId; 
 
     @Column(name = "groomer_id")
-    private Integer groomerId;
+    private Integer groomerId; 
     
     @Column(name = "groomer_name")
-    private String groomerName;
+    private String groomerName; 
 
-    @Column(name = "leave_date")
-    private LocalDate leaveDate;
+    @Column(name = "start_date")
+     @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate startDate; 
 
-    @Column(nullable = false, length = 100)
+    @Column(name = "end_date")
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate endDate;
+
+    @Column(name ="reason")
     private String reason; 
     
     @Column(name="is_active")
 	private Boolean isActive;
 
-    
     @Column(name = "created_at", insertable = false, updatable = false)
     @JsonFormat(pattern = "yyyy/MM/dd HH:mm")
     private LocalDateTime createdAt;

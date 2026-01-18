@@ -10,7 +10,9 @@ import lombok.ToString;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 @Data
 @Entity
@@ -25,27 +27,30 @@ public class AppointmentDetails {
     private Integer detailId;
 
     @Column(name = "appointment_id", insertable = false, updatable = false)
-    private transient Integer appointmentId;
+    private transient Integer appointmentId; 
 
     @Column(name = "service_id", nullable = true)
-    private Integer serviceId;
+    private Integer serviceId; 
 
     @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal price;
+    private BigDecimal price; 
 
     @Column(name = "duration_minutes", nullable = false)
-    private Integer durationMinutes;
+    private Integer durationMinutes; 
 
     @Column(name = "created_at", insertable = false, updatable = false)
+    @JsonFormat(pattern = "yyyy/MM/dd HH:mm")
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at", insertable = false, updatable = false)
+    @JsonFormat(pattern = "yyyy/MM/dd HH:mm")
     private LocalDateTime updatedAt;
+    
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "appointment_id", nullable = false) 
-    @EqualsAndHashCode.Exclude // 加上這行
-    @ToString.Exclude          // 加上這行
+    @EqualsAndHashCode.Exclude 
+    @ToString.Exclude          
     @JsonIgnore
     private Appointment appointment;
     
@@ -53,5 +58,4 @@ public class AppointmentDetails {
     @JoinColumn(name = "service_id", insertable = false, updatable = false) 
     private ServiceItem serviceItem;
 
-	
 }

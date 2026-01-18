@@ -167,50 +167,70 @@
 									</a></li>
 							</ul>
 						</li>
+
+						
 						<li class="nav-item"><a href="#" class="nav-link"> <i class="nav-icon fas fa-edit"></i>
-								<p>
-									預約管理 <i class="right fas fa-angle-left"></i>
-								</p>
-							</a>
-							<ul class="nav nav-treeview">
-								<li class="nav-item">
-									<a th:href="@{/admin/layout/GetAllAppointments.html}" class="nav-link">
-										<i class="far fa-circle nav-icon"></i>
-										<p>寵物美容訂單管理</p>
-									</a>
-								</li>
-								<li class="nav-item">
-									<a th:href="@{/admin/layout/GetAllLeaveRecords.html}" class="nav-link">
-										<i class="far fa-circle nav-icon"></i>
-										<p>美容師請假管理</p>
-									</a>
-								</li>
-								<li class="nav-item">
-									<a th:href="@{/admin/layout/GetAllGroomers.html}" class="nav-link">
-										<i class="far fa-circle nav-icon"></i>
-										<p>美容師管理</p>
-									</a>
-								</li>
-								<li class="nav-item">
-									<a th:href="@{/admin/layout/GetAllAppointmentDetails.html}" class="nav-link">
-										<i class="far fa-circle nav-icon"></i>
-										<p>預約訂單明細</p>
-									</a>
-								</li>
-								<li class="nav-item">
-									<a th:href="@{/admin/layout/GetAllServiceItems.html}" class="nav-link">
-										<i class="far fa-circle nav-icon"></i>
-										<p>服務項目管理</p>
-									</a>
-								</li>
-							</ul>
-						</li>
-					</ul>
-				</nav>
-				<!-- /.sidebar-menu -->
-			</div>
-			<!-- /.sidebar -->
-		</aside>
+                <p>
+                  預約管理 <i class="right fas fa-angle-left"></i>
+                </p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a th:href="@{/admin/layout/GetAllDailySchedules.html}" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>班表總覽
+                    </p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a th:href="@{/admin/layout/GetAllAppointments.html}" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>預約訂單列表</p>
+                  </a>
+                </li>
+
+                <li class="nav-item">
+                  <a th:href="@{/admin/layout/GetAllAppointmentDetails.html}" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>預約明細</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a th:href="@{/admin/layout/GetAllServiceItems.html}" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>服務項目</p>
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="nav-icon fas fa-edit"></i>
+                <p>人員管理 <i class="right fas fa-angle-left"></i></p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a th:href="@{/admin/layout/GetAllGroomers.html}" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>美容師列表</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a th:href="@{/admin/layout/GetAllLeaveRecords.html}" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>休假審核</p>
+                  </a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+          </li>
+        </nav>
+        <!-- /.sidebar-menu -->
+      </div>
+      <!-- /.sidebar -->
+    </aside>
 
 		<!-- Content Wrapper. Contains page content -->
 		<div class="content-wrapper">
@@ -421,7 +441,7 @@
 			if (memberId) {
 				$.ajax({
 					
-					url: `${APPOINTMENT_API}/${memberId}/pets`,
+					url: `/memberPets/member/${memberId}`,
 					type: 'GET',
 					dataType: 'json',
 					success: function (pets) {
@@ -739,8 +759,29 @@
 			let groomerData = cachedScheduleData.find(g => g.groomerId == groomerId);
 			let duration = parseInt($('#durationMinutes').val());
 
+            // 取得選擇的日期與今日日期比較
+            let selectedDate = $('#dateInput').val();
+            let now = new Date();
+            // 處理時區問題，確保比對的是當地時間的 YYYY-MM-DD
+            let todayStr = new Date(now.getTime() - (now.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
+            let isToday = (selectedDate === todayStr);
+            let currentHours = now.getHours();
+            let currentMinutes = now.getMinutes();
+
 			if (groomerData && groomerData.slots) {
 				$.each(groomerData.slots, function (index, startTime) {
+                    // 如果是今天，過濾掉已經過去的時間
+                    if (isToday) {
+                        let tParts = startTime.split(':');
+                        let tH = parseInt(tParts[0]);
+                        let tM = parseInt(tParts[1]);
+                        
+                        // 如果時段小於現在時間，跳過
+                        if (tH < currentHours || (tH === currentHours && tM < currentMinutes)) {
+                            return;
+                        }
+                    }
+
 					// 計算結束時間
 					let parts = startTime.split(':');
 					let date = new Date();
