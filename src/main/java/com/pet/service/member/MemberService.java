@@ -79,14 +79,32 @@ public class MemberService {
         Member member = memberRepository.findById(id).orElse(null);
         if (member == null) return null;
 
-        member.setEmail(input.getEmail());
-        member.setName(input.getName());
-        member.setGender(input.getGender());
-        member.setBirthday(input.getBirthday());
-        member.setPhone(input.getPhone());
-        member.setAddress(input.getAddress());
+        // 💡 只有當 input 裡的資料不是 null 時才更新
+        // 這樣可以防止意外把資料洗成 NULL
+        if (input.getEmail() != null) {
+            member.setEmail(input.getEmail());
+        }
+        
+        if (input.getName() != null) {
+            member.setName(input.getName());
+        }
+        
+        if (input.getGender() != null) {
+            member.setGender(input.getGender());
+        }
+        
+        if (input.getBirthday() != null) {
+            member.setBirthday(input.getBirthday());
+        }
+        
+        if (input.getPhone() != null) {
+            member.setPhone(input.getPhone());
+        }
+        
+        if (input.getAddress() != null) {
+            member.setAddress(input.getAddress());
+        }
 
-        // 如果有傳新照片，上傳到雲端並更新網址
         if (file != null && !file.isEmpty()) {
             String imageUrl = saveImageToCloud(file);
             member.setPicture(imageUrl);
