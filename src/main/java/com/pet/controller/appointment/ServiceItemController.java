@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 
 
 @RestController 
-@RequestMapping("/shop/serviceitems") 
+@RequestMapping("/serviceitems") 
 @Slf4j
 public class ServiceItemController {
 	@Autowired 

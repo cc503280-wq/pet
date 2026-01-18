@@ -27,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
  * 包含：登入/登出、資料 CRUD、搜尋、以及「請假單」的管理
  */
 @RestController 
-@RequestMapping("/shop/groomers") // 基礎路徑 /groomers
+@RequestMapping("/groomers") // 基礎路徑 /groomers
 @Slf4j
 public class GroomerController {
 

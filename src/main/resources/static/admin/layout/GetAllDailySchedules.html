@@ -703,10 +703,10 @@
 
         // 平行載入所有必要資料：美容師、預約、請假紀錄
         Promise.all([
-          $.ajax({ url: "/shop/groomers", type: "GET", dataType: "json" }),
-          $.ajax({ url: "/shop/appointments", type: "GET", dataType: "json" }),
+          $.ajax({ url: "/groomers", type: "GET", dataType: "json" }),
+          $.ajax({ url: "/appointments", type: "GET", dataType: "json" }),
           $.ajax({
-            url: "/shop/groomers/leave-records",
+            url: "/groomers/leave-records",
             type: "GET",
             dataType: "json",
             cache: false,

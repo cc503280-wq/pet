@@ -442,7 +442,7 @@
       handleQueryAllButtonClick();
     });
 
-    const APPOINTMENTDETAIL_API = "/shop/appointments/details";
+    const APPOINTMENTDETAIL_API = "/appointments/details";
 
     //初始化畫面
     function initDataTable() {
@@ -525,7 +525,7 @@
         
         // 呼叫後端 API 取得預約詳情 (使用 AppointmentList 資料)
         $.ajax({
-            url: `/shop/appointments/${appointmentId}`, // GET /appointments/{id}
+            url: `/appointments/${appointmentId}`, // GET /appointments/{id}
             type: "GET",
             dataType: "json",
             success: function(appt) {

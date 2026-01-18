@@ -11,7 +11,7 @@ import com.pet.service.appointment.DailyScheduleService;
 
 
 @RestController 
-@RequestMapping("/shop/schedule") 
+@RequestMapping("/schedule") 
 public class DailyScheduleController {
 
 	@Autowired

@@ -29,7 +29,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @RestController
-@RequestMapping("/shop/appointments")
+@RequestMapping("/appointments")
 @RequiredArgsConstructor
 public class AppointmentController {
 
