@@ -38,14 +38,7 @@ public class WebConfig implements WebMvcConfigurer {
                         "/admin/layout/Login.html", // 排除登入頁面
                         "/css/**", "/js/**", "/images/**",// 排除靜態資源
                         "/products/store/**", 
-                        "/api/**",
-                        "/serviceitems/active",
-                        // Swagger UI 相關路徑
-                        "/swagger-ui/**",
-                        "/swagger-ui.html",
-                        "/v3/api-docs/**",
-                        "/swagger-resources/**",
-                        "/webjars/**"
+                        "/api/**"
                 );
     }
     

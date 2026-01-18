@@ -1,16 +1,16 @@
 package com.pet.service.product;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,6 +19,7 @@ import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.pet.dao.product.CategoryRepository;
 import com.pet.dao.product.ProductRepository;
+import com.pet.dto.product.ProductStockDTO;
 import com.pet.model.product.Category;
 import com.pet.model.product.Product;
 
@@ -124,6 +125,7 @@ public class ProductService {
 		return pRepos.findByCategory_CategoryId(categoryId);
 	}
 
+	// 新增商品	
 	public Product createProductWithImage(String name, String desc, Integer price, Integer stock, Integer catId,
 			String expireDate, MultipartFile file) throws IOException {
 
@@ -217,4 +219,97 @@ public class ProductService {
 		return pRepos.save(p);
 	}
 
+	public void batchUpdateStock(List<ProductStockDTO> stockList) {
+		
+		
+	    for (ProductStockDTO dto : stockList) {
+	    	// 如果是負數，直接跳過這筆，不處理
+	    	if (dto.getStock() < 0) {
+	            continue; 
+	        }
+	    	
+	        // 1. 先抓出商品
+	        Product product = pRepos.findById(dto.getProductId())
+	            .orElse(null); // 如果找不到就跳過，或拋出異常看你需求
+	        
+	        if (product != null) {
+	            // 更新庫存
+	            product.setStock(dto.getStock());
+	            
+	            // 庫存歸零自動下架
+	            if (dto.getStock() == 0) {
+	                product.setIsActive(false); 
+	            }else if (dto.getStock() > 0) {
+	                product.setIsActive(true); 
+	            }
+	            // 儲存 
+	            pRepos.save(product);
+	        }
+	    }
+	}
+	
+	public Page<Product> getAllProductsWithPagination(int page, int size) {
+        // 1. 設定分頁與排序 (依照 ID 倒序，讓新商品在最上面)
+        Pageable pageable = PageRequest.of(page, size, Sort.by("productId").ascending());
+        
+        // 2. 呼叫 Repository
+        return pRepos.findAll(pageable);
+    }
+	
+	
+	// 前台功能
+	public Page<Product> getActiveProducts(int page, int size) {
+	    // 依 ID 新到舊排序
+	    Pageable pageable = PageRequest.of(page, size, Sort.by("productId").descending());
+	    return pRepos.findByIsActiveTrue(pageable);
+	}
+	
+	public List<Category> getAllCategories() {
+	    return pRepos.findDistinctCategories();
+	}
+
+	
+    // --- 功能 2: 取得前台商品 (包含分頁與分類邏輯) ---
+	public Page<Product> getStoreProducts(int page, int size, Integer categoryId,String keyword) {
+	    Pageable pageable = PageRequest.of(page, size);
+
+	    // 情況 1：兩者都有 (分類 + 關鍵字) -> 呼叫剛剛寫的「組合技」
+	    if (categoryId != null && keyword != null && !keyword.trim().isEmpty()) {
+	        return pRepos.findByCategory_CategoryIdAndProductNameContainingAndIsActiveTrue(categoryId, keyword, pageable);
+	    }
+	    
+	    // 情況 2：如果有關鍵字 -> 優先搜尋商品名稱 (不管分類)
+	    if (keyword != null && !keyword.trim().isEmpty()) {
+	        return pRepos.findByProductNameContainingAndIsActiveTrue(keyword, pageable);
+	    }
+	    // 情況 3：如果沒關鍵字，但有選分類 -> 找該分類
+	    else if (categoryId != null) {
+	        // 呼叫新的 ID 搜尋方法
+	        return pRepos.findByCategory_CategoryIdAndIsActiveTrue(categoryId, pageable);
+	    }
+	    // 情況 4：什麼都沒選 -> 找全部
+	    else {
+	        return pRepos.findByIsActiveTrue(pageable);
+	    }
+	}
+	public Page<Product> getStoreProducts(int page, int size, Integer categoryId, String keyword, Integer minPrice, Integer maxPrice, String sortCode) {
+	    
+	    // 🟢 1. 處理排序邏輯
+	    Sort sort = Sort.unsorted();
+	    
+	    if ("price_asc".equals(sortCode)) {
+	        sort = Sort.by(Sort.Direction.ASC, "price"); // 價格由低到高
+	    } else if ("price_desc".equals(sortCode)) {
+	        sort = Sort.by(Sort.Direction.DESC, "price"); // 價格由高到低
+	    } else {
+	        sort = Sort.by(Sort.Direction.DESC, "productId"); // 預設：最新上架 (ID 越大越新)
+	    }
+
+	    // 🟢 2. 建立分頁物件 (把 Sort 放進去)
+	    Pageable pageable = PageRequest.of(page, size, sort);
+
+	    // 🟢 3. 呼叫剛剛寫的萬用查詢
+	    return pRepos.searchProducts(categoryId, keyword, minPrice, maxPrice, pageable);
+	}
+	
 }

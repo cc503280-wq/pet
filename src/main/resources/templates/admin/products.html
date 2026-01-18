@@ -254,6 +254,9 @@
                                         <button onclick="openCreateModal()" class="btn btn-success btn-sm mr-2">
                                             <i class="fas fa-plus"></i> 新增
                                         </button>
+                                        <button onclick="saveBatchStock()" class="btn btn-primary btn-sm mr-2">
+										    <i class="fas fa-save"></i> 批量庫存變更
+										</button>
                                         <button onclick="loadAllProducts()" class="btn btn-info btn-sm mr-2">
                                             <i class="fas fa-list"></i> 全部
                                         </button>
@@ -297,6 +300,13 @@
                                         <tbody id="tableBody">
                                         </tbody>
                                     </table>
+                                    <div class="card-footer clearfix">
+									    <div class="float-left" style="padding-top: 8px;">
+									        共 <span id="totalRecords">0</span> 筆資料
+									    </div>
+									    <ul class="pagination pagination-sm m-0 float-right" id="paginationContainer">
+									    	</ul>
+									</div>
                                 </div>
                             </div>
                         </div>
@@ -321,51 +331,53 @@
                 </div>
                 <div class="modal-body">
                     <form id="productForm">
-                        <input type="hidden" id="modalProductId">
-
-                        <div class="form-group">
-                            <label>商品名稱</label>
-                            <input type="text" class="form-control" id="modalProductName" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label>商品描述</label>
-                            <textarea class="form-control" id="modalDescription" rows="3"></textarea>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label>價格</label>
-                                <input type="number" class="form-control" id="modalPrice" required>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label>庫存</label>
-                                <input type="number" class="form-control" id="modalStock" required>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label>類別</label>
-                            <select class="form-control" id="modalCategoryId">
-                                <option value="" disabled selected>請選擇分類</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label>倒數日期</label>
-                            <input type="datetime-local" class="form-control" id="modalExpireDate">
-                        </div>
-
-                        <div class="form-group">
-                            <label>商品圖片</label>
-                            <input type="file" class="form-control-file" id="modalImageFile" accept="image/*"
-                                onchange="previewImage()">
-                            <div class="mt-2">
-                                <img id="modalImagePreview" src="" style="max-width: 200px; display: none;"
-                                    class="img-thumbnail">
-                            </div>
-                        </div>
-                    </form>
+					    <input type="hidden" id="modalProductId">
+					
+					    <div class="form-group">
+					        <label>商品名稱 <span class="text-danger">*</span></label>
+					        <input type="text" class="form-control" id="modalProductName" required>
+					        <div class="invalid-feedback">請輸入商品名稱</div>
+					    </div>
+					
+					    <div class="form-group">
+					        <label>商品描述</label>
+					        <textarea class="form-control" id="modalDescription" rows="3"></textarea>
+					    </div>
+					
+					    <div class="form-row">
+					        <div class="form-group col-md-6">
+					            <label>價格 <span class="text-danger">*</span></label>
+					            <input type="number" class="form-control" id="modalPrice" required min="0">
+					            <div class="invalid-feedback">請輸入有效的價格</div>
+					        </div>
+					        <div class="form-group col-md-6">
+					            <label>庫存 <span class="text-danger">*</span></label>
+					            <input type="number" class="form-control" id="modalStock" required min="0">
+					            <div class="invalid-feedback">請輸入有效的庫存數量</div>
+					        </div>
+					    </div>
+					
+					    <div class="form-group">
+					        <label>類別 <span class="text-danger">*</span></label>
+					        <select class="form-control" id="modalCategoryId">
+					            <option value="" disabled selected>請選擇分類</option>
+					        </select>
+					        <div class="invalid-feedback">請選擇一個分類</div>
+					    </div>
+					
+					    <div class="form-group">
+					        <label>倒數日期</label>
+					        <input type="datetime-local" class="form-control" id="modalExpireDate">
+					    </div>
+					
+					    <div class="form-group">
+					        <label>商品圖片</label>
+					        <input type="file" class="form-control-file" id="modalImageFile" accept="image/*" onchange="previewImage()">
+					        <div class="mt-2">
+					            <img id="modalImagePreview" src="" style="max-width: 200px; display: none;" class="img-thumbnail">
+					        </div>
+					    </div>
+					</form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
@@ -443,6 +455,38 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="galleryModal" tabindex="-1">
+	    <div class="modal-dialog modal-lg">
+	        <div class="modal-content">
+	            <div class="modal-header bg-warning">
+	                <h5 class="modal-title">管理附圖 - <span id="galleryProductName" class="font-weight-bold"></span></h5>
+	                <button type="button" class="close" data-dismiss="modal">&times;</button>
+	            </div>
+	            <div class="modal-body">
+	                
+	                <div class="mb-4 p-3 bg-light rounded border">
+	                    <label class="font-weight-bold"><i class="fas fa-cloud-upload-alt"></i> 新增圖片 (可多選)</label>
+	                    <div class="input-group">
+	                        <input type="file" class="form-control" id="galleryFileInput" multiple accept="image/*" style="height: auto;">
+	                        <div class="input-group-append">
+	                            <button class="btn btn-primary" onclick="uploadGalleryImages()">
+	                                <i class="fas fa-upload"></i> 上傳
+	                            </button>
+	                        </div>
+	                    </div>
+	                    <small class="text-muted">按住 Ctrl 可選擇多張圖片</small>
+	                </div>
+	                <hr>
+	                <h6 class="font-weight-bold mb-3"><i class="fas fa-images"></i> 現有圖片</h6>
+	                <div class="row" id="galleryContainer">
+	                    </div>
+	            </div>
+	            <div class="modal-footer">
+	                <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+	            </div>
+	        </div>
+	    </div>
+	</div>
     <script th:src="@{/plugins/jquery/jquery.min.js}"></script>
     <script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
     <script th:src="@{/dist/js/adminAuth.js}"></script>
@@ -456,6 +500,10 @@
         const API_CATEGORY = /*[[@{/categories}]]*/ '/categories';
         const IMAGE_BASE_URL = '';
 
+     	// 用來記錄目前在第幾頁，預設是 0 (第一頁)
+        let currentPage = 0; 
+        const pageSize = 10; // 一頁顯示幾筆
+        
         // 頁面載入完成後執行
         $(document).ready(function () {
             loadCategories();   // 1. 載入分類下拉選單
@@ -508,20 +556,33 @@
 
                     html += `
                         <tr>
-                            <td>${p.productId}</td>
+                            <td>
+                                <a href="javascript:void(0)" onclick="viewProduct(${p.productId})" class="font-weight-bold text-primary">
+                                    ${p.productId}
+                                </a>
+                            </td>
+
                             <td><img src="${imgUrl}" class="table-img"></td>
                             <td>${p.productName}</td>
                             <td>$${p.price}</td>
-                            <td class="${p.stock < 10 ? 'text-danger font-weight-bold' : ''}">${p.stock}</td>
+                            
+                            <td>
+                                <input type="number" class="form-control form-control-sm stock-input" 
+                                       data-id="${p.productId}" 
+                                       value="${p.stock}" 
+                                       style="width: 80px;" min="0">
+                            </td>
+
                             <td>${categoryName}</td>
                             <td>${statusBadge}</td>
+                            
                             <td class="text-center">
-                            	<button class="btn btn-info btn-sm mr-1" onclick="viewProduct(${p.productId})">
-                            		<i class="fas fa-eye"></i> 查看
-                        		</button>
-                            	<button class="btn btn-secondary btn-sm mr-1" onclick="openEditModal(${p.productId})">
-                            	    <i class="fas fa-edit"></i> 修改
-                            	</button>
+                                <button class="btn btn-warning btn-sm mr-1" onclick="openGalleryModal(${p.productId}, '${p.productName}')">
+                                    <i class="fas fa-images"></i> 圖庫
+                                </button>
+                                <button class="btn btn-secondary btn-sm mr-1" onclick="openEditModal(${p.productId})">
+                                    <i class="fas fa-edit"></i> 修改
+                                </button>
                                 <button class="btn ${btnClass} btn-sm" onclick="toggleStatus(${p.productId})">
                                     <i class="fas ${btnIcon}"></i> ${btnText}
                                 </button>
@@ -612,9 +673,30 @@
         // 3. 各種功能按鈕
         // ==========================================
 
-        function loadAllProducts() {
-            loadData(API_BASE + '/admin/all');
-        }
+        function loadAllProducts(page = 0) {
+		    currentPage = page; // 更新全域變數
+		
+		    // 發送 AJAX，帶上參數 ?page=0&size=10
+		    $.ajax({
+		        url: API_BASE + '/admin/all?page=' + page + '&size=' + pageSize,
+		        type: 'GET',
+		        dataType: 'json',
+		        success: function (data) {
+		            // 🟢 注意：因為後端回傳 Page 物件，商品清單在 data.content 裡面
+		            renderTable(data.content); 
+		            
+		            // 🟢 更新總筆數文字
+		            $('#totalRecords').text(data.totalElements);
+		
+		            // 🟢 渲染分頁按鈕
+		            renderPagination(data.totalPages, data.number);
+		        },
+		        error: function (xhr) {
+		            console.error(xhr);
+		            $('#tableBody').html('<tr><td colspan="8" class="text-center text-danger">載入失敗</td></tr>');
+		        }
+		    });
+		}
 
         function loadInactiveProducts() {
             loadData(API_BASE + '/admin/inactive');
@@ -644,7 +726,7 @@
                 type: 'PUT',
                 success: function (response) {
                     alert('更新成功！');
-                    loadAllProducts(); // 重新整理列表
+                    loadAllProducts(currentPage); // 重新整理列表
                 },
                 error: function (xhr) {
                     alert('更新失敗：' + (xhr.responseJSON ? xhr.responseJSON.message : '未知錯誤'));
@@ -677,19 +759,71 @@
             $('#modalImagePreview').attr('src', '').hide(); // 隱藏預覽圖
 
             $('#productModal').modal('show');
+         	// 當使用者在 Modal 裡面的任何欄位輸入時，移除該欄位的錯誤樣式
+            $('#productForm input, #productForm select').on('input change', function() {
+                $(this).removeClass('is-invalid');
+            });
         }
 
 
         function submitProduct() {
-            // 1. 建立 FormData
-            let formData = new FormData();
+            // ==========================================
+            // 🟢 1. 前端驗證區塊 (取代 alert)
+            // ==========================================
+            
+            let isValid = true; // 預設驗證通過
 
-            // 2. 塞入欄位
-            formData.append('productName', $('#modalProductName').val());
+            // 取得各個欄位
+            let nameInput = $('#modalProductName');
+            let priceInput = $('#modalPrice');
+            let stockInput = $('#modalStock');
+            let categoryInput = $('#modalCategoryId');
+
+            // (A) 重置所有錯誤狀態 (先把之前的紅框拿掉)
+            $('#productForm .form-control').removeClass('is-invalid');
+
+            // (B) 驗證名稱
+            if (nameInput.val().trim() === '') {
+                nameInput.addClass('is-invalid'); // 變紅框
+                isValid = false; // 標記失敗
+            }
+
+            // (C) 驗證價格 (必填 且 不能小於0)
+            if (priceInput.val() === '' || parseFloat(priceInput.val()) < 0) {
+                priceInput.addClass('is-invalid');
+                isValid = false;
+            }
+
+            // (D) 驗證庫存 (必填 且 不能小於0)
+            if (stockInput.val() === '' || parseInt(stockInput.val()) < 0) {
+                stockInput.addClass('is-invalid');
+                isValid = false;
+            }
+
+            // (E) 驗證分類 (必須選一個)
+            if (categoryInput.val() === null || categoryInput.val() === '') {
+                categoryInput.addClass('is-invalid');
+                isValid = false;
+            }
+
+            // (F) 如果有任何一個驗證失敗，直接停止函式，不送 AJAX
+            if (!isValid) {
+                // (選用) 加一個小動畫讓視窗抖動，提示使用者有錯
+                $('.modal-content').addClass('animate__animated animate__shakeX');
+                setTimeout(() => $('.modal-content').removeClass('animate__animated animate__shakeX'), 500);
+                return; 
+            }
+
+            // ==========================================
+            // 🟢 2. 驗證通過，準備送出資料
+            // ==========================================
+
+            let formData = new FormData();
+            formData.append('productName', nameInput.val());
             formData.append('description', $('#modalDescription').val());
-            formData.append('price', $('#modalPrice').val());
-            formData.append('stock', $('#modalStock').val());
-            formData.append('categoryId', $('#modalCategoryId').val());
+            formData.append('price', priceInput.val());
+            formData.append('stock', stockInput.val());
+            formData.append('categoryId', categoryInput.val());
 
             let expireDate = $('#modalExpireDate').val();
             if (expireDate) {
@@ -702,25 +836,24 @@
                 formData.append('file', fileInput.files[0]);
             }
 
-            // 判斷是新增還是修改
-            // 取得隱藏的 ID
             let id = $('#modalProductId').val();
-
-            // 決定網址：如果有 ID 就是 Update，沒有就是 Create
             let url = (id) ? (API_BASE + '/update/' + id) : (API_BASE + '/create');
 
-            // 4. 發送 AJAX
+            // 讓按鈕變 loading
+            let submitBtn = $(event.target); // 假設按鈕觸發了這個函式
+            // 如果是用 onclick="submitProduct()" 綁在按鈕上，event.target 通常抓得到
+            // 建議給按鈕一個 id 會更保險，例如 $('#btnSaveProduct')
+            
             $.ajax({
-                url: url, // 🟢 這裡改成變數 url
+                url: url,
                 type: 'POST',
                 data: formData,
                 processData: false,
                 contentType: false,
                 success: function (res) {
-                    // 提示訊息也可以動態一下
                     let msg = (id) ? '修改成功！' : '新增成功！';
-                    alert(msg);
-
+                    alert(msg); // 這裡的 alert 是成功訊息，通常可以留著，或換成 Toast
+                    
                     $('#productModal').modal('hide');
                     loadAllProducts();
                 },
@@ -789,7 +922,215 @@
                 preview.hide(); // 沒選圖片就藏起來
             }
         }
+        
+     	// ==========================================
+        // 圖庫管理相關函式
+        // ==========================================
 
+        let currentGalleryProductId = null;
+
+        // 1. 打開圖庫 Modal
+        function openGalleryModal(productId, productName) {
+            currentGalleryProductId = productId;
+            $('#galleryProductName').text(productName);
+            $('#galleryFileInput').val(''); // 清空選擇的檔案
+            
+            // 載入圖片
+            loadGalleryImages();
+            
+            $('#galleryModal').modal('show');
+        }
+
+        // 2. 載入圖片列表 (AJAX GET)
+        function loadGalleryImages() {
+            $.ajax({
+                url: '/api/product-images/' + currentGalleryProductId, // 對應後端 Controller
+                type: 'GET',
+                success: function(images) {
+                    let container = $('#galleryContainer');
+                    container.empty(); // 清空舊內容
+
+                    if (images.length === 0) {
+                        container.append('<div class="col-12 text-center text-muted py-3">暫無其他圖片</div>');
+                        return;
+                    }
+
+                    // 跑迴圈產生圖片卡片
+                    $.each(images, function(index, img) {
+                        let card = `
+                            <div class="col-md-3 col-6 mb-3">
+                                <div class="card h-100 shadow-sm">
+                                    <div style="position: relative;">
+                                        <img src="${img.imageUrl}" class="card-img-top" style="height: 120px; object-fit: cover;">
+                                    </div>
+                                    <div class="card-body text-center p-2">
+                                        <button class="btn btn-danger btn-sm w-100" onclick="deleteGalleryImage(${img.imageId})">
+                                            <i class="fas fa-trash-alt"></i> 刪除
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        container.append(card);
+                    });
+                },
+                error: function(xhr) {
+                    console.error(xhr);
+                    alert('無法載入圖片列表');
+                }
+            });
+        }
+
+        // 3. 上傳圖片 (AJAX POST)
+        function uploadGalleryImages() {
+            let fileInput = $('#galleryFileInput')[0];
+            if (fileInput.files.length === 0) {
+                alert('請先選擇至少一張圖片');
+                return;
+            }
+
+            let formData = new FormData();
+            // 將所有檔案加入 FormData (後端接收 List<MultipartFile> files)
+            for (let i = 0; i < fileInput.files.length; i++) {
+                formData.append('files', fileInput.files[i]);
+            }
+
+            // 顯示上傳中提示 (非必要但體驗較好)
+            let uploadBtn = $(event.target); // 取得按鈕
+            let originalText = uploadBtn.html();
+            uploadBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> 上傳中...');
+
+            $.ajax({
+                url: '/api/product-images/upload/' + currentGalleryProductId,
+                type: 'POST',
+                data: formData,
+                processData: false, // 重要：告訴 jQuery 不要處理資料
+                contentType: false, // 重要：告訴 jQuery 不要設定 Content-Type
+                success: function() {
+                    alert('上傳成功！');
+                    $('#galleryFileInput').val(''); // 清空
+                    loadGalleryImages(); // 重新整理圖片列表
+                },
+                error: function(xhr) {
+                    alert('上傳失敗: ' + (xhr.responseText || '未知錯誤'));
+                },
+                complete: function() {
+                    // 恢復按鈕狀態
+                    uploadBtn.prop('disabled', false).html(originalText);
+                }
+            });
+        }
+
+        // 4. 刪除圖片 (AJAX DELETE)
+        function deleteGalleryImage(imageId) {
+            if (!confirm('確定要刪除這張圖片嗎？')) return;
+
+            $.ajax({
+                url: '/api/product-images/' + imageId,
+                type: 'DELETE',
+                success: function() {
+                    loadGalleryImages(); // 重新整理列表
+                },
+                error: function() {
+                    alert('刪除失敗');
+                }
+            });
+        }
+        
+	     // ==========================================
+	     // 🟢 批量更新庫存邏輯
+	     // ==========================================
+	     function saveBatchStock() {
+	         let stockList = []; // 準備一個空陣列
+	
+	         // 1. 抓取畫面上所有的庫存輸入框
+	         $('.stock-input').each(function() {
+	             let input = $(this);
+	             let id = input.data('id'); // 從 data-id 屬性拿 ID
+	             let val = input.val();     // 拿輸入框的值
+	             
+	             // 簡單驗證：必須是數字且大於等於 0
+	             if (val !== '' && val >= 0) {
+	                 stockList.push({
+	                     productId: id,
+	                     stock: parseInt(val)
+	                 });
+	             }
+	         });
+	
+	         // 如果陣列是空的，就不送出
+	         if (stockList.length === 0) {
+	             alert('沒有資料可更新');
+	             return;
+	         }
+	
+	         // 2. 發送 AJAX
+	         // 讓按鈕變成 loading 狀態，避免重複點擊
+	         let btn = $(event.target); // 抓到被點擊的按鈕
+	         let originalText = btn.html();
+	         btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> 儲存中...');
+	
+	         $.ajax({
+	             url: API_BASE + '/batch-stock', // 對應後端 /api/products/batch-stock
+	             type: 'POST',
+	             contentType: 'application/json', // 🟢 重要：告訴後端我傳的是 JSON
+	             data: JSON.stringify(stockList), // 🟢 重要：把 JS 陣列轉成 JSON 字串
+	             success: function(response) {
+	                 alert('庫存批量更新成功！');
+	                 loadAllProducts(); // 重新載入表格，確保資料同步
+	             },
+	             error: function(xhr) {
+	                 console.error(xhr);
+	                 alert('更新失敗');
+	             },
+	             complete: function() {
+	                 // 恢復按鈕狀態
+	                 btn.prop('disabled', false).html(originalText);
+	             }
+	         });
+	     }
+	     
+	     // 畫出按鈕
+	     function renderPagination(totalPages, currentPage) {
+	    	    let html = '';
+	    	    
+	    	    // 如果只有1頁或沒資料，就不顯示分頁
+	    	    if (totalPages <= 1) {
+	    	        $('#paginationContainer').html('');
+	    	        return;
+	    	    }
+
+	    	    // --- [上一頁] 按鈕 ---
+	    	    let prevDisabled = (currentPage === 0) ? 'disabled' : '';
+	    	    // onclick 呼叫 loadAllProducts(目前頁數 - 1)
+	    	    html += `
+	    	        <li class="page-item ${prevDisabled}">
+	    	            <a class="page-link" href="javascript:void(0)" onclick="loadAllProducts(${currentPage - 1})">«</a>
+	    	        </li>
+	    	    `;
+
+	    	    // --- [數字頁碼] 按鈕 ---
+	    	    // 這裡做一個簡單版：顯示所有頁碼 (如果頁數很多，可以改寫成只顯示前後幾頁)
+	    	    for (let i = 0; i < totalPages; i++) {
+	    	        let activeClass = (i === currentPage) ? 'active' : '';
+	    	        // 顯示給使用者看的是 i+1 (1, 2, 3...)，但傳給程式的是 i (0, 1, 2...)
+	    	        html += `
+	    	            <li class="page-item ${activeClass}">
+	    	                <a class="page-link" href="javascript:void(0)" onclick="loadAllProducts(${i})">${i + 1}</a>
+	    	            </li>
+	    	        `;
+	    	    }
+
+	    	    // --- [下一頁] 按鈕 ---
+	    	    let nextDisabled = (currentPage === totalPages - 1) ? 'disabled' : '';
+	    	    html += `
+	    	        <li class="page-item ${nextDisabled}">
+	    	            <a class="page-link" href="javascript:void(0)" onclick="loadAllProducts(${currentPage + 1})">»</a>
+	    	        </li>
+	    	    `;
+
+	    	    $('#paginationContainer').html(html);
+	    	}
 
         /*]]>*/
     </script>

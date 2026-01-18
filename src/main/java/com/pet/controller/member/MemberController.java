@@ -76,19 +76,6 @@ public class MemberController {
         return memberService.getMemberRegistrationStats(period);
     }
 
-//    // 私有方法：處理照片存檔 
-//    private void processImage(Member member, MultipartFile file) throws IOException {
-//        if (file != null && !file.isEmpty()) {
-//            File uploadDir = new File(UPLOAD_PATH);
-//            if (!uploadDir.exists()) uploadDir.mkdirs();
-//
-//            String originalName = file.getOriginalFilename();
-//            String fileName = UUID.randomUUID().toString() + "_" + originalName; // 產生唯一的檔名
-//            file.transferTo(new File(UPLOAD_PATH + fileName));
-//            
-//            // 存入資料庫的路徑，對應 WebConfig 設定
-//            member.setPicture("/memberImages/" + fileName);
-//        }
-//    }
+
     
 }
