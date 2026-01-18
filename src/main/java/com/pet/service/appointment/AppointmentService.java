@@ -63,6 +63,10 @@ public class AppointmentService {
         return appointmentListRepository.findByGroomerId(groomerId);
     }
 
+    public List<AppointmentList> getAppointmentsByMemberId(Integer memberId) {
+        return appointmentListRepository.findByMemberId(String.valueOf(memberId));
+    }
+
     public List<ServiceItem> findServicesByPetTypeAndPetSize(String petType, String petSize) {
         List<String> sizeCriteria = Arrays.asList(petSize, "不分體型");
         return serviceItemRepository.findByTargetPetTypeAndTargetPetSizeInAndIsActiveTrue(petType, sizeCriteria);
@@ -279,6 +283,7 @@ public class AppointmentService {
         appointment.setFinalPrice(request.getTotalPrice());
         appointment.setNotes(request.getNotes());
         appointment.setAppointmentStatus(AppConstants.APPOINTMENT_STATUS_CONFIRMED);
+        appointment.setPayStatus(AppConstants.PAY_STATUS_UNPAID);
 
         // 處理服務明細
         for (ServiceItem svc : services) {

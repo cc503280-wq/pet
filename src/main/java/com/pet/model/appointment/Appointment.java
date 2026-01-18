@@ -63,6 +63,9 @@ public class Appointment {
     @Column(name = "final_price")
     private BigDecimal finalPrice; 
 
+    @Column(name = "pay_status")
+    private String payStatus; 
+
    
     @Column(name = "created_at", insertable = false, updatable = false)
     private LocalDateTime createdAt;

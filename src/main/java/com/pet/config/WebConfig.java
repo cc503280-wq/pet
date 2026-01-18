@@ -46,7 +46,7 @@ public class WebConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**") // 允許後端所有網址
                 .allowedOrigins("http://localhost:5173") // 🟢 指定允許的前端網址 (注意 Port 要對)
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // 允許的動作
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH") // 允許的動作
                 .allowCredentials(true);
     }
 

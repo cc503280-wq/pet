@@ -52,6 +52,15 @@ public class AppointmentController {
         return ResponseEntity.notFound().build();
     }
 
+    /**
+     * 會員取得自己的預約列表
+     */
+    @GetMapping("/member/{memberId}")
+    public ResponseEntity<List<AppointmentList>> getAppointmentsByMemberId(@PathVariable Integer memberId) {
+        List<AppointmentList> list = appointmentService.getAppointmentsByMemberId(memberId);
+        return ResponseEntity.ok(list);
+    }
+
     @GetMapping("/search")
     public ResponseEntity<List<AppointmentList>> searchAppointments(
             @RequestParam(required = false) String memberPhone,
@@ -66,7 +75,7 @@ public class AppointmentController {
         return ResponseEntity.ok(list);
     }
 
-    /** ??這一個是不是應該放在GroomerController?!?!?!
+    /** 
      * 美容師取得自己的任務列表
      */
     @GetMapping("/groomer/{groomerId}")
