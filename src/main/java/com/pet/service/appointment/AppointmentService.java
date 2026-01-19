@@ -23,6 +23,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.io.ByteArrayOutputStream;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
@@ -37,9 +42,8 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class AppointmentService {
 
-    
     private static final int URGENT_CANCEL_HOURS_THRESHOLD = 6;
-    
+
     private final DailyScheduleRepository dailyScheduleRepository;
     private final AppointmentRepository appointmentRepository;
     private final AppointmentListRepository appointmentListRepository;
@@ -72,10 +76,10 @@ public class AppointmentService {
         return serviceItemRepository.findByTargetPetTypeAndTargetPetSizeInAndIsActiveTrue(petType, sizeCriteria);
     }
 
-    public List<AppointmentList> searchAppointments(String memberPhone, String status, String startDate, 
+    public List<AppointmentList> searchAppointments(String memberPhone, String status, String startDate,
             String endDate, String groomerId, String createdAtStart, String createdAtEnd) {
-        return appointmentListRepository.complexSearch(memberPhone, status, startDate, endDate, 
-            groomerId, createdAtStart, createdAtEnd);
+        return appointmentListRepository.complexSearch(memberPhone, status, startDate, endDate,
+                groomerId, createdAtStart, createdAtEnd);
     }
 
     public List<AppointmentDetailList> getAllDetails() {
@@ -91,14 +95,14 @@ public class AppointmentService {
     @Transactional
     public Appointment cancelAppointment(Integer id) {
         Appointment appointment = findAppointmentOrThrow(id);
-        
+
         checkUrgentCancellationAndNotify(appointment);
-        
-        Appointment saved = updateStatus(appointment, AppConstants.APPOINTMENT_STATUS_CANCELLED, 
-            appt -> log.info("預約單號：{} 取消預約", appt.getAppointmentId()));
-        
+
+        Appointment saved = updateStatus(appointment, AppConstants.APPOINTMENT_STATUS_CANCELLED,
+                appt -> log.info("預約單號：{} 取消預約", appt.getAppointmentId()));
+
         restoreGroomerSchedule(saved);
-        
+
         return saved;
     }
 
@@ -117,7 +121,7 @@ public class AppointmentService {
     @Transactional
     public Appointment saveAppointment(AppointmentRequest request) {
         try {
-            // 1. 資料準備與檢查 
+            // 1. 資料準備與檢查
             LocalTime startTime = LocalTime.parse(request.getStartTime());
             LocalTime endTime = LocalTime.parse(request.getEndTime());
             DailySchedule schedule = getScheduleOrThrow(request.getGroomerId(), request.getAppointmentDate());
@@ -136,7 +140,7 @@ public class AppointmentService {
             // 4. 鎖定時段
             // 修改美容師班表，把時段鎖起來 (0 -> 1)
             lockGroomerSchedule(schedule, startTime, totalDuration);
-            
+
             // 5. 發送通知
             sendAppointmentConfirmationEmail(savedAppt, request.getMemberId());
 
@@ -144,7 +148,7 @@ public class AppointmentService {
 
         } catch (ObjectOptimisticLockingFailureException e) {
             log.warn("樂觀鎖衝突: {}", e.getMessage());
-            throw new RuntimeException("預約失敗：該時段剛被其他人預約，請重新選擇時段！");
+            throw new RuntimeException("該時段剛被其他人預約，請重新選擇時段！");
         }
     }
 
@@ -152,7 +156,7 @@ public class AppointmentService {
 
     private Appointment findAppointmentOrThrow(Integer id) {
         return appointmentRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("找不到 ID 為 " + id + " 的預約"));
+                .orElseThrow(() -> new RuntimeException("找不到 ID 為 " + id + " 的預約"));
     }
 
     private Appointment updateAppointmentStatus(Integer id, String newStatus, String logMessage) {
@@ -172,16 +176,17 @@ public class AppointmentService {
     private void checkUrgentCancellationAndNotify(Appointment appointment) {
         try {
             LocalDateTime appointmentDateTime = LocalDateTime.of(
-                appointment.getAppointmentDate(), appointment.getStartTime());
+                    appointment.getAppointmentDate(), appointment.getStartTime());
             LocalDateTime now = LocalDateTime.now();
             long hoursDifference = Duration.between(now, appointmentDateTime).toHours();
-            
-            log.info("檢查取消時間政策。預約時間: {}, 當前時間: {}, 差距小時: {}", 
-                appointmentDateTime, now, hoursDifference);
+
+            log.info("檢查取消時間政策。預約時間: {}, 當前時間: {}, 差距小時: {}",
+                    appointmentDateTime, now, hoursDifference);
 
             if (hoursDifference < URGENT_CANCEL_HOURS_THRESHOLD && hoursDifference >= -1) {
-                String groomerName = (appointment.getGroomer() != null) 
-                    ? appointment.getGroomer().getGroomerName() : "Unknown";
+                String groomerName = (appointment.getGroomer() != null)
+                        ? appointment.getGroomer().getGroomerName()
+                        : "Unknown";
                 log.info("偵測到臨時取消 (< {} 小時)。觸發 LINE 通知...", URGENT_CANCEL_HOURS_THRESHOLD);
                 lineNotificationService.sendCancellationNotification(appointment, groomerName);
             } else {
@@ -197,21 +202,21 @@ public class AppointmentService {
         LocalDate cancelDate = appointment.getAppointmentDate();
         LocalTime startTime = appointment.getStartTime();
         LocalTime endTime = appointment.getEndTime();
-         
+
         long durationMinutes = Duration.between(startTime, endTime).toMinutes();
         int targetDuration = (int) durationMinutes;
-         
+
         Optional<DailySchedule> scheduleOpt = dailyScheduleRepository
-            .findByGroomerIdAndWorkDate(groomerId, cancelDate);
+                .findByGroomerIdAndWorkDate(groomerId, cancelDate);
 
         if (scheduleOpt.isPresent()) {
             DailySchedule schedule = scheduleOpt.get();
             String currentSlots = schedule.getTimeSlots();
             int startIndex = TimeSlotUtils.timeToStartIndex(startTime);
-            
+
             String unlockedSlots = TimeSlotUtils.unLockSlots(currentSlots, startIndex, targetDuration);
             schedule.setTimeSlots(unlockedSlots);
-             
+
             dailyScheduleRepository.save(schedule);
             log.info("已將美容師: {} 工作日: {} 時段 {}~{} 解鎖", groomerId, cancelDate, startTime, endTime);
         } else {
@@ -231,13 +236,13 @@ public class AppointmentService {
         }
     }
 
-    //找班表
+    // 找班表
     private DailySchedule getScheduleOrThrow(Integer groomerId, LocalDate date) {
         return dailyScheduleRepository.findByGroomerIdAndWorkDate(groomerId, date)
                 .orElseThrow(() -> new RuntimeException("該美容師當日無排班"));
     }
 
-    //找服務項目
+    // 找服務項目
     private List<ServiceItem> getServicesOrThrow(List<Integer> serviceIds) {
         List<ServiceItem> services = serviceItemRepository.findAllById(serviceIds);
         if (services.isEmpty()) {
@@ -246,34 +251,34 @@ public class AppointmentService {
         return services;
     }
 
-    //計算總時長
+    // 計算總時長
     private int calculateTotalDuration(List<ServiceItem> services) {
         return services.stream()
                 .mapToInt(ServiceItem::getDurationMinutes)
                 .sum();
     }
 
-    //查美容師是否有空 (利用 TimeSlotUtils)
+    // 查美容師是否有空 (利用 TimeSlotUtils)
     private void validateGroomerAvailability(DailySchedule schedule, LocalTime startTime, int totalDuration) {
         int startIndex = TimeSlotUtils.timeToStartIndex(startTime);
         int slotsNeeded = TimeSlotUtils.calculateSlotsNeeded(totalDuration);
 
         if (!TimeSlotUtils.isSegmentAvailable(schedule.getTimeSlots(), startIndex, slotsNeeded)) {
-            throw new RuntimeException("預約失敗：該時段已被預約！");
+            throw new RuntimeException("該時段已被預約！");
         }
     }
 
-    //檢查寵物是否有重複預約
+    // 檢查寵物是否有重複預約
     private void validatePetAvailability(Integer petId, LocalDate date, LocalTime startTime, LocalTime endTime) {
         int conflictCount = appointmentRepository.countPetActiveAppointments(petId, date, startTime, endTime);
         if (conflictCount > 0) {
-            throw new RuntimeException("預約失敗：該寵物在此时段已有其他預約！");
+            throw new RuntimeException("該寵物在此時段已有其他預約！");
         }
     }
 
-    //組裝實體
-    private Appointment createAppointmentEntity(AppointmentRequest request, List<ServiceItem> services, 
-                                                LocalTime startTime, LocalTime endTime) {
+    // 組裝實體
+    private Appointment createAppointmentEntity(AppointmentRequest request, List<ServiceItem> services,
+            LocalTime startTime, LocalTime endTime) {
         Appointment appointment = new Appointment();
         appointment.setPetId(request.getPetId());
         appointment.setGroomerId(request.getGroomerId());
@@ -297,12 +302,26 @@ public class AppointmentService {
         return appointment;
     }
 
-    //鎖定班表並存檔
+    // 鎖定班表並存檔
     private void lockGroomerSchedule(DailySchedule schedule, LocalTime startTime, int totalDuration) {
         int startIndex = TimeSlotUtils.timeToStartIndex(startTime);
         String lockedSlots = TimeSlotUtils.lockSlots(schedule.getTimeSlots(), startIndex, totalDuration);
         schedule.setTimeSlots(lockedSlots);
         dailyScheduleRepository.save(schedule);
         log.info("已將美容師: {} 工作日: {} 時段鎖定", schedule.getGroomerId(), schedule.getWorkDate());
+    }
+
+    // 生成 QR Code 圖片 (byte[])
+    public byte[] generateQRCode(String text, int width, int height) {
+        try {
+            QRCodeWriter qrCodeWriter = new QRCodeWriter();
+            BitMatrix bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, width, height);
+            ByteArrayOutputStream pngOutputStream = new ByteArrayOutputStream();
+            MatrixToImageWriter.writeToStream(bitMatrix, "PNG", pngOutputStream);
+            return pngOutputStream.toByteArray();
+        } catch (Exception e) {
+            log.error("QR Code 生成失敗", e);
+            throw new RuntimeException("無法生成 QR Code", e);
+        }
     }
 }
