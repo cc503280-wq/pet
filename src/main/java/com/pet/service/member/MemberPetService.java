@@ -36,6 +36,16 @@ public class MemberPetService {
         return memberPetRepository.findPetsByConditions(type, age, size);
     }
     
+    // 新增或更新
+    public MemberPet savePet(MemberPet pet) {
+        return memberPetRepository.save(pet);
+    }
+
+    // 刪除
+    public void deletePet(Integer petId) {
+        memberPetRepository.deleteById(petId);
+    }
+    
     /**
      * 根據前端傳來的 type 參數，回傳對應的寵物統計數據
      */
