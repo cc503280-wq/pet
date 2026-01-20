@@ -18,13 +18,17 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.io.Serializable;
 
 @Data
 @Entity
 @Table(name="service")
 @NoArgsConstructor
 @AllArgsConstructor
-public class ServiceItem  {
+public class ServiceItem implements Serializable  {
+	
+	private static final long serialVersionUID = 1L;
+	
 	@Id @Column(name="service_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer serviceId;

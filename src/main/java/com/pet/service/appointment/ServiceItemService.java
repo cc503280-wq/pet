@@ -5,8 +5,12 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.web.multipart.MultipartFile;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
@@ -22,138 +26,141 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Slf4j
 public class ServiceItemService {
-	
-	@Autowired
-	private ServiceItemRepository serviceItemRepository;
-	
-	@Autowired
-	private Cloudinary cloudinary;
-	
-	@Autowired 
-    private AppointmentRepository appointmentRepository; 
-	
-	// 取得所有服務項目 (後台用)
-	public List<ServiceItem> getAllServiceItems() {
-		return serviceItemRepository.findAll();
-	}
-	
-	// 取得所有 "上架中" 服務項目 (前台用)
-	public List<ServiceItem> getAllActiveServiceItems() {
-		return serviceItemRepository.findByIsActiveTrue();
-	}
-	    
-	public ServiceItem getServiceItemById(Integer id) {
-        return serviceItemRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("找不到 ID 為 " + id + " 的美容師")); // 註：這裡原本錯誤訊息是美容師，建議改為服務項目
+
+    @Autowired
+    private ServiceItemRepository serviceItemRepository;
+
+    @Autowired
+    private Cloudinary cloudinary;
+
+    @Autowired
+    private AppointmentRepository appointmentRepository;
+    
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
+
+
+    // 取得所有服務項目 (後台用)
+    public List<ServiceItem> getAllServiceItems() {
+        return serviceItemRepository.findAll();
     }
 
+    // 取得所有 "上架中" 服務項目 (前台用)
+    // 開啟Redis快取
+    // value = "serviceItems" -> Redis 裡的分類名稱
+    // key = "'activeList'" -> Redis 裡的 Key 名稱
+    @Cacheable(value = "serviceItems", key = "'activeList'")
+    public List<ServiceItem> getAllActiveServiceItems() {
+        log.info("--- (這行只會出現一次) 從 SQL 資料庫查詢 Active 服務列表 ---");
+        return serviceItemRepository.findByIsActiveTrue();
+    }
+
+    public ServiceItem getServiceItemById(Integer id) {
+        return serviceItemRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("找不到 ID 為 " + id + " 的服務項目"));
+    }
 
     // 新增服務項目 (含圖片)
-	@Transactional
+    @Transactional
     public ServiceItem saveServiceItemInfo(ServiceItem serviceItem, MultipartFile file) throws IOException {
-        log.info("開始新增美容師: {}", serviceItem.getServiceName());
-
-        if (file != null && !file.isEmpty()) {
-            String imageUrl = saveFile(file); 
-            serviceItem.setPicture(imageUrl);     
-        }
-        
-        ServiceItem savedServiceItem = serviceItemRepository.save(serviceItem);
-
-        return savedServiceItem;
-    }
-	
-	
-    // 更新服務項目
-	@Transactional
-    public ServiceItem updateServiceItemInfo(Integer id, ServiceItem inputserviceItem, MultipartFile file) throws IOException {
-        log.info("開始修改服務項目: {}", inputserviceItem.getServiceName());
-        
-        ServiceItem existing = serviceItemRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("找不到 ID 為 " + id + " 的美容師"));
-
-        existing.setServiceName(inputserviceItem.getServiceName());
-        existing.setTargetPetType(inputserviceItem.getTargetPetType());
-        existing.setTargetPetSize(inputserviceItem.getTargetPetSize());
-        existing.setIsAddon(inputserviceItem.getIsAddon());
-        existing.setDurationMinutes(inputserviceItem.getDurationMinutes());
-        existing.setPrice(inputserviceItem.getPrice());
-        existing.setDescription(inputserviceItem.getDescription());
-        
-        if (file != null && !file.isEmpty()) {
-            String imageUrl = saveFile(file); 
-            log.info("儲存圖片路徑進ServiceItem existing");
-            existing.setPicture(imageUrl);     
+            log.info("開始新增服務: {}", serviceItem.getServiceName());
+            if (file != null && !file.isEmpty()) {
+                    String imageUrl = saveFile(file);
+                    serviceItem.setPicture(imageUrl);
+                }
             
-        }
-        ServiceItem save = serviceItemRepository.save(existing);
-        log.info("儲存成功");
-        return save;
+                ServiceItem saved = serviceItemRepository.save(serviceItem);
+                log.info("服務項目已寫入資料庫: ID={}", saved.getServiceId());
+                clearCacheAfterCommit();
+
+        return saved;
     }
 
-    // 圖片上傳邏輯
+
     private String saveFile(MultipartFile file) throws IOException {
         Map params = ObjectUtils.asMap(
             "folder", "serviceItem_pictures",  
             "use_filename", true,
             "unique_filename", true
         );
-        
-        // 上傳到 Cloudinary
         Map uploadResult = cloudinary.uploader().upload(file.getBytes(), params);
-        
-        // 回傳 HTTPS 網址
         return (String) uploadResult.get("secure_url");
     }
-	
-	
+    
+    
     /**
      * 切換服務項目的狀態 (active=上下架)
      * 在下架前，必須檢查是否還有未完成的預約單使用此服務
      */
-    public boolean toggleField(Integer id, String fieldType) {
-        return serviceItemRepository.findById(id)
-            .map(item -> {
-                boolean result = false;
-                if ("active".equals(fieldType)) {
-                   
-                    boolean nextStatus = !Boolean.TRUE.equals(item.getIsActive());
-                    
-                    // 如果是要「下架」(nextStatus = false)
-                    if (!nextStatus) { 
-                        
-                        LocalDate today = LocalDate.now();
-                                              
-                        // 查詢該服務在今日之後是否還有 "Active" 的預約單
-                        long conflictCount = appointmentRepository.countActiveAppointmentsByServiceId(id, today);
-                        
-                        // 若有衝突，則拋出異常阻止下架
-                        if (conflictCount > 0) {
-                            throw new RuntimeException(
-                                "無法下架！該服務目前尚有 " + conflictCount + " 筆未執行的預約單 (含今日)。" +
-                                "請先至預約管理手動取消或修改這些訂單。"
-                            );
-                        }
-                    }
-                    
-                    item.setIsActive(nextStatus);
-                    result = nextStatus;
+    @Transactional
+    public boolean toggleField(Integer id, String fieldType) {     
+        // 1. 先把資料查出來
+        ServiceItem item = serviceItemRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("找不到服務項目 ID: " + id));
+
+        boolean nextStatus = false;
+
+        // 2. 判斷是否為 active 狀態切換
+        if ("active".equals(fieldType)) {
+            nextStatus = !Boolean.TRUE.equals(item.getIsActive());
+
+            // 3. 如果是「下架」，檢查預約衝突
+            if (!nextStatus) { 
+                LocalDate today = LocalDate.now();
+                long conflictCount = appointmentRepository.countActiveAppointmentsByServiceId(id, today);
+                if (conflictCount > 0) {
+                    throw new RuntimeException("無法下架！尚有預約未完成，筆數: " + conflictCount);
                 }
-                
-                serviceItemRepository.save(item);
-                return result; 
-            })
-            .orElseThrow(() -> new RuntimeException("找不到服務項目 ID: " + id));
-    }
-    
-    // 複合搜尋
-    public List<ServiceItem> searchServiceItems(String name, String petType, String petSize, Boolean isAddon, Integer status) {
-        Boolean isActive = null;
-        if (status != null) {
-            isActive = (status == 1); 
+            }
+            
+ 
+            item.setIsActive(nextStatus);
+            serviceItemRepository.saveAndFlush(item);
+            
+            clearCacheAfterCommit();
+          
         }
         
+        return nextStatus;
+    }
+
+    
+
+	// 複合搜尋
+    public List<ServiceItem> searchServiceItems(String name, String petType, String petSize, Boolean isAddon,
+            Integer status) {
+        Boolean isActive = null;
+        if (status != null) {
+            isActive = (status == 1);
+        }
+
         return serviceItemRepository.complexSearch(name, petType, petSize, isAddon, isActive);
     }
-	
+    
+    
+    //清除Redis指定Key的資料
+    private void clearCacheAfterCommit() {
+        if (TransactionSynchronizationManager.isSynchronizationActive()) { //判斷是否正在進行Transaction
+        	//new TransactionSynchronization() 建立一個任務物件 https://blog.csdn.net/weixin_44313584/article/details/136825850
+        	//registerSynchronization: 註冊
+            TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+               
+            	//當Transaction Commit結束後才執行
+            	@Override
+                public void afterCommit() {
+                    log.info("SQL 交易已提交，準備強制刪除 Redis Key [serviceItems::activeList] <<");
+                    
+                    //直接指定 Key 名稱刪除 "serviceItems::activeList"
+                    Boolean result = redisTemplate.delete("serviceItems::activeList");
+                    
+                    log.info("Redis Key 刪除結果: {}", result);
+                }
+            });
+        } else {
+            redisTemplate.delete("serviceItems::activeList");
+        }
+    }
+
+ 
+
 }
