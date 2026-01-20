@@ -99,29 +99,36 @@ public String insertOrder(
         @RequestParam("quantity[]") List<Integer> quantities,
         @RequestParam("price[]") List<Integer> prices,
         @RequestParam("member_id") Integer member_Id,
-        @RequestParam("coupon_id") Integer coupon_Id,
+        @RequestParam(required = false,name = "coupon_id") Integer coupon_Id,
         @RequestParam("total_price") BigDecimal total_price,
         @RequestParam("discountPrice") BigDecimal discountPrice,
         @RequestParam("method") String method,
         @RequestParam("fee") Integer fee,
-        @RequestParam("finalAmount") Integer finalAmount,
+        @RequestParam("finalAmount") BigDecimal finalAmount,
         @RequestParam("recipientName") String recipientName,
         @RequestParam("recipientPhone") String recipientPhone,
         @RequestParam("shippingAddress") String shippingAddress,
-        @RequestParam("couponUserId") Integer couponUserId
-) {
+        @RequestParam(required = false,name = "couponUserId") Integer couponUserId,
+        @RequestParam("usedPoint") Integer usedPoint,
+        @RequestParam("totalAmountDiscountPoints") BigDecimal TotalAmountDiscountPoints,
+        @RequestParam("getPoint") Integer getPoint
+		) {
 
     // 1. 建立訂單主表
     Order order = new Order();
     order.setMemberId(member_Id);
-    order.setCouponId(coupon_Id);
+    if (couponUserId != null) {
+        order.setCouponId(couponUserId);
+    } else {
+        order.setCouponId(null); // ✅ 一定要明確
+    }
     order.setOrderDate(LocalDateTime.now());
     order.setStatus("下訂單完成");
     order.setTotalAmountUndiscount(total_price);
     order.setTotalAmountDiscount(discountPrice);
-    order.setTotalAmountDiscountPoints(BigDecimal.ZERO);
-    order.setUsePoints(0);
-    order.setGetPoints(0);
+    order.setTotalAmountDiscountPoints(TotalAmountDiscountPoints);
+    order.setUsePoints(usedPoint);
+    order.setGetPoints(getPoint);
     Order orderId = oService.insertOrder(order);
     
 
@@ -150,8 +157,15 @@ public String insertOrder(
     shipping.setStatus("未出貨");
     shipmentService.insertShipment(shipping);
     //4.修改優惠券狀態
+    if (couponUserId != null) {
+    	curService.CouponUsersUpdate(couponUserId, "used", LocalDate.now());
+	}
     
-    curService.CouponUsersUpdate(couponUserId, "used", LocalDate.now());
+    
+    //5.修改會員幣數量
+    
+    
+    mService.updateMemberPoints(member_Id, usedPoint, getPoint);
 
     return "redirect:/orders/list";
 }

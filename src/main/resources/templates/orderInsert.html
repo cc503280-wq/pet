@@ -375,6 +375,7 @@
 														name="totalAmountDiscountPoints" value=""
 														id="totalAmountDiscountPoints" readonly>
 													<input type="hidden" value="" id="usedPoint" name="usedPoint">
+													<input type="hidden" value="" id="getPoint" name="getPoint">
 												</div>
 											</div>
 
@@ -576,26 +577,35 @@
 			});
 
 			function finalAmount() {
-				let discountPrice = parseFloat($("#discountPrice").val());
-				let fee = parseFloat($("#fee").val());
-				let memberpoint = $("#memberPoint").val()
 
-				let total = discountPrice - memberpoint;
+				let discountPrice = parseFloat($("#discountPrice").val()) || 0;
+				let fee = parseFloat($("#fee").val()) || 0;
+				let memberPoint = parseFloat($("#memberPoint").val()) || 0;
 
+				let finalTotal = discountPrice + fee;
+				let usedPoint = 0;
+				let amountAfterPoint = discountPrice;
 
 				if ($("#memberPointUse").is(":checked")) {
-					$('#finalAmount').val(total + fee);
-					$('#totalAmountDiscountPoints').val(total);
-					if(memberpoint>=discountPrice){
-						$('#usedPoint').val(discountPrice)
-					}else{
-						$('#usedPoint').val(memberpoint)
-					}
-				} else {
-					$('#finalAmount').val(fee + discountPrice);
+
+					// 🔒 可用會員幣上限 = 折扣後商品金額
+					usedPoint = Math.min(memberPoint, discountPrice);
+					amountAfterPoint = discountPrice - usedPoint;
+
+					finalTotal = amountAfterPoint + fee;
 				}
 
+				// 防止負數
+				if (finalTotal < 0) finalTotal = 0;
 
+				// === 設定欄位 ===
+				$("#usedPoint").val(usedPoint);
+				$("#totalAmountDiscountPoints").val(amountAfterPoint.toFixed(2));
+				$("#finalAmount").val(finalTotal.toFixed(2));
+
+				// === 回饋點數（5%）===
+				let getPoint = Math.floor(finalTotal * 0.05);
+				$("#getPoint").val(getPoint); // ← 如果你有這個欄位
 			}
 
 			finalAmount()

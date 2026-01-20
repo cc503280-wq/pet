@@ -155,4 +155,25 @@ public class MemberService {
 
         return new RegistrationStatsDTO(labels, data);
     }
+    public void updateMemberPoints(Integer memberId, Integer usedPoint, Integer getPoint) {
+        Member member = memberRepository.getById(memberId);
+
+        int newPoints = member.getPoints();
+
+        // 扣點
+        if (usedPoint != null && usedPoint > 0) {
+            newPoints -= usedPoint;
+        }
+
+        // 加點
+        if (getPoint != null && getPoint > 0) {
+            newPoints += getPoint;
+        }
+
+        if (newPoints < 0) {
+            newPoints = 0;
+        }
+
+        memberRepository.updatePoints(memberId, newPoints);
+    }
 }
