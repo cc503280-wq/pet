@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -27,7 +28,7 @@ public class SecurityConfig {
     public SecurityFilterChain shopFilterChain(HttpSecurity http) throws Exception {
         http
             // 1. 只攔截路徑開頭為 /shop 的請求
-            .securityMatcher("/shop/**") 
+            .securityMatcher("/shop/**", "/favorites/**", "/api/reviews/**") 
             
             //開啟CORS支持
             .cors(cors -> cors.configurationSource(request -> {
@@ -46,6 +47,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/shop/members/login", "/shop/members/register").permitAll() // 登入註冊不擋
                 .requestMatchers("/shop/products/**").permitAll() // 商品瀏覽不擋
+                .requestMatchers(HttpMethod.GET,"/api/reviews/**").permitAll()
                 .anyRequest().authenticated() // 其他 /shop 下的所有請求都要登入
             )
             

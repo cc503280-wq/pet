@@ -37,6 +37,7 @@ public class WebConfig implements WebMvcConfigurer {
                         "/auth/logout", // 排除登出 API
                         "/admin/layout/Login.html", // 排除登入頁面
                         "/css/**", "/js/**", "/images/**", // 排除靜態資源
+                        "/products/**",
                         "/products/store/**",
                         "/api/**",
                         "/favicon.ico",
