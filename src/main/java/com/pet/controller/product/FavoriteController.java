@@ -1,0 +1,45 @@
+package com.pet.controller.product;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import com.pet.model.product.Favorite;
+import com.pet.service.product.FavoriteService;
+
+@RestController
+@RequestMapping("/shop/favorites")
+public class FavoriteController {
+
+	@Autowired
+    private FavoriteService favService;
+
+    @GetMapping("/member/{memberId}")
+    public ResponseEntity<List<Favorite>> getFavorites(@PathVariable Integer memberId) {
+        return ResponseEntity.ok(favService.getMyFavorites(memberId));
+    }
+
+    // 🟢 新增：Toggle API
+    // POST /shop/favorites/toggle
+    @PostMapping("/toggle")
+    public ResponseEntity<?> toggleFavorite(@RequestBody Map<String, Integer> payload) {
+        Integer memberId = payload.get("memberId");
+        Integer productId = payload.get("productId");
+
+        if (memberId == null || productId == null) {
+            return ResponseEntity.badRequest().body("缺少參數");
+        }
+
+        // 執行切換，並拿到最新的狀態 (true/false)
+        boolean isFavorite = favService.toggleFavorite(memberId, productId);
+        
+        // 回傳 JSON 告訴前端現在是收藏還是取消
+        return ResponseEntity.ok(Map.of(
+            "status", isFavorite, 
+            "message", isFavorite ? "已加入收藏" : "已取消收藏"
+        ));
+    }
+}
