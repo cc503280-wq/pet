@@ -28,12 +28,17 @@ public class SecurityConfig {
     public SecurityFilterChain shopFilterChain(HttpSecurity http) throws Exception {
         http
             // 1. 只攔截路徑開頭為 /shop 的請求
-            .securityMatcher("/shop/**", "/favorites/**", "/api/reviews/**") 
+            .securityMatcher("/shop/**", "/api/reviews/**") 
             
             //開啟CORS支持
             .cors(cors -> cors.configurationSource(request -> {
                 var corsConfiguration = new CorsConfiguration();
-                corsConfiguration.setAllowedOrigins(List.of("http://localhost:5173")); // 允許前端網址
+
+                //FIXME: 增加cloudflare的host
+                corsConfiguration.setAllowedOriginPatterns(List.of(
+                    "http://localhost:5173",
+                    "https://*.trycloudflare.com"
+                ));
                 corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
                 corsConfiguration.setAllowedHeaders(List.of("*"));
                 corsConfiguration.setAllowCredentials(true);
@@ -48,6 +53,8 @@ public class SecurityConfig {
                 .requestMatchers("/shop/members/login", "/shop/members/register").permitAll() // 登入註冊不擋
                 .requestMatchers("/shop/products/**").permitAll() // 商品瀏覽不擋
                 .requestMatchers(HttpMethod.GET,"/api/reviews/**").permitAll()
+                //FIXME: 允許未登入查看優惠券
+                .requestMatchers("/shop/coupons/active").permitAll() // 允許未登入查看優惠券
                 .anyRequest().authenticated() // 其他 /shop 下的所有請求都要登入
             )
             

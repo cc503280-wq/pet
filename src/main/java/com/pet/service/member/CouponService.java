@@ -1,6 +1,7 @@
 package com.pet.service.member;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,7 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.pet.dao.member.CouponRepository;
+import com.pet.dao.member.CouponUsersRealRepository;
 import com.pet.model.member.Coupon;
+import com.pet.model.member.CouponUsersReal;
 
 
 @Service
@@ -18,6 +21,13 @@ public class CouponService {
 
 	@Autowired
 	private CouponRepository couponRepository;
+	
+	@Autowired
+	private CouponUsersRealRepository couponUsersRealRepository;
+	
+    CouponService(CouponUsersRealRepository couponUsersRealRepository) {
+        this.couponUsersRealRepository = couponUsersRealRepository;
+    }
 	
 	public List<Coupon> getAllCoupons() {
         return couponRepository.findAllByOrderByCouponIdAsc();
@@ -139,4 +149,55 @@ public class CouponService {
     private boolean isNegative(Integer val) {
         return val != null && val < 0;
     }
-}
+    
+    //領取優惠券核心邏輯
+    public void claimCoupon(Integer userId, Integer couponId) {
+        // 1. 取得優惠券規格，找不到則拋出異常
+        Coupon coupon = couponRepository.findById(couponId)
+                .orElseThrow(() -> new RuntimeException("該優惠券不存在"));
+
+        // 2. 驗證：是否為啟用狀態
+        if (!"active".equals(coupon.getStatus())) {
+            throw new RuntimeException("此優惠券目前無法領取");
+        }
+
+        // 3. 驗證：是否在發放期間內
+        LocalDate now = LocalDate.now();
+        if (now.isBefore(coupon.getIssueStartAt()) || now.isAfter(coupon.getIssueEndAt())) {
+            throw new RuntimeException("目前非領取時間 (發放期間: " + 
+                                        coupon.getIssueStartAt() + " ~ " + coupon.getIssueEndAt() + ")");
+        }
+
+        // 4. 驗證：重複領取檢查 (使用你剛寫好的existsBy方法)
+        if (couponUsersRealRepository.existsByMemberIdAndCouponId(userId, couponId)) {
+            throw new RuntimeException("您已經領取過此優惠券囉！");
+        }
+
+        // 5. 驗證：限量檢查
+        if (coupon.getIsLimited() != null && coupon.getIsLimited() == 1) {
+            if (coupon.getIssuedAmount() != null && coupon.getIssuedAmount() >= coupon.getTotalAmount()) {
+                throw new RuntimeException("好可惜！優惠券已被領取完畢");
+            }
+        }
+
+        // 6. 執行領取 A：增加 Coupon 的已發放數量 (issuedAmount)
+        Integer currentIssued = (coupon.getIssuedAmount() != null) ? coupon.getIssuedAmount() : 0;
+        coupon.setIssuedAmount(currentIssued + 1);
+        couponRepository.save(coupon);
+
+        // 7. 執行領取 B：新增紀錄到 coupon_user 表
+        CouponUsersReal record = CouponUsersReal.builder()
+                .memberId(userId)
+                .couponId(couponId)
+                .status("unused") // 初始狀態為未使用
+                .assignedAt(LocalDateTime.now()) // 領取時間
+                .build();
+        
+        couponUsersRealRepository.save(record);
+    }
+    
+    //供前端領取中心使用，只抓「活著」的券
+    public List<Coupon> getAvailableCoupons() {
+        return couponRepository.findAvailableCoupons(LocalDate.now());
+    }
+}    

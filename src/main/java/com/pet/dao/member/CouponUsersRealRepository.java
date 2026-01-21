@@ -1,7 +1,6 @@
 package com.pet.dao.member;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -24,4 +23,7 @@ public interface CouponUsersRealRepository extends JpaRepository<CouponUsersReal
 			""")
 	@Modifying
 	Integer UpdateCouponUsersReal(@Param("id") Integer id,@Param("status") String status,@Param("today") LocalDate today);
+	
+	// 用於檢查該會員是否已經領過該張券
+    boolean existsByMemberIdAndCouponId(Integer memberId, Integer couponId);
 }

@@ -26,4 +26,8 @@ public interface CouponRepository extends JpaRepository<Coupon, Integer> {
     // 依使用期間查詢
     @Query("SELECT c FROM Coupon c WHERE c.useStartAt <= :end AND c.useEndAt >= :start")
     List<Coupon> findByUseRange(@Param("start") LocalDate start, @Param("end") LocalDate end);
+    
+    // 查詢目前「可領取」的優惠券 (狀態啟用且在日期內)
+    @Query("SELECT c FROM Coupon c WHERE c.status = 'active' AND :today >= c.issueStartAt AND :today <= c.issueEndAt ORDER BY c.couponId Asc")
+    List<Coupon> findAvailableCoupons(@Param("today") LocalDate today);
 }
