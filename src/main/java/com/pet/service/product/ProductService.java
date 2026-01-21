@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -219,33 +220,30 @@ public class ProductService {
 		return pRepos.save(p);
 	}
 
+	//批量改庫存
+	@Transactional // 務必加上，確保資料一致性
 	public void batchUpdateStock(List<ProductStockDTO> stockList) {
-		
-		
-	    for (ProductStockDTO dto : stockList) {
-	    	// 如果是負數，直接跳過這筆，不處理
-	    	if (dto.getStock() < 0) {
-	            continue; 
-	        }
-	    	
-	        // 1. 先抓出商品
-	        Product product = pRepos.findById(dto.getProductId())
-	            .orElse(null); // 如果找不到就跳過，或拋出異常看你需求
+	    // 1. 前置處理：過濾負數庫存，並轉成 Map (Key: productId, Value: stock) 以便快速查找
+	    Map<Integer, Integer> stockMap = stockList.stream()
+	            .filter(dto -> dto.getStock() >= 0) // 過濾掉負數
+	            .collect(Collectors.toMap(ProductStockDTO::getProductId, ProductStockDTO::getStock));
+
+	    if (stockMap.isEmpty()) return;
+
+	    // 2. 批量查詢：一次撈出所有需要更新的 Product (解決 N+1 讀取問題)
+	    List<Product> products = pRepos.findAllById(stockMap.keySet());
+
+	    // 3. 記憶體內更新：不需要連資料庫，直接改 Java 物件
+	    products.forEach(product -> {
+	        Integer newStock = stockMap.get(product.getProductId());
+	        product.setStock(newStock);
 	        
-	        if (product != null) {
-	            // 更新庫存
-	            product.setStock(dto.getStock());
-	            
-	            // 庫存歸零自動下架
-	            if (dto.getStock() == 0) {
-	                product.setIsActive(false); 
-	            }else if (dto.getStock() > 0) {
-	                product.setIsActive(true); 
-	            }
-	            // 儲存 
-	            pRepos.save(product);
-	        }
-	    }
+	        // 邏輯簡化：庫存 > 0 就是 true，否則 false (一行搞定)
+	        product.setIsActive(newStock > 0);
+	    });
+
+	    // 4. 批量儲存：一次寫入資料庫 (解決 N+1 寫入問題)
+	    pRepos.saveAll(products);
 	}
 	
 	public Page<Product> getAllProductsWithPagination(int page, int size) {
