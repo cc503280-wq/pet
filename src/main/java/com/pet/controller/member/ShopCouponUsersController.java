@@ -14,7 +14,7 @@ import com.pet.service.member.CouponUsersService;
 import com.pet.util.LoginUser;
 
 @RestController
-@RequestMapping("/shop/coupons")
+@RequestMapping("/shop/couponusers")
 public class ShopCouponUsersController {
 
     //FIXME: 剛剛新增的東西
