@@ -46,5 +46,9 @@ public class ShipmentService {
 			shipment.setStatus(status);
 		}
 	}
+	@Transactional
+	public Shipment updateShipment(Shipment shipment){
+		return sRepository.save(shipment);
+	}
 
 }
