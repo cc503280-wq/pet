@@ -134,6 +134,10 @@
                                             class="far fa-circle nav-icon"></i>
                                         <p>查詢全部訂單明細</p>
                                     </a></li>
+                                 <li class="nav-item"><a href="/Cart/shopping" class="nav-link"><i
+									class="far fa-circle nav-icon"></i>
+								  <p>新增訂單</p>
+								</a></li>
                             </ul>
                         </li>
 
@@ -284,10 +288,21 @@
             // 登出
             $('#logoutBtn').on('click', function (e) {
                 e.preventDefault();
-                $.post('/auth/logout').always(() => {
-                    sessionStorage.clear();
-                    window.location.href = 'Login.html';
-                });
+                if (confirm('確定要登出嗎？')) {
+                    $.ajax({
+                        url: '/auth/logout',
+                        method: 'POST',
+                        success: function () {
+                            sessionStorage.clear();
+                            window.location.href = '/admin/layout/Login.html';
+                        },
+                        error: function () {
+                            // 即使後端 Session 過期，前端也要清空並跳轉
+                            sessionStorage.clear();
+                            window.location.href = '/admin/layout/Login.html';
+                        }
+                    });
+                }
             });
 
             // --- 3. 圖表邏輯 ---
