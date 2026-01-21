@@ -32,13 +32,20 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addInterceptor(authInterceptor)
                 .addPathPatterns("/**") // 攔截所有路徑
                 .excludePathPatterns(
+                        "/", // 根路徑 (Vue 首頁)
+                        "/index.html", // Vue 入口
+                        "/assets/**", // Vue 打包後的資源
                         "/shop/**",
                         "/auth/login", // 排除登入 API
                         "/auth/logout", // 排除登出 API
                         "/admin/layout/Login.html", // 排除登入頁面
                         "/css/**", "/js/**", "/images/**", // 排除靜態資源
+                        "/img/**", // 圖片資源
+                        "/lib/**", // 第三方函式庫
+                        "/scss/**", // 樣式資源
                         "/products/**",
                         "/products/store/**",
+                        "/store/**", // 首頁熱銷推薦 API
                         "/api/**",
                         "/favicon.ico",
                         "/appointments/member/**", // 會員查詢預約
@@ -52,7 +59,11 @@ public class WebConfig implements WebMvcConfigurer {
                         "/groomers/**", // 美容師 API (前台瀏覽)
                         "/schedule/**", // 時段 API (前台預約)
                         "/members", // 會員列表 API (預約選擇會員)
-                        "/memberPets/**"); // 會員寵物 API (預約選擇寵物)
+                        "/memberPets/**", // 會員寵物 API (預約選擇寵物)
+                        //FIXME: 剛剛新增的東西
+                        "/shop/coupons", // 會員優惠券 API (前台瀏覽)
+                        "/error"); // 排除錯誤路徑
+
     }
 
     @Override
