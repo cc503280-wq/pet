@@ -37,6 +37,9 @@ public class ProductService {
 	@Autowired
 	private Cloudinary cloudinary;
 	
+	@Autowired
+    private LineNotificationServiceForAdmin lineNotify;
+	
 	// 查詢所有商品
 	public List<Product> findAllProducts() {
 		return pRepos.findAll();
@@ -222,28 +225,42 @@ public class ProductService {
 
 	//批量改庫存
 	public void batchUpdateStock(List<ProductStockDTO> stockList) {
-	    // 1. 前置處理：過濾負數庫存，並轉成 Map (Key: productId, Value: stock) 以便快速查找
-	    Map<Integer, Integer> stockMap = stockList.stream()
-	            .filter(dto -> dto.getStock() >= 0) // 過濾掉負數
-	            .collect(Collectors.toMap(ProductStockDTO::getProductId, ProductStockDTO::getStock));
+        
+        // ... (這裡保留您原本轉 Map 的程式碼) ...
+        Map<Integer, Integer> stockMap = stockList.stream()
+            .filter(dto -> dto.getStock() >= 0)
+            .collect(Collectors.toMap(ProductStockDTO::getProductId, ProductStockDTO::getStock));
 
-	    if (stockMap.isEmpty()) return;
+        if (stockMap.isEmpty()) return;
 
-	    // 2. 批量查詢：一次撈出所有需要更新的 Product (解決 N+1 讀取問題)
-	    List<Product> products = pRepos.findAllById(stockMap.keySet());
+        List<Product> products = pRepos.findAllById(stockMap.keySet());
 
-	    // 3. 記憶體內更新：不需要連資料庫，直接改 Java 物件
-	    products.forEach(product -> {
-	        Integer newStock = stockMap.get(product.getProductId());
-	        product.setStock(newStock);
-	        
-	        // 邏輯簡化：庫存 > 0 就是 true，否則 false (一行搞定)
-	        product.setIsActive(newStock > 0);
-	    });
+        products.forEach(product -> {
+            Integer newStock = stockMap.get(product.getProductId());
+            
+            // 記錄舊庫存 (為了避免重複發送，進階做法可以用)
+            // Integer oldStock = product.getStock(); 
 
-	    // 4. 批量儲存：一次寫入資料庫 (解決 N+1 寫入問題)
-	    pRepos.saveAll(products);
-	}
+            // 更新庫存
+            product.setStock(newStock);
+            
+            // ==========================================
+            // 🔥 新增：LINE 警報觸發邏輯
+            // ==========================================
+            // 設定門檻：例如庫存 < 5 且大於 0 時發送
+            if (newStock < 5 && newStock > 0) {
+                // 呼叫 LINE 通知
+                System.out.println("觸發庫存警報：" + product.getProductName());
+                lineNotify.sendStockAlert(product.getProductName(), newStock);
+            }
+            // ==========================================
+
+            // 原本的上下架邏輯
+            product.setIsActive(newStock > 0);
+        });
+
+        pRepos.saveAll(products);
+    }
 	
 	public Page<Product> getAllProductsWithPagination(int page, int size) {
         // 1. 設定分頁與排序 (依照 ID 倒序，讓新商品在最上面)
