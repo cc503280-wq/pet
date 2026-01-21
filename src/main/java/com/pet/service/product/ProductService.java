@@ -237,25 +237,26 @@ public class ProductService {
 
         products.forEach(product -> {
             Integer newStock = stockMap.get(product.getProductId());
-            
-            // 記錄舊庫存 (為了避免重複發送，進階做法可以用)
-            // Integer oldStock = product.getStock(); 
-
-            // 更新庫存
             product.setStock(newStock);
             
             // ==========================================
-            // 🔥 新增：LINE 警報觸發邏輯
+            // 🔥 修改後的 LINE 通知邏輯
             // ==========================================
-            // 設定門檻：例如庫存 < 5 且大於 0 時發送
-            if (newStock < 5 && newStock > 0) {
-                // 呼叫 LINE 通知
+            
+            if (newStock == 0) {
+                // 情境 A：庫存變成 0 -> 發送下架通知
+                System.out.println("商品已下架：" + product.getProductName());
+                lineNotify.sendOutOfStockAlert(product.getProductName());
+                
+            } else if (newStock < 5 && newStock > 0) {
+                // 情境 B：庫存低於 5 但還沒光 -> 發送補貨警報
                 System.out.println("觸發庫存警報：" + product.getProductName());
                 lineNotify.sendStockAlert(product.getProductName(), newStock);
             }
+            
             // ==========================================
 
-            // 原本的上下架邏輯
+            // 自動上下架邏輯
             product.setIsActive(newStock > 0);
         });
 
