@@ -16,7 +16,7 @@
   <link rel="stylesheet" href="../../plugins/datatables-bs4/css/dataTables.bootstrap4.min.css" />
   <link rel="stylesheet" href="../../plugins/datatables-responsive/css/responsive.bootstrap4.min.css" />
   <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-  
+
   <!-- TOAST UI Calendar -->
   <link rel="stylesheet" href="https://uicdn.toast.com/calendar/latest/toastui-calendar.min.css" />
   <script src="https://uicdn.toast.com/calendar/latest/toastui-calendar.min.js"></script>
@@ -71,33 +71,36 @@
       padding: 0.25rem 0.5rem;
       white-space: nowrap;
     }
-    
+
     /* Custom Event Tooltip */
     .calendar-tooltip {
-        position: fixed;
-        background: #333;
-        color: #fff;
-        padding: 12px 16px;
-        border-radius: 6px;
-        font-size: 13px;
-        max-width: 300px;
-        z-index: 99999;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-        pointer-events: none;
-        display: none;
+      position: fixed;
+      background: #333;
+      color: #fff;
+      padding: 12px 16px;
+      border-radius: 6px;
+      font-size: 13px;
+      max-width: 300px;
+      z-index: 99999;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      pointer-events: none;
+      display: none;
     }
+
     .calendar-tooltip strong {
-        display: block;
-        margin-bottom: 6px;
-        font-size: 14px;
-        color: #90cdf4;
+      display: block;
+      margin-bottom: 6px;
+      font-size: 14px;
+      color: #90cdf4;
     }
+
     .calendar-tooltip .tooltip-row {
-        margin: 3px 0;
+      margin: 3px 0;
     }
+
     .calendar-tooltip .tooltip-label {
-        color: #a0aec0;
-        margin-right: 5px;
+      color: #a0aec0;
+      margin-right: 5px;
     }
   </style>
 </head>
@@ -136,7 +139,7 @@
       <div class="sidebar">
         <div class="user-panel mt-3 pb-3 mb-3 d-flex"></div>
 
-      <!-- Sidebar Menu -->
+        <!-- Sidebar Menu -->
         <nav class="mt-2">
           <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
             <!-- Add icons to the links using the .nav-icon class
@@ -313,7 +316,7 @@
                     </button>
                     <!-- .新增資料 -->
 
-                    
+
 
 
 
@@ -346,7 +349,7 @@
                       <i class="fas fa-calendar-alt"></i> 查看班表
                     </button>
                     <!-- .查看班表 -->
-                  </div> 
+                  </div>
 
 
                 </div>
@@ -536,7 +539,7 @@
       handleToggleStatus();
       loadGroomerOptions();
       initDatePickers();
-      
+
       // 確保 doComplexSearch 已定義，移除重複呼叫
       // doComplexSearch(); 
 
@@ -708,7 +711,7 @@
         // 如果 startDate 和 endDate 相同，只顯示一天，否則顯示範圍
         let dateDisplay = l.startDate;
         if (l.endDate && l.startDate !== l.endDate) {
-           dateDisplay = `${l.startDate} ~ ${l.endDate}`;
+          dateDisplay = `${l.startDate} ~ ${l.endDate}`;
         }
 
         const tr = `<tr>
@@ -734,11 +737,11 @@
 
     // 計算天數 (startDate, endDate 若為 null 則回傳 1)
     function calculateDays(start, end) {
-        if (!start) return 0;
-        if (!end) return 1;
-        const s = moment(start);
-        const e = moment(end);
-        return e.diff(s, 'days') + 1;
+      if (!start) return 0;
+      if (!end) return 1;
+      const s = moment(start);
+      const e = moment(end);
+      return e.diff(s, 'days') + 1;
     }
 
     // --- 切換狀態 (同步更新文字) ---
@@ -811,11 +814,11 @@
 
       // 2. 查詢用：創建日期
       $('#createDateRange').daterangepicker(pickerOptions);
-      
+
       // 3. 新增用：請假日期範圍
       $('#modalLeaveDateRange').daterangepicker({
-          ...pickerOptions,
-          minDate: moment().format('YYYY-MM-DD') // 只能選今天以後的
+        ...pickerOptions,
+        minDate: moment().format('YYYY-MM-DD') // 只能選今天以後的
       });
 
       // 當使用者選好日期按「確定」時，把值填入 input
@@ -871,302 +874,303 @@
       });
     }
     // ============ 班表 Modal 行事曆邏輯 ============
-		let scheduleCalendar = null;
-		const colorPalette = [
-			{ bg: '#ff5583', border: '#ff5583' },
-			{ bg: '#03bd9e', border: '#03bd9e' },
-			{ bg: '#bbdc00', border: '#bbdc00' },
-			{ bg: '#9e5fff', border: '#9e5fff' },
-			{ bg: '#00a9ff', border: '#00a9ff' },
-			{ bg: '#ffbb3b', border: '#ffbb3b' }
-		];
+    let scheduleCalendar = null;
+    let allScheduleEvents = { appointments: [], leaves: [] }; // 儲存班表資料供篩選
+    const colorPalette = [
+      { bg: "#ff5583", border: "#ff5583" },
+      { bg: "#03bd9e", border: "#03bd9e" },
+      { bg: "#bbdc00", border: "#bbdc00" },
+      { bg: "#9e5fff", border: "#9e5fff" },
+      { bg: "#00a9ff", border: "#00a9ff" },
+      { bg: "#ffbb3b", border: "#ffbb3b" },
+    ];
 
-    // 全域變數：儲存所有事件供篩選用
-		let allScheduleEvents = { appointments: [], leaves: [] };
+    // 綁定 Modal 顯示事件
+    $("#scheduleModal").on("shown.bs.modal", function () {
+      if (!scheduleCalendar) {
+        initScheduleCalendar(); // 初始化月曆
+      } else {
+        scheduleCalendar.render(); // 重新渲染
+      }
+      loadScheduleData(); // 載入資料
 
-		// 當 Modal 打開時初始化行事曆
-		$('#scheduleModal').on('shown.bs.modal', function () {
-			if (!scheduleCalendar) {
-				initScheduleCalendar();
-			} else {
-				scheduleCalendar.render();
-			}
-      // 載入美容師下拉選單
-			loadScheduleGroomerFilter();
-			loadScheduleData();
-      
-      // 初始化日期選擇器 (如果有用到的話，這裡暫時沒有 scheduleJumpDate input，如果需要可以補上)
-		});
+      // 載入 Modal 內的下拉選單 (這裡重用載入邏輯)
+      loadScheduleGroomerFilter();
+    });
 
-		function initScheduleCalendar() {
-			const Calendar = tui.Calendar;
-			const container = document.getElementById('scheduleCalendar');
+    // 載入 Modal 內的美容師篩選選單
+    function loadScheduleGroomerFilter() {
+      $.ajax({
+        url: "/groomers",
+        type: "GET",
+        dataType: "json",
+        success: function (list) {
+          let $select = $("#scheduleGroomerFilter");
+          $select.empty().append('<option value="">全部美容師</option>');
+          list.forEach((g) => {
+            $select.append(
+              `<option value="${g.groomerId}">${g.groomerName}</option>`,
+            );
+          });
+        },
+      });
+    }
 
-			scheduleCalendar = new Calendar(container, {
-				defaultView: 'week',
-				isReadOnly: true,
-				week: {
-					startDayOfWeek: 1,
-					hourStart: 7,
-					hourEnd: 22,
-					taskView: false
-				},
-				theme: {
-					week: {
-						timeGridHalfHourLine: { borderBottom: '1px dotted #e5e5e5' }
-					}
-				},
-				template: {
-					time: function (event) {
-						const appt = event.raw;
-						return `<span style="font-weight: bold;">${appt.startTime || ''}</span><br>
-							<span style="font-size: 11px;">${appt.groomerName || ''}</span>`;
-					},
-					allday: function (event) {
-						return `<span>${event.title}</span>`;
-					}
-				},
-				calendars: []
-			});
+    function initScheduleCalendar() {
+      const Calendar = tui.Calendar;
+      const container = document.getElementById("scheduleCalendar");
 
-			// 控制按鈕
-			$('#schedule-btn-prev').click(function () {
-				scheduleCalendar.prev();
-				updateScheduleDateRange();
-			});
-			$('#schedule-btn-next').click(function () {
-				scheduleCalendar.next();
-				updateScheduleDateRange();
-			});
-			$('#schedule-btn-today').click(function () {
-				scheduleCalendar.today();
-				updateScheduleDateRange();
-			});
-		}
+      scheduleCalendar = new Calendar(container, {
+        defaultView: "week",
+        isReadOnly: true,
+        week: {
+          startDayOfWeek: 1,
+          hourStart: 7,
+          hourEnd: 22,
+          taskView: false,
+        },
+        theme: {
+          week: {
+            timeGridHalfHourLine: { borderBottom: "1px dotted #e5e5e5" },
+          },
+        },
+        template: {
+          time: function (event) {
+            const appt = event.raw;
+            return `<span style="font-weight: bold;">${appt.startTime || ""}</span><br>
+							<span style="font-size: 11px;">${appt.groomerName || ""}</span>`;
+          },
+          allday: function (event) {
+            return `<span>${event.title}</span>`;
+          },
+        },
+        calendars: [],
+      });
 
-		function updateScheduleDateRange() {
-			const start = scheduleCalendar.getDateRangeStart();
-			const end = scheduleCalendar.getDateRangeEnd();
-			const startStr = moment(start.getTime()).format('YYYY/MM/DD');
-			const endStr = moment(end.getTime()).format('YYYY/MM/DD');
-			$('#schedule-date-range').text(`${startStr} ~ ${endStr}`);
-		}
+      // 綁定懸停 Tooltip
+      scheduleCalendar.on("mouseEnter", function (info) {
+        showEventTooltip(info);
+      }); // 注意：Toast UI 新版事件不同，這裡以自訂 bindCalendarEventHover 為主
+      // 按鈕事件
+      $("#schedule-btn-prev").click(function () {
+        scheduleCalendar.prev();
+        updateScheduleDateRange();
+      });
+      $("#schedule-btn-next").click(function () {
+        scheduleCalendar.next();
+        updateScheduleDateRange();
+      });
+      $("#schedule-btn-today").click(function () {
+        scheduleCalendar.today();
+        updateScheduleDateRange();
+      });
+    }
 
-		function loadScheduleData() {
-			// 先載入美容師
-			$.ajax({
-				url: "/shop/groomers",
-				type: "GET",
-				dataType: "json",
-				success: function (groomerList) {
-					const calendarList = groomerList.map((g, i) => {
-						const colorSet = colorPalette[i % colorPalette.length];
-						return {
-							id: String(g.groomerId),
-							name: g.groomerName,
-							color: '#ffffff',
-							backgroundColor: colorSet.bg,
-							borderColor: colorSet.border
-						};
-					});
-					scheduleCalendar.setCalendars(calendarList);
+    function updateScheduleDateRange() {
+      const start = scheduleCalendar.getDateRangeStart();
+      const end = scheduleCalendar.getDateRangeEnd();
+      $("#schedule-date-range").text(
+        `${moment(start.getTime()).format("YYYY/MM/DD")} ~ ${moment(end.getTime()).format("YYYY/MM/DD")}`,
+      );
+    }
 
-					// 載入預約和請假
-					Promise.all([
-						$.ajax({ url: "/shop/appointments", type: "GET", dataType: "json" }),
-						$.ajax({ url: "/shop/groomers/leave-records", type: "GET", dataType: "json", cache: false })
-					]).then(function ([appointments, leaves]) {
+    function loadScheduleData() {
+      // 1. 取得美容師清單 (產生顏色 Key)
+      $.ajax({
+        url: "/groomers",
+        type: "GET",
+        dataType: "json",
+        success: function (groomerList) {
+          const calendarList = groomerList.map((g, i) => {
+            const colorSet = colorPalette[i % colorPalette.length];
+            return {
+              id: String(g.groomerId),
+              name: g.groomerName,
+              color: "#ffffff",
+              backgroundColor: colorSet.bg,
+              borderColor: colorSet.border,
+            };
+          });
+          scheduleCalendar.setCalendars(calendarList);
+
+          // 2. 平行載入預約 與 假單
+          Promise.all([
+            $.ajax({ url: "/appointments", type: "GET", dataType: "json" }),
+            $.ajax({
+              url: "/groomers/leave-records",
+              type: "GET",
+              dataType: "json",
+              cache: false,
+            }),
+          ]).then(function ([appointments, leaves]) {
+            // 儲存原始資料供篩選
             allScheduleEvents.appointments = appointments;
-					  allScheduleEvents.leaves = leaves;
-						renderScheduleEvents(appointments, leaves);
-						updateScheduleDateRange();
-            
-            // 立即執行一次篩選 (如果已有選取值)
+            allScheduleEvents.leaves = leaves;
+            // 渲染
             filterScheduleEvents();
-					});
-				}
-			});
-		}
-    
-    // 載入美容師下拉選單
-		function loadScheduleGroomerFilter() {
-			$.ajax({
-				url: "/shop/groomers",
-				type: "GET",
-				dataType: "json",
-				success: function (list) {
-					let $select = $('#scheduleGroomerFilter');
-					$select.empty().append('<option value="">全部美容師</option>');
-					list.forEach(g => {
-						$select.append(`<option value="${g.groomerId}">${g.groomerName}</option>`);
-					});
-				}
-			});
-		}
-    
-    // 美容師篩選
-		$(document).on('change', '#scheduleGroomerFilter', function () {
-			filterScheduleEvents();
-		});
+            updateScheduleDateRange();
+          });
+        },
+      });
+    }
 
-		// 篩選事件
-		function filterScheduleEvents() {
-			let selectedGroomerId = $('#scheduleGroomerFilter').val();
-			let filteredAppts = allScheduleEvents.appointments;
-			let filteredLeaves = allScheduleEvents.leaves;
+    // 篩選班表事件
+    $(document).on("change", "#scheduleGroomerFilter", function () {
+      filterScheduleEvents();
+    });
 
-			if (selectedGroomerId) {
-				filteredAppts = filteredAppts.filter(a => String(a.groomerId) === selectedGroomerId);
-				filteredLeaves = filteredLeaves.filter(l => String(l.groomerId) === selectedGroomerId);
-			}
+    function filterScheduleEvents() {
+      let selectedGroomerId = $("#scheduleGroomerFilter").val();
+      let filteredAppts = allScheduleEvents.appointments;
+      let filteredLeaves = allScheduleEvents.leaves;
 
-			renderScheduleEvents(filteredAppts, filteredLeaves);
-		}
+      if (selectedGroomerId) {
+        filteredAppts = filteredAppts.filter(
+          (a) => String(a.groomerId) === selectedGroomerId,
+        );
+        filteredLeaves = filteredLeaves.filter(
+          (l) => String(l.groomerId) === selectedGroomerId,
+        );
+      }
+      renderScheduleEvents(filteredAppts, filteredLeaves);
+    }
 
-		function renderScheduleEvents(appointments, leaves) {
-			let events = [];
+    function renderScheduleEvents(appointments, leaves) {
+      let events = [];
 
-			appointments.forEach(appt => {
-        // 只顯示未取消的預約
-        if (appt.appointmentStatus !== '已取消') {
-  				events.push({
-  					id: 'appt-' + appt.appointmentId,
-  					calendarId: String(appt.groomerId),
-  					title: appt.groomerName,
-  					category: 'time',
-  					start: `${appt.appointmentDate}T${appt.startTime}:00`,
-  					end: `${appt.appointmentDate}T${appt.endTime}:00`,
-  					raw: appt
-  				});
+      appointments.forEach((appt) => {
+        if (appt.appointmentStatus !== "已取消") {
+          events.push({
+            id: "appt-" + appt.appointmentId,
+            calendarId: String(appt.groomerId),
+            title: appt.groomerName,
+            category: "time",
+            start: `${appt.appointmentDate}T${appt.startTime}:00`,
+            end: `${appt.appointmentDate}T${appt.endTime}:00`,
+            raw: appt, // 綁定原始資料供 Tooltip 用
+          });
         }
-			});
+      });
 
-			leaves.forEach(leave => {
-        // 只顯示有效(未取消)的假單? 或全部?
-        // 這裡可以過濾 !isActive 的，但原版似乎沒特別過濾? 
-        // 假設顯示全部，但用顏色區分? 或這裡只顯示 effective 
-        // 為了簡單，先全部顯示，或者根據狀態決定
-        if(leave.isActive) {
-  				events.push({
-  					id: 'leave-' + leave.leaveId,
-  					calendarId: String(leave.groomerId),
-  					title: `${leave.groomerName} (休假)`,
-  					category: 'allday',
-  					start: leave.startDate,
-  					end: leave.endDate,
-  					isAllday: true,
-  					backgroundColor: '#666666',
-  					borderColor: '#666666',
-  					raw: leave
-  				});
+      leaves.forEach((leave) => {
+        if (leave.isActive) {
+          events.push({
+            id: "leave-" + leave.leaveId,
+            calendarId: String(leave.groomerId),
+            title: `${leave.groomerName} (休假)`,
+            category: "allday",
+            start: leave.startDate,
+            end: leave.endDate,
+            isAllday: true,
+            backgroundColor: "#666666",
+            borderColor: "#666666",
+            raw: leave,
+          });
         }
-			});
+      });
 
-			scheduleCalendar.clear();
-			scheduleCalendar.createEvents(events);
+      scheduleCalendar.clear();
+      scheduleCalendar.createEvents(events);
 
-			// 儲存事件資料供 Tooltip 查詢
-			window.calendarEventMap = {};
-			events.forEach(e => {
-				window.calendarEventMap[e.id] = e;
-			});
+      // 建立索引供 Tooltip 快速查找
+      window.calendarEventMap = {};
+      events.forEach((e) => {
+        window.calendarEventMap[e.id] = e;
+      });
 
-			// 動態綁定滑鼠事件到日曆事件元素
-			setTimeout(bindCalendarEventHover, 500);
-		}
+      // 重新綁定 Tooltip 事件
+      setTimeout(bindCalendarEventHover, 500);
+    }
 
-		// 綁定滑鼠懸停事件
-		function bindCalendarEventHover() {
-			// 移除舊的事件
-			$(document).off('mouseenter.caltooltip mouseleave.caltooltip mousemove.caltooltip');
+    // Tooltip 滑鼠事件綁定
+    function bindCalendarEventHover() {
+      $(document).off(
+        "mouseenter.caltooltip mouseleave.caltooltip mousemove.caltooltip",
+      );
+      // 針對 Calendar 內部的事件區塊綁定
+      $(document).on(
+        "mouseenter.caltooltip",
+        "#scheduleCalendar .toastui-calendar-event-time, #scheduleCalendar .toastui-calendar-weekday-event",
+        function (e) {
+          var $el = $(this);
+          var eventId = findEventId($el);
+          if (
+            eventId &&
+            window.calendarEventMap &&
+            window.calendarEventMap[eventId]
+          ) {
+            showEventTooltipFromData(window.calendarEventMap[eventId]);
+          }
+        },
+      );
+      $(document).on(
+        "mouseleave.caltooltip",
+        "#scheduleCalendar .toastui-calendar-event-time, #scheduleCalendar .toastui-calendar-weekday-event",
+        function () {
+          hideEventTooltip();
+        },
+      );
+      $(document).on(
+        "mousemove.caltooltip",
+        "#scheduleCalendar",
+        function (e) {
+          $("#calendarTooltip").css({
+            left: e.pageX + 15,
+            top: e.pageY + 15,
+          });
+        },
+      );
+    }
 
-			// 綁定新事件 - 目標是 Toast UI Calendar 的事件區塊
-			$(document).on('mouseenter.caltooltip', '#scheduleCalendar .toastui-calendar-event-time, #scheduleCalendar .toastui-calendar-weekday-event', function(e) {
-				var $el = $(this);
-				var eventId = findEventId($el);
-				if (eventId && window.calendarEventMap && window.calendarEventMap[eventId]) {
-					showEventTooltipFromData(window.calendarEventMap[eventId]);
-				}
-			});
+    // 輔助：從 DOM 元素找回 Event ID
+    function findEventId($el) {
+      var id = $el.attr("data-event-id");
+      if (id) return id;
+      // 若無 data ID (ToastUI 有時不直接給)，則嘗試用文字匹配 (Fallback)
+      var text = $el.text().replace(/\s+/g, " ").trim();
+      if (window.calendarEventMap) {
+        for (var key in window.calendarEventMap) {
+          var evt = window.calendarEventMap[key];
+          var raw = evt.raw;
+          if (key.startsWith("appt-") && raw) {
+            if (
+              (raw.startTime && text.includes(raw.startTime)) ||
+              (raw.groomerName && text.includes(raw.groomerName))
+            )
+              return key;
+          }
+          if (key.startsWith("leave-") && evt.title) {
+            if (text.includes(evt.title.substring(0, 5))) return key;
+          }
+        }
+      }
+      return null;
+    }
 
-			$(document).on('mouseleave.caltooltip', '#scheduleCalendar .toastui-calendar-event-time, #scheduleCalendar .toastui-calendar-weekday-event', function() {
-				hideEventTooltip();
-			});
+    function showEventTooltipFromData(eventData) {
+      if (!eventData || !eventData.raw) return;
+      var raw = eventData.raw;
+      var html = "";
 
-			$(document).on('mousemove.caltooltip', '#scheduleCalendar', function(e) {
-				$('#calendarTooltip').css({
-					left: e.pageX + 15,
-					top: e.pageY + 15
-				});
-			});
-		}
+      if (eventData.id.startsWith("appt-")) {
+        html = `<strong>📅 預約 #${raw.appointmentId}</strong>
+					<div class="tooltip-row"><span class="tooltip-label">寵物:</span>${raw.petName || "-"}</div>
+					<div class="tooltip-row"><span class="tooltip-label">美容師:</span>${raw.groomerName || "-"}</div>
+					<div class="tooltip-row"><span class="tooltip-label">時間:</span>${raw.startTime} ~ ${raw.endTime}</div>
+					<div class="tooltip-row"><span class="tooltip-label">狀態:</span>${raw.appointmentStatus}</div>
+					<div class="tooltip-row"><span class="tooltip-label">價格:</span>$${raw.price || 0}</div>`;
+      } else if (eventData.id.startsWith("leave-")) {
+        html = `<strong>🏖️ 休假</strong>
+					<div class="tooltip-row"><span class="tooltip-label">美容師:</span>${raw.groomerName}</div>
+					<div class="tooltip-row"><span class="tooltip-label">日期:</span>${raw.startDate} ~ ${raw.endDate}</div>
+					<div class="tooltip-row"><span class="tooltip-label">原因:</span>${raw.reason || "無"}</div>`;
+      }
+      if (html) $("#calendarTooltip").html(html).show();
+    }
 
-		// 從元素找到事件 ID
-		function findEventId($el) {
-			// Toast UI Calendar 會在 data 屬性中儲存事件資訊
-			var id = $el.attr('data-event-id');
-			if (id) return id;
-
-			// 取得元素的文字內容（移除換行符號轉為空白）
-			var text = $el.text().replace(/\s+/g, ' ').trim();
-			
-			if (window.calendarEventMap) {
-				for (var key in window.calendarEventMap) {
-					var evt = window.calendarEventMap[key];
-					var raw = evt.raw;
-					
-					// 預約事件
-					if (key.startsWith('appt-') && raw) {
-						if ((raw.startTime && text.includes(raw.startTime)) ||
-							(raw.groomerName && text.includes(raw.groomerName)) ||
-							(raw.petName && text.includes(raw.petName))) {
-							return key;
-						}
-					}
-					
-					// 休假事件
-					if (key.startsWith('leave-') && evt.title) {
-            // 比對 title 前幾個字
-						if (text.includes(evt.title.substring(0, 4))) {
-							return key;
-						}
-					}
-				}
-			}
-			return null;
-		}
-
-		// 顯示 Tooltip
-		function showEventTooltipFromData(eventData) {
-			if (!eventData || !eventData.raw) return;
-			var raw = eventData.raw;
-			var html = '';
-
-			if (eventData.id && eventData.id.startsWith('appt-')) {
-				html = `
-					<strong>📅 預約 #${raw.appointmentId || ''}</strong>
-					<div class="tooltip-row"><span class="tooltip-label">寵物:</span>${raw.petName || '-'}</div>
-					<div class="tooltip-row"><span class="tooltip-label">美容師:</span>${raw.groomerName || '-'}</div>
-					<div class="tooltip-row"><span class="tooltip-label">時間:</span>${raw.startTime || ''} ~ ${raw.endTime || ''}</div>
-					<div class="tooltip-row"><span class="tooltip-label">狀態:</span>${raw.appointmentStatus || '-'}</div>
-				`;
-			} else if (eventData.id && eventData.id.startsWith('leave-')) {
-				html = `
-					<strong>🏖️ 休假 #${raw.leaveId || ''}</strong>
-					<div class="tooltip-row"><span class="tooltip-label">美容師:</span>${raw.groomerName || '-'}</div>
-					<div class="tooltip-row"><span class="tooltip-label">日期:</span>${raw.startDate || ''} ~ ${raw.endDate || raw.startDate || ''}</div>
-					<div class="tooltip-row"><span class="tooltip-label">原因:</span>${raw.reason || '無'}</div>
-				`;
-			}
-
-			if (html) {
-				$('#calendarTooltip').html(html).show();
-			}
-		}
-
-		function hideEventTooltip() {
-			$('#calendarTooltip').hide();
-		}
+    function hideEventTooltip() {
+      $("#calendarTooltip").hide();
+    }
   </script>
 </body>
 

@@ -3,6 +3,7 @@ package com.pet.controller.appointment;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -52,6 +53,41 @@ public class AppointmentController {
         return ResponseEntity.notFound().build();
     }
 
+    /**
+     * 生成預約 QR Code (Appointment ID)
+     * URL: /appointments/{id}/qrcode
+     */
+    @GetMapping(value = "/{id}/qrcode", produces = MediaType.IMAGE_PNG_VALUE)
+    public ResponseEntity<byte[]> getAppointmentQRCode(@PathVariable Integer id) {
+        // 確認預約存在
+        AppointmentList appointment = appointmentService.getAppointmentListById(id);
+        if (appointment == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        try {
+            // QR Code 內容：這裡簡單使用 AppointmentId，前端或店員端掃描後可查詢預約
+            String qrContent = String.valueOf(id);
+
+            // 生成 250x250 的 QR Code
+            byte[] qrImage = appointmentService.generateQRCode(qrContent, 250, 250);
+
+            return ResponseEntity.ok().body(qrImage);
+        } catch (Exception e) {
+            log.error("生成 QR Code 失敗", e);
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    /**
+     * 會員取得自己的預約列表
+     */
+    @GetMapping("/member/{memberId}")
+    public ResponseEntity<List<AppointmentList>> getAppointmentsByMemberId(@PathVariable Integer memberId) {
+        List<AppointmentList> list = appointmentService.getAppointmentsByMemberId(memberId);
+        return ResponseEntity.ok(list);
+    }
+
     @GetMapping("/search")
     public ResponseEntity<List<AppointmentList>> searchAppointments(
             @RequestParam(required = false) String memberPhone,
@@ -62,11 +98,11 @@ public class AppointmentController {
             @RequestParam(required = false) String createdAtStart,
             @RequestParam(required = false) String createdAtEnd) {
         List<AppointmentList> list = appointmentService.searchAppointments(
-            memberPhone, status, startDate, endDate, groomerId, createdAtStart, createdAtEnd);
+                memberPhone, status, startDate, endDate, groomerId, createdAtStart, createdAtEnd);
         return ResponseEntity.ok(list);
     }
 
-    /** ??這一個是不是應該放在GroomerController?!?!?!
+    /**
      * 美容師取得自己的任務列表
      */
     @GetMapping("/groomer/{groomerId}")
@@ -102,7 +138,6 @@ public class AppointmentController {
 
     // ==================== 狀態變更 API ====================
 
- 
     @PostMapping("/insertInto")
     public ResponseEntity<ApiResponse> insertAppointment(@Valid @RequestBody AppointmentRequest request) {
         try {
@@ -113,7 +148,7 @@ public class AppointmentController {
             return ResponseEntity.badRequest().body(ApiResponse.error("預約失敗：" + e.getMessage()));
         }
     }
-  
+
     @PatchMapping("/cancel/{appointmentId}")
     public ResponseEntity<ApiResponse> cancelAppointment(@PathVariable Integer appointmentId) {
         log.info("API: 取消預約 ID {}", appointmentId);
@@ -121,14 +156,12 @@ public class AppointmentController {
         return ResponseEntity.ok(ApiResponse.success("取消成功"));
     }
 
-  
     @PatchMapping("/complete/{id}")
     public ResponseEntity<ApiResponse> completeAppointment(@PathVariable Integer id) {
         appointmentService.completeAppointment(id);
         return ResponseEntity.ok(ApiResponse.success("預約已完成"));
     }
 
-  
     @PatchMapping("/check-in/{id}")
     public ResponseEntity<ApiResponse> checkInAppointment(@PathVariable Integer id) {
         appointmentService.checkInAppointment(id);

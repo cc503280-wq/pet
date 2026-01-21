@@ -12,6 +12,11 @@ public class AppConstants {
     public static final String APPOINTMENT_STATUS_IN_PROGRESS = "進行中";
     public static final String APPOINTMENT_STATUS_NO_SHOW = "未到店";
     
+    // 付款狀態
+    public static final String PAY_STATUS_UNPAID = "UNPAID";
+    public static final String PAY_STATUS_PAID = "PAID";
+    public static final String PAY_STATUS_PAY_LATER = "PAY_LATER";
+    
     // 時段相關
     public static final int SLOT_DURATION_MINUTES = 15;
     

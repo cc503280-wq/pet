@@ -170,4 +170,5 @@ public class ProductController {
 	public ResponseEntity<List<Category>> getCategories() { // 回傳型態變了
 	    return ResponseEntity.ok(pService.getAllCategories());
 	}
+	
 }
