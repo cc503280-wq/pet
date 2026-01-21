@@ -36,7 +36,7 @@ public class MemberPet {
 	private Integer petId;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "member_id", insertable = false, updatable = false)
+	@JoinColumn(name = "member_id", nullable = false) // 移除 insertable 和 updatable，並確保不能為空
 	@JsonIgnoreProperties({"pets", "hibernateLazyInitializer", "handler"})
 	private Member member;
 
