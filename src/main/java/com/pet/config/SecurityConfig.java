@@ -28,7 +28,7 @@ public class SecurityConfig {
     public SecurityFilterChain shopFilterChain(HttpSecurity http) throws Exception {
         http
             // 1. 只攔截路徑開頭為 /shop 的請求
-            .securityMatcher("/shop/**", "/favorites/**", "/api/reviews/**") 
+            .securityMatcher("/shop/**", "/api/reviews/**") 
             
             //開啟CORS支持
             .cors(cors -> cors.configurationSource(request -> {

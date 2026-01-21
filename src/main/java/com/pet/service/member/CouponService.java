@@ -10,9 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.pet.dao.member.CouponRepository;
-import com.pet.dao.member.CouponUserRecordRepository;
+import com.pet.dao.member.CouponUsersRealRepository;
 import com.pet.model.member.Coupon;
-import com.pet.model.member.CouponUserRecord;
+import com.pet.model.member.CouponUsersReal;
 
 
 @Service
@@ -23,7 +23,11 @@ public class CouponService {
 	private CouponRepository couponRepository;
 	
 	@Autowired
-	private CouponUserRecordRepository couponUserRecordRepository;
+	private CouponUsersRealRepository couponUsersRealRepository;
+	
+    CouponService(CouponUsersRealRepository couponUsersRealRepository) {
+        this.couponUsersRealRepository = couponUsersRealRepository;
+    }
 	
 	public List<Coupon> getAllCoupons() {
         return couponRepository.findAllByOrderByCouponIdAsc();
@@ -165,7 +169,7 @@ public class CouponService {
         }
 
         // 4. 驗證：重複領取檢查 (使用你剛寫好的existsBy方法)
-        if (couponUserRecordRepository.existsByMemberIdAndCouponId(userId, couponId)) {
+        if (couponUsersRealRepository.existsByMemberIdAndCouponId(userId, couponId)) {
             throw new RuntimeException("您已經領取過此優惠券囉！");
         }
 
@@ -182,14 +186,14 @@ public class CouponService {
         couponRepository.save(coupon);
 
         // 7. 執行領取 B：新增紀錄到 coupon_user 表
-        CouponUserRecord record = CouponUserRecord.builder()
+        CouponUsersReal record = CouponUsersReal.builder()
                 .memberId(userId)
                 .couponId(couponId)
                 .status("unused") // 初始狀態為未使用
                 .assignedAt(LocalDateTime.now()) // 領取時間
                 .build();
         
-        couponUserRecordRepository.save(record);
+        couponUsersRealRepository.save(record);
     }
     
     //供前端領取中心使用，只抓「活著」的券
