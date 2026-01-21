@@ -412,7 +412,30 @@
 				format: 'L' // 這裡使用 'L' 代表當地短日期格式，例如 2025/11/29
 			});
 
-			
+			$('#add_row').click(function() {
+				// 複製現有的商品ID row
+				let row = $('#product_row_template').html();
+				$('.card-body').append(row);
+			});
+			$('form').on('change', '.product-select', function() {
+				let name = $(this).find('option:selected').data('name');
+				let price = $(this).find('option:selected').data('price')
+				$(this).siblings('.productName-input').val(name);
+				$(this).siblings('.productPrice-input').val(price);
+			});
+
+			// 刪除功能
+			$('.card-body').on('click', '.remove_row', function() {
+				// 找到商品ID那一列（含刪除鈕）
+				let productRow = $(this).closest('.product_row');
+
+				// 下一列是數量
+				let qtyRow = productRow.next('.product_row');
+
+				// 一次刪掉兩列
+				productRow.remove();
+				qtyRow.remove();
+			});
 
 		});
 	</script>
