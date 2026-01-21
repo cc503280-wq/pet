@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -35,6 +36,9 @@ public class ProductService {
 
 	@Autowired
 	private Cloudinary cloudinary;
+	
+	@Autowired
+    private LineNotificationServiceForAdmin lineNotify;
 	
 	// 查詢所有商品
 	public List<Product> findAllProducts() {
@@ -219,34 +223,44 @@ public class ProductService {
 		return pRepos.save(p);
 	}
 
+	//批量改庫存
 	public void batchUpdateStock(List<ProductStockDTO> stockList) {
-		
-		
-	    for (ProductStockDTO dto : stockList) {
-	    	// 如果是負數，直接跳過這筆，不處理
-	    	if (dto.getStock() < 0) {
-	            continue; 
-	        }
-	    	
-	        // 1. 先抓出商品
-	        Product product = pRepos.findById(dto.getProductId())
-	            .orElse(null); // 如果找不到就跳過，或拋出異常看你需求
-	        
-	        if (product != null) {
-	            // 更新庫存
-	            product.setStock(dto.getStock());
-	            
-	            // 庫存歸零自動下架
-	            if (dto.getStock() == 0) {
-	                product.setIsActive(false); 
-	            }else if (dto.getStock() > 0) {
-	                product.setIsActive(true); 
-	            }
-	            // 儲存 
-	            pRepos.save(product);
-	        }
-	    }
-	}
+        
+        // ... (這裡保留您原本轉 Map 的程式碼) ...
+        Map<Integer, Integer> stockMap = stockList.stream()
+            .filter(dto -> dto.getStock() >= 0)
+            .collect(Collectors.toMap(ProductStockDTO::getProductId, ProductStockDTO::getStock));
+
+        if (stockMap.isEmpty()) return;
+
+        List<Product> products = pRepos.findAllById(stockMap.keySet());
+
+        products.forEach(product -> {
+            Integer newStock = stockMap.get(product.getProductId());
+            
+            // 記錄舊庫存 (為了避免重複發送，進階做法可以用)
+            // Integer oldStock = product.getStock(); 
+
+            // 更新庫存
+            product.setStock(newStock);
+            
+            // ==========================================
+            // 🔥 新增：LINE 警報觸發邏輯
+            // ==========================================
+            // 設定門檻：例如庫存 < 5 且大於 0 時發送
+            if (newStock < 5 && newStock > 0) {
+                // 呼叫 LINE 通知
+                System.out.println("觸發庫存警報：" + product.getProductName());
+                lineNotify.sendStockAlert(product.getProductName(), newStock);
+            }
+            // ==========================================
+
+            // 原本的上下架邏輯
+            product.setIsActive(newStock > 0);
+        });
+
+        pRepos.saveAll(products);
+    }
 	
 	public Page<Product> getAllProductsWithPagination(int page, int size) {
         // 1. 設定分頁與排序 (依照 ID 倒序，讓新商品在最上面)
