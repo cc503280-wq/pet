@@ -1,5 +1,6 @@
 package com.pet.model.order;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 
@@ -42,9 +43,9 @@ public class Shipment {
 	
 	private String trackingNumber;
 	
-	private Date shippedAt;
+	private LocalDateTime shippedAt;
 	
-	private Date deliveredAt;
+	private LocalDateTime deliveredAt;
 	@NonNull
 	private String status;
 	@NonNull
