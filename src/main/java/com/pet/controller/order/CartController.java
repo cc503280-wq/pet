@@ -1,6 +1,7 @@
 package com.pet.controller.order;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.pet.dao.member.CouponUsersRealRepository;
 import com.pet.model.member.Coupon;
 import com.pet.model.member.CouponUsers;
 import com.pet.model.member.Member;
@@ -20,6 +22,7 @@ import com.pet.model.order.Order;
 import com.pet.model.order.OrderItem;
 import com.pet.model.order.Shipment;
 import com.pet.model.product.Product;
+import com.pet.service.member.CouponUsersRealService;
 import com.pet.service.member.CouponUsersService;
 import com.pet.service.member.MemberService;
 import com.pet.service.order.OrderItemService;
@@ -50,6 +53,8 @@ public class CartController {
 	private OrderItemService oiService;
 	@Autowired
 	private ShipmentService shipmentService;
+	@Autowired
+	private CouponUsersRealService curService;
 
    
 @GetMapping("/shopping")
@@ -83,8 +88,8 @@ public String step1(
 }
 @GetMapping("/byMember")
 @ResponseBody
-public List<CouponUsers> getCouponsByMember(@RequestParam Integer memberId){
-	return cService.getCouponUsersByMemberId(memberId);
+public List<CouponUsers> getCouponsByMember(@RequestParam Integer memberId,@RequestParam BigDecimal totalPrice){
+	return cService.getOrderCouponUsers(memberId, totalPrice);
 }
 
 @PostMapping("/insertOrder")
@@ -94,28 +99,36 @@ public String insertOrder(
         @RequestParam("quantity[]") List<Integer> quantities,
         @RequestParam("price[]") List<Integer> prices,
         @RequestParam("member_id") Integer member_Id,
-        @RequestParam("coupon_id") Integer coupon_Id,
+        @RequestParam(required = false,name = "coupon_id") Integer coupon_Id,
         @RequestParam("total_price") BigDecimal total_price,
         @RequestParam("discountPrice") BigDecimal discountPrice,
         @RequestParam("method") String method,
         @RequestParam("fee") Integer fee,
-        @RequestParam("finalAmount") Integer finalAmount,
+        @RequestParam("finalAmount") BigDecimal finalAmount,
         @RequestParam("recipientName") String recipientName,
         @RequestParam("recipientPhone") String recipientPhone,
-        @RequestParam("shippingAddress") String shippingAddress
-) {
+        @RequestParam("shippingAddress") String shippingAddress,
+        @RequestParam(required = false,name = "couponUserId") Integer couponUserId,
+        @RequestParam("usedPoint") Integer usedPoint,
+        @RequestParam("totalAmountDiscountPoints") BigDecimal TotalAmountDiscountPoints,
+        @RequestParam("getPoint") Integer getPoint
+		) {
 
     // 1. 建立訂單主表
     Order order = new Order();
     order.setMemberId(member_Id);
-    order.setCouponId(coupon_Id);
+    if (couponUserId != null) {
+        order.setCouponId(couponUserId);
+    } else {
+        order.setCouponId(null); // ✅ 一定要明確
+    }
     order.setOrderDate(LocalDateTime.now());
     order.setStatus("下訂單完成");
     order.setTotalAmountUndiscount(total_price);
     order.setTotalAmountDiscount(discountPrice);
-    order.setTotalAmountDiscountPoints(BigDecimal.ZERO);
-    order.setUsePoints(0);
-    order.setGetPoints(0);
+    order.setTotalAmountDiscountPoints(TotalAmountDiscountPoints);
+    order.setUsePoints(usedPoint);
+    order.setGetPoints(getPoint);
     Order orderId = oService.insertOrder(order);
     
 
@@ -143,6 +156,16 @@ public String insertOrder(
     shipping.setShippingFee(fee);
     shipping.setStatus("未出貨");
     shipmentService.insertShipment(shipping);
+    //4.修改優惠券狀態
+    if (couponUserId != null) {
+    	curService.CouponUsersUpdate(couponUserId, "used", LocalDate.now());
+	}
+    
+    
+    //5.修改會員幣數量
+    
+    
+    mService.updateMemberPoints(member_Id, usedPoint, getPoint);
 
     return "redirect:/orders/list";
 }

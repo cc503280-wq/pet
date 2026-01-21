@@ -4,9 +4,11 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.pet.model.member.Member;
 
@@ -55,5 +57,16 @@ public interface MemberRepository extends JpaRepository<Member, Integer> {
                    "GROUP BY FORMAT(created_at, 'yyyy-MM') " +
                    "ORDER BY month", nativeQuery = true)
     List<Object[]> getStatsBySpecificYear(@Param("year") int year);
-
+    
+    @Modifying
+    @Transactional
+    @Query("""
+        UPDATE Member m
+        SET m.points = :points
+        WHERE m.memberId = :memberId
+    """)
+    int updatePoints(
+        @Param("memberId") int memberId,
+        @Param("points") int points
+    );
 }

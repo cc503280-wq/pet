@@ -1,5 +1,7 @@
 package com.pet.service.member;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,4 +30,9 @@ public class CouponUsersService {
 	public List<CouponUsers> getCouponUsersByMemberId(Integer memberId){
 		return couponUsersRepository.findByMemberIdOrderByIdAsc(memberId);
 	}
+	
+	public List<CouponUsers> getOrderCouponUsers(Integer memberId,BigDecimal totalPrice){
+		return couponUsersRepository.findUsableCoupons(memberId,LocalDate.now(),totalPrice);
+	}
+	
 }
