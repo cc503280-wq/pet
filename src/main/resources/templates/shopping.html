@@ -189,69 +189,69 @@
 									</a></li>
 							</ul>
 						</li>
-						
+
 						<li class="nav-item"><a href="#" class="nav-link"> <i class="nav-icon fas fa-edit"></i>
-                <p>
-                  預約管理 <i class="right fas fa-angle-left"></i>
-                </p>
-              </a>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a th:href="@{/admin/layout/GetAllDailySchedules.html}" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>班表總覽
-                    </p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a th:href="@{/admin/layout/GetAllAppointments.html}" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>預約訂單列表</p>
-                  </a>
-                </li>
+								<p>
+									預約管理 <i class="right fas fa-angle-left"></i>
+								</p>
+							</a>
+							<ul class="nav nav-treeview">
+								<li class="nav-item">
+									<a th:href="@{/admin/layout/GetAllDailySchedules.html}" class="nav-link">
+										<i class="far fa-circle nav-icon"></i>
+										<p>班表總覽
+										</p>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a th:href="@{/admin/layout/GetAllAppointments.html}" class="nav-link">
+										<i class="far fa-circle nav-icon"></i>
+										<p>預約訂單列表</p>
+									</a>
+								</li>
 
-                <li class="nav-item">
-                  <a th:href="@{/admin/layout/GetAllAppointmentDetails.html}" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>預約明細</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a th:href="@{/admin/layout/GetAllServiceItems.html}" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>服務項目</p>
-                  </a>
-                </li>
-              </ul>
-            </li>
+								<li class="nav-item">
+									<a th:href="@{/admin/layout/GetAllAppointmentDetails.html}" class="nav-link">
+										<i class="far fa-circle nav-icon"></i>
+										<p>預約明細</p>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a th:href="@{/admin/layout/GetAllServiceItems.html}" class="nav-link">
+										<i class="far fa-circle nav-icon"></i>
+										<p>服務項目</p>
+									</a>
+								</li>
+							</ul>
+						</li>
 
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="nav-icon fas fa-edit"></i>
-                <p>人員管理 <i class="right fas fa-angle-left"></i></p>
-              </a>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a th:href="@{/admin/layout/GetAllGroomers.html}" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>美容師列表</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a th:href="@{/admin/layout/GetAllLeaveRecords.html}" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>休假審核</p>
-                  </a>
-                </li>
-              </ul>
-            </li>
-          </ul>
-          </li>
-        </nav>
-        <!-- /.sidebar-menu -->
-      </div>
-      <!-- /.sidebar -->
-    </aside>
+						<li class="nav-item">
+							<a href="#" class="nav-link">
+								<i class="nav-icon fas fa-edit"></i>
+								<p>人員管理 <i class="right fas fa-angle-left"></i></p>
+							</a>
+							<ul class="nav nav-treeview">
+								<li class="nav-item">
+									<a th:href="@{/admin/layout/GetAllGroomers.html}" class="nav-link">
+										<i class="far fa-circle nav-icon"></i>
+										<p>美容師列表</p>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a th:href="@{/admin/layout/GetAllLeaveRecords.html}" class="nav-link">
+										<i class="far fa-circle nav-icon"></i>
+										<p>休假審核</p>
+									</a>
+								</li>
+							</ul>
+						</li>
+					</ul>
+					</li>
+				</nav>
+				<!-- /.sidebar-menu -->
+			</div>
+			<!-- /.sidebar -->
+		</aside>
 
 		<!-- Content Wrapper. Contains page content -->
 		<div class="content-wrapper">
@@ -412,12 +412,12 @@
 				format: 'L' // 這裡使用 'L' 代表當地短日期格式，例如 2025/11/29
 			});
 
-			$('#add_row').click(function() {
+			$('#add_row').click(function () {
 				// 複製現有的商品ID row
 				let row = $('#product_row_template').html();
 				$('.card-body').append(row);
 			});
-			$('form').on('change', '.product-select', function() {
+			$('form').on('change', '.product-select', function () {
 				let name = $(this).find('option:selected').data('name');
 				let price = $(this).find('option:selected').data('price')
 				$(this).siblings('.productName-input').val(name);
@@ -425,7 +425,7 @@
 			});
 
 			// 刪除功能
-			$('.card-body').on('click', '.remove_row', function() {
+			$('.card-body').on('click', '.remove_row', function () {
 				// 找到商品ID那一列（含刪除鈕）
 				let productRow = $(this).closest('.product_row');
 
@@ -436,7 +436,7 @@
 				productRow.remove();
 				qtyRow.remove();
 			});
-			
+
 
 		});
 	</script>
