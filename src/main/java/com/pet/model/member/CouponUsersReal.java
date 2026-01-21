@@ -46,4 +46,6 @@ public class CouponUsersReal {
     protected void onCreate() {
         this.assignedAt = LocalDateTime.now();
     }
+    
+    
 }
