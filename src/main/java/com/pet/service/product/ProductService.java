@@ -221,7 +221,6 @@ public class ProductService {
 	}
 
 	//批量改庫存
-	@Transactional // 務必加上，確保資料一致性
 	public void batchUpdateStock(List<ProductStockDTO> stockList) {
 	    // 1. 前置處理：過濾負數庫存，並轉成 Map (Key: productId, Value: stock) 以便快速查找
 	    Map<Integer, Integer> stockMap = stockList.stream()
