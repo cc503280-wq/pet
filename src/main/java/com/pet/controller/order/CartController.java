@@ -118,7 +118,7 @@ public String insertOrder(
     Order order = new Order();
     order.setMemberId(member_Id);
     if (couponUserId != null) {
-        order.setCouponId(couponUserId);
+        order.setCouponId(coupon_Id);
     } else {
         order.setCouponId(null); // ✅ 一定要明確
     }
