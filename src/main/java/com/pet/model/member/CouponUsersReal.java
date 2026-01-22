@@ -38,7 +38,6 @@ public class CouponUsersReal {
     @Column(name = "assigned_at", nullable = false, updatable = false)
     private LocalDateTime assignedAt;
 
-    @Column(nullable = false)
 	private LocalDate usedAt;
     
     @PrePersist
