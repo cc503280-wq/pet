@@ -113,12 +113,12 @@ public String insertOrder(
         @RequestParam("totalAmountDiscountPoints") BigDecimal TotalAmountDiscountPoints,
         @RequestParam("getPoint") Integer getPoint
 		) {
-
+	System.out.println(coupon_Id+"user:"+couponUserId);
     // 1. 建立訂單主表
     Order order = new Order();
     order.setMemberId(member_Id);
     if (couponUserId != null) {
-        order.setCouponId(couponUserId);
+        order.setCouponId(coupon_Id);
     } else {
         order.setCouponId(null); // ✅ 一定要明確
     }
