@@ -43,7 +43,7 @@ public class CouponUsersRealService {
 	    CouponUsersReal couponUser = CouponUsersReal.builder()
 	        .memberId(memberId)
 	        .couponId(welcomeCoupon.getCouponId())
-	        .status("UNUSED")   // 未使用
+	        .status("unused")   // 未使用
 	        .build();
 
 	    // 4. 存進 coupon_users 表
