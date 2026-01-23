@@ -120,9 +120,9 @@ public String insertOrder(
     if (couponUserId != null) {
         order.setCouponId(coupon_Id);
     } else {
-        order.setCouponId(null); // ✅ 一定要明確
+        order.setCouponId(null); 
     }
-    order.setOrderDate(LocalDateTime.now());
+    order.setOrderDate(LocalDateTime.now().withNano(0));
     order.setStatus("下訂單完成");
     order.setTotalAmountUndiscount(total_price);
     order.setTotalAmountDiscount(discountPrice);

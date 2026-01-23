@@ -41,6 +41,5 @@ public class OrderItem implements Serializable {
 	@NonNull
 	private Integer subtotal;
 	
-	@Transient
-	private String productName;
+
 }
