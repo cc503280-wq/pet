@@ -46,6 +46,7 @@ public class Member {
 	@JsonFormat(pattern = "yyyy-MM-dd")
 	private LocalDate birthday;
 	
+	@Column(unique = true)
 	private String phone;
 	
 	private String address;

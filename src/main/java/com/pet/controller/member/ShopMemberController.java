@@ -1,6 +1,7 @@
 package com.pet.controller.member;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,16 +9,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.pet.dto.member.LoginRequest;
 import com.pet.dto.member.MemberProfileDTO;
+import com.pet.dto.member.MemberRegisterDTO;
 import com.pet.model.member.Member;
+import com.pet.service.member.CouponUsersRealService;
 import com.pet.service.member.MemberService;
 import com.pet.util.JwtUtils;
 import com.pet.util.LoginUser;
@@ -28,6 +34,9 @@ public class ShopMemberController {
 
 	@Autowired
     private MemberService memberService; // 你處理資料庫邏輯的 Service
+	
+	@Autowired
+	private CouponUsersRealService couponUsersRealService;
 
     @Autowired
     private JwtUtils jwtUtils;
@@ -159,5 +168,35 @@ public class ShopMemberController {
         } catch (IOException e) {
             return ResponseEntity.status(500).body("圖片上傳失敗：" + e.getMessage());
         }
+    }
+    
+    @PostMapping("/register")
+    public ResponseEntity<?> register(
+            @RequestPart("member") MemberRegisterDTO dto,
+            @RequestPart(value = "avatar", required = false) MultipartFile avatar
+    ) throws IOException {
+
+        if (memberService.findMemberByEmail(dto.getEmail()) != null) {
+            return ResponseEntity.badRequest().body("此 Email 已被註冊");
+        }
+        if (dto.getPhone() != null && !dto.getPhone().trim().isEmpty()
+                && memberService.findMemberByPhone(dto.getPhone()) != null) {
+            return ResponseEntity.badRequest().body("此手機號碼已被註冊");
+        }
+
+        Member savedMember = memberService.register(dto, avatar);
+        return ResponseEntity.ok("註冊成功，會員編號：" + savedMember.getMemberId());
+    }
+
+
+    
+    @GetMapping("/check-email")
+    public ResponseEntity<Boolean> checkEmail(@RequestParam String email) {
+        return ResponseEntity.ok(memberService.findMemberByEmail(email) != null);
+    }
+
+    @GetMapping("/check-phone")
+    public ResponseEntity<Boolean> checkPhone(@RequestParam String phone) {
+        return ResponseEntity.ok(memberService.findMemberByPhone(phone) != null);
     }
 }

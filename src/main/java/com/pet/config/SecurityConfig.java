@@ -48,14 +48,20 @@ public class SecurityConfig {
             // 2. 關閉 CSRF 跨站請求偽造 (因為前後端分離使用 JWT，不需要這個)
             .csrf(csrf -> csrf.disable())
             
-            // 3. 設定權限規則
+         // 3. 設定權限規則
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/shop/members/login", "/shop/members/register").permitAll() // 登入註冊不擋
-                .requestMatchers("/shop/products/**").permitAll() // 商品瀏覽不擋
-                .requestMatchers(HttpMethod.GET,"/api/reviews/**").permitAll()
-                //FIXME: 允許未登入查看優惠券
-                .requestMatchers("/shop/coupons/active").permitAll() // 允許未登入查看優惠券
-                .anyRequest().authenticated() // 其他 /shop 下的所有請求都要登入
+                // 將檢查 Email 與手機的路徑加入 permitAll()
+                .requestMatchers(
+                    "/shop/members/login", 
+                    "/shop/members/register", 
+                    "/shop/members/check-email", 
+                    "/shop/members/check-phone"
+                ).permitAll() 
+                
+                .requestMatchers("/shop/products/**").permitAll() 
+                .requestMatchers(HttpMethod.GET, "/api/reviews/**").permitAll()
+                .requestMatchers("/shop/coupons/active").permitAll() 
+                .anyRequest().authenticated() 
             )
             
             // 4. 改為無狀態 Session (不使用 Cookie)
