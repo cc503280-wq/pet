@@ -36,6 +36,7 @@ public class WebConfig implements WebMvcConfigurer {
                         "/index.html", // Vue 入口
                         "/assets/**", // Vue 打包後的資源
                         "/shop/**",
+                        "/cart/**",
                         "/auth/login", // 排除登入 API
                         "/auth/logout", // 排除登出 API
                         "/admin/layout/Login.html", // 排除登入頁面
