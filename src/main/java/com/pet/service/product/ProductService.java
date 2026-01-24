@@ -18,9 +18,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import com.pet.dao.member.MemberPetRepository;
 import com.pet.dao.product.CategoryRepository;
 import com.pet.dao.product.ProductRepository;
 import com.pet.dto.product.ProductStockDTO;
+import com.pet.model.member.MemberPet;
 import com.pet.model.product.Category;
 import com.pet.model.product.Product;
 
@@ -33,6 +35,9 @@ public class ProductService {
 
 	@Autowired
 	private CategoryRepository cRepos;
+	
+	@Autowired
+	private MemberPetRepository petRepo;
 
 	@Autowired
 	private Cloudinary cloudinary;
@@ -325,6 +330,59 @@ public class ProductService {
 
 	    // 🟢 3. 呼叫剛剛寫的萬用查詢
 	    return pRepos.searchProducts(categoryId, keyword, minPrice, maxPrice, pageable);
+	}
+	
+	public List<Product> getRecommendations(Integer memberId) {
+	    // --- 情況 A: 訪客 (沒登入) ---
+	    if (memberId == null) {
+	        return pRepos.findRandomProducts();
+	    }
+
+	    // --- 情況 B: 會員 (抓寵物) ---
+	    List<MemberPet> pets = petRepo.findByMemberMemberId(memberId);
+	    
+	    // 如果會員沒養寵物，也給隨機
+	    if (pets.isEmpty()) {
+	        return pRepos.findRandomProducts();
+	    }
+
+	    // --- 提取關鍵字 ---
+	    // 這裡示範簡單邏輯，您可以再擴充
+	    String keyword1 = ""; 
+	    String keyword2 = "";
+
+	    for (MemberPet pet : pets) {
+	        // 判斷年齡
+	        if ("老年".equals(pet.getPetAge())) {
+	            keyword1 = "老"; // 匹配: 老犬, 老貓, 養老
+	        } else if ("幼年".equals(pet.getPetAge())) {
+	            keyword1 = "幼"; // 匹配: 幼犬, 幼貓
+	        } else {
+	            keyword1 = "成"; // 匹配: 成犬, 成貓
+	        }
+
+	        // 判斷物種
+	        if ("狗".equals(pet.getPetType())) {
+	            keyword2 = "犬"; // 商品通常寫"犬" (全犬, 幼犬)
+	        } else if ("貓".equals(pet.getPetType())) {
+	            keyword2 = "貓";
+	        }
+	        
+	        // 簡單起見，只要抓到一組關鍵字就跳出搜尋 (或是您可以做更複雜的權重)
+	        if (!keyword1.isEmpty() && !keyword2.isEmpty()) break;
+	    }
+
+	    // 搜尋資料庫 (取前 4 筆)
+	    List<Product> results = pRepos.findRecommendedProducts(keyword1, keyword2, PageRequest.of(0, 4));
+	    
+	    // 如果推薦結果太少 (例如關鍵字沒對中)，補隨機商品
+	    if (results.size() < 4) {
+	        List<Product> randoms = pRepos.findRandomProducts();
+	        // 補滿 4 個 (這邊簡化處理，直接回傳隨機)
+	        if(results.isEmpty()) return randoms;
+	    }
+
+	    return results;
 	}
 	
 }

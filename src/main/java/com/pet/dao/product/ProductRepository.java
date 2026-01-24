@@ -52,5 +52,20 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 			+ "AND (:minPrice IS NULL OR p.price >= :minPrice) " + "AND (:maxPrice IS NULL OR p.price <= :maxPrice)")
 	Page<Product> searchProducts(@Param("categoryId") Integer categoryId, @Param("keyword") String keyword,
 			@Param("minPrice") Integer minPrice, @Param("maxPrice") Integer maxPrice, Pageable pageable);
+	
 
+	// 1. 訪客用：隨機推薦 (Native Query 效能較好)
+    @Query(value = "SELECT TOP 4 * FROM products WHERE is_active = 1 ORDER BY NEWID()", nativeQuery = true)
+    List<Product> findRandomProducts();
+
+    // 2. 會員用：根據關鍵字列表推薦 (只要符合任一關鍵字即可)
+    // 這裡使用 DISTINCT 避免重複商品
+    @Query("SELECT p FROM Product p WHERE p.isActive = true AND (" +
+            "p.productName LIKE %:keyword1% OR " +
+            "p.productName LIKE %:keyword2% OR " +
+            "p.description LIKE %:keyword1% OR " +
+            "p.description LIKE %:keyword2%)")
+     List<Product> findRecommendedProducts(@Param("keyword1") String keyword1, 
+                                           @Param("keyword2") String keyword2, 
+                                           Pageable pageable);
 }

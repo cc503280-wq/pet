@@ -19,6 +19,7 @@ import com.pet.dto.product.ProductStockDTO;
 import com.pet.model.product.Category;
 import com.pet.model.product.Product;
 import com.pet.service.product.ProductService;
+import com.pet.util.LoginUser;
 
 @RestController // 1. 告訴 Spring 這是一個 REST API (會回傳 JSON)
 @RequestMapping("/products")
@@ -169,6 +170,13 @@ public class ProductController {
 	@GetMapping("/store/categories")
 	public ResponseEntity<List<Category>> getCategories() { // 回傳型態變了
 	    return ResponseEntity.ok(pService.getAllCategories());
+	}
+	
+	@GetMapping("/store/recommendations")
+	public ResponseEntity<List<Product>> getRecommendations(@LoginUser Integer memberId) {
+	    // Controller 只需要把 memberId (可能是 null) 傳給 Service
+	    // Service 會自己判斷是訪客還是會員
+	    return ResponseEntity.ok(pService.getRecommendations(memberId));
 	}
 	
 }

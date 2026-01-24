@@ -46,6 +46,7 @@ public class WebConfig implements WebMvcConfigurer {
                         "/scss/**", // 樣式資源
                         "/products/**",
                         "/products/store/**",
+                        "/products/store/recommendations",
                         "/store/**", // 首頁熱銷推薦 API
                         "/api/**",
                         "/favicon.ico",
