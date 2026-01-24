@@ -1,6 +1,7 @@
 package com.pet.service.appointment;
 
 import com.pet.common.AppConstants;
+
 import com.pet.dao.appointment.*;
 import com.pet.dao.member.MemberRepository;
 import com.pet.model.appointment.Appointment;
@@ -28,8 +29,10 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
-
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
+import org.springframework.retry.annotation.Retryable;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Recover;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -113,14 +116,48 @@ public class AppointmentService {
 
     @Transactional
     public Appointment checkInAppointment(Integer id) {
-        return updateAppointmentStatus(id, AppConstants.APPOINTMENT_STATUS_IN_PROGRESS, "預約單號：{} 報到成功");
+        Appointment appointment = findAppointmentOrThrow(id);
+
+        LocalDate today = LocalDate.now();
+        LocalDate appointmentDate = appointment.getAppointmentDate();
+        
+        if (!appointmentDate.equals(today)) {
+            String errorMessage;
+            if (appointmentDate.isBefore(today)) {
+                errorMessage = String.format(
+                    "此預約日期為 %s，已經過期！今天是 %s。如需報到，請聯繫管理員。",
+                    appointmentDate, today
+                );
+            } else {
+                errorMessage = String.format(
+                    "此預約日期為 %s，是未來的預約！今天是 %s。請於預約當天再進行報到。",
+                    appointmentDate, today
+                );
+            }
+            log.warn("報到失敗 - 日期不符。預約單號: {}, 預約日期: {}, 今天: {}", id, appointmentDate, today);
+            throw new RuntimeException(errorMessage);
+        }
+        
+        return updateStatus(appointment, AppConstants.APPOINTMENT_STATUS_IN_PROGRESS,
+                appt -> log.info("預約單號：{} 報到成功", appt.getAppointmentId()));
     }
 
     // ==================== 新增預約 ====================
-
+    
+    @Retryable(
+    		retryFor = { ObjectOptimisticLockingFailureException.class }, 
+    		noRetryFor = { RuntimeException.class },
+    	    maxAttempts = 25,  
+    	    backoff = @Backoff(
+    	        delay = 20,      // 初始等待縮短一點
+    	        multiplier = 1.1, // 每次增加 1.5 倍
+    	        maxDelay = 300,  // 最久不等超過 1 秒
+    	        random = true     // 👉 關鍵！開啟隨機，讓大家不要「一起醒來」
+    	    )
+    	)
     @Transactional
     public Appointment saveAppointment(AppointmentRequest request) {
-        try {
+       
             // 1. 資料準備與檢查
             LocalTime startTime = LocalTime.parse(request.getStartTime());
             LocalTime endTime = LocalTime.parse(request.getEndTime());
@@ -136,6 +173,8 @@ public class AppointmentService {
             Appointment appointment = createAppointmentEntity(request, selectedServices, startTime, endTime);
             Appointment savedAppt = appointmentRepository.save(appointment);
             log.info("預約單號: {} 建立成功, 總時長: {} 分鐘", savedAppt.getAppointmentId(), totalDuration);
+            
+            dailyScheduleRepository.flush();
 
             // 4. 鎖定時段
             // 修改美容師班表，把時段鎖起來 (0 -> 1)
@@ -146,10 +185,23 @@ public class AppointmentService {
 
             return savedAppt;
 
-        } catch (ObjectOptimisticLockingFailureException e) {
-            log.warn("樂觀鎖衝突: {}", e.getMessage());
-            throw new RuntimeException("該時段剛被其他人預約，請重新選擇時段！");
-        }
+    }
+    
+    @Recover
+    public Appointment recover(RuntimeException e, AppointmentRequest request) {
+        log.warn("🛑 攔截到非併發錯誤 ({}): {}", e.getClass().getSimpleName(), e.getMessage());
+        
+        // 什麼都不做，直接把原本的錯誤 (例如: "該時段已被預約") 往外丟
+        // 這樣 Controller 就會收到正確的錯誤訊息，而不是 ExhaustedRetryException
+        throw e;
+    }
+    
+    
+    @Recover
+    public Appointment recover(ObjectOptimisticLockingFailureException e, AppointmentRequest request) {
+        log.error("已重試 3 次，但仍發生樂觀鎖衝突。放棄預約。請求: {}", request);
+        // 這裡拋出的異常會傳給前端 Controller
+        throw new RuntimeException("系統繁忙（多人搶訂中），請重新整理頁面後再試！");
     }
 
     // ==================== 私有輔助方法 ====================
@@ -288,7 +340,6 @@ public class AppointmentService {
         appointment.setFinalPrice(request.getTotalPrice());
         appointment.setNotes(request.getNotes());
         appointment.setAppointmentStatus(AppConstants.APPOINTMENT_STATUS_CONFIRMED);
-        appointment.setPayStatus(AppConstants.PAY_STATUS_UNPAID);
 
         // 處理服務明細
         for (ServiceItem svc : services) {
@@ -307,7 +358,8 @@ public class AppointmentService {
         int startIndex = TimeSlotUtils.timeToStartIndex(startTime);
         String lockedSlots = TimeSlotUtils.lockSlots(schedule.getTimeSlots(), startIndex, totalDuration);
         schedule.setTimeSlots(lockedSlots);
-        dailyScheduleRepository.save(schedule);
+        //如果衝突，直接拋出Exception，這樣就不會沒有預約到的人也收到確認郵件
+        dailyScheduleRepository.saveAndFlush(schedule);
         log.info("已將美容師: {} 工作日: {} 時段鎖定", schedule.getGroomerId(), schedule.getWorkDate());
     }
 
