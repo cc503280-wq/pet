@@ -2,9 +2,13 @@ package com.pet.service.product;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +42,7 @@ public class ProductService {
 	
 	@Autowired
 	private MemberPetRepository petRepo;
-
+	
 	@Autowired
 	private Cloudinary cloudinary;
 	
@@ -333,56 +337,93 @@ public class ProductService {
 	}
 	
 	public List<Product> getRecommendations(Integer memberId) {
-	    // --- 情況 A: 訪客 (沒登入) ---
+	    // 1. 訪客處理
 	    if (memberId == null) {
+	        System.out.println(">> 訪客模式，直接回傳隨機商品");
 	        return pRepos.findRandomProducts();
 	    }
 
-	    // --- 情況 B: 會員 (抓寵物) ---
+	    // 2. 抓取會員寵物
 	    List<MemberPet> pets = petRepo.findByMemberMemberId(memberId);
-	    
-	    // 如果會員沒養寵物，也給隨機
+	    System.out.println(">> 找到寵物數量: " + pets.size());
+
 	    if (pets.isEmpty()) {
+	        System.out.println(">> 會員無寵物，回傳隨機商品");
 	        return pRepos.findRandomProducts();
 	    }
 
-	    // --- 提取關鍵字 ---
-	    // 這裡示範簡單邏輯，您可以再擴充
-	    String keyword1 = ""; 
-	    String keyword2 = "";
+	    // 3. 準備大池子
+	    Set<Product> recommendationSet = new HashSet<>();
 
+	    // 4. 針對每一隻寵物搜尋
 	    for (MemberPet pet : pets) {
-	        // 判斷年齡
-	        if ("老年".equals(pet.getPetAge())) {
-	            keyword1 = "老"; // 匹配: 老犬, 老貓, 養老
-	        } else if ("幼年".equals(pet.getPetAge())) {
-	            keyword1 = "幼"; // 匹配: 幼犬, 幼貓
-	        } else {
-	            keyword1 = "成"; // 匹配: 成犬, 成貓
-	        }
+	        // 準備一個清單來放「物種關鍵字」，因為狗可能有兩種講法
+	        List<String> typeKeywords = new ArrayList<>();
+	        String ageKey = "";
 
-	        // 判斷物種
+	        // --- 1. 判斷物種 (擴充同義詞) ---
 	        if ("狗".equals(pet.getPetType())) {
-	            keyword2 = "犬"; // 商品通常寫"犬" (全犬, 幼犬)
+	            typeKeywords.add("犬"); // 抓: 幼犬, 全犬
+	            typeKeywords.add("狗"); // 抓: 狗零食, 狗狗罐頭
 	        } else if ("貓".equals(pet.getPetType())) {
-	            keyword2 = "貓";
+	            typeKeywords.add("貓"); // 貓通常就只有貓
+	        } else {
+	            continue;
 	        }
+
+	        // --- 2. 判斷年齡 ---
+	        if ("老年".equals(pet.getPetAge())) {
+	            ageKey = "老";
+	        } else if ("幼年".equals(pet.getPetAge())) {
+	            ageKey = "幼";
+	        } else {
+	            ageKey = "成";
+	        }
+
+	        // --- 3. 核心搜尋 (跑迴圈搜所有同義詞) ---
+	        // 因為 "狗" 跟 "犬" 都要搜，所以這裡再多一層迴圈
+	        for (String typeKey : typeKeywords) {
+	            
+	            // 策略 A: 精準搜尋 (物種 + 年齡)
+	            // 例如：先找 "犬"+"老"，再找 "狗"+"老"
+	        	List<Product> strictMatches = pRepos.findByTarget(typeKey, ageKey, PageRequest.of(0, 10));
+	        	recommendationSet.addAll(strictMatches);
+
+	            // 策略 B: 廣泛搜尋 (只看物種)
+	            // 例如：先找 "犬" (不限年齡)，再找 "狗" (不限年齡)
+	        	List<Product> broadMatches = pRepos.findByTarget(typeKey, "", PageRequest.of(0, 10));
+	        	recommendationSet.addAll(broadMatches);
+	        }
+	    }
+
+	    // 5. 轉換成 List
+	    List<Product> finalResults = new ArrayList<>(recommendationSet);
+
+	    // 6. 補隨機商品
+	    if (finalResults.size() < 4) {
+	        int need = 4 - finalResults.size();
+	        System.out.println(">> 數量不足 4 筆，需要補充 " + need + " 筆隨機商品");
 	        
-	        // 簡單起見，只要抓到一組關鍵字就跳出搜尋 (或是您可以做更複雜的權重)
-	        if (!keyword1.isEmpty() && !keyword2.isEmpty()) break;
-	    }
-
-	    // 搜尋資料庫 (取前 4 筆)
-	    List<Product> results = pRepos.findRecommendedProducts(keyword1, keyword2, PageRequest.of(0, 4));
-	    
-	    // 如果推薦結果太少 (例如關鍵字沒對中)，補隨機商品
-	    if (results.size() < 4) {
 	        List<Product> randoms = pRepos.findRandomProducts();
-	        // 補滿 4 個 (這邊簡化處理，直接回傳隨機)
-	        if(results.isEmpty()) return randoms;
+	        for (Product p : randoms) {
+	            if (finalResults.size() >= 4) break;
+	            
+	            // 檢查 ID 是否已存在
+	            boolean exists = finalResults.stream().anyMatch(existing -> existing.getProductId().equals(p.getProductId()));
+	            if (!exists) {
+	                finalResults.add(p);
+	                System.out.println("   + 補充隨機: " + p.getProductName());
+	            }
+	        }
 	    }
 
-	    return results;
-	}
+	    // 7. 洗牌
+	    Collections.shuffle(finalResults);
+	    
+	    // 8. 取前 4 筆回傳
+	    List<Product> result = finalResults.stream().limit(4).collect(Collectors.toList());
+	    return result;
+	} 
+	
 	
 }

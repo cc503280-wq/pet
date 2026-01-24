@@ -60,12 +60,10 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 
     // 2. 會員用：根據關鍵字列表推薦 (只要符合任一關鍵字即可)
     // 這裡使用 DISTINCT 避免重複商品
-    @Query("SELECT p FROM Product p WHERE p.isActive = true AND (" +
-            "p.productName LIKE %:keyword1% OR " +
-            "p.productName LIKE %:keyword2% OR " +
-            "p.description LIKE %:keyword1% OR " +
-            "p.description LIKE %:keyword2%)")
-     List<Product> findRecommendedProducts(@Param("keyword1") String keyword1, 
-                                           @Param("keyword2") String keyword2, 
-                                           Pageable pageable);
+    @Query("SELECT p FROM Product p WHERE p.isActive = true AND " +
+    	       "(p.productName LIKE %:type%) AND " + // 🔴 改這裡：物種只準搜「商品名稱」
+    	       "(p.productName LIKE %:age% OR p.description LIKE %:age%)")
+    	List<Product> findByTarget(@Param("type") String type, 
+    	                           @Param("age") String age, 
+    	                           Pageable pageable);
 }

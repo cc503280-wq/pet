@@ -59,7 +59,16 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
             	// 🔥 關鍵修正：放行所有 Preflight (OPTIONS) 請求 1/23加的 購物車用
             	.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .requestMatchers("/shop/members/login", "/shop/members/register").permitAll() // 登入註冊不擋
+            	.requestMatchers(
+                        "/shop/members/login", 
+                        "/shop/members/register", 
+                        "/shop/members/check-email", 
+                        "/shop/members/check-phone",
+                        // --- 新增這兩行 ---
+                        "/shop/members/forgot-password", 
+                        "/shop/members/reset-password"
+                        // ----------------
+                    ).permitAll() // 登入註冊不擋
                 .requestMatchers("/shop/products/**").permitAll() // 商品瀏覽不擋
                 .requestMatchers(HttpMethod.GET,"/api/reviews/**").permitAll()
                 //FIXME: 允許未登入查看優惠券
@@ -85,7 +94,6 @@ public class SecurityConfig {
             
             // 加入這一行：在檢查帳號密碼之前，先檢查有沒有 JWT Token
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-
         return http.build();
     }
 
