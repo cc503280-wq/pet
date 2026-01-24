@@ -170,7 +170,16 @@
 			<groupId>org.hibernate.orm</groupId>
 			<artifactId>hibernate-core</artifactId>
 		</dependency>
-	
+		<!--樂觀鎖衝突，同天不同時段的解決辦法套件-->
+		<dependency>
+    		<groupId>org.springframework.retry</groupId>
+    		<artifactId>spring-retry</artifactId>
+    		<version>2.0.12</version>
+		</dependency>
+		<dependency>
+    		<groupId>org.springframework</groupId>
+    		<artifactId>spring-aspects</artifactId>
+		</dependency>
 		
 		<!--swagger 整理所有後端有的API資訊-->
 		<dependency>
