@@ -17,11 +17,9 @@ import com.pet.util.LoginUser;
 @RequestMapping("/shop/couponusers")
 public class ShopCouponUsersController {
 
-    //FIXME: 剛剛新增的東西
     @Autowired
     private CouponUsersService couponUsersService;
     
-    //FIXME: 剛剛新增的東西
     @Autowired
     private CouponService couponService;
 
@@ -38,7 +36,6 @@ public class ShopCouponUsersController {
         return ResponseEntity.ok(myCoupons);
     }
 
-    //FIXME: 剛剛新增的東西
     // 取得所有可領取的優惠券 (公開 API)
     @GetMapping("/active")
     public ResponseEntity<?> getActiveCoupons() {
