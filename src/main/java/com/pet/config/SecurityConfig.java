@@ -55,6 +55,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET,"/api/reviews/**").permitAll()
                 //FIXME: 允許未登入查看優惠券
                 .requestMatchers("/shop/coupons/active").permitAll() // 允許未登入查看優惠券
+                .requestMatchers("/appointments/**").authenticated()//需要登入
                 .anyRequest().authenticated() // 其他 /shop 下的所有請求都要登入
             )
             
