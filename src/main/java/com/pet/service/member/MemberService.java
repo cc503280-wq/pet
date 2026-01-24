@@ -19,6 +19,7 @@ import com.pet.dto.member.MemberRegisterDTO;
 import com.pet.dto.member.RegistrationStatsDTO;
 import com.pet.model.member.Member;
 import com.pet.model.member.MemberPet;
+import com.pet.service.appointment.MailService;
 
 
 @Service
@@ -33,6 +34,9 @@ public class MemberService {
 	
 	@Autowired
 	private Cloudinary cloudinary;
+	
+	@Autowired
+	private MailService mailService;
 	
 	public List<Member> getAllMembers() {
         return memberRepository.findAllByOrderByMemberIdAsc();
@@ -252,7 +256,11 @@ public class MemberService {
 
         //發放新手優惠券
         couponUsersRealService.assignWelcomeCoupon(savedMember.getMemberId());
-
+        
+        // 寄送歡迎信
+        // 傳入註冊的 email 和 會員姓名
+        mailService.sendWelcomeEmail(savedMember.getEmail(), savedMember.getName());
+        
         return savedMember;
     }
     

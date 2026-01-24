@@ -227,6 +227,7 @@ public class ShopMemberController {
         }
     }
     
+    //會員註冊
     @PostMapping("/register")
     public ResponseEntity<?> register(
             @RequestPart("member") MemberRegisterDTO dto,
@@ -246,12 +247,13 @@ public class ShopMemberController {
     }
 
 
-    
+    //檢查email重複
     @GetMapping("/check-email")
     public ResponseEntity<Boolean> checkEmail(@RequestParam String email) {
         return ResponseEntity.ok(memberService.findMemberByEmail(email) != null);
     }
 
+    //檢查手機重複
     @GetMapping("/check-phone")
     public ResponseEntity<Boolean> checkPhone(@RequestParam String phone) {
         return ResponseEntity.ok(memberService.findMemberByPhone(phone) != null);

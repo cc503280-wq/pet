@@ -157,4 +157,59 @@ public class MailService {
         
         mailSender.send(message);
     }
+    
+    /**
+     * 發送註冊成功歡迎信 (專注於優惠券領取)
+     * @param toEmail 收件者信箱
+     * @param memberName 會員姓名
+     */
+    @Async
+    public void sendWelcomeEmail(String toEmail, String memberName) {
+        log.info("準備發送新用戶歡迎信給 {}", toEmail);
+
+        String subject = "🎁 歡迎加入 MaoMaoLand！您的專屬新用戶好禮已送達";
+
+        String content = String.format(
+            "<div style='font-family: sans-serif; max-width: 600px; margin: auto; border: 1px solid #f0f0f0; border-radius: 10px; padding: 20px; color: #333;'>" +
+            "  <div style='text-align: center;'>" +
+            "    <h2 style='color: #be8754;'>歡迎 <strong>%s</strong> 來到 MaoMaoLand！🐾</h2>" +
+            "    <p style='font-size: 1.1em;'>很高興能與您和毛孩一起開啟這段旅程。</p>" +
+            "  </div>" +
+            "  <hr style='border: 0; border-top: 1px solid #eee;'/>" +
+            
+            "  " +
+            "  <div style='background-color: #fff9f2; border: 2px dashed #be8754; border-radius: 15px; padding: 25px; margin: 25px 0; text-align: center;'>" +
+            "    <span style='font-size: 0.9em; color: #be8754; font-weight: bold;'>NEW MEMBER GIFT</span>" +
+            "    <h3 style='margin: 10px 0; color: #d44c4c; font-size: 1.6em;'>✨ 新用戶專屬迎新優惠券 ✨</h3>" +
+            "    <p style='margin: 10px 0; font-size: 1em;'>我們已將專屬優惠券存入您的帳戶囉！</p>" +
+            "    <div style='background-color: #be8754; color: white; display: inline-block; padding: 5px 15px; border-radius: 20px; font-size: 0.9em; margin-bottom: 15px;'>" +
+            "      登入後自動領取" +
+            "    </div>" +
+            "    <p style='color: #d44c4c; font-weight: bold; margin: 0; font-size: 0.95em;'>" +
+            "      ⏱️ 請把握時間：優惠券期限僅有一個月，逾期失效！" +
+            "    </p>" +
+            "  </div>" +
+
+            "  <div style='text-align: center; margin: 30px 0;'>" +
+            "    <p>現在就登入查看您的優惠券並開始逛逛吧：</p>" +
+            "    <a href='http://localhost:5173/#/login' style='background-color: #be8754; color: white; padding: 15px 35px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 1.1em; display: inline-block;'>" +
+            "      登入領取專屬好禮" +
+            "    </a>" +
+            "  </div>" +
+
+            "  <p style='color: #888; font-size: 0.85em; line-height: 1.6; text-align: center; margin-top: 40px;'>" +
+            "    期待您的光臨！<br/>" +
+            "    MaoMaoLand 團隊 敬上 🐾" +
+            "  </p>" +
+            "</div>",
+            memberName
+        );
+
+        try {
+            sendSimpleHtmlEmail(toEmail, subject, content);
+            log.info("新用戶歡迎信已成功發送至 {}", toEmail);
+        } catch (Exception e) {
+            log.error("發送新用戶歡迎信失敗：{}", toEmail, e);
+        }
+    }
 }
