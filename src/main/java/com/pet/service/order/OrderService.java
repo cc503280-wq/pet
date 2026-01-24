@@ -6,13 +6,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.pet.dao.order.OrderItemRepository;
 import com.pet.dao.order.OrderRepository;
+import com.pet.dao.product.ProductRepository;
+
 import com.pet.model.order.Order;
+import com.pet.model.product.Product;
 
 @Service
 public class OrderService {
 	@Autowired
 	private OrderRepository oRepository;
+	
+	@Autowired
+	private ProductRepository pRepository;
+	
+	@Autowired 
+	private OrderItemRepository oiRepository;
 	
 	
 	//找全部訂單
@@ -24,6 +34,11 @@ public class OrderService {
 	//找單筆訂單透過訂單編號
 	public Order getOrderById(Integer id) {
 		return oRepository.getById(id);
+	}
+	
+	public List<Order> getUserOrder(Integer id){
+		
+		return oRepository.findByMemberId(id);
 	}
 	
 	//找多筆透過會員編號
@@ -49,6 +64,7 @@ public class OrderService {
                 })
                 .orElse(false);
     }
+	
 
 
 }
