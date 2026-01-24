@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -52,5 +53,21 @@ public class CartItemController {
         Integer memberId = 1; 
         cartService.removeFromCart(memberId, productId);
         return "移除成功";
+    }
+    
+    // ✅ 3. 更新商品
+    @PutMapping("/update")
+    public ResponseEntity<String> updateCartItem(
+            @LoginUser Integer memberId, 
+            @RequestBody AddToCartRequest request // 這裡可以用同一個 DTO，因為只需要 productId 和 quantity
+    ) {
+        if (memberId == null) {
+            return ResponseEntity.status(401).body("請先登入");
+        }
+        
+        // 呼叫 Service 更新數量
+        cartService.updateQuantity(memberId, request.getProductId(), request.getQuantity());
+        
+        return ResponseEntity.ok("更新成功");
     }
 }

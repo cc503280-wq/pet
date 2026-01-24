@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.pet.model.product.Favorite;
 import com.pet.service.product.FavoriteService;
+import com.pet.util.LoginUser;
 
 @RestController
 @RequestMapping("/shop/favorites")
@@ -25,8 +26,14 @@ public class FavoriteController {
     // 🟢 新增：Toggle API
     // POST /shop/favorites/toggle
     @PostMapping("/toggle")
-    public ResponseEntity<?> toggleFavorite(@RequestBody Map<String, Integer> payload) {
-        Integer memberId = payload.get("memberId");
+    public ResponseEntity<?> toggleFavorite(
+    		@LoginUser Integer memberId, 
+            @RequestBody Map<String, Integer> payload
+    ) {
+    	
+    	if (memberId == null) {
+            return ResponseEntity.status(401).body("請先登入");
+        }
         Integer productId = payload.get("productId");
 
         if (memberId == null || productId == null) {
