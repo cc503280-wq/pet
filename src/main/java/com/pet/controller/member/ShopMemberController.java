@@ -4,8 +4,11 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +26,7 @@ import com.pet.dto.member.LoginRequest;
 import com.pet.dto.member.MemberProfileDTO;
 import com.pet.dto.member.MemberRegisterDTO;
 import com.pet.model.member.Member;
+import com.pet.service.appointment.MailService;
 import com.pet.service.member.CouponUsersRealService;
 import com.pet.service.member.MemberService;
 import com.pet.util.JwtUtils;
@@ -43,6 +47,12 @@ public class ShopMemberController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+    
+    @Autowired
+    private StringRedisTemplate redisTemplate;
+
+    @Autowired
+    private MailService mailService; 
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
@@ -66,10 +76,57 @@ public class ShopMemberController {
         }
     }
     
-    //測試用
-    @GetMapping("/me")
-    public ResponseEntity<?> testLogin(@LoginUser Integer userId) {
-        return ResponseEntity.ok("驗證成功！你的會員 ID 是: " + userId);
+    // 1. 忘記密碼：發送重設信件
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@RequestParam String email) {
+        // 先確認資料庫有無此會員
+        Member member = memberService.findMemberByEmail(email);
+        
+        // 基於安全考量，無論帳號是否存在，都回傳同樣的訊息，避免駭客探測 Email
+        if (member != null) {
+            // 生成 Token
+            String token = UUID.randomUUID().toString();
+            String redisKey = "auth:reset_token:" + token;
+
+            // 存入 Redis (15 分鐘過期)，Value 存 Email
+            redisTemplate.opsForValue().set(redisKey, email, 15, TimeUnit.MINUTES);
+
+            // 呼叫寫好的 MailService 寄信
+            mailService.sendForgotPasswordEmail(email, token);
+        }
+
+        return ResponseEntity.ok(Map.of("message", "重設連結已發送至您的信箱，請前往確認"));
+    }
+
+    // 2. 重設密碼：驗證 Token 並更新
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@RequestParam String token, @RequestParam String newPassword) {
+        String redisKey = "auth:reset_token:" + token;
+        
+        // 1. 從 Redis 抓取 Email
+        String email = redisTemplate.opsForValue().get(redisKey);
+
+        if (email == null) {
+            return ResponseEntity.status(400).body("連結已過期或無效");
+        }
+
+        // 2. 找到該會員並更新密碼
+        Member member = memberService.findMemberByEmail(email);
+        if (member != null) {
+            // 記得一定要加密新密碼
+            member.setPassword(passwordEncoder.encode(newPassword));
+            
+            // 使用你現有的 service 保存 (假設 memberService 有 update 方法)
+            // 如果沒有單純更換密碼的方法，建議在 MemberService 補一個
+            memberService.updateMemberPassword(member.getMemberId(), member.getPassword());
+
+            // 3. 修改成功後刪除 Redis Token
+            redisTemplate.delete(redisKey);
+            
+            return ResponseEntity.ok(Map.of("message", "密碼重設成功，請重新登入"));
+        }
+
+        return ResponseEntity.status(404).body("找不到對應的會員");
     }
     
     // 查詢個人詳細資料 (回傳 DTO)

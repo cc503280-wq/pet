@@ -256,4 +256,10 @@ public class MemberService {
         return savedMember;
     }
     
+    //重設密碼
+    public void updateMemberPassword(Integer id, String encodedPassword) {
+        Member member = memberRepository.findById(id).orElseThrow();
+        member.setPassword(encodedPassword);
+        memberRepository.save(member);
+    }
 }

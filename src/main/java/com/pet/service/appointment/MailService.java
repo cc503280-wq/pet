@@ -108,4 +108,53 @@ public class MailService {
         MatrixToImageWriter.writeToStream(bitMatrix, "PNG", pngOutputStream);
         return pngOutputStream.toByteArray();
     }
+    
+    /**
+     * 發送忘記密碼重設通知信 (非同步執行)
+     * @param toEmail 收件者信箱
+     * @param token Redis 中的驗證令牌
+     */
+    @Async
+    public void sendForgotPasswordEmail(String toEmail, String token) {
+        log.info("準備發送重設密碼信給 {}", toEmail);
+        
+        String subject = "[MaoMaoLand] 帳號密碼重設要求";
+        
+        // 這裡的網址請根據你前端的實際路由調整
+        String resetLink = "http://localhost:5173/#/reset-password?token=" + token;
+        
+        String content = String.format(
+            "<h3>親愛的飼主您好：</h3>" +
+            "<p>我們收到了您重設 MaoMaoLand 帳號密碼的請求。</p>" +
+            "<p>請點擊下方的按鈕來設定新密碼（連結將於 15 分鐘後失效）：</p>" +
+            "<div style='margin: 20px 0;'>" +
+            "  <a href='%s' style='background-color: #be8754; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;'>" +
+            "    立即重設密碼" +
+            "  </a>" +
+            "</div>" +
+            "<p>如果按鈕無法點擊，請複製此連結到瀏覽器：<br/>%s</p>" +
+            "<p style='color: gray; font-size: 0.8em;'>如果您並沒有要求重設密碼，請忽略此信，您的密碼不會被更改。</p>" +
+            "<p>MaoMaoLand 團隊 敬上 🐾</p>",
+            resetLink, resetLink
+        );
+
+        try {
+            sendSimpleHtmlEmail(toEmail, subject, content);
+            log.info("重設密碼信已成功發送至 {}", toEmail);
+        } catch (Exception e) {
+            log.error("發送重設密碼信失敗：{}", toEmail, e);
+        }
+    }
+
+    // 輔助方法：發送單純的 HTML 信件 (不帶 QR Code)
+    private void sendSimpleHtmlEmail(String to, String subject, String htmlContent) throws MessagingException {
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+        
+        helper.setTo(to);
+        helper.setSubject(subject);
+        helper.setText(htmlContent, true);
+        
+        mailSender.send(message);
+    }
 }
