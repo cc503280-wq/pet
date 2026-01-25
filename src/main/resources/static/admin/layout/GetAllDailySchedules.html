@@ -36,6 +36,8 @@
       rel="stylesheet"
       href="https://unpkg.com/vis-timeline@7.7.3/styles/vis-timeline-graph2d.min.css"
     />
+    <!-- SweetAlert2 (Bootstrap 4 Theme) -->
+    <link rel="stylesheet" href="../../plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
 
     <style type="text/css">
       /* 調整 sidebar logo 排版 */
@@ -559,6 +561,8 @@
     <!-- Vis-Timeline JS (時間軸套件) -->
     <script src="https://unpkg.com/vis-timeline@7.7.3/standalone/umd/vis-timeline-graph2d.min.js"></script>
 
+    <!-- SweetAlert2 -->
+<script src="../../plugins/sweetalert2/sweetalert2.min.js"></script>
     <script>
       // ========== 全域變數 ==========
       let timeline = null;
@@ -722,7 +726,11 @@
           })
           .catch(function (err) {
             console.error("Data Load Error:", err);
-            alert("載入資料失敗，請稍後再試。");
+            Swal.fire({
+              icon: "error",
+              title: "失敗",
+              text: "無法載入資料，請確認後端 Server 是否啟動！",
+            });
           })
           .finally(function () {
             $("#loadingOverlay").hide(); // 隱藏遮罩

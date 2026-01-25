@@ -31,6 +31,9 @@
       href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"
     />
 
+    <!-- SweetAlert2 (Bootstrap 4 Theme) -->
+<link rel="stylesheet" href="../../plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
+
     <style type="text/css">
       /* 調整 sidebar logo 排版 */
       .brand-link {
@@ -543,6 +546,9 @@
       type="text/javascript"
       src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"
     ></script>
+    <!-- SweetAlert2 -->
+  <script src="../../plugins/sweetalert2/sweetalert2.min.js"></script>
+
     <!-- 登出 -->
     <script src="../../dist/js/adminAuth.js"></script>
     <!-- .登出 -->
@@ -592,7 +598,11 @@
           },
           error: function (xhr) {
             console.error("Error:", xhr);
-            alert("無法載入資料，請確認後端 Server 是否啟動");
+            Swal.fire({
+              icon: "error",
+              title: "失敗",
+              text: "無法載入資料，請確認後端 Server 是否啟動！",
+            });
           },
         });
       }
@@ -635,11 +645,12 @@
           const tr = `
                          <tr>
                             <td>${g.groomerId}</td>
-                            <td>
-								<img src="${g.picture}" 
-                                 alt="avatar" 
-                                 style="width:40px; height:40px; border-radius:50%; object-fit:cover;">
-							</td>
+                             <td>
+                                <img src="${g.picture ? g.picture : '../../dist/img/default-150x150.png'}" 
+                                     alt="avatar" 
+                                     style="width:40px; height:40px; border-radius:50%; object-fit:cover;"
+                                     onerror="this.src='../../dist/img/default-150x150.png'">
+                             </td>
 							<td>${g.groomerName}</td>
                             <td>${g.phone}</td>
                             <td>${g.email}</td>
@@ -734,7 +745,11 @@
           dataType: "json",
           success: function (data) {
             if (data.length === 0) {
-              alert("查無符合條件的資料");
+              Swal.fire({
+                icon: "error",
+                title: "失敗",
+                text: "查無符合條件的資料！",
+              });
               renderTable([]); // 清空表格
             } else {
               renderTable(data);
@@ -742,7 +757,11 @@
           },
           error: function (xhr) {
             console.error("搜尋失敗:", xhr);
-            alert("搜尋發生錯誤");
+            Swal.fire({
+              icon: "error",
+              title: "失敗",
+              text: "搜尋發生錯誤！",
+            });
           },
         });
       }
@@ -776,7 +795,11 @@
             $("#Modal").modal("show");
           },
           error: function (err) {
-            alert("無法載入美容師資料");
+            Swal.fire({
+              icon: "error",
+              title: "失敗",
+              text: "請查詢後端 Server 是否啟動！",
+            });
           },
         });
       }
@@ -831,14 +854,22 @@
           contentType: false, // 必須設為 false，讓 Browser 自動加 Boundary
           success: function (res) {
             let msg = id ? "修改成功！" : "新增成功！";
-            alert(msg);
+            Swal.fire({
+              icon: "success",
+              title: "成功",
+              text: msg,
+            });
 
             $("#Modal").modal("hide");
             loadAllData();
           },
           error: function (xhr) {
             console.error(xhr);
-            alert("儲存失敗：" + (xhr.responseText || "未知錯誤"));
+            Swal.fire({
+              icon: "error",
+              title: "失敗",
+              text: "儲存失敗：" + (xhr.responseText || "未知錯誤！"),
+            });
           },
         });
       }
@@ -875,24 +906,37 @@
       function updateStatus(id, isActive) {
         let actionText = isActive ? "復職" : "開除";
 
-        if (!confirm(`確定要${actionText}這位美容師嗎？`)) {
-          return;
-        }
+        Swal.fire({
+          title: `確定要${actionText}這位美容師嗎？`,
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "確定",
+          cancelButtonText: "取消",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            $.ajax({
+              url: `${GROOMER_API}/${id}/status`,
+              type: "PATCH",
+              data: { isActive: false },
+              success: function (res) {
+                Swal.fire({
+                  icon: "success",
+                  title: "成功",
+                  text: `${actionText}成功！`,
+                });
+                loadAllData();
+              },
+              error: function (xhr) {
+                Swal.fire({
+                  icon: "error",
+                  title: "失敗",
+                  text: "儲存失敗：" + (xhr.responseText || "未知錯誤！"),
+                });
 
-        $.ajax({
-          url: `${GROOMER_API}/${id}/status`,
-          type: "PATCH",
-          data: { isActive: false },
-          success: function (res) {
-            alert(`${actionText}成功！`);
-            loadAllData();
-          },
-          error: function (xhr) {
-            let errorMsg = xhr.responseText;
-            alert(errorMsg);
-
-            console.error("Status Update Error:", xhr);
-          },
+                console.error("Status Update Error:", xhr);
+              },
+            });
+          }
         });
       }
     </script>

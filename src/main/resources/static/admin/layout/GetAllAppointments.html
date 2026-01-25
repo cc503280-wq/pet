@@ -40,6 +40,9 @@
     />
     <script src="https://uicdn.toast.com/calendar/latest/toastui-calendar.min.js"></script>
 
+    <!-- SweetAlert2 (Bootstrap 4 Theme) -->
+    <link rel="stylesheet" href="../../plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
+
     <style type="text/css">
       /* 調整 sidebar logo 排版 */
       .brand-link {
@@ -727,6 +730,8 @@
     ></script>
     <script src="../../dist/js/adminAuth.js"></script>
     <script src="../../dist/js/adminlte.min.js"></script>
+    <!-- SweetAlert2 -->
+    <script src="../../plugins/sweetalert2/sweetalert2.min.js"></script>
 
     <!-- Page Script -->
     <script>
@@ -773,7 +778,11 @@
           },
           error: function (xhr) {
             console.error("Error:", xhr);
-            alert("無法載入資料，請確認後端 Server 是否啟動");
+            Swal.fire({
+              icon: "error",
+              title: "錯誤",
+              text: "無法載入資料，請確認後端 Server 是否啟動",
+            });
           },
         });
       }
@@ -785,11 +794,19 @@
           type: "PATCH",
           success: function (data) {
             loadAllAppointments(); // 成功後重新整理列表
-            alert("預約已成功取消！");
+            Swal.fire({
+              icon: "success",
+              title: "成功",
+              text: "預約已成功取消！",
+            });
           },
           error: function (xhr) {
             console.error("Error:", xhr);
-            alert("操作失敗，請稍後再試");
+            Swal.fire({
+              icon: "error",
+              title: "失敗",
+              text: "操作失敗，請稍後再試",
+            });
           },
         });
       }
@@ -890,9 +907,18 @@
         $(document).on("click", ".btn-delete", function (e) {
           e.preventDefault();
           let appointmentId = $(this).data("id");
-          if (confirm("確定要取消此預約訂單嗎？(將設定為取消狀態)")) {
-            cancelAppointments(appointmentId);
-          }
+          Swal.fire({
+            title: "確定要取消此預約訂單嗎？",
+            text: "將設定為取消狀態",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "確定",
+            cancelButtonText: "取消",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              cancelAppointments(appointmentId);
+            }
+          });
         });
       }
 
@@ -946,7 +972,11 @@
           },
           error: function (xhr) {
             console.error("Search Error:", xhr);
-            alert("查詢失敗");
+            Swal.fire({
+              icon: "error",
+              title: "失敗",
+              text: "查詢失敗",
+            });
           },
         });
       }

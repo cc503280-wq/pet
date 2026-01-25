@@ -16,7 +16,7 @@
   <link rel="stylesheet" href="../../plugins/datatables-bs4/css/dataTables.bootstrap4.min.css" />
   <link rel="stylesheet" href="../../plugins/datatables-responsive/css/responsive.bootstrap4.min.css" />
   <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-
+  <link rel="stylesheet" href="../../plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
   <style type="text/css">
     /* 調整 sidebar logo 排版 */
     .brand-link {
@@ -535,6 +535,8 @@
   <script src="../../plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+  <!-- SweetAlert2 -->
+<script src="../../plugins/sweetalert2/sweetalert2.min.js"></script>
   <!-- 登出 -->
   <script src="../../dist/js/adminAuth.js"></script>
   <!-- .登出 -->
@@ -584,7 +586,11 @@
         },
         error: function (xhr) {
           console.error("Error:", xhr);
-          alert("無法載入資料，請確認後端 Server 是否啟動");
+          Swal.fire({
+            icon: 'error',
+            title: '錯誤',
+            text: '無法載入資料，請確認後端 Server 是否啟動',
+          });
         },
       });
     }
@@ -663,7 +669,11 @@
           // 4. 顯示 Modal
           $("#DetailModal").modal("show");
         } else {
-          alert("找不到該筆資料！");
+          Swal.fire({
+            icon: 'error',
+            title: '錯誤',
+            text: '找不到該筆資料！',
+          });
         }
       });
     }
@@ -708,7 +718,11 @@
         contentType: false,
         success: function (res) {
           let msg = id ? "修改成功！" : "新增成功！";
-          alert(msg);
+          Swal.fire({
+            icon: 'success',
+            title: '成功',
+            text: msg,
+          });
 
           $("#Modal").modal("hide");
 
@@ -716,7 +730,11 @@
         },
         error: function (xhr) {
           console.error(xhr);
-          alert("儲存失敗：" + (xhr.responseText || "未知錯誤"));
+          Swal.fire({
+            icon: 'error',
+            title: '錯誤',
+            text: '儲存失敗：' + (xhr.responseText || "未知錯誤"),
+          });
         },
       });
     }
@@ -764,7 +782,11 @@
         dataType: "json",
         success: function (data) {
           if (data.length === 0) {
-            alert("查無符合條件的服務項目");
+            Swal.fire({
+              icon: 'warning',
+              title: '警告',
+              text: '查無符合條件的服務項目',
+            });
             renderTable([]);
           } else {
             renderTable(data);
@@ -772,7 +794,11 @@
         },
         error: function (xhr) {
           console.error("搜尋失敗:", xhr);
-          alert("搜尋發生錯誤");
+          Swal.fire({
+            icon: 'error',
+            title: '錯誤',
+            text: '搜尋發生錯誤',
+          });
         },
       });
     }
@@ -823,7 +849,11 @@
         },
         error: function (xhr) {
           console.error("狀態切換失敗", xhr);
-          alert("切換失敗：" + (xhr.responseText || "伺服器錯誤"));
+          Swal.fire({
+            icon: 'error',
+            title: '錯誤',
+            text: '切換失敗：' + (xhr.responseText || "伺服器錯誤"),
+          });
         },
         complete: function () {
           $btn.prop("disabled", false);
