@@ -4,9 +4,12 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
+import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
@@ -15,43 +18,65 @@ import com.pet.service.appointment.MailService;
 import com.pet.dao.member.MemberRepository; 
 
 @Service
-public class CustomOAuth2UserService extends DefaultOAuth2UserService {
+public class CustomOAuth2UserService extends OidcUserService {
 
     @Autowired
     private MemberRepository memberRepository;
     
     @Autowired
-	private MailService mailService;
+    private MailService mailService;
     
     @Autowired
-	private CouponUsersRealService couponUsersRealService;
+    private CouponUsersRealService couponUsersRealService;
 
     @Override
-    public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-        OAuth2User oAuth2User = super.loadUser(userRequest);
+    public OidcUser loadUser(OidcUserRequest userRequest) throws OAuth2AuthenticationException {
+        // 1. 先呼叫父類別方法取得原始用戶資訊
+    	OidcUser oidcUser = super.loadUser(userRequest);
         
-        Map<String, Object> attributes = oAuth2User.getAttributes();
+        // 2. 取得這是哪一個平台 (例如 "google" 或 "line")
+        String registrationId = userRequest.getClientRegistration().getRegistrationId();
+        Map<String, Object> attributes = oidcUser.getAttributes();
         
-        // Google 的唯一識別碼叫做 "sub"
-        String googleId = (String) attributes.get("sub");
-        String email = (String) attributes.get("email");
-        String name = (String) attributes.get("name");
-        String picture = (String) attributes.get("picture");
+        String email = null;
+        String name = null;
+        String picture = null;
+        String googleId = null;
+        String lineId = null;
 
-        // 實作註冊/登入
-        updateOrSaveUser(googleId, email, name, picture);
+        // 3. 根據平台提取欄位
+        if ("google".equals(registrationId)) {
+            googleId = (String) attributes.get("sub");
+            email = (String) attributes.get("email");
+            name = (String) attributes.get("name");
+            picture = (String) attributes.get("picture");
+        } else if ("line".equals(registrationId)) {
+            lineId = (String) attributes.get("sub");
+            email = (String) attributes.get("email"); // 現在可以拿到 Email 了
+            name = (String) attributes.get("name");   // 現在可以拿到 Name 了
+            picture = (String) attributes.get("picture");
+        }
 
-        return oAuth2User;
+
+        // 4. 實作註冊/登入 (傳入新的參數)
+        updateOrSaveUser(googleId, lineId, email, name, picture);
+
+        return oidcUser;
     }
 
-    private void updateOrSaveUser(String googleId, String email, String name, String picture) {
-        // 優先用 email 找人，或者也可以用 googleId 找
+    private void updateOrSaveUser(String googleId, String lineId, String email, String name, String picture) {
+        // 優先用 email 找人
+    	if(email == null) return;
         Optional<Member> memberOptional = memberRepository.findByEmail(email);
 
         if (memberOptional.isPresent()) {
             // 已存在：更新資訊
             Member existingMember = memberOptional.get();
-            existingMember.setGoogleId(googleId); // 補上 Google ID
+            
+            // 根據來源更新對應的 ID (原本有的保留，沒有的補上)
+            if (googleId != null) existingMember.setGoogleId(googleId);
+            if (lineId != null) existingMember.setLineId(lineId);
+            
             existingMember.setName(name);
             existingMember.setPicture(picture);
             memberRepository.save(existingMember);
@@ -60,18 +85,16 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             Member newMember = Member.builder()
                     .email(email)
                     .googleId(googleId)
-                    .name(name)
+                    .lineId(lineId) // 存入 LINE ID
+                    .name(name != null ? name : "會員") 
                     .picture(picture)
-                    .password(null) // 第三方登入不設密碼
+                    .password(null) 
                     .build();
-            // 注意：status 和 points 會由 @PrePersist 自動處理，不需 builder 賦值
-            // 必須接收 save 回傳的物件，這樣才有 ID
+
             Member savedMember = memberRepository.save(newMember);
 
-            // 使用 savedMember.getMemberId() 確保 ID 不是 null
+            // 派發優惠券與寄送歡迎信
             couponUsersRealService.assignWelcomeCoupon(savedMember.getMemberId());
-            
-            // 寄送歡迎信
             mailService.sendWelcomeEmail(savedMember.getEmail(), savedMember.getName());
         }
     }

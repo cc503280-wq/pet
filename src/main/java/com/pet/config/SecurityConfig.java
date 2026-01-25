@@ -2,6 +2,7 @@ package com.pet.config;
 
 import com.pet.config.SecurityConfig;
 
+import java.time.Instant;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,13 +14,29 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.JwtDecoderFactory;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.security.oauth2.client.oidc.authentication.OidcIdTokenDecoderFactory;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
+import org.springframework.security.oauth2.jose.jws.SignatureAlgorithm;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtException;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
+
+import com.nimbusds.jwt.JWT;
+import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.JWTParser;
 
 import com.pet.service.member.CustomOAuth2UserService;
 import com.pet.util.JwtAuthenticationFilter;
 import com.pet.util.OAuth2SuccessHandler;
+
+
 
 @Configuration
 @EnableWebSecurity
@@ -80,10 +97,16 @@ public class SecurityConfig {
             // --- 新增：OAuth2 登入配置 ---
             .oauth2Login(oauth2 -> oauth2
                 .userInfoEndpoint(userInfo -> userInfo
-                    .userService(customOAuth2UserService)
+                		.oidcUserService(customOAuth2UserService)
                 )
                 // 用這個，處理產生 Token 並轉向
                 .successHandler(oAuth2SuccessHandler)
+                // 加上這個來捕捉錯誤！
+                .failureHandler((request, response, exception) -> {
+                    System.out.println("OAuth2 失敗原因: " + exception.getMessage());
+                    exception.printStackTrace(); // 這行會讓你在 Console 看到真正的錯誤
+                    response.sendRedirect("http://localhost:5173/login?error=" + exception.getMessage());
+                })
             )
             
             // 4. 改為無狀態 Session
@@ -102,5 +125,22 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(); // 密碼加密工具
+    }
+    
+    @Bean
+    public JwtDecoderFactory<ClientRegistration> idTokenDecoderFactory() {
+        OidcIdTokenDecoderFactory idTokenDecoderFactory = new OidcIdTokenDecoderFactory();
+        
+        // 設定演算法解析邏輯
+        idTokenDecoderFactory.setJwsAlgorithmResolver(clientRegistration -> {
+            // 對應 application.properties 中的 registrationId "line"
+            if ("line".equals(clientRegistration.getRegistrationId())) {
+                return MacAlgorithm.HS256;
+            }
+            // 其他預設使用 RS256
+            return SignatureAlgorithm.RS256;
+        });
+        
+        return idTokenDecoderFactory;
     }
 }
