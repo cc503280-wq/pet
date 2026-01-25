@@ -12,6 +12,8 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 @Component
 public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
@@ -26,22 +28,38 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
         
-        // 1. 取得 Google 資訊
-        OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal(); //目前是誰登入
+        // 1. 取得 Google/LINE 資訊
+        OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
         String email = oAuth2User.getAttribute("email");
 
-        // 2. 從資料庫抓取這個人（因為 CustomOAuth2UserService 已經先幫你存好資料了，這裡一定找得到）
+        // 2. 從資料庫抓取這個人
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("找不到使用者"));
 
-        // 3. 產生 Token (傳入 memberId，對應你的 jwtUtils 邏輯)
-        // 假設你的 jwtUtils.createToken 接收的是 Integer ID
+        // 3. 產生 Token
         String token = jwtUtils.createToken(member.getMemberId()); 
 
-        // 4. 跳轉回前端 Vue，把 Token 帶在網址
-        // 注意：這裡使用 #/ 或是 ? 視你的 Vue Router 模式而定
+        // 4. 判斷是否為新註冊用戶
+        // 邏輯：如果建立時間與現在時間差小於 10 秒，視為新註冊
+        boolean isNew = false;
+        if (member.getCreatedAt() != null) {
+            long diffInSeconds = Duration.between(
+                member.getCreatedAt(), 
+                LocalDateTime.now()
+            ).getSeconds();
+            
+            if (diffInSeconds < 10) { // 剛註冊 10 秒內都算新用戶
+                isNew = true;
+            }
+        }
+
+        // 5. 組裝跳轉 URL
         String targetUrl = "http://localhost:5173/#/login-success?token=" + token;
+        if (isNew) {
+            targetUrl += "&new=true";
+        }
         
+        // 6. 執行重導向
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
     }
 }

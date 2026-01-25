@@ -10,7 +10,8 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-import com.pet.model.member.Member; 
+import com.pet.model.member.Member;
+import com.pet.service.appointment.MailService;
 import com.pet.dao.member.MemberRepository; 
 
 @Service
@@ -18,6 +19,12 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     @Autowired
     private MemberRepository memberRepository;
+    
+    @Autowired
+	private MailService mailService;
+    
+    @Autowired
+	private CouponUsersRealService couponUsersRealService;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -58,7 +65,14 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                     .password(null) // 第三方登入不設密碼
                     .build();
             // 注意：status 和 points 會由 @PrePersist 自動處理，不需 builder 賦值
-            memberRepository.save(newMember);
+            // 必須接收 save 回傳的物件，這樣才有 ID
+            Member savedMember = memberRepository.save(newMember);
+
+            // 使用 savedMember.getMemberId() 確保 ID 不是 null
+            couponUsersRealService.assignWelcomeCoupon(savedMember.getMemberId());
+            
+            // 寄送歡迎信
+            mailService.sendWelcomeEmail(savedMember.getEmail(), savedMember.getName());
         }
     }
 }
