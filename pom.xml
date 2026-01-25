@@ -170,7 +170,7 @@
 			<groupId>org.hibernate.orm</groupId>
 			<artifactId>hibernate-core</artifactId>
 		</dependency>
-		<!--樂觀鎖衝突，同天不同時段的解決辦法套件-->
+		<!--樂觀鎖衝突，同天不同時段的解決辦法Retry套件-->
 		<dependency>
     		<groupId>org.springframework.retry</groupId>
     		<artifactId>spring-retry</artifactId>
@@ -179,6 +179,12 @@
 		<dependency>
     		<groupId>org.springframework</groupId>
     		<artifactId>spring-aspects</artifactId>
+		</dependency>
+		
+		<!--websocket-->
+		<dependency>
+    		<groupId>org.springframework.boot</groupId>
+    		<artifactId>spring-boot-starter-websocket</artifactId>
 		</dependency>
 		
 		<!--swagger 整理所有後端有的API資訊-->
