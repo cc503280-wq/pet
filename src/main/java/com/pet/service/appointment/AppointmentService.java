@@ -21,7 +21,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.io.ByteArrayOutputStream;
@@ -29,6 +31,7 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.retry.annotation.Backoff;
@@ -52,9 +55,13 @@ public class AppointmentService {
     private final AppointmentListRepository appointmentListRepository;
     private final ServiceItemRepository serviceItemRepository;
     private final AppointmentDetailListRepository appointmentDetailListRepository;
-    private final LineNotificationService lineNotificationService;
-    private final MailService mailService;
     private final MemberRepository memberRepository;
+    //注入Line通知功能
+    private final LineNotificationService lineNotificationService;
+    //注入Mail通知功能
+    private final MailService mailService;
+    //注入SimpMessagingTemplate-WebSocket功能
+    private final SimpMessagingTemplate messagingTemplate;
 
     // ==================== 查詢方法 ====================
 
@@ -137,6 +144,15 @@ public class AppointmentService {
             log.warn("報到失敗 - 日期不符。預約單號: {}, 預約日期: {}, 今天: {}", id, appointmentDate, today);
             throw new RuntimeException(errorMessage);
         }
+
+        // 先準備一個要傳送的內容 (例如用 Map)
+        Map<String, Object> message = new HashMap<>(); 
+        message.put("message", "您的毛孩已開始服務！");
+        message.put("status", "IN_PROGRESS");
+        message.put("appointmentId", id);
+
+        // 使用 messagingTemplate 傳送 WebSocket 消息
+        messagingTemplate.convertAndSend("/topic/appointment/"+id, (Object)message);
         
         return updateStatus(appointment, AppConstants.APPOINTMENT_STATUS_IN_PROGRESS,
                 appt -> log.info("預約單號：{} 報到成功", appt.getAppointmentId()));

@@ -20,7 +20,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
   @Override
   public void registerStompEndpoints(StompEndpointRegistry registry) { //設定連線大門
-    registry.addEndpoint("//ws-pet-grooming").setAllowedOriginPatterns("*").withSockJS(); //廣播大門
+    registry.addEndpoint("/ws-pet-grooming").setAllowedOriginPatterns("*").withSockJS(); //廣播大門
     //.addEndpoint("//ws-pet-grooming"):可自訂義地址
     //.setAllowedOriginPatterns("*"): 允許所有跨域連線
     //.withSockJS():WebSocket掛了，改用HTTP Long Polling (長輪詢)模擬連線

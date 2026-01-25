@@ -1,7 +1,7 @@
 package com.pet.controller.appointment;
 
-import java.util.List;
 
+import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,6 +36,7 @@ import lombok.extern.slf4j.Slf4j;
 public class AppointmentController {
 
     private final AppointmentService appointmentService;
+    
 
     // ==================== 查詢 API ====================
 
