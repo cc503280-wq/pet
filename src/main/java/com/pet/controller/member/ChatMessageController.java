@@ -3,6 +3,8 @@ package com.pet.controller.member;
 import com.pet.dto.member.ChatMessageDTO;
 import com.pet.model.member.ChatMessage;
 import com.pet.service.member.ChatMessageService;
+import com.pet.util.LoginUser;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -19,70 +21,80 @@ public class ChatMessageController {
     @Autowired
     private ChatMessageService chatService;
 
-    // 💡 這個大家容易忘記：這是 Spring 提供的「廣播器」，用來主動把訊息推給前端
     @Autowired
-    private SimpMessagingTemplate messagingTemplate; 
+    private SimpMessagingTemplate messagingTemplate;
 
-    // ================= REST API (歷史紀錄、未讀數) =================
+    // ================= REST API =================
 
     // 1. (前台) 取得我的歷史紀錄
-    // 用法: GET /shop/chat/history?memberId=1
     @GetMapping("/shop/chat/history")
-    public ResponseEntity<List<ChatMessage>> getMyHistory(@RequestParam Integer memberId) {
+    public ResponseEntity<List<ChatMessage>> getMyHistory(@LoginUser Integer memberId) {
         return ResponseEntity.ok(chatService.getChatHistory(memberId));
     }
 
-    // 2. (前台) 取得未讀數量 (小鈴鐺用)
+    // 2. (前台) 取得未讀數量
     @GetMapping("/shop/chat/unread")
-    public ResponseEntity<Long> getMyUnreadCount(@RequestParam Integer memberId) {
+    public ResponseEntity<Long> getMyUnreadCount(@LoginUser Integer memberId) {
         return ResponseEntity.ok(chatService.countUnreadForMember(memberId));
     }
 
-    // 3. (後台) 取得最近聊天列表 (管理員收件匣)
-    @GetMapping("/shop/admin/chat/recent")
+    // ================= 後台 API =================
+
+    // 3. (後台) 取得最近聊天列表
+    @GetMapping("/admin/chat/recent")
     public ResponseEntity<List<ChatMessageDTO>> getRecentChats() {
         return ResponseEntity.ok(chatService.getRecentChatMembers());
     }
 
-    // 4. (後台) 標示已讀 (當管理員點進聊天室時呼叫)
-    @PostMapping("/shop/admin/chat/read")
+    // 4. (後台) 標示已讀
+    @PostMapping("/admin/chat/read")
     public ResponseEntity<Void> markAsRead(@RequestParam Integer memberId) {
         chatService.markMessagesAsRead(memberId);
         return ResponseEntity.ok().build();
     }
 
-    // ================= WebSocket API (即時傳訊) =================
+    // 5. (後台) 取得特定會員的歷史紀錄 (給管理員看的)
+    @GetMapping("/admin/chat/history")
+    public ResponseEntity<List<ChatMessage>> getMemberHistory(@RequestParam Integer memberId) {
+        return ResponseEntity.ok(chatService.getChatHistory(memberId));
+    }
 
-    /**
-     * 接收前端發送的訊息
-     * 前端發送路徑: /app/sendMessage (因為 WebSocketConfig 設定了 /app 前綴)
-     * 
-     * @param payload 前端傳來的 JSON，例如: {"memberId": 1, "sender": "MEMBER", "content": "你好"}
-     */
+    // ================= WebSocket API ( Payload 傳遞) =================
+
+    // 1. 收信地址
+    // 前端發過來的路徑是 /app/sendMessage
+    // (因為 WebSocketConfig 設定了 /app 前綴，這裡只要寫 /sendMessage)
     @MessageMapping("/sendMessage")
     public void sendMessage(@Payload Map<String, Object> payload) {
-        // 解析前端傳來的資料
+
+        // 2. 拆開信件內容 (@Payload)
+        // 前端傳來的 JSON (信件內容) 當作 payload 進來
+        // 我們把它拆解成 memberId, sender, content
         Integer memberId = Integer.parseInt(payload.get("memberId").toString());
-        String sender = payload.get("sender").toString(); // "MEMBER" 或 "ADMIN"
+        String sender = payload.get("sender").toString();
         String content = payload.get("content").toString();
 
-        // 1. 先存入資料庫
+        // 3. 存擋 (先把信影印一份存到資料庫)
+        // 這樣使用者重新整理才看得到歷史紀錄
         ChatMessage savedMsg = chatService.saveMessage(memberId, sender, content);
 
-        // 2. 判斷要推播給誰
+        // 4. 分信 (郵差投遞)
         if ("MEMBER".equals(sender)) {
-            // A. 如果是【會員】發的 -> 推播給【管理員】
-            // 管理員訂閱的路徑: /topic/admin
+            // --- 情境 A：會員講話 ---
+
+            // 動作：推播給「管理員」
+            // 語法：messagingTemplate.convertAndSend(訂閱路徑, 訊息物件)
+            // 這裡的意思是：把信丟到 "/topic/admin" 這個信箱
+            // 因為所有管理員都在監聽這個信箱，所以他們都會收到通知！
             messagingTemplate.convertAndSend("/topic/admin", savedMsg);
-            
-            // --- 🤖 AI 伏筆 ---
-            // 下一階段我們會在這裡加上：
-            // if (是 AI 模式) { 呼叫 Gemini 並自動回覆(); }
 
         } else if ("ADMIN".equals(sender)) {
-            // B. 如果是【管理員】發的 -> 推播給【該位會員】
-            // 會員訂閱的路徑: /topic/user/{memberId}
-            messagingTemplate.convertAndSend("/topic/user/" + memberId, savedMsg);
+            // --- 情境 B：管理員/真人客服講話 ---
+
+            // 動作：推播給「該位會員」
+            // 這裡很關鍵！路徑是動態的："/topic/user/" + memberId
+            // 修正：必須配合前台 ChatSupport.vue 訂閱的頻道名稱 (/topic/user/...)
+            messagingTemplate.convertAndSend("/topic/member/" + memberId, savedMsg);
         }
     }
 }

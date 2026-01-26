@@ -36,8 +36,6 @@ import com.pet.service.member.CustomOAuth2UserService;
 import com.pet.util.JwtAuthenticationFilter;
 import com.pet.util.OAuth2SuccessHandler;
 
-
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -51,74 +49,74 @@ public class SecurityConfig {
 
     @Autowired
     private OAuth2SuccessHandler oAuth2SuccessHandler;
-    
+
     @Bean
     public SecurityFilterChain shopFilterChain(HttpSecurity http) throws Exception {
         http
-            // 1. 擴充攔截範圍，加入 /oauth2/** 與 /login/**，這套規則才管得到 Google 登入
-            .securityMatcher("/shop/**", "/api/reviews/**", "/oauth2/**", "/login/**", "/ws-chat/**") 
-            
-            // 開啟CORS支持
-            .cors(cors -> cors.configurationSource(request -> {
-                var corsConfiguration = new CorsConfiguration();
-                corsConfiguration.setAllowedOriginPatterns(List.of(
-                    "http://localhost:5173",
-                    "https://*.trycloudflare.com"
-                ));
-                corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
-                corsConfiguration.setAllowedHeaders(List.of("*"));
-                corsConfiguration.setAllowCredentials(true);
-                return corsConfiguration;
-            }))
-            
-            // 2. 關閉 CSRF
-            .csrf(csrf -> csrf.disable())
-            
-            // 3. 設定權限規則
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers(
-                    "/shop/members/login", 
-                    "/shop/members/register", 
-                    "/shop/members/check-email", 
-                    "/shop/members/check-phone",
-                    "/shop/members/forgot-password", 
-                    "/shop/members/reset-password",
-                    // --- 新增：放行 OAuth2 必要路徑 ---
-                    "/oauth2/**",
-                    "/login/oauth2/**",
-                    "/shop/ws-chat/**"
-                ).permitAll() 
-                
-                .requestMatchers("/shop/products/**").permitAll() 
-                .requestMatchers(HttpMethod.GET, "/api/reviews/**").permitAll()
-                .requestMatchers("/shop/coupons/active").permitAll() 
-                .anyRequest().authenticated() 
-            )
+                // 1. 擴充攔截範圍，加入 /oauth2/** 與 /login/**，這套規則才管得到 Google 登入
+                .securityMatcher("/shop/**", "/api/reviews/**", "/oauth2/**", "/login/**", "/ws-chat/**")
 
-            // --- 新增：OAuth2 登入配置 ---
-            .oauth2Login(oauth2 -> oauth2
-                .userInfoEndpoint(userInfo -> userInfo
-                		.oidcUserService(customOAuth2UserService)
-                )
-                // 用這個，處理產生 Token 並轉向
-                .successHandler(oAuth2SuccessHandler)
-                // 加上這個來捕捉錯誤！
-                .failureHandler((request, response, exception) -> {
-                    System.out.println("OAuth2 失敗原因: " + exception.getMessage());
-                    exception.printStackTrace(); // 這行會讓你在 Console 看到真正的錯誤
-                    response.sendRedirect("http://localhost:5173/login?error=" + exception.getMessage());
-                })
-            )
-            
-            // 4. 改為無狀態 Session
-            // 💡 提醒：OAuth2 流程中需要短暫 Session 儲存 state。
-            // 如果設為 STATELESS 導致登入報錯，請改為 IF_REQUIRED
-            .sessionManagement(session -> session
-                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-            )
-            
-            // 加入 JWT 過濾器
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                // 開啟CORS支持
+                .cors(cors -> cors.configurationSource(request -> {
+                    var corsConfiguration = new CorsConfiguration();
+                    corsConfiguration.setAllowedOriginPatterns(List.of(
+                            "http://localhost:5173",
+                            "https://*.trycloudflare.com"));
+                    corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+                    corsConfiguration.setAllowedHeaders(List.of("*"));
+                    corsConfiguration.setAllowCredentials(true);
+                    return corsConfiguration;
+                }))
+
+                // 2. 關閉 CSRF
+                .csrf(csrf -> csrf.disable())
+
+                // --- 新增：開啟 Frame 支援 (SockJS 必要) ---
+                // 因為 SockJS 有時會用 Iframe 來模擬連線，預設 Spring Security 會擋住 (X-Frame-Options: DENY)
+                // 導致 "Refused to display ... in a frame" 錯誤
+                .headers(headers -> headers.frameOptions(frame -> frame.disable()))
+
+                // 3. 設定權限規則
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(
+                                "/shop/members/login",
+                                "/shop/members/register",
+                                "/shop/members/check-email",
+                                "/shop/members/check-phone",
+                                "/shop/members/forgot-password",
+                                "/shop/members/reset-password",
+                                // --- 新增：放行 OAuth2 必要路徑 ---
+                                "/oauth2/**",
+                                "/login/oauth2/**",
+                                "/shop/ws-chat/**")
+                        .permitAll()
+
+                        .requestMatchers("/shop/products/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/reviews/**").permitAll()
+                        .requestMatchers("/shop/coupons/active").permitAll()
+                        .anyRequest().authenticated())
+
+                // --- 新增：OAuth2 登入配置 ---
+                .oauth2Login(oauth2 -> oauth2
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .oidcUserService(customOAuth2UserService))
+                        // 用這個，處理產生 Token 並轉向
+                        .successHandler(oAuth2SuccessHandler)
+                        // 加上這個來捕捉錯誤！
+                        .failureHandler((request, response, exception) -> {
+                            System.out.println("OAuth2 失敗原因: " + exception.getMessage());
+                            exception.printStackTrace(); // 這行會讓你在 Console 看到真正的錯誤
+                            response.sendRedirect("http://localhost:5173/login?error=" + exception.getMessage());
+                        }))
+
+                // 4. 改為無狀態 Session
+                // 💡 提醒：OAuth2 流程中需要短暫 Session 儲存 state。
+                // 如果設為 STATELESS 導致登入報錯，請改為 IF_REQUIRED
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
+
+                // 加入 JWT 過濾器
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -127,11 +125,11 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(); // 密碼加密工具
     }
-    
+
     @Bean
     public JwtDecoderFactory<ClientRegistration> idTokenDecoderFactory() {
         OidcIdTokenDecoderFactory idTokenDecoderFactory = new OidcIdTokenDecoderFactory();
-        
+
         // 設定演算法解析邏輯
         idTokenDecoderFactory.setJwsAlgorithmResolver(clientRegistration -> {
             // 對應 application.properties 中的 registrationId "line"
@@ -141,7 +139,7 @@ public class SecurityConfig {
             // 其他預設使用 RS256
             return SignatureAlgorithm.RS256;
         });
-        
+
         return idTokenDecoderFactory;
     }
 }
