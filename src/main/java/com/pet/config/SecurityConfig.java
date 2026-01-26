@@ -56,7 +56,7 @@ public class SecurityConfig {
     public SecurityFilterChain shopFilterChain(HttpSecurity http) throws Exception {
         http
             // 1. 擴充攔截範圍，加入 /oauth2/** 與 /login/**，這套規則才管得到 Google 登入
-            .securityMatcher("/shop/**", "/api/reviews/**", "/oauth2/**", "/login/**") 
+            .securityMatcher("/shop/**", "/api/reviews/**", "/oauth2/**", "/login/**", "/ws-chat/**") 
             
             // 開啟CORS支持
             .cors(cors -> cors.configurationSource(request -> {
@@ -85,7 +85,8 @@ public class SecurityConfig {
                     "/shop/members/reset-password",
                     // --- 新增：放行 OAuth2 必要路徑 ---
                     "/oauth2/**",
-                    "/login/oauth2/**"
+                    "/login/oauth2/**",
+                    "/shop/ws-chat/**"
                 ).permitAll() 
                 
                 .requestMatchers("/shop/products/**").permitAll() 
