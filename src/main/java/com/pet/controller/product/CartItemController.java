@@ -49,9 +49,8 @@ public class CartItemController {
     
     // ✅ 3. 移除商品
     @DeleteMapping("/remove/{productId}")
-    public String removeFromCart(@PathVariable Integer productId) {
-        Integer memberId = 1; 
-        cartService.removeFromCart(memberId, productId);
+    public String removeFromCart(@LoginUser Integer userId,@PathVariable Integer productId) {
+        cartService.removeFromCart(userId, productId);
         return "移除成功";
     }
     

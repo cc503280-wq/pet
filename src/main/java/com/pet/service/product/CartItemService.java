@@ -1,5 +1,6 @@
 package com.pet.service.product;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -30,7 +31,6 @@ public class CartItemService {
     private MemberRepository memberRepos;
 
     /**
-     * 🔥 核心功能：加入購物車
      * 邏輯：如果車裡已經有，就加數量；如果沒有，就新增一筆。
      */
     public void addToCart(Integer memberId, Integer productId, Integer quantity) {
@@ -46,11 +46,14 @@ public class CartItemService {
             CartItem existingItem = existingItemOpt.get();
             int newQuantity = existingItem.getQuantity() + quantity;
             
-            // (選用) 可以在這裡檢查庫存夠不夠
-            // if (newQuantity > product.getStock()) { throw ... }
+            // 檢查庫存
+            if (newQuantity > product.getStock()) {
+                 throw new RuntimeException("庫存不足！目前剩餘: " + product.getStock());
+            }
 
             existingItem.setQuantity(newQuantity);
             
+            existingItem.setPriceAtAdded(BigDecimal.valueOf(product.getPrice()));
             // JPA 有 Dirty Checking 機制，其實這裡不 call save 也會更新，但寫出來比較明確
             cartRepos.save(existingItem);
             System.out.println("✅ 商品已存在，數量更新為: " + newQuantity);
@@ -65,8 +68,12 @@ public class CartItemService {
             newItem.setProduct(product);
             newItem.setQuantity(quantity);
             
-            // 如果您有保留 price_at_added 欄位，可以在這裡設值
-            // newItem.setPriceAtAdded(product.getPrice());
+            // 🔥【修正點】：這裡原本被註解掉了，現在打開並加上轉型
+            if (product.getPrice() != null) {
+                newItem.setPriceAtAdded(BigDecimal.valueOf(product.getPrice()));
+            } else {
+                newItem.setPriceAtAdded(BigDecimal.ZERO);
+            }
 
             cartRepos.save(newItem);
             System.out.println("✅ 新增購物車項目: " + product.getProductName());
@@ -76,7 +83,7 @@ public class CartItemService {
     /**
      * 📋 查詢某人的購物車清單
      */
-public List<CartItemResponse> getMyCart(Integer memberId) {
+    public List<CartItemResponse> getMyCart(Integer memberId) {
         
         // 🔥 1. 把嚴謹檢查搬進來
         if (memberId == null) {
