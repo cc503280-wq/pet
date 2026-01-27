@@ -12,6 +12,7 @@ import com.pet.model.appointment.AppointmentRequest;
 import com.pet.model.appointment.DailySchedule;
 import com.pet.model.appointment.ServiceItem;
 import com.pet.model.member.Member;
+import com.pet.model.member.MemberPet;
 import com.pet.util.TimeSlotUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -62,6 +63,8 @@ public class AppointmentService {
     private final MailService mailService;
     //注入SimpMessagingTemplate-WebSocket功能
     private final SimpMessagingTemplate messagingTemplate;
+    //注入Twilio SMS通知功能
+    private final TwilioSmsService twilioSmsService;
 
     // ==================== 查詢方法 ====================
 
@@ -118,7 +121,23 @@ public class AppointmentService {
 
     @Transactional
     public Appointment completeAppointment(Integer id) {
-        return updateAppointmentStatus(id, AppConstants.APPOINTMENT_STATUS_COMPLETED, "預約單號：{} 服務完成");
+    	Appointment appointment = findAppointmentOrThrow(id);
+    	
+    	
+    	//準備Websocket
+    	Map<String, Object> message = new HashMap<>();
+        message.put("message", "您的毛孩服務已完成，可以來接牠囉！🐾");
+        message.put("status", AppConstants.APPOINTMENT_STATUS_COMPLETED);  // "已完成"
+        message.put("appointmentId", id);
+        
+       // 發送 WebSocket 通知給會員
+        messagingTemplate.convertAndSend("/topic/appointment/" + id, (Object) message);
+    	
+        //FIXME:記得改回來
+        //sendCompletionNotifications(appointment);
+    	
+        return updateStatus(appointment, AppConstants.APPOINTMENT_STATUS_COMPLETED,
+                appt -> log.info("預約單號：{} 服務完成", appt.getAppointmentId()));
     }
 
     @Transactional
@@ -127,7 +146,7 @@ public class AppointmentService {
 
         LocalDate today = LocalDate.now();
         LocalDate appointmentDate = appointment.getAppointmentDate();
-        
+       
         if (!appointmentDate.equals(today)) {
             String errorMessage;
             if (appointmentDate.isBefore(today)) {
@@ -148,7 +167,7 @@ public class AppointmentService {
         // 先準備一個要傳送的內容 (例如用 Map)
         Map<String, Object> message = new HashMap<>(); 
         message.put("message", "您的毛孩已開始服務！");
-        message.put("status", "IN_PROGRESS");
+        message.put("status", AppConstants.APPOINTMENT_STATUS_IN_PROGRESS);
         message.put("appointmentId", id);
 
         // 使用 messagingTemplate 傳送 WebSocket 消息
@@ -227,10 +246,10 @@ public class AppointmentService {
                 .orElseThrow(() -> new RuntimeException("找不到 ID 為 " + id + " 的預約"));
     }
 
-    private Appointment updateAppointmentStatus(Integer id, String newStatus, String logMessage) {
-        Appointment appointment = findAppointmentOrThrow(id);
-        return updateStatus(appointment, newStatus, appt -> log.info(logMessage, appt.getAppointmentId()));
-    }
+    // private Appointment updateAppointmentStatus(Integer id, String newStatus, String logMessage) {
+    //     Appointment appointment = findAppointmentOrThrow(id);
+    //     return updateStatus(appointment, newStatus, appt -> log.info(logMessage, appt.getAppointmentId()));
+    // }
 
     private Appointment updateStatus(Appointment appointment, String newStatus, Consumer<Appointment> onSuccess) {
         appointment.setAppointmentStatus(newStatus);
@@ -256,7 +275,8 @@ public class AppointmentService {
                         ? appointment.getGroomer().getGroomerName()
                         : "Unknown";
                 log.info("偵測到臨時取消 (< {} 小時)。觸發 LINE 通知...", URGENT_CANCEL_HOURS_THRESHOLD);
-                lineNotificationService.sendCancellationNotification(appointment, groomerName);
+                //TODO:等等需要再打開通知，目前先取消
+                //lineNotificationService.sendCancellationNotification(appointment, groomerName);
             } else {
                 log.info("取消時間在 {} 小時之前。不觸發通知。", URGENT_CANCEL_HOURS_THRESHOLD);
             }
@@ -301,6 +321,37 @@ public class AppointmentService {
             }
         } catch (Exception e) {
             log.error("發送預約通知信失敗，但預約已成功", e);
+        }
+    }
+
+    
+    /**
+     * 發送服務完成通知 (使用 Twilio SMS 簡訊)
+     */
+    private void sendCompletionNotifications(Appointment appointment) {
+        try {
+            // 1. 透過 JPA 關聯取得會員資料 (Appointment -> MemberPet -> Member)
+            MemberPet pet = appointment.getMemberPet();
+            if (pet == null) {
+                log.warn("找不到預約的寵物資料，無法發送通知");
+                return;
+            }
+            
+            Member member = pet.getMember();
+            if (member == null) {
+                log.warn("找不到會員資料，無法發送通知");
+                return;
+            }
+            
+            // 2. 發送 SMS 簡訊通知 (如果有手機號碼)
+            if (member.getPhone() != null && !member.getPhone().isEmpty()) {
+                twilioSmsService.sendServiceCompletedSms(member.getPhone(), appointment);
+                log.info("已觸發 SMS 通知給會員: {}", member.getPhone());
+            } else {
+                log.warn("會員沒有手機號碼，無法發送 SMS");
+            }
+        } catch (Exception e) {
+            log.error("發送服務完成通知失敗，但服務已完成", e);
         }
     }
 
