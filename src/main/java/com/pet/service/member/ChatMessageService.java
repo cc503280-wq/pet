@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 @Transactional
@@ -21,6 +22,24 @@ public class ChatMessageService {
     
     @Autowired
     private MemberRepository memberRepository;
+
+    // --- 新增：用來紀錄哪些會員正在「真人服務模式」 (True = 真人模式, False/Null = AI 模式) ---
+    private final ConcurrentHashMap<Integer, Boolean> humanModeMap = new ConcurrentHashMap<>();
+
+    // 檢查是否為真人模式
+    public boolean isHumanMode(Integer memberId) {
+    	Boolean value = humanModeMap.get(memberId);
+    	if (value == null) {
+    	    return false; // 找不到人，預設為 AI
+    	} else {
+    	    return value; // 找到了，回傳原本的值
+    	}
+    }
+
+    // 切換模式
+    public void setHumanMode(Integer memberId, boolean isHuman) {
+        humanModeMap.put(memberId, isHuman);
+    }
 
     /**
      * 儲存訊息

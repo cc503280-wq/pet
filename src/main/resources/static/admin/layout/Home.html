@@ -10,153 +10,152 @@
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <link rel="stylesheet" href="../../plugins/fontawesome-free/css/all.min.css">
     <link rel="stylesheet" href="../../dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
     <style type="text/css">
+        /* --- 全域主題配色 --- */
+        :root {
+            --primary-color: #be8754;   /* 咖啡色 (Sidebar/Navbar) */
+            --secondary-color: #ffc20f; /* 黃色 (Active/Highlight) */
+            --dark-color: #6a2614;      /* 深咖啡 (Heading/Button) */
+            --light-color: #fbf7ea;     /* 米色 (Background) */
+            --body-color: #5a4530;      /* 深棕色 (Text) */
+
+            /* 聊天室配色 */
+            --chat-bg: #f4d9d9;
+            --chat-user-msg-bg: #f9a7a7;
+            --chat-bot-msg-bg: #ffffff;
+        }
+
+        body {
+            color: var(--body-color);
+            background-color: var(--light-color);
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        /* 標題顏色強化 */
+        h1, h2, h3, h4, h5, h6, .card-title {
+            color: var(--dark-color) !important;
+            font-weight: 700;
+        }
+
+        /* Navbar & Sidebar */
+        .main-header {
+            background-color: var(--primary-color) !important;
+            border-bottom: none;
+            height: 57px;
+        }
+
+        .main-sidebar {
+            background-color: var(--primary-color) !important;
+            box-shadow: none !important;
+        }
+
         .brand-link {
             display: flex;
+            justify-content: center !important;
             align-items: center;
-            justify-content: flex-start;
-            padding: 0.5rem 1rem;
+            padding: 0.8125rem 0.5rem;
+            height: 57px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            background-color: var(--primary-color) !important;
         }
 
-        .sidebar-collapse .brand-link {
-            justify-content: center;
+        /* Sidebar 樣式修正 (含下拉選單) */
+        .nav-sidebar > .nav-item > .nav-link { color: #fff !important; }
+        .nav-sidebar > .nav-item > .nav-link p, 
+        .nav-sidebar > .nav-item > .nav-link i { color: #fff !important; }
+        .nav-sidebar > .nav-item > .nav-link:hover { background-color: rgba(255, 255, 255, 0.2) !important; }
+
+        .nav-sidebar > .nav-item > .nav-link.active {
+            background-color: var(--secondary-color) !important;
+            color: var(--dark-color) !important;
+            font-weight: bold;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+        .nav-sidebar > .nav-item > .nav-link.active i { color: var(--dark-color) !important; }
+
+        /* 下拉選單樣式 */
+        .nav-treeview > .nav-item > .nav-link { color: #fff !important; }
+        .nav-treeview > .nav-item > .nav-link p,
+        .nav-treeview > .nav-item > .nav-link i { color: #fff !important; }
+        .nav-treeview > .nav-item > .nav-link:hover,
+        .nav-treeview > .nav-item > .nav-link.active {
+            background-color: var(--secondary-color) !important;
+            color: var(--dark-color) !important;
+            font-weight: bold;
+        }
+        .nav-treeview > .nav-item > .nav-link:hover p,
+        .nav-treeview > .nav-item > .nav-link:hover i,
+        .nav-treeview > .nav-item > .nav-link.active p,
+        .nav-treeview > .nav-item > .nav-link.active i {
+            color: var(--dark-color) !important;
         }
 
-        .brand-link i {
-            width: 1.5rem;
-            text-align: center;
+        /* 內容區塊背景 */
+        .content-wrapper { background-color: var(--light-color) !important; }
+
+        /* 按鈕樣式 */
+        .btn-theme-action {
+            background-color: var(--dark-color) !important;
+            color: #fff !important;
+            border: none;
+            border-radius: 5px;
+        }
+        .btn-theme-action:hover {
+            background-color: #501e0f !important;
+            color: var(--secondary-color) !important;
         }
 
-        .sidebar-collapse .brand-text {
-            display: none;
+        /* Card 樣式覆寫 */
+        .card {
+            background-color: #fff;
+            border: none;
+            box-shadow: 0 0 10px rgba(0,0,0,0.05);
         }
+        .card-primary.card-outline { border-top: 3px solid var(--primary-color) !important; }
+        .card-success.card-outline { border-top: 3px solid var(--secondary-color) !important; }
+        .card-danger.card-outline { border-top: 3px solid var(--dark-color) !important; }
+        
+        /* Tab 樣式調整 */
+        .nav-pills .nav-link.active, .nav-pills .show>.nav-link {
+            background-color: var(--dark-color) !important;
+            color: #fff !important;
+        }
+        .nav-pills .nav-link { color: var(--primary-color); }
 
-        /* 確保圖表容器有高度 */
         .chart-container {
             position: relative;
             height: 300px;
             width: 100%;
         }
 
-        /* --- 客服懸浮視窗樣式 --- */
+        /* 聊天室樣式 (省略細節以保持整潔，與之前版本相同) */
         #adminChatWidget {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 360px;
-            /*稍微加寬一點點*/
-            height: 520px;
-            /*稍微加高一點點*/
-            z-index: 9999;
-            display: none;
-            /* 預設隱藏 */
-            flex-direction: column;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2) !important;
-            /* 加強陰影讓它更有層次 */
-            border-radius: 10px;
-            /* 圓角 */
-            overflow: hidden;
-            /* 防止內容溢出圓角 */
+            position: fixed; bottom: 20px; right: 20px; width: 400px; height: 520px;
+            background: white; border-radius: 15px; z-index: 9999;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+            display: none; flex-direction: column; overflow: hidden; transition: all 0.3s ease;
         }
-
-        #adminChatWidget .card-header {
-            background-color: #007bff;
-            color: white;
-            border-bottom: none;
-        }
-
-        #adminChatWidget .card-title {
-            font-size: 1.1rem;
-            font-weight: bold;
-        }
-
-        #adminChatWidget .card-body {
-            padding: 0;
-            flex: 1;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            background: white;
-        }
-
-        .chat-view {
-            flex: 1;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-        }
-
-        /* 列表樣式調整 */
-        .contacts-list-img {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        .contacts-list-info {
-            margin-left: 55px;
-        }
-
-        .contacts-list-name {
-            font-size: 1rem;
-            font-weight: 600;
-            color: #495057;
-        }
-
-        .contacts-list-msg {
-            color: #888;
-            font-size: 0.85rem;
-        }
-
-        .contacts-list li {
-            border-bottom: 1px solid #f0f0f0;
-            padding: 12px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .contacts-list li:hover {
-            background-color: #f8f9fa;
-        }
-
-        /* 紅點點 */
-        .unread-badge-item {
-            background: #dc3545;
-            color: white;
-            border-radius: 10px;
-            padding: 2px 8px;
-            font-size: 0.75rem;
-            float: right;
-            box-shadow: 0 2px 5px rgba(220, 53, 69, 0.3);
-        }
-
-        /* 訊息視窗微調 */
-        .direct-chat-messages {
-            flex: 1;
-            padding: 15px;
-            background: #f4f6f9;
-        }
-
-        /* Navbar 按鈕優化 */
-        .chat-nav-btn {
-            font-size: 1.2rem;
-            /* 放大 icon */
-            padding: 8px 12px !important;
-            margin-right: 15px;
-            /* 與登出按鈕拉開距離 */
-            background: rgba(0, 0, 0, 0.05);
-            /* 淺灰色背景 */
-            border-radius: 50px;
-            /* 橢圓形 */
-            transition: all 0.2s;
-        }
-
-        .chat-nav-btn:hover {
-            background: rgba(0, 0, 0, 0.1);
-            color: #007bff !important;
-        }
+        /* ... (聊天室內部 CSS 同前) ... */
+        #adminChatWidget .chat-header { background: var(--chat-user-msg-bg); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; }
+        #adminChatWidget .chat-body { background: var(--chat-bg); flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
+        #adminChatWidget .user-list-body { background: #fff; flex: 1; overflow-y: auto; padding: 0; }
+        .message-wrapper { display: flex; width: 100%; margin-bottom: 5px; }
+        .message-container { display: flex; align-items: flex-end; max-width: 85%; }
+        .admin-wrapper { justify-content: flex-end; } .admin-wrapper .message-container { flex-direction: row-reverse; }
+        .admin-wrapper .message-bubble { background: var(--chat-user-msg-bg); color: white; border-bottom-right-radius: 4px; }
+        .admin-wrapper .message-time { margin-right: 5px; text-align: right; }
+        .member-wrapper { justify-content: flex-start; } .member-wrapper .message-container { flex-direction: row; }
+        .member-wrapper .message-bubble { background: white; color: #444; border-bottom-left-radius: 4px; }
+        .member-wrapper .message-time { margin-left: 5px; text-align: left; }
+        .message-bubble { padding: 8px 12px; border-radius: 15px; font-size: 0.95rem; line-height: 1.4; word-break: break-all; position: relative; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); }
+        .message-time { font-size: 0.65rem; color: #888; white-space: nowrap; margin-bottom: 2px; }
+        .chat-avatar { width: 35px; height: 35px; border-radius: 50%; border: 1px solid #eee; margin-right: 8px; }
+        .chat-footer { background: #fff; padding: 10px; border-top: 1px solid #eee; }
+        .chat-input { border-radius: 20px; background: #f1f1f1; }
+        .contact-item { padding: 12px 15px; border-bottom: 1px solid #f0f0f0; cursor: pointer; transition: background 0.2s; display: flex; align-items: center; }
+        .contact-item:hover { background-color: #f9f9f9; }
     </style>
 </head>
 
@@ -165,38 +164,36 @@
         <nav class="main-header navbar navbar-expand navbar-white navbar-light">
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+                    <a class="nav-link text-white" data-widget="pushmenu" href="#" role="button"><i
+                            class="fas fa-bars"></i></a>
                 </li>
             </ul>
             <ul class="navbar-nav ml-auto align-items-center">
-
-                <!-- 客服按鈕 (放大並拉開距離) -->
                 <li class="nav-item">
-                    <a class="nav-link chat-nav-btn position-relative" href="#"
-                        onclick="toggleAdminChat(); return false;" title="開啟客服中心">
-                        <i class="far fa-comments fa-lg"></i> <!-- fa-lg 放大圖示 -->
-                        <span class="badge badge-danger navbar-badge" id="globalUnreadBadge"
-                            style="display: none; top: 0; right: 0;">0</span>
+                    <a href="#" class="btn btn-theme-action btn-sm shadow-sm mr-2 position-relative"
+                        onclick="toggleAdminChat(); return false;">
+                        <i class="far fa-comments"></i> 客服中心
+                        <span class="badge badge-danger position-absolute" id="globalUnreadBadge"
+                            style="display: none; top: -8px; right: -8px; border-radius: 50%; padding: 4px 6px; font-size: 10px; z-index: 10;">0</span>
                     </a>
                 </li>
-
                 <li class="nav-item">
-                    <a href="javascript:void(0)" id="logoutBtn" class="btn btn-secondary btn-sm shadow-sm">
+                    <a href="javascript:void(0)" id="logoutBtn" class="btn btn-theme-action btn-sm shadow-sm">
                         <i class="fas fa-sign-out-alt"></i> 登出
                     </a>
                 </li>
             </ul>
         </nav>
 
-        <aside class="main-sidebar sidebar-dark-primary elevation-4">
+        <aside class="main-sidebar">
             <a href="Home.html" class="brand-link">
-                <i class="fas fa-paw" style="color: #FFD43B; font-size: 1.5rem;"></i>
+                <i class="fas fa-paw" style="color: #ffc20f; font-size: 1.8rem;"></i>
             </a>
+
             <div class="sidebar">
                 <nav class="mt-2">
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
                         data-accordion="false">
-                        <!-- 選單內容保持不變 -->
                         <li class="nav-item">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-edit"></i>
@@ -229,10 +226,8 @@
                                     </a></li>
                             </ul>
                         </li>
-
                         <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-edit"></i>
+                            <a href="#" class="nav-link"><i class="nav-icon fas fa-edit"></i>
                                 <p>商品管理 <i class="right fas fa-angle-left"></i></p>
                             </a>
                             <ul class="nav nav-treeview">
@@ -246,10 +241,8 @@
                                     </a></li>
                             </ul>
                         </li>
-
                         <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-edit"></i>
+                            <a href="#" class="nav-link"><i class="nav-icon fas fa-edit"></i>
                                 <p>訂單管理 <i class="right fas fa-angle-left"></i></p>
                             </a>
                             <ul class="nav nav-treeview">
@@ -271,10 +264,8 @@
                                     </a></li>
                             </ul>
                         </li>
-
                         <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-edit"></i>
+                            <a href="#" class="nav-link"><i class="nav-icon fas fa-edit"></i>
                                 <p>預約管理 <i class="right fas fa-angle-left"></i></p>
                             </a>
                             <ul class="nav nav-treeview">
@@ -296,10 +287,8 @@
                                     </a></li>
                             </ul>
                         </li>
-
                         <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-edit"></i>
+                            <a href="#" class="nav-link"><i class="nav-icon fas fa-edit"></i>
                                 <p>人員管理 <i class="right fas fa-angle-left"></i></p>
                             </a>
                             <ul class="nav nav-treeview">
@@ -327,7 +316,6 @@
 
             <section class="content">
                 <div class="container-fluid">
-                    <!-- 圖表區塊 -->
                     <div class="row">
                         <div class="col-12">
                             <div class="card card-outline card-primary">
@@ -342,38 +330,30 @@
                                     </ul>
                                 </div>
                                 <div class="card-body">
-                                    <div class="chart-container">
-                                        <canvas id="registrationChart"></canvas>
-                                    </div>
+                                    <div class="chart-container"><canvas id="registrationChart"></canvas></div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
                     <div class="row">
                         <div class="col-md-8">
-                            <div class="card card-outline card-success">
+                             <div class="card card-outline card-success">
                                 <div class="card-header">
                                     <h3 class="card-title"><i class="fas fa-dog mr-1"></i> 寵物種類與體型分佈</h3>
                                 </div>
                                 <div class="card-body">
-                                    <div class="chart-container">
-                                        <canvas id="petStackedBarChart"></canvas>
-                                    </div>
+                                    <div class="chart-container"><canvas id="petStackedBarChart"></canvas></div>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <div class="card card-outline card-danger">
+                             <div class="card card-outline card-danger">
                                 <div class="card-header">
-                                    <h3 class="card-title"><i class="fas fa-birthday-cake mr-1"></i>
-                                        <span id="petAgeTitle">寵物年齡層比例</span>
-                                    </h3>
+                                    <h3 class="card-title"><i class="fas fa-birthday-cake mr-1"></i> <span
+                                            id="petAgeTitle">寵物年齡層比例</span></h3>
                                 </div>
                                 <div class="card-body">
-                                    <div class="chart-container">
-                                        <canvas id="petAgePieChart"></canvas>
-                                    </div>
+                                    <div class="chart-container"><canvas id="petAgePieChart"></canvas></div>
                                 </div>
                             </div>
                         </div>
@@ -387,58 +367,45 @@
         </footer>
     </div>
 
-    <!-- 懸浮聊天視窗 Widget -->
-    <div id="adminChatWidget" class="card card-primary card-outline direct-chat direct-chat-primary">
-        <div class="card-header">
-            <h3 class="card-title" id="chatWidgetTitle">客服中心</h3>
-            <div class="card-tools">
-                <!-- 返回按鈕 (預設隱藏) -->
-                <button type="button" class="btn btn-tool" id="backToListBtn" style="display: none;"
-                    onclick="showUserList()">
-                    <i class="fas fa-arrow-left"></i> 返回列表
+    <div id="adminChatWidget">
+        <div class="chat-header">
+            <div id="chatHeaderLeft" class="d-flex align-items-center">
+                <i class="bi bi-chat-dots-fill mr-2" style="font-size: 1.2rem;"></i>
+                <span class="font-weight-bold">客服中心</span>
+            </div>
+            <div class="d-flexalign-items-center">
+                <button type="button" class="btn btn-sm text-white mr-1" id="backToListBtn" style="display: none;"
+                    onclick="showUserList()" title="返回列表">
+                    <i class="fas fa-arrow-left"></i>
                 </button>
-                <button type="button" class="btn btn-tool" onclick="toggleAdminChat()">
+                <button type="button" class="btn btn-sm text-white" onclick="toggleAdminChat()" title="關閉">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
         </div>
-
-        <div class="card-body">
-            <!-- A. 會員列表視圖 -->
-            <div id="view-user-list" class="chat-view">
-                <ul class="contacts-list" id="contactListBody">
-                    <li class="p-3 text-center text-muted">讀取中...</li>
-                </ul>
-            </div>
-
-            <!-- B. 聊天室視圖 (預設隱藏) -->
-            <div id="view-chat-room" class="chat-view" style="display: none;">
-                <div class="direct-chat-messages" id="adminMsgBox">
-                    <!-- 訊息會在這裡 -->
-                </div>
-                <!-- 輸入框固定在底部 -->
-            </div>
+        <div id="view-user-list" class="user-list-body">
+            <div id="contactListBody"></div>
         </div>
-
-        <!-- 輸入框區域 (只在聊天模式顯示) -->
-        <div class="card-footer" id="chatInputArea" style="display: none;">
+        <div id="view-chat-room" class="chat-body" style="display: none;">
+            <div id="adminMsgBox" style="display: flex; flex-direction: column;"></div>
+        </div>
+        <div id="chatInputArea" class="chat-footer" style="display: none;">
             <div class="input-group">
-                <input type="text" id="adminMsgInput" placeholder="輸入訊息..." class="form-control">
-                <span class="input-group-append">
-                    <button type="button" class="btn btn-primary" onclick="sendAdminMessage()">傳送</button>
+                <input type="text" id="adminMsgInput" placeholder="請輸入訊息..." class="form-control border-0 chat-input">
+                <span class="input-group-append ml-2">
+                    <button type="button" class="btn btn-link text-primary" onclick="sendAdminMessage()">
+                        <i class="bi bi-send-fill" style="font-size: 1.2rem;"></i>
+                    </button>
                 </span>
             </div>
         </div>
     </div>
 
-    <!-- Scripts -->
     <script src="../../plugins/jquery/jquery.min.js"></script>
     <script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="../../dist/js/adminlte.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    <!-- WebSocket Libs -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 
@@ -449,13 +416,21 @@
         let userList = [];
         let isWidgetOpen = false;
 
+        // 定義主題色變數供 Chart.js 使用
+        const themeColors = {
+            primary: '#be8754',   // 咖啡色
+            secondary: '#ffc20f', // 黃色
+            dark: '#6a2614',      // 深咖啡
+            light: '#fbf7ea',
+            text: '#5a4530'
+        };
+
         $(function () {
-            // --- 0. 基礎檢查與登出 ---
-            const adminName = sessionStorage.getItem('adminName');
-            const adminRole = sessionStorage.getItem('role');
-            if (!adminRole) { window.location.href = 'Login.html'; return; }
+            // 權限與資料初判
+            const adminName = sessionStorage.getItem('adminName') || '管理員';
             if (adminName) { $('#adminDisplayName').text(adminName); }
 
+            // 登出
             $('#logoutBtn').on('click', function (e) {
                 e.preventDefault();
                 if (confirm('確定要登出嗎？')) {
@@ -468,354 +443,31 @@
                 }
             });
 
-            // --- 1. 初始化圖表 ---
+            // 初始化圖表
             initCharts();
 
-            // --- 2. 初始化客服系統 ---
+            // 初始化 WebSocket
             initAdminWebSocket();
 
-            // 綁定聊天輸入 Enter
-            $('#adminMsgInput').keypress(function (e) {
-                if (e.which == 13) sendAdminMessage();
-            });
+            // Chat Widget Init
+            $('#adminMsgInput').keypress(function (e) { if (e.which == 13) sendAdminMessage(); });
+            $('#adminChatWidget').hide();
+            loadUserList();
         });
 
-        // ================= 客服系統邏輯 =================
+        // ================= Chart Logic (Integrate User's Logic with New Styles) =================
+        let regChart = null;
+        let petTypeChart = null;
+        let petAgeChart = null;
 
-        function toggleAdminChat() {
-            isWidgetOpen = !isWidgetOpen;
-            if (isWidgetOpen) {
-                $('#adminChatWidget').fadeIn();
-                loadUserList();
-                $('#globalUnreadBadge').hide();
-            } else {
-                $('#adminChatWidget').fadeOut();
-            }
-        }
-
-        function initAdminWebSocket() {
-            const socket = new SockJS('http://localhost:8081/shop/ws-chat');
-            stompClientAdmin = Stomp.over(socket);
-            stompClientAdmin.debug = null; // 關掉 debug 訊息
-
-            stompClientAdmin.connect({}, function (frame) {
-                console.log('Admin Chat Connected');
-                stompClientAdmin.subscribe('/topic/admin', function (message) {
-                    const msg = JSON.parse(message.body);
-                    handleAdminNewMsg(msg);
-                });
-            });
-        }
-
-        function loadUserList() {
-            $.get('/admin/chat/recent')
-                .done(function (data) {
-                    console.log("後端回傳的原始資料:", data); // 👈 這裡可以讓你在 Console 看到到底收到什麼
-
-                    // 1. 強制型別檢查
-                    if (Array.isArray(data)) {
-                        userList = data;
-                    } else if (data && Array.isArray(data.data)) {
-                        // 2. 相容包裝過的回傳 (例如 { "status": "success", "data": [...] })
-                        userList = data.data;
-                    } else {
-                        console.error("格式錯誤：預期是陣列，但收到", typeof data);
-                        // 如果收到的是 HTML 字串 (通常代表被導回登入頁了)
-                        if (typeof data === 'string' && data.includes('<html')) {
-                            console.error("偵測到 HTML，可能是 Session 過期");
-                            alert("閒置過久，請重新登入");
-                            window.location.href = 'Login.html';
-                            return;
-                        }
-                        userList = [];
-                    }
-                    renderUserListUI();
-                })
-                .fail(function (jqXHR) {
-                    // 處理 401/403 錯誤
-                    console.error("連線失敗:", jqXHR.status);
-                    if (jqXHR.status === 401 || jqXHR.status === 403) {
-                        alert("權限不足或已登出，請重新登入");
-                        window.location.href = 'Login.html';
-                    }
-                });
-        }
-
-        function renderUserListUI() {
-            const listEl = $('#contactListBody');
-            listEl.empty();
-
-            if (!userList || userList.length === 0) {
-                listEl.append('<li class="text-center p-3 text-muted">目前尚無對話紀錄</li>');
-                return;
-            }
-
-            userList.forEach(item => {
-                const m = item.member;
-                const badge = item.unreadCount > 0 ? `<span class="unread-badge-item">${item.unreadCount}</span>` : '';
-                const pic = m.picture || '../../dist/img/user1-128x128.jpg'; // 替換成您的預設圖
-
-                const html = `
-                    <li onclick="enterChatRoom(${m.memberId}, '${m.name}')">
-                        <img class="contacts-list-img" src="${pic}">
-                        <div class="contacts-list-info">
-                            <span class="contacts-list-name">
-                                ${m.name}
-                                ${badge}
-                                <small class="contacts-list-date float-right text-muted" style="font-weight: normal; font-size: 0.7rem;">ID:${m.memberId}</small>
-                            </span>
-                            <span class="contacts-list-msg">點擊查看對話...</span>
-                        </div>
-                    </li>
-                `;
-                listEl.append(html);
-            });
-        }
-
-        window.enterChatRoom = function (id, name) {
-            currentUser = id;
-            $('#chatWidgetTitle').html(`<i class="fas fa-user-edit mr-1"></i> ${name}`);
-            $('#backToListBtn').show();
-
-            $('#view-user-list').hide();
-            $('#view-chat-room').fadeIn();
-            $('#chatInputArea').show();
-
-            // 標為已讀
-            $.post('/admin/chat/read?memberId=' + id);
-
-            // UI 更新
-            const u = userList.find(x => x.member.memberId === id);
-            if (u) u.unreadCount = 0;
-
-            loadAdminHistory(id);
-        };
-
-        window.showUserList = function () {
-            currentUser = null;
-            $('#chatWidgetTitle').text("客服中心");
-            $('#backToListBtn').hide();
-
-            $('#view-chat-room').hide();
-            $('#chatInputArea').hide();
-            $('#view-user-list').fadeIn();
-
-            renderUserListUI();
-        };
-
-        function loadAdminHistory(id) {
-            $('#adminMsgBox').html('<div class="text-center text-muted mt-3">載入歷史訊息...</div>');
-            $.get('/admin/chat/history?memberId=' + id, function (msgs) {
-                $('#adminMsgBox').empty();
-                msgs.forEach(msg => appendAdminMsgUI(msg));
-                scrollAdminToBottom();
-            });
-        }
-
-        window.sendAdminMessage = function () {
-            const input = $('#adminMsgInput');
-            const content = input.val().trim();
-            if (!content || !currentUser) return;
-
-            const payload = {
-                memberId: currentUser,
-                sender: 'ADMIN',
-                content: content
-            };
-
-            stompClientAdmin.send("/app/sendMessage", {}, JSON.stringify(payload));
-
-            appendAdminMsgUI({
-                sender: 'ADMIN',
-                content: content,
-                createdAt: new Date().toISOString()
-            });
-
-            input.val('');
-            scrollAdminToBottom();
-        };
-
-        function handleAdminNewMsg(msg) {
-            // 1. 如果正在跟這個人聊
-            if (currentUser && msg.memberId === currentUser) {
-                appendAdminMsgUI(msg);
-                scrollAdminToBottom();
-                $.post('/admin/chat/read?memberId=' + currentUser);
-            } else {
-                // 2. 更新列表
-                let target = userList.find(u => u.member.memberId === msg.memberId);
-                if (target) {
-                    target.unreadCount++;
-                    userList = userList.filter(u => u !== target);
-                    userList.unshift(target);
-                } else {
-                    loadUserList(); // 新人
-                    return;
-                }
-
-                if (!currentUser && isWidgetOpen) {
-                    renderUserListUI();
-                }
-
-                if (!isWidgetOpen) {
-                    $('#globalUnreadBadge').show(); // 簡單顯示紅點，暫不顯示數字以免太亂
-                }
-            }
-        }
-
-        function appendAdminMsgUI(msg) {
-            const isAdmin = (msg.sender === 'ADMIN');
-            const align = isAdmin ? 'right' : 'left';
-            const name = isAdmin ? '客服' : '會員';
-
-            const html = `
-                <div class="direct-chat-msg ${align}">
-                    <div class="direct-chat-infos clearfix">
-                        <span class="direct-chat-name float-${align}">${name}</span>
-                        <span class="direct-chat-timestamp float-${isAdmin ? 'left' : 'right'}">${msg.createdAt.substring(11, 16)}</span>
-                    </div>
-                    <img class="direct-chat-img" src="${isAdmin ? '../../dist/img/user1-128x128.jpg' : '../../dist/img/user8-128x128.jpg'}" alt="Image">
-                    <div class="direct-chat-text">
-                        ${msg.content}
-                    </div>
-                </div>
-            `;
-            $('#adminMsgBox').append(html);
-        }
-
-        function scrollAdminToBottom() {
-            const box = document.getElementById('adminMsgBox');
-            if (box) box.scrollTop = box.scrollHeight;
-        }
-
-        // ================= 圖表邏輯 (封裝在 initCharts 裡) =================
         function initCharts() {
-            let regChart = null;
-            let petTypeChart = null;
-            let petAgeChart = null;
-
-            // 1. 註冊趨勢圖
-            function renderTrendChart(labels, data) {
-                const ctx = document.getElementById('registrationChart');
-                if (!ctx) return;
-
-                if (regChart) {
-                    regChart.data.labels = labels;
-                    regChart.data.datasets[0].data = data;
-                    regChart.update();
-                } else {
-                    regChart = new Chart(ctx, {
-                        type: 'line',
-                        data: {
-                            labels: labels,
-                            datasets: [{
-                                label: '新註冊人數',
-                                data: data,
-                                borderColor: 'rgba(60,141,188,0.8)',
-                                backgroundColor: 'rgba(60,141,188,0.1)',
-                                fill: true, tension: 0.4
-                            }]
-                        },
-                        options: {
-                            responsive: true, maintainAspectRatio: false,
-                            onClick: (event, elements) => {
-                                if (elements.length > 0) {
-                                    const index = elements[0].index;
-                                    const label = regChart.data.labels[index];
-                                    if (label.length === 4 && /^\d{4}$/.test(label)) fetchStats("all_" + label);
-                                }
-                            },
-                            onHover: (event, chartElement) => {
-                                event.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
-                            }
-                        }
-                    });
-                }
-            }
-
-            function fetchStats(period) {
-                $.getJSON('/members/stats', { period: period })
-                    .done(res => renderTrendChart(res.labels, res.data))
-                    .fail((jqXHR) => {
-                        console.error("圖表讀取失敗"); // 靜默失敗或只印 Log
-                    });
-            }
-
-            // 2. 寵物堆疊圖
-            async function initPetStats() {
-                try {
-                    const res = await $.getJSON('/memberPets/stats', { type: 'stacked' });
-                    const rawLabels = res.labels;
-                    const rawData = res.data;
-                    const typeOrder = ['狗', '貓', '其他'];
-                    const sizeOrder = ['小型', '中型', '大型'];
-                    const colors = { '小型': '#f56954', '中型': '#00a65a', '大型': '#f39c12' };
-
-                    let groupedData = {};
-                    typeOrder.forEach(t => groupedData[t] = { '小型': 0, '中型': 0, '大型': 0 });
-                    rawLabels.forEach((label, index) => {
-                        const [t, s] = label.split(',');
-                        if (groupedData[t] && groupedData[t][s] !== undefined) groupedData[t][s] = rawData[index];
-                    });
-
-                    const datasets = sizeOrder.map(size => ({
-                        label: size,
-                        backgroundColor: colors[size],
-                        data: typeOrder.map(type => groupedData[type][size])
-                    }));
-
-                    const ctx = document.getElementById('petStackedBarChart');
-                    if (!ctx) return;
-
-                    petTypeChart = new Chart(ctx.getContext('2d'), {
-                        type: 'bar',
-                        data: { labels: typeOrder, datasets: datasets },
-                        options: {
-                            responsive: true, maintainAspectRatio: false,
-                            scales: { x: { stacked: true }, y: { stacked: true } },
-                            onClick: (event, elements) => {
-                                if (elements.length > 0) fetchAgeStats(typeOrder[elements[0].index]);
-                            },
-                            onHover: (e, el) => e.native.target.style.cursor = el[0] ? 'pointer' : 'default'
-                        }
-                    });
-                } catch (e) { console.error(e); }
-            }
-
-            // 3. 年齡圓餅圖
-            async function fetchAgeStats(type = null) {
-                try {
-                    const params = type ? { type: type } : {};
-                    const res = await $.getJSON('/memberPets/stats', params);
-                    const ctx = document.getElementById('petAgePieChart');
-                    if (!ctx) return;
-
-                    $('#petAgeTitle').text(type ? `${type} - 年齡分佈` : '所有寵物 - 年齡分佈');
-
-                    if (petAgeChart) {
-                        petAgeChart.data.labels = res.labels;
-                        petAgeChart.data.datasets[0].data = res.data;
-                        petAgeChart.update();
-                    } else {
-                        petAgeChart = new Chart(ctx.getContext('2d'), {
-                            type: 'doughnut',
-                            data: {
-                                labels: res.labels,
-                                datasets: [{ data: res.data, backgroundColor: ['#00c0ef', '#3c8dbc', '#d2d6de'] }]
-                            },
-                            options: { responsive: true, maintainAspectRatio: false }
-                        });
-                    }
-                } catch (e) { console.error(e); }
-            }
-
-            // 啟動圖表
             setTimeout(() => {
-                fetchStats('6m');
-                initPetStats();
-                fetchAgeStats();
-            }, 50);
+                fetchStats('6m'); // 會員註冊
+                initPetStats();   // 寵物種類+體型
+                fetchAgeStats();  // 寵物年齡
+            }, 100);
 
+            // 篩選按鈕
             $('#regChartFilters').on('click', '.nav-link', function (e) {
                 e.preventDefault();
                 $('#regChartFilters .nav-link').removeClass('active');
@@ -823,7 +475,291 @@
                 fetchStats($(this).data('period'));
             });
         }
+
+        // 1. 註冊趨勢圖 (Line Chart) - 含鑽取年份功能
+        function renderTrendChart(labels, data) {
+            const ctx = document.getElementById('registrationChart');
+            if (!ctx) return;
+            
+            if (regChart) {
+                regChart.data.labels = labels;
+                regChart.data.datasets[0].data = data;
+                regChart.update();
+            } else {
+                regChart = new Chart(ctx, {
+                    type: 'line', 
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: '新註冊人數',
+                            data: data,
+                            borderColor: themeColors.dark, // 改用深咖啡色
+                            backgroundColor: 'rgba(190, 135, 84, 0.2)', // 淺咖啡透明
+                            fill: true,
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        onClick: (event, elements) => {
+                            if (elements.length > 0) {
+                                const index = elements[0].index;
+                                const label = regChart.data.labels[index];
+                                // 點擊年份鑽取
+                                if (label.length === 4 && /^\d{4}$/.test(label)) {
+                                    fetchStats("all_" + label);
+                                }
+                            }
+                        },
+                        onHover: (event, chartElement) => {
+                            event.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
+                        }
+                    }
+                });
+            }
+        }
+
+        function fetchStats(period) {
+            $.getJSON('/members/stats', { period: period })
+                .done(res => renderTrendChart(res.labels, res.data))
+                .fail((jqXHR, textStatus, errorThrown) => {
+                    console.error("請求失敗！");
+                    Swal.fire({
+                        icon: 'error',
+                        title: '連線失敗',
+                        text: '無法取得統計數據，請檢查伺服器狀態。',
+                        confirmButtonColor: themeColors.dark
+                    });
+                });
+        }
+
+        // 2. 寵物堆疊圖 (Stacked Bar) - 含連動年齡圖功能
+        async function initPetStats() {
+            try {
+                const res = await $.getJSON('/memberPets/stats', { type: 'stacked' });
+                
+                const rawLabels = res.labels;
+                const rawData = res.data;
+                const typeOrder = ['狗', '貓', '其他'];
+                const sizeOrder = ['小型', '中型', '大型'];
+                
+                // 改用大地色系
+                const colors = { 
+                    '小型': themeColors.primary,   // 咖啡色
+                    '中型': themeColors.dark,      // 深咖啡
+                    '大型': themeColors.secondary  // 黃色
+                };
+
+                let groupedData = {};
+                typeOrder.forEach(t => { groupedData[t] = { '小型': 0, '中型': 0, '大型': 0 }; });
+                rawLabels.forEach((label, index) => {
+                    const [t, s] = label.split(','); 
+                    if (groupedData[t] && groupedData[t][s] !== undefined) {
+                        groupedData[t][s] = rawData[index];
+                    }
+                });
+
+                const datasets = sizeOrder.map(size => {
+                    return {
+                        label: size,
+                        backgroundColor: colors[size],
+                        data: typeOrder.map(type => groupedData[type][size])
+                    };
+                });
+
+                renderStackedBar(typeOrder, datasets);
+            } catch (e) { console.error("初始化堆疊圖失敗", e); }
+        }
+
+        function renderStackedBar(labels, datasets) {
+            const ctx = document.getElementById('petStackedBarChart');
+            if(!ctx) return;
+
+            if (petTypeChart) {
+                petTypeChart.data.labels = labels;
+                petTypeChart.data.datasets = datasets;
+                petTypeChart.update();
+            } else {
+                petTypeChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: { labels: labels, datasets: datasets },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: { x: { stacked: true }, y: { stacked: true, ticks: { stepSize: 1 } } },
+                        onClick: (event, elements) => {
+                            if (elements.length > 0) {
+                                const index = elements[0].index;
+                                const selectedType = petTypeChart.data.labels[index]; 
+                                fetchAgeStats(selectedType); // 點擊連動
+                            }
+                        },
+                        onHover: (event, chartElement) => {
+                            event.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
+                        }
+                    }
+                });
+            }
+        }
+
+        // 3. 年齡分佈 (Pie Chart)
+        async function fetchAgeStats(type = null) {
+            try {
+                const params = {};
+                if (type) params.type = type;
+                const res = await $.getJSON('/memberPets/stats', params);
+                
+                const ctx = document.getElementById('petAgePieChart');
+                if(!ctx) return;
+                
+                const title = type ? `${type} - 年齡分佈` : '所有寵物 - 年齡分佈';
+                $('#petAgeTitle').text(title);
+
+                if (petAgeChart) {
+                    petAgeChart.data.labels = res.labels;
+                    petAgeChart.data.datasets[0].data = res.data;
+                    petAgeChart.update();
+                } else {
+                    petAgeChart = new Chart(ctx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: res.labels,
+                            datasets: [{
+                                data: res.data,
+                                // 改用大地色系配色
+                                backgroundColor: [themeColors.primary, themeColors.secondary, '#d2d6de']
+                            }]
+                        },
+                        options: { responsive: true, maintainAspectRatio: false }
+                    });
+                }
+            } catch (e) { console.error("讀取年齡分布失敗", e); }
+        }
+
+
+        // ================= Chat & WebSocket Logic (保持不變) =================
+        function toggleAdminChat() {
+            isWidgetOpen = !isWidgetOpen;
+            if (isWidgetOpen) { $('#adminChatWidget').css('display', 'flex').hide().fadeIn(); loadUserList(); } 
+            else { $('#adminChatWidget').fadeOut(); }
+        }
+
+        function showUserList() {
+            currentUser = null;
+            $('#chatHeaderLeft').html('<i class="bi bi-chat-dots-fill mr-2" style="font-size: 1.2rem;"></i><span class="font-weight-bold">客服中心</span>');
+            $('#backToListBtn').hide();
+            $('#view-chat-room').hide(); $('#chatInputArea').hide();
+            $('#view-user-list').fadeIn();
+            loadUserList();
+        }
+
+        function enterChatRoom(id, name, pic) {
+            currentUser = { id: id, name: name, pic: pic };
+            $('#chatHeaderLeft').html(`
+                <div class="d-flex align-items-center">
+                    <img src="${pic}" style="width: 30px; height: 30px; border-radius: 50%; border: 1px solid #fff; margin-right: 8px;">
+                    <div><div class="font-weight-bold" style="line-height:1;">${name}</div><small style="opacity: 0.8; font-size: 0.7rem;">#${id}</small></div>
+                </div>
+            `);
+            $('#view-user-list').hide();
+            $('#backToListBtn').show();
+            $('#view-chat-room').css('display', 'flex'); 
+            $('#chatInputArea').show();
+            $.post('/admin/chat/read?memberId=' + id);
+            const index = userList.findIndex(x => x.member.memberId === id);
+            if (index !== -1) { userList[index].unreadCount = 0; }
+            calcTotalUnread();
+            loadAdminHistory(id);
+        }
+
+        function initAdminWebSocket() {
+            const socket = new SockJS('http://localhost:8081/shop/ws-chat');
+            stompClientAdmin = Stomp.over(socket);
+            stompClientAdmin.debug = null;
+            stompClientAdmin.connect({}, function () {
+                stompClientAdmin.subscribe('/topic/admin', function (message) {
+                    handleAdminNewMsg(JSON.parse(message.body));
+                });
+            }, function (err) { console.error(err); });
+        }
+
+        function loadUserList() {
+            $.get('/admin/chat/recent').done(function (data) {
+                userList = (Array.isArray(data)) ? data : (data.data || []);
+                renderUserListUI();
+            }).fail(function () { renderUserListUI(); });
+        }
+
+        function renderUserListUI() {
+            const listEl = $('#contactListBody'); listEl.empty();
+            if (!userList || userList.length === 0) {
+                listEl.html('<div class="h-100 d-flex flex-column align-items-center justify-content-center text-muted"><i class="bi bi-chat-square-dots" style="font-size: 3rem; opacity:0.3;"></i><p class="mt-2">目前尚無訊息</p></div>');
+                calcTotalUnread(); return;
+            }
+            userList.forEach(item => {
+                const m = item.member;
+                const pic = m.picture || '../../dist/img/default-150x150.png';
+                const unreadHtml = item.unreadCount > 0 ? `<span class="badge badge-danger rounded-pill ml-auto">${item.unreadCount}</span>` : '';
+                listEl.append(`<div class="contact-item" onclick="enterChatRoom(${m.memberId}, '${m.name}', '${pic}')"><img src="${pic}" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 12px;"><div style="flex-grow: 1; overflow: hidden;"><div class="d-flex align-items-center"><span class="font-weight-bold text-dark mr-2">${m.name}</span><small class="text-muted">ID: ${m.memberId}</small></div><div class="text-truncate text-muted small">點擊查看對話...</div></div>${unreadHtml}</div>`);
+            });
+            calcTotalUnread();
+        }
+
+        function loadAdminHistory(id) {
+            const box = $('#adminMsgBox'); box.html('<div class="text-center text-muted mt-4">載入中...</div>');
+            $.get('/admin/chat/history?memberId=' + id).done(msgs => {
+                box.empty();
+                if (!msgs || msgs.length === 0) { box.html('<div class="text-center text-muted mt-5 opacity-50"><small>— 尚無歷史訊息 —</small></div>'); } 
+                else { msgs.forEach(msg => appendAdminMsgUI(msg)); }
+                scrollToBottom();
+            });
+        }
+
+        function appendAdminMsgUI(msg) {
+            const box = $('#adminMsgBox');
+            const isAdmin = (msg.sender === 'ADMIN');
+            const wrapperClass = isAdmin ? 'admin-wrapper' : 'member-wrapper';
+            let avatarHtml = '';
+            if (!isAdmin) {
+                const pic = (currentUser && currentUser.pic) ? currentUser.pic : '../../dist/img/default-150x150.png';
+                avatarHtml = `<img src="${pic}" class="chat-avatar">`;
+            }
+            const timeStr = msg.createdAt ? msg.createdAt.substring(11, 16) : '';
+            box.append(`<div class="message-wrapper ${wrapperClass}"><div class="message-container">${!isAdmin ? avatarHtml : ''}<div class="message-bubble shadow-sm">${msg.content}</div><div class="message-time align-self-end mx-2">${timeStr}</div></div></div>`);
+        }
+
+        function scrollToBottom() { const box = document.getElementById('view-chat-room'); if (box) box.scrollTop = box.scrollHeight; }
+
+        function sendAdminMessage() {
+            const input = $('#adminMsgInput'); const content = input.val().trim();
+            if (!content || !currentUser) return;
+            const payload = { memberId: currentUser.id, sender: 'ADMIN', content: content };
+            if (stompClientAdmin && stompClientAdmin.connected) {
+                stompClientAdmin.send("/app/sendMessage", {}, JSON.stringify(payload));
+                appendAdminMsgUI({ sender: 'ADMIN', content: content, createdAt: new Date().toISOString() });
+                input.val(''); scrollToBottom();
+            } else { alert('連線中斷'); }
+        }
+
+        function handleAdminNewMsg(msg) {
+            if (currentUser && currentUser.id == msg.memberId) {
+                appendAdminMsgUI(msg); scrollToBottom(); $.post('/admin/chat/read?memberId=' + currentUser.id);
+            } else {
+                let target = userList.find(u => u.member.memberId === msg.memberId);
+                if (!target) { loadUserList(); return; }
+                target.unreadCount++;
+                userList = userList.filter(u => u !== target); userList.unshift(target);
+                if (isWidgetOpen && !currentUser) { renderUserListUI(); } else { calcTotalUnread(); }
+            }
+        }
+
+        function calcTotalUnread() {
+            let total = 0;
+            if (userList && Array.isArray(userList)) { userList.forEach(u => { total += (parseInt(u.unreadCount) || 0); }); }
+            const badge = $('#globalUnreadBadge');
+            if (total > 0) { badge.text(total).fadeIn(); badge.addClass('animate__animated animate__bounceIn'); } else { badge.fadeOut(); }
+        }
     </script>
 </body>
-
 </html>

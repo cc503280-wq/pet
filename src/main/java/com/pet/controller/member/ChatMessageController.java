@@ -4,6 +4,7 @@ import com.pet.dto.member.ChatMessageDTO;
 import com.pet.model.member.ChatMessage;
 import com.pet.service.member.ChatMessageService;
 import com.pet.util.LoginUser;
+import com.pet.service.member.AIService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,9 @@ public class ChatMessageController {
 
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
+    
+    @Autowired
+    private AIService aiService;
 
     // ================= REST API =================
 
@@ -59,42 +63,66 @@ public class ChatMessageController {
         return ResponseEntity.ok(chatService.getChatHistory(memberId));
     }
 
+    // --- 新增：手動切換模式 API (可供前端按鈕呼叫) ---
+    @PostMapping("/shop/chat/switchMode")
+    public ResponseEntity<String> switchMode(@LoginUser Integer memberId, @RequestParam boolean humanMode) {
+        chatService.setHumanMode(memberId, humanMode);
+        return ResponseEntity.ok(humanMode ? "Switched to Human Mode" : "Switched to AI Mode");
+    }
+
     // ================= WebSocket API ( Payload 傳遞) =================
 
     // 1. 收信地址
-    // 前端發過來的路徑是 /app/sendMessage
-    // (因為 WebSocketConfig 設定了 /app 前綴，這裡只要寫 /sendMessage)
     @MessageMapping("/sendMessage")
     public void sendMessage(@Payload Map<String, Object> payload) {
 
-        // 2. 拆開信件內容 (@Payload)
-        // 前端傳來的 JSON (信件內容) 當作 payload 進來
-        // 我們把它拆解成 memberId, sender, content
         Integer memberId = Integer.parseInt(payload.get("memberId").toString());
         String sender = payload.get("sender").toString();
         String content = payload.get("content").toString();
 
-        // 3. 存擋 (先把信影印一份存到資料庫)
-        // 這樣使用者重新整理才看得到歷史紀錄
+        // 3. 存擋
         ChatMessage savedMsg = chatService.saveMessage(memberId, sender, content);
 
-        // 4. 分信 (郵差投遞)
+        // 4. 分信
         if ("MEMBER".equals(sender)) {
             // --- 情境 A：會員講話 ---
 
-            // 動作：推播給「管理員」
-            // 語法：messagingTemplate.convertAndSend(訂閱路徑, 訊息物件)
-            // 這裡的意思是：把信丟到 "/topic/admin" 這個信箱
-            // 因為所有管理員都在監聽這個信箱，所以他們都會收到通知！
+            // A. 推播給管理員
             messagingTemplate.convertAndSend("/topic/admin", savedMsg);
+            
+            // --- B. 判斷是否需要 AI 回覆 ---
+            
+            // 1. 關鍵字觸發切換
+            if (content.contains("轉真人") || content.contains("真人客服")) {
+                chatService.setHumanMode(memberId, true);
+                
+                // 系統自動回覆
+                String sysMsg = "已為您轉接真人客服，請稍候，我們將盡快為您服務。";
+                ChatMessage aiMsg = chatService.saveMessage(memberId, "AI", sysMsg);
+                messagingTemplate.convertAndSend("/topic/member/" + memberId, aiMsg);
+                messagingTemplate.convertAndSend("/topic/admin", aiMsg);
+                return; // 結束，不呼叫 AI
+            }
+            
+            // 2. 只有在「非真人模式」下，才呼叫 AI
+            if (!chatService.isHumanMode(memberId)) {
+                
+                // 呼叫 Gemini
+                String aiReplyContent = aiService.callGemini(content);
+                
+                ChatMessage aiMsg = chatService.saveMessage(memberId, "AI", aiReplyContent);
+                messagingTemplate.convertAndSend("/topic/member/" + memberId, aiMsg);
+                messagingTemplate.convertAndSend("/topic/admin", aiMsg);
+            }
 
         } else if ("ADMIN".equals(sender)) {
             // --- 情境 B：管理員/真人客服講話 ---
 
-            // 動作：推播給「該位會員」
-            // 這裡很關鍵！路徑是動態的："/topic/user/" + memberId
-            // 修正：必須配合前台 ChatSupport.vue 訂閱的頻道名稱 (/topic/user/...)
+            // 推播給該位會員
             messagingTemplate.convertAndSend("/topic/member/" + memberId, savedMsg);
+            
+            // 管理員回話後，自動設定為真人模式
+            chatService.setHumanMode(memberId, true); 
         }
     }
 }
