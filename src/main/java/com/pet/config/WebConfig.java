@@ -62,7 +62,13 @@ public class WebConfig implements WebMvcConfigurer {
                         "/members", // 會員列表 API (預約選擇會員)
                         "/memberPets/**", // 會員寵物 API (預約選擇寵物)
                         "/shop/coupons", // 會員優惠券 API (前台瀏覽)
-                        "/error"); // 排除錯誤路徑
+                        "/error",
+                        "/swagger-ui.html",
+                        "/swagger-ui/**",
+                        "/v3/api-docs/**",
+                        "/swagger-resources/**",
+                        "/webjars/**"
+                        ); // 排除錯誤路徑
 
     }
 
