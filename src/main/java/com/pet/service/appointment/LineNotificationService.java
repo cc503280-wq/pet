@@ -35,6 +35,8 @@ public class LineNotificationService {
 
     // LINE Messaging API - Push Message Endpoint
     private static final String LINE_PUSH_API = "https://api.line.me/v2/bot/message/push";
+    
+    
 
     /**
      * 發送預約取消通知

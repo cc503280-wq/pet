@@ -42,7 +42,7 @@ public class MailService {
     public void sendAppointmentSuccessEmail(String toEmail, String memberName, Appointment appointment) {
         log.info("準備發送預約成功通知信給 {}", toEmail);
         
-        String subject = "[PetShop] 預約成功通知";
+        String subject = "[MAOMAOLAND] 寵物美容預約成功通知";
         // HTML 信件內容
         String content = String.format(
             "<h3>親愛的 %s 您好：</h3>" +
@@ -56,7 +56,7 @@ public class MailService {
             "<p>請出示下方 QR Code 進行報到：</p>" +
             "<img src='cid:qrcodeImage' alt='Appointment QR Code' style='width: 200px; height: 200px;'/>" +
             "<p>期待您的光臨！</p>" +
-            "<p>PetShop 團隊 敬上</p>",
+            "<p>MAOMAOLAND 團隊 敬上</p>",
             memberName,
             appointment.getAppointmentId(),
             appointment.getAppointmentDate(),
@@ -82,6 +82,7 @@ public class MailService {
             log.error("發送預約成功通知信失敗：{}", toEmail, e);
         }
     }
+    
 
     // 發送內嵌圖片的 HTML 信件 helper
     private void sendHtmlEmailWithInlineImage(String to, String subject, String htmlContent, byte[] imageBytes) throws MessagingException {
