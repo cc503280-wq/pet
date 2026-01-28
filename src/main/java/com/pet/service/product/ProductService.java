@@ -294,45 +294,33 @@ public class ProductService {
 
 	
     // --- 功能 2: 取得前台商品 (包含分頁與分類邏輯) ---
-	public Page<Product> getStoreProducts(int page, int size, Integer categoryId,String keyword) {
-	    Pageable pageable = PageRequest.of(page, size);
+	// --- 功能 2: 取得前台商品 (包含分頁與分類邏輯) ---
+    // 這看起來是舊版的查詢方法，為了保險起見我們也一起改
+	public Page<Product> getStoreProducts(int page, int size, Integer categoryId, String keyword) {
+        Pageable pageable = PageRequest.of(page, size);
 
-	    // 情況 1：兩者都有 (分類 + 關鍵字) -> 呼叫剛剛寫的「組合技」
-	    if (categoryId != null && keyword != null && !keyword.trim().isEmpty()) {
-	        return pRepos.findByCategory_CategoryIdAndProductNameContainingAndIsActiveTrue(categoryId, keyword, pageable);
-	    }
-	    
-	    // 情況 2：如果有關鍵字 -> 優先搜尋商品名稱 (不管分類)
-	    if (keyword != null && !keyword.trim().isEmpty()) {
-	        return pRepos.findByProductNameContainingAndIsActiveTrue(keyword, pageable);
-	    }
-	    // 情況 3：如果沒關鍵字，但有選分類 -> 找該分類
-	    else if (categoryId != null) {
-	        // 呼叫新的 ID 搜尋方法
-	        return pRepos.findByCategory_CategoryIdAndIsActiveTrue(categoryId, pageable);
-	    }
-	    // 情況 4：什麼都沒選 -> 找全部
-	    else {
-	        return pRepos.findByIsActiveTrue(pageable);
-	    }
-	}
+        // 🟢 濃縮後的寫法：
+        // 不管前端傳什麼 (null 或 有值)，這個方法都能自動處理
+        return pRepos.findShopProducts(categoryId, keyword, pageable);
+    }
+
+    // 這個是您目前主要使用的萬用查詢方法 (包含價格區間與排序)
 	public Page<Product> getStoreProducts(int page, int size, Integer categoryId, String keyword, Integer minPrice, Integer maxPrice, String sortCode) {
-	    
-	    // 🟢 1. 處理排序邏輯
+	    // 1. 處理排序邏輯 (保持不變)
 	    Sort sort = Sort.unsorted();
-	    
 	    if ("price_asc".equals(sortCode)) {
-	        sort = Sort.by(Sort.Direction.ASC, "price"); // 價格由低到高
+	        sort = Sort.by(Sort.Direction.ASC, "price");
 	    } else if ("price_desc".equals(sortCode)) {
-	        sort = Sort.by(Sort.Direction.DESC, "price"); // 價格由高到低
+	        sort = Sort.by(Sort.Direction.DESC, "price");
 	    } else {
-	        sort = Sort.by(Sort.Direction.DESC, "productId"); // 預設：最新上架 (ID 越大越新)
+	        sort = Sort.by(Sort.Direction.DESC, "productId");
 	    }
 
-	    // 🟢 2. 建立分頁物件 (把 Sort 放進去)
+	    // 2. 建立分頁物件 (保持不變)
 	    Pageable pageable = PageRequest.of(page, size, sort);
 
-	    // 🟢 3. 呼叫剛剛寫的萬用查詢
+	    // 3. 呼叫萬用查詢
+        // 🟢 我們需要在 Repository 的 @Query 中確認是否已經加上了 stock > 0 的判斷
 	    return pRepos.searchProducts(categoryId, keyword, minPrice, maxPrice, pageable);
 	}
 	

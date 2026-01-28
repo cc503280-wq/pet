@@ -75,6 +75,9 @@ public class Member {
 	@JsonIgnore //<== 這是我新增的，我將此變唯讀，需跟組長討論
 	private List<MemberPet> pets;
 	
+	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL) // mappedBy 對應 ChatMessage 裡的 "member" 屬性名
+    @JsonIgnore 
+    private List<ChatMessage> chatMessages;
 	
     @PrePersist
     protected void onCreate() {

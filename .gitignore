@@ -1,23 +1,33 @@
-HELP.md
-# 忽略編譯後的 class 檔
-*.class
+### OAuth2 Secrets (保護你的 Google 金鑰) ###
+src/main/resources/application-secret.properties
 
-# 忽略 Maven 產生的 target 資料夾
-/target/
-
-# 忽略 Eclipse 的編譯輸出資料夾 (如果有)
-bin/
-
-# 忽略 Eclipse 的設定檔 (建議忽略，讓專案保持乾淨)
+### Eclipse Specific (防止路徑衝突) ###
 .settings/
 .classpath
 .project
 .metadata/
+bin/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.loadpath
+.factorypath
 
-# 忽略作業系統產生的縮圖檔
+### Java & Maven ###
+/target/
+*.class
+*.jar
+*.war
+*.ear
+
+### OS Specific (作業系統垃圾檔) ###
 .DS_Store
 Thumbs.db
 
-### VS Code ###
+### VS Code & IntelliJ (防範組員使用不同 IDE) ###
 .vscode/
 src/main/resources/application-secret.properties
+.idea/
+*.iml

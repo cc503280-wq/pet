@@ -102,7 +102,7 @@ public class ProductController {
 	// 搜尋商品 (模糊查詢)
 	// 網址: GET /products/search?keyword=貓罐頭
 	@GetMapping("/search")
-	public List<Product> searchProducts(@RequestParam String keyword) {
+	public List<Product> searchProducts(@RequestParam String keyword,@RequestParam(required = false) Integer categoryId) {
 		return pService.searchProducts(keyword);
 	}
 
