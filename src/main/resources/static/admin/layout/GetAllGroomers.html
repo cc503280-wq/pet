@@ -563,6 +563,14 @@
         loadAllData();
         initDatePickers();
         handleStatusButtonClick();
+
+        // 新增美容師時，Email 輸入同步帶入密碼
+        $("#modalGroomerEmail").on("input", function () {
+          // 判斷隱藏欄位 ID 是否為空，空代表是新增模式
+          if (!$("#modalGroomerId").val()) {
+            $("#modalGroomerPassword").val($(this).val());
+          }
+        });
       });
 
       const GROOMER_API = "/groomers";
@@ -777,7 +785,8 @@
             $("#modalGroomerName").val(g.groomerName);
             $("#modalGroomerPhone").val(g.phone);
             $("#modalGroomerEmail").val(g.email);
-            $("#modalGroomerPassword").val(g.password);
+            // $("#modalGroomerPassword").val(g.password); // 原本是顯示雜湊
+            $("#modalGroomerPassword").val("******"); // 改為顯示6個星號 (假密碼)
             $("#hiredateInput").val(g.hiredate).prop("disabled", true);
 
             // 處理圖片預覽
@@ -821,15 +830,47 @@
 
       // 提交表單 (新增或修改)
       function submitInfo() {
+        // --- 1. 表單驗證 Logic ---
+        let name = $("#modalGroomerName").val().trim();
+        let phone = $("#modalGroomerPhone").val().trim();
+        let email = $("#modalGroomerEmail").val().trim();
+        let pwd = $("#modalGroomerPassword").val().trim();
+        let hDate = $("#hiredateInput").val();
+
+        // 統一檢查必填欄位 (不分新增或修改)
+        if (!name || !phone || !email || !hDate) {
+             Swal.fire("錯誤", "請確實填寫所有資料 (姓名, 電話, Email, 入職日)", "warning");
+             return; // 阻止送出
+        }
+
+        let id = $("#modalGroomerId").val();
+        
+        // 如果是新增模式 (沒有 ID)，必須檢查密碼與圖片
+        if (!id) {
+            if (!pwd) {
+                Swal.fire("錯誤", "新增時請輸入密碼", "warning");
+                return;
+            }
+            
+            // 雖然使用者只說資料要完全，但通常圖片也是必須的，這裡先不做硬性檢查，只檢查文字類
+            // 如果要檢查圖片可加: if(!$("#modalImageFile").val()) ...
+        }
+        // -------------------------
+
         // 1. 建立 FormData 物件以支援檔案上傳
         let formData = new FormData();
 
         // 2. 塞入欄位資料
-        formData.append("groomerName", $("#modalGroomerName").val());
-        formData.append("phone", $("#modalGroomerPhone").val());
-        formData.append("email", $("#modalGroomerEmail").val());
-        formData.append("password", $("#modalGroomerPassword").val());
-        formData.append("hiredate", $("#hiredateInput").val());
+        formData.append("groomerName", name);
+        formData.append("phone", phone);
+        formData.append("email", email);
+        
+        // 檢查密碼欄位，如果是 "******" (假密碼) 則不傳送，避免後端誤以為要修成該字串
+        if (pwd !== "******") {
+            formData.append("password", pwd);
+        }
+
+        formData.append("hiredate", hDate);
 
         // 處理圖片檔案
         const fileInput = $("#modalImageFile")[0];
@@ -837,7 +878,7 @@
           formData.append("file", fileInput.files[0]);
         }
 
-        let id = $("#modalGroomerId").val();
+        // 檢查 id 是否存在 (已在上方宣告並賦值)
         if (id) {
            formData.append("groomerId", id);
         }
