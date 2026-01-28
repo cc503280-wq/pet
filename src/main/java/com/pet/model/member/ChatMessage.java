@@ -11,11 +11,11 @@ import java.time.LocalDateTime;
 @Entity
 @Data
 @Table(name = "chat_message")
-@NoArgsConstructor 
-@AllArgsConstructor 
-@Builder 
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class ChatMessage {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -23,13 +23,13 @@ public class ChatMessage {
     // 發送者 ID (若是 AI 或 ADMIN，可為 null 或特定 ID，這邊暫定 0 或 null)
     @Column(name = "member_id")
     private Integer memberId; // 這是存資料庫用的純 ID (FK)
-    
-    @ManyToOne 
+
+    @ManyToOne
     @JoinColumn(name = "member_id", insertable = false, updatable = false) // 這裡指明關聯到 member_id
     private Member member; // 這是抓資料用的物件
-    
+
     // 發送者類型: "MEMBER", "AI", "ADMIN"
-    private String sender; 
+    private String sender;
 
     // 內容 (使用 NVARCHAR(MAX) 支援中文長字串)
     @Column(columnDefinition = "NVARCHAR(MAX)")
@@ -37,7 +37,13 @@ public class ChatMessage {
 
     // 建立時間
     private LocalDateTime createdAt = LocalDateTime.now();
-    
+
     // 訊息狀態 (是否已讀，給管理員後台用)
     private Boolean isRead = false;
+
+    // --- 新增：是否對使用者顯示 (軟刪除用) ---
+    // 預設為 true (顯示)，當使用者選擇「結束對話」時改為 false
+    @Builder.Default
+    @Column(name = "is_visible_to_user")
+    private Boolean isVisibleToUser = true;
 }
