@@ -85,35 +85,45 @@ public class CartItemService {
      */
     public List<CartItemResponse> getMyCart(Integer memberId) {
         
-        // 🔥 1. 把嚴謹檢查搬進來
+        // 1. 嚴謹檢查
         if (memberId == null) {
             throw new IllegalArgumentException("會員 ID 不能為空");
         }
         
         boolean exists = memberRepos.existsById(memberId);
         if (!exists) {
-            // 建議拋出自定義異常，讓全域異常處理器捕捉
             throw new RuntimeException("查無此會員"); 
         }
 
         // 2. 撈資料
         List<CartItem> cartItems = cartRepos.findByMember_MemberId(memberId);
         
-        // 3. 轉換 DTO (在這裡做最安全)
+        // 3. 轉換 DTO
         List<CartItemResponse> responseList = new ArrayList<>();
         
         for (CartItem item : cartItems) {
             CartItemResponse dto = new CartItemResponse();
-            dto.setCartItemId(item.getCartItemId());
-            dto.setProductId(item.getProduct().getProductId());
-            dto.setProductName(item.getProduct().getProductName());
-            dto.setImageUrl(item.getProduct().getImageUrl());
-            dto.setPrice(item.getProduct().getPrice());
-            dto.setQuantity(item.getQuantity());
-            dto.setStock(item.getProduct().getStock());
             
-            // 計算小計的邏輯放在 Service 是最正確的
-            dto.setSubtotal(item.getProduct().getPrice() * item.getQuantity());
+            dto.setCartItemId(item.getCartItemId());
+            
+            // 取得商品資訊
+            Product product = item.getProduct(); // 建議拉出來變數，程式碼比較乾淨
+            
+            dto.setProductId(product.getProductId());
+            dto.setProductName(product.getProductName());
+            dto.setImageUrl(product.getImageUrl());
+            dto.setPrice(product.getPrice());
+            dto.setQuantity(item.getQuantity());
+            
+            // 🔥 關鍵修正 1：設定庫存
+            dto.setStock(product.getStock());
+
+            // 🔥🔥🔥 關鍵修正 2：設定上架狀態 (這就是解決您 Bug 的核心！)
+            // 務必確認這裡抓的是 Product 表的最新狀態
+            dto.setIsActive(product.getIsActive()); 
+
+            // 計算小計
+            dto.setSubtotal(product.getPrice() * item.getQuantity());
             
             responseList.add(dto);
         }
