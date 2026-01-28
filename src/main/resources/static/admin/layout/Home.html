@@ -6,25 +6,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Home | 管理中心</title>
 
-    <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <link rel="stylesheet" href="../../plugins/fontawesome-free/css/all.min.css">
     <link rel="stylesheet" href="../../dist/css/adminlte.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/markdown-it@14.0.0/dist/markdown-it.min.js"></script>
 
     <style type="text/css">
         /* --- 全域主題配色 --- */
         :root {
-            --primary-color: #be8754;   /* 咖啡色 (Sidebar/Navbar) */
-            --secondary-color: #ffc20f; /* 黃色 (Active/Highlight) */
-            --dark-color: #6a2614;      /* 深咖啡 (Heading/Button) */
-            --light-color: #fbf7ea;     /* 米色 (Background) */
-            --body-color: #5a4530;      /* 深棕色 (Text) */
+            --primary-color: #be8754;
+            --secondary-color: #ffc20f;
+            --dark-color: #6a2614;
+            --light-color: #fbf7ea;
+            --body-color: #5a4530;
 
             /* 聊天室配色 */
             --chat-bg: #f4d9d9;
-            --chat-user-msg-bg: #f9a7a7;
-            --chat-bot-msg-bg: #ffffff;
+            --msg-admin-bg: #f9a7a7; /* 管理員/AI (右側) - 粉色 */
+            --msg-member-bg: #ffffff; /* 會員 (左側) - 白色 */
         }
 
         body {
@@ -61,101 +61,184 @@
             background-color: var(--primary-color) !important;
         }
 
-        /* Sidebar 樣式修正 (含下拉選單) */
-        .nav-sidebar > .nav-item > .nav-link { color: #fff !important; }
-        .nav-sidebar > .nav-item > .nav-link p, 
-        .nav-sidebar > .nav-item > .nav-link i { color: #fff !important; }
-        .nav-sidebar > .nav-item > .nav-link:hover { background-color: rgba(255, 255, 255, 0.2) !important; }
-
-        .nav-sidebar > .nav-item > .nav-link.active {
-            background-color: var(--secondary-color) !important;
-            color: var(--dark-color) !important;
-            font-weight: bold;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-        }
-        .nav-sidebar > .nav-item > .nav-link.active i { color: var(--dark-color) !important; }
+        /* Sidebar 樣式 */
+        .nav-sidebar>.nav-item>.nav-link { color: #fff !important; }
+        .nav-sidebar>.nav-item>.nav-link:hover { background-color: rgba(255, 255, 255, 0.2) !important; }
+        .nav-sidebar>.nav-item>.nav-link.active { background-color: var(--secondary-color) !important; color: var(--dark-color) !important; font-weight: bold; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); }
+        .nav-sidebar>.nav-item>.nav-link.active i { color: var(--dark-color) !important; }
 
         /* 下拉選單樣式 */
-        .nav-treeview > .nav-item > .nav-link { color: #fff !important; }
-        .nav-treeview > .nav-item > .nav-link p,
-        .nav-treeview > .nav-item > .nav-link i { color: #fff !important; }
-        .nav-treeview > .nav-item > .nav-link:hover,
-        .nav-treeview > .nav-item > .nav-link.active {
-            background-color: var(--secondary-color) !important;
-            color: var(--dark-color) !important;
-            font-weight: bold;
-        }
-        .nav-treeview > .nav-item > .nav-link:hover p,
-        .nav-treeview > .nav-item > .nav-link:hover i,
-        .nav-treeview > .nav-item > .nav-link.active p,
-        .nav-treeview > .nav-item > .nav-link.active i {
-            color: var(--dark-color) !important;
-        }
+        .nav-treeview>.nav-item>.nav-link { color: #fff !important; }
+        .nav-treeview>.nav-item>.nav-link:hover,
+        .nav-treeview>.nav-item>.nav-link.active { background-color: var(--secondary-color) !important; color: var(--dark-color) !important; font-weight: bold; }
+        .nav-treeview>.nav-item>.nav-link:hover p, .nav-treeview>.nav-item>.nav-link:hover i,
+        .nav-treeview>.nav-item>.nav-link.active p, .nav-treeview>.nav-item>.nav-link.active i { color: var(--dark-color) !important; }
 
-        /* 內容區塊背景 */
         .content-wrapper { background-color: var(--light-color) !important; }
 
         /* 按鈕樣式 */
-        .btn-theme-action {
-            background-color: var(--dark-color) !important;
-            color: #fff !important;
-            border: none;
-            border-radius: 5px;
-        }
-        .btn-theme-action:hover {
-            background-color: #501e0f !important;
-            color: var(--secondary-color) !important;
-        }
+        .btn-theme-action { background-color: var(--dark-color) !important; color: #fff !important; border: none; border-radius: 5px; }
+        .btn-theme-action:hover { background-color: #501e0f !important; color: var(--secondary-color) !important; }
 
-        /* Card 樣式覆寫 */
-        .card {
-            background-color: #fff;
-            border: none;
-            box-shadow: 0 0 10px rgba(0,0,0,0.05);
-        }
+        /* Card 樣式 */
+        .card { background-color: #fff; border: none; box-shadow: 0 0 10px rgba(0, 0, 0, 0.05); }
         .card-primary.card-outline { border-top: 3px solid var(--primary-color) !important; }
         .card-success.card-outline { border-top: 3px solid var(--secondary-color) !important; }
         .card-danger.card-outline { border-top: 3px solid var(--dark-color) !important; }
-        
-        /* Tab 樣式調整 */
-        .nav-pills .nav-link.active, .nav-pills .show>.nav-link {
-            background-color: var(--dark-color) !important;
-            color: #fff !important;
-        }
+
+        .nav-pills .nav-link.active, .nav-pills .show>.nav-link { background-color: var(--dark-color) !important; color: #fff !important; }
         .nav-pills .nav-link { color: var(--primary-color); }
+        .chart-container { position: relative; height: 300px; width: 100%; }
 
-        .chart-container {
-            position: relative;
-            height: 300px;
-            width: 100%;
-        }
-
-        /* 聊天室樣式 (省略細節以保持整潔，與之前版本相同) */
+        /* ========================================= */
+        /* === 後台聊天室樣式 (比照前台簡報模式) === */
+        /* ========================================= */
         #adminChatWidget {
-            position: fixed; bottom: 20px; right: 20px; width: 400px; height: 520px;
-            background: white; border-radius: 15px; z-index: 9999;
-            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
-            display: none; flex-direction: column; overflow: hidden; transition: all 0.3s ease;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 600px;
+            height: 600px;
+            background: white;
+            border-radius: 20px;
+            z-index: 9999;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            transition: all 0.3s ease;
         }
-        /* ... (聊天室內部 CSS 同前) ... */
-        #adminChatWidget .chat-header { background: var(--chat-user-msg-bg); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; }
-        #adminChatWidget .chat-body { background: var(--chat-bg); flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
-        #adminChatWidget .user-list-body { background: #fff; flex: 1; overflow-y: auto; padding: 0; }
-        .message-wrapper { display: flex; width: 100%; margin-bottom: 5px; }
-        .message-container { display: flex; align-items: flex-end; max-width: 85%; }
-        .admin-wrapper { justify-content: flex-end; } .admin-wrapper .message-container { flex-direction: row-reverse; }
-        .admin-wrapper .message-bubble { background: var(--chat-user-msg-bg); color: white; border-bottom-right-radius: 4px; }
-        .admin-wrapper .message-time { margin-right: 5px; text-align: right; }
-        .member-wrapper { justify-content: flex-start; } .member-wrapper .message-container { flex-direction: row; }
-        .member-wrapper .message-bubble { background: white; color: #444; border-bottom-left-radius: 4px; }
-        .member-wrapper .message-time { margin-left: 5px; text-align: left; }
-        .message-bubble { padding: 8px 12px; border-radius: 15px; font-size: 0.95rem; line-height: 1.4; word-break: break-all; position: relative; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); }
-        .message-time { font-size: 0.65rem; color: #888; white-space: nowrap; margin-bottom: 2px; }
-        .chat-avatar { width: 35px; height: 35px; border-radius: 50%; border: 1px solid #eee; margin-right: 8px; }
-        .chat-footer { background: #fff; padding: 10px; border-top: 1px solid #eee; }
-        .chat-input { border-radius: 20px; background: #f1f1f1; }
-        .contact-item { padding: 12px 15px; border-bottom: 1px solid #f0f0f0; cursor: pointer; transition: background 0.2s; display: flex; align-items: center; }
+
+        #adminChatWidget .chat-header {
+            background: var(--msg-admin-bg);
+            color: white; 
+            padding: 20px !important;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #chatHeaderLeft i { font-size: 1.5rem; }
+        #chatHeaderLeft .font-weight-bold { font-size: 1.3rem; }
+
+        #adminChatWidget .chat-body {
+            background: var(--chat-bg);
+            flex: 1;
+            padding: 20px !important;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        #adminChatWidget .user-list-body {
+            background: #fff;
+            flex: 1;
+            overflow-y: auto;
+            padding: 0;
+        }
+
+        /* 訊息氣泡容器 */
+        .message-wrapper {
+            display: flex;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .message-container {
+            display: flex;
+            align-items: flex-end;
+            max-width: 95%;
+        }
+
+        /* 管理員/AI (右側) */
+        .admin-wrapper {
+            justify-content: flex-end;
+        }
+        .admin-wrapper .message-container {
+            flex-direction: row-reverse;
+        }
+        .admin-wrapper .message-bubble {
+            background: var(--msg-admin-bg);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+        .admin-wrapper .message-time {
+            margin-right: 8px;
+            text-align: right;
+        }
+
+        /* 會員 (左側) */
+        .member-wrapper {
+            justify-content: flex-start;
+        }
+        .member-wrapper .message-container {
+            flex-direction: row;
+        }
+        .member-wrapper .message-bubble {
+            background: white;
+            color: #333;
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+        }
+        .member-wrapper .message-time {
+            margin-left: 8px;
+            text-align: left;
+        }
+
+        /* 氣泡本體 (大字體) */
+        .message-bubble {
+            padding: 15px 20px;
+            border-radius: 20px;
+            font-size: 18px; /* 18px 大字體 */
+            line-height: 1.6;
+            word-break: break-word;
+            position: relative;
+        }
+
+        .message-time {
+            font-size: 14px;
+            color: #888;
+            white-space: nowrap;
+            margin-bottom: 4px;
+        }
+
+        /* 輸入框區域 */
+        .chat-footer {
+            background: #fff;
+            padding: 15px !important;
+            border-top: 1px solid #eee;
+        }
+
+        .chat-input {
+            border-radius: 20px;
+            background: #f1f1f1;
+            font-size: 1.1rem !important;
+            padding: 10px;
+            height: auto;
+        }
+
+        /* 聯絡人列表 */
+        .contact-item {
+            padding: 15px 20px;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+        }
         .contact-item:hover { background-color: #f9f9f9; }
+        .contact-item img { width: 50px; height: 50px; }
+        .contact-name { font-size: 1.2rem; font-weight: bold; }
+        .contact-id { font-size: 0.95rem; color: #888; }
+
+        /* Markdown 卡片樣式 */
+        .markdown-content { font-size: 18px; line-height: 1.6; }
+        .markdown-content p { margin-bottom: 0.4rem; }
+        .markdown-content strong { color: #d63384; font-weight: 700; font-size: 18px !important; }
+        .markdown-content h1, .markdown-content h2, .markdown-content h3 { font-size: 20px !important; font-weight: 700; margin: 8px 0; }
+        .markdown-content ul { padding-left: 25px; margin-bottom: 0.4rem; }
+        .markdown-content hr { border: 0; border-top: 2px dashed #ddd; margin: 12px 0; }
     </style>
 </head>
 
@@ -164,17 +247,15 @@
         <nav class="main-header navbar navbar-expand navbar-white navbar-light">
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link text-white" data-widget="pushmenu" href="#" role="button"><i
-                            class="fas fa-bars"></i></a>
+                    <a class="nav-link text-white" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
                 </li>
             </ul>
             <ul class="navbar-nav ml-auto align-items-center">
                 <li class="nav-item">
-                    <a href="#" class="btn btn-theme-action btn-sm shadow-sm mr-2 position-relative"
-                        onclick="toggleAdminChat(); return false;">
+                    <a href="#" class="btn btn-theme-action btn-sm shadow-sm mr-2 position-relative" onclick="toggleAdminChat(); return false;">
                         <i class="far fa-comments"></i> 客服中心
                         <span class="badge badge-danger position-absolute" id="globalUnreadBadge"
-                            style="display: none; top: -8px; right: -8px; border-radius: 50%; padding: 4px 6px; font-size: 10px; z-index: 10;">0</span>
+                            style="display: none; top: -8px; right: -8px; border-radius: 50%; padding: 4px 6px; font-size: 10px; z-index: 10; border: 2px solid white;">0</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -194,112 +275,42 @@
                 <nav class="mt-2">
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
                         data-accordion="false">
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-edit"></i>
-                                <p>會員管理 <i class="right fas fa-angle-left"></i></p>
-                            </a>
+                        <li class="nav-item"><a href="#" class="nav-link"><i class="nav-icon fas fa-edit"></i><p>會員管理 <i class="right fas fa-angle-left"></i></p></a>
                             <ul class="nav nav-treeview">
-                                <li class="nav-item"><a href="AdminQueryAll.html" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>管理員資料</p>
-                                    </a></li>
-                                <li class="nav-item"><a href="MemberQueryAll.html" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>會員基本資料</p>
-                                    </a></li>
-                                <li class="nav-item"><a href="MemberPetQueryAll.html" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>會員寵物資料</p>
-                                    </a></li>
-                                <li class="nav-item"><a href="CouponQueryAll.html" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>優惠券總覽</p>
-                                    </a></li>
-                                <li class="nav-item"><a href="CouponUsersQueryAll.html" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>會員持有優惠券</p>
-                                    </a></li>
-                                <li class="nav-item"><a href="FavoritesQueryAll.html" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>會員收藏清單</p>
-                                    </a></li>
+                                <li class="nav-item"><a href="AdminQueryAll.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>管理員資料</p></a></li>
+                                <li class="nav-item"><a href="MemberQueryAll.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>會員基本資料</p></a></li>
+                                <li class="nav-item"><a href="MemberPetQueryAll.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>會員寵物資料</p></a></li>
+                                <li class="nav-item"><a href="CouponQueryAll.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>優惠券總覽</p></a></li>
+                                <li class="nav-item"><a href="CouponUsersQueryAll.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>會員持有優惠券</p></a></li>
+                                <li class="nav-item"><a href="FavoritesQueryAll.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>會員收藏清單</p></a></li>
                             </ul>
                         </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link"><i class="nav-icon fas fa-edit"></i>
-                                <p>商品管理 <i class="right fas fa-angle-left"></i></p>
-                            </a>
+                        <li class="nav-item"><a href="#" class="nav-link"><i class="nav-icon fas fa-edit"></i><p>商品管理 <i class="right fas fa-angle-left"></i></p></a>
                             <ul class="nav nav-treeview">
-                                <li class="nav-item"><a href="/admin/products" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>商品管理</p>
-                                    </a></li>
-                                <li class="nav-item"><a href="/admin/categories" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>類別管理</p>
-                                    </a></li>
+                                <li class="nav-item"><a href="/admin/products" class="nav-link"><i class="far fa-circle nav-icon"></i><p>商品管理</p></a></li>
+                                <li class="nav-item"><a href="/admin/categories" class="nav-link"><i class="far fa-circle nav-icon"></i><p>類別管理</p></a></li>
                             </ul>
                         </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link"><i class="nav-icon fas fa-edit"></i>
-                                <p>訂單管理 <i class="right fas fa-angle-left"></i></p>
-                            </a>
+                        <li class="nav-item"><a href="#" class="nav-link"><i class="nav-icon fas fa-edit"></i><p>訂單管理 <i class="right fas fa-angle-left"></i></p></a>
                             <ul class="nav nav-treeview">
-                                <li class="nav-item"><a href="/orders/list" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>查詢全部訂單</p>
-                                    </a></li>
-                                <li class="nav-item"><a href="/shipment/list" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>物流查詢</p>
-                                    </a></li>
-                                <li class="nav-item"><a href="/ordersItem/list" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>查詢全部訂單明細</p>
-                                    </a></li>
-                                <li class="nav-item"><a href="/Cart/shopping" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>新增訂單</p>
-                                    </a></li>
+                                <li class="nav-item"><a href="/orders/list" class="nav-link"><i class="far fa-circle nav-icon"></i><p>查詢全部訂單</p></a></li>
+                                <li class="nav-item"><a href="/shipment/list" class="nav-link"><i class="far fa-circle nav-icon"></i><p>物流查詢</p></a></li>
+                                <li class="nav-item"><a href="/ordersItem/list" class="nav-link"><i class="far fa-circle nav-icon"></i><p>查詢全部訂單明細</p></a></li>
+                                <li class="nav-item"><a href="/Cart/shopping" class="nav-link"><i class="far fa-circle nav-icon"></i><p>新增訂單</p></a></li>
                             </ul>
                         </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link"><i class="nav-icon fas fa-edit"></i>
-                                <p>預約管理 <i class="right fas fa-angle-left"></i></p>
-                            </a>
+                        <li class="nav-item"><a href="#" class="nav-link"><i class="nav-icon fas fa-edit"></i><p>預約管理 <i class="right fas fa-angle-left"></i></p></a>
                             <ul class="nav nav-treeview">
-                                <li class="nav-item"><a href="GetAllDailySchedules.html" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>班表總覽</p>
-                                    </a></li>
-                                <li class="nav-item"><a href="GetAllAppointments.html" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>預約訂單列表</p>
-                                    </a></li>
-                                <li class="nav-item"><a href="GetAllAppointmentDetails.html" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>預約明細</p>
-                                    </a></li>
-                                <li class="nav-item"><a href="GetAllServiceItems.html" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>服務項目</p>
-                                    </a></li>
+                                <li class="nav-item"><a href="GetAllDailySchedules.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>班表總覽</p></a></li>
+                                <li class="nav-item"><a href="GetAllAppointments.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>預約訂單列表</p></a></li>
+                                <li class="nav-item"><a href="GetAllAppointmentDetails.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>預約明細</p></a></li>
+                                <li class="nav-item"><a href="GetAllServiceItems.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>服務項目</p></a></li>
                             </ul>
                         </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link"><i class="nav-icon fas fa-edit"></i>
-                                <p>人員管理 <i class="right fas fa-angle-left"></i></p>
-                            </a>
+                        <li class="nav-item"><a href="#" class="nav-link"><i class="nav-icon fas fa-edit"></i><p>人員管理 <i class="right fas fa-angle-left"></i></p></a>
                             <ul class="nav nav-treeview">
-                                <li class="nav-item"><a href="GetAllGroomers.html" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>美容師列表</p>
-                                    </a></li>
-                                <li class="nav-item"><a href="GetAllLeaveRecords.html" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>休假審核</p>
-                                    </a></li>
+                                <li class="nav-item"><a href="GetAllGroomers.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>美容師列表</p></a></li>
+                                <li class="nav-item"><a href="GetAllLeaveRecords.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>休假審核</p></a></li>
                             </ul>
                         </li>
                     </ul>
@@ -322,11 +333,9 @@
                                 <div class="card-header d-flex p-0">
                                     <h3 class="card-title p-3"><i class="fas fa-chart-line mr-1"></i> 會員註冊人數趨勢</h3>
                                     <ul class="nav nav-pills ml-auto p-2" id="regChartFilters">
-                                        <li class="nav-item"><a class="nav-link active" href="#"
-                                                data-period="6m">近六個月</a></li>
+                                        <li class="nav-item"><a class="nav-link active" href="#" data-period="6m">近六個月</a></li>
                                         <li class="nav-item"><a class="nav-link" href="#" data-period="1y">本年度</a></li>
-                                        <li class="nav-item"><a class="nav-link" href="#" data-period="all">歷年總覽</a>
-                                        </li>
+                                        <li class="nav-item"><a class="nav-link" href="#" data-period="all">歷年總覽</a></li>
                                     </ul>
                                 </div>
                                 <div class="card-body">
@@ -337,7 +346,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-8">
-                             <div class="card card-outline card-success">
+                            <div class="card card-outline card-success">
                                 <div class="card-header">
                                     <h3 class="card-title"><i class="fas fa-dog mr-1"></i> 寵物種類與體型分佈</h3>
                                 </div>
@@ -347,10 +356,9 @@
                             </div>
                         </div>
                         <div class="col-md-4">
-                             <div class="card card-outline card-danger">
+                            <div class="card card-outline card-danger">
                                 <div class="card-header">
-                                    <h3 class="card-title"><i class="fas fa-birthday-cake mr-1"></i> <span
-                                            id="petAgeTitle">寵物年齡層比例</span></h3>
+                                    <h3 class="card-title"><i class="fas fa-birthday-cake mr-1"></i> <span id="petAgeTitle">寵物年齡層比例</span></h3>
                                 </div>
                                 <div class="card-body">
                                     <div class="chart-container"><canvas id="petAgePieChart"></canvas></div>
@@ -370,15 +378,15 @@
     <div id="adminChatWidget">
         <div class="chat-header">
             <div id="chatHeaderLeft" class="d-flex align-items-center">
-                <i class="bi bi-chat-dots-fill mr-2" style="font-size: 1.2rem;"></i>
+                <i class="bi bi-chat-dots-fill mr-2" style="font-size: 1.5rem;"></i>
                 <span class="font-weight-bold">客服中心</span>
             </div>
-            <div class="d-flexalign-items-center">
-                <button type="button" class="btn btn-sm text-white mr-1" id="backToListBtn" style="display: none;"
+            <div class="d-flex align-items-center">
+                <button type="button" class="btn btn-sm text-white mr-2" id="backToListBtn" style="display: none; font-size: 1.2rem;"
                     onclick="showUserList()" title="返回列表">
                     <i class="fas fa-arrow-left"></i>
                 </button>
-                <button type="button" class="btn btn-sm text-white" onclick="toggleAdminChat()" title="關閉">
+                <button type="button" class="btn btn-sm text-white" onclick="toggleAdminChat()" title="關閉" style="font-size: 1.2rem;">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
@@ -394,7 +402,7 @@
                 <input type="text" id="adminMsgInput" placeholder="請輸入訊息..." class="form-control border-0 chat-input">
                 <span class="input-group-append ml-2">
                     <button type="button" class="btn btn-link text-primary" onclick="sendAdminMessage()">
-                        <i class="bi bi-send-fill" style="font-size: 1.2rem;"></i>
+                        <i class="bi bi-send-fill" style="font-size: 1.5rem;"></i>
                     </button>
                 </span>
             </div>
@@ -410,27 +418,19 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 
     <script>
-        // 全域變數
+        const md = window.markdownit({ breaks: true, linkify: true });
+
         let stompClientAdmin = null;
         let currentUser = null;
         let userList = [];
         let isWidgetOpen = false;
 
-        // 定義主題色變數供 Chart.js 使用
-        const themeColors = {
-            primary: '#be8754',   // 咖啡色
-            secondary: '#ffc20f', // 黃色
-            dark: '#6a2614',      // 深咖啡
-            light: '#fbf7ea',
-            text: '#5a4530'
-        };
+        const themeColors = { primary: '#be8754', secondary: '#ffc20f', dark: '#6a2614', light: '#fbf7ea', text: '#5a4530' };
 
         $(function () {
-            // 權限與資料初判
             const adminName = sessionStorage.getItem('adminName') || '管理員';
             if (adminName) { $('#adminDisplayName').text(adminName); }
 
-            // 登出
             $('#logoutBtn').on('click', function (e) {
                 e.preventDefault();
                 if (confirm('確定要登出嗎？')) {
@@ -443,138 +443,71 @@
                 }
             });
 
-            // 初始化圖表
             initCharts();
-
-            // 初始化 WebSocket
             initAdminWebSocket();
 
-            // Chat Widget Init
             $('#adminMsgInput').keypress(function (e) { if (e.which == 13) sendAdminMessage(); });
             $('#adminChatWidget').hide();
             loadUserList();
         });
 
-        // ================= Chart Logic (Integrate User's Logic with New Styles) =================
-        let regChart = null;
-        let petTypeChart = null;
-        let petAgeChart = null;
+        // ================= Chart Logic =================
+        let regChart = null, petTypeChart = null, petAgeChart = null;
 
         function initCharts() {
-            setTimeout(() => {
-                fetchStats('6m'); // 會員註冊
-                initPetStats();   // 寵物種類+體型
-                fetchAgeStats();  // 寵物年齡
-            }, 100);
-
-            // 篩選按鈕
+            setTimeout(() => { fetchStats('6m'); initPetStats(); fetchAgeStats(); }, 100);
             $('#regChartFilters').on('click', '.nav-link', function (e) {
-                e.preventDefault();
-                $('#regChartFilters .nav-link').removeClass('active');
-                $(this).addClass('active');
-                fetchStats($(this).data('period'));
+                e.preventDefault(); $('#regChartFilters .nav-link').removeClass('active'); $(this).addClass('active'); fetchStats($(this).data('period'));
             });
         }
 
-        // 1. 註冊趨勢圖 (Line Chart) - 含鑽取年份功能
-        function renderTrendChart(labels, data) {
-            const ctx = document.getElementById('registrationChart');
-            if (!ctx) return;
+        function renderTrendChart(labels, data) { 
+            const ctx = document.getElementById('registrationChart'); 
+            if(!ctx) return; 
             
-            if (regChart) {
-                regChart.data.labels = labels;
-                regChart.data.datasets[0].data = data;
+            if(regChart){ 
+                regChart.data.labels=labels; 
+                regChart.data.datasets[0].data=data; 
                 regChart.update();
-            } else {
-                regChart = new Chart(ctx, {
-                    type: 'line', 
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: '新註冊人數',
-                            data: data,
-                            borderColor: themeColors.dark, // 改用深咖啡色
-                            backgroundColor: 'rgba(190, 135, 84, 0.2)', // 淺咖啡透明
-                            fill: true,
-                            tension: 0.4
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        onClick: (event, elements) => {
-                            if (elements.length > 0) {
-                                const index = elements[0].index;
-                                const label = regChart.data.labels[index];
-                                // 點擊年份鑽取
-                                if (label.length === 4 && /^\d{4}$/.test(label)) {
-                                    fetchStats("all_" + label);
-                                }
-                            }
-                        },
-                        onHover: (event, chartElement) => {
-                            event.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
-                        }
-                    }
-                });
-            }
+            } else { 
+                regChart = new Chart(ctx, { 
+                    type:'line', 
+                    data:{ 
+                        labels:labels, 
+                        datasets:[{ label:'新註冊人數', data:data, borderColor:themeColors.dark, backgroundColor:'rgba(190, 135, 84, 0.2)', fill:true, tension:0.4 }] 
+                    }, 
+                    options:{ 
+                        responsive:true, 
+                        maintainAspectRatio:false, 
+                        onClick:(e,el)=>{ 
+                            if(el.length>0){ 
+                                const idx=el[0].index; 
+                                const l=regChart.data.labels[idx]; 
+                                if(l.length===4) fetchStats("all_"+l); 
+                            } 
+                        }, 
+                        onHover:(e,ce)=>{ e.native.target.style.cursor=ce[0]?'pointer':'default'; } 
+                    } 
+                }); 
+            } 
         }
 
-        function fetchStats(period) {
-            $.getJSON('/members/stats', { period: period })
-                .done(res => renderTrendChart(res.labels, res.data))
-                .fail((jqXHR, textStatus, errorThrown) => {
-                    console.error("請求失敗！");
-                    Swal.fire({
-                        icon: 'error',
-                        title: '連線失敗',
-                        text: '無法取得統計數據，請檢查伺服器狀態。',
-                        confirmButtonColor: themeColors.dark
-                    });
-                });
-        }
+        function fetchStats(p) { $.getJSON('/members/stats', { period: p }).done(res => renderTrendChart(res.labels, res.data)); }
 
-        // 2. 寵物堆疊圖 (Stacked Bar) - 含連動年齡圖功能
-        async function initPetStats() {
-            try {
-                const res = await $.getJSON('/memberPets/stats', { type: 'stacked' });
-                
-                const rawLabels = res.labels;
-                const rawData = res.data;
-                const typeOrder = ['狗', '貓', '其他'];
-                const sizeOrder = ['小型', '中型', '大型'];
-                
-                // 改用大地色系
-                const colors = { 
-                    '小型': themeColors.primary,   // 咖啡色
-                    '中型': themeColors.dark,      // 深咖啡
-                    '大型': themeColors.secondary  // 黃色
-                };
-
-                let groupedData = {};
-                typeOrder.forEach(t => { groupedData[t] = { '小型': 0, '中型': 0, '大型': 0 }; });
-                rawLabels.forEach((label, index) => {
-                    const [t, s] = label.split(','); 
-                    if (groupedData[t] && groupedData[t][s] !== undefined) {
-                        groupedData[t][s] = rawData[index];
-                    }
-                });
-
-                const datasets = sizeOrder.map(size => {
-                    return {
-                        label: size,
-                        backgroundColor: colors[size],
-                        data: typeOrder.map(type => groupedData[type][size])
-                    };
-                });
-
-                renderStackedBar(typeOrder, datasets);
-            } catch (e) { console.error("初始化堆疊圖失敗", e); }
+        async function initPetStats() { 
+            try { 
+                const res = await $.getJSON('/memberPets/stats', { type: 'stacked' }); 
+                const colors={'小型':themeColors.primary,'中型':themeColors.dark,'大型':themeColors.secondary}; 
+                let gd={}; ['狗','貓','其他'].forEach(t=>gd[t]={'小型':0,'中型':0,'大型':0}); 
+                res.labels.forEach((l,i)=>{ const[t,s]=l.split(','); if(gd[t]) gd[t][s]=res.data[i]; }); 
+                const ds=['小型','中型','大型'].map(s=>({label:s,backgroundColor:colors[s],data:['狗','貓','其他'].map(t=>gd[t][s])})); 
+                renderStackedBar(['狗','貓','其他'], ds);
+            }catch(e){console.error(e);} 
         }
 
         function renderStackedBar(labels, datasets) {
             const ctx = document.getElementById('petStackedBarChart');
-            if(!ctx) return;
+            if (!ctx) return;
 
             if (petTypeChart) {
                 petTypeChart.data.labels = labels;
@@ -591,10 +524,11 @@
                         onClick: (event, elements) => {
                             if (elements.length > 0) {
                                 const index = elements[0].index;
-                                const selectedType = petTypeChart.data.labels[index]; 
-                                fetchAgeStats(selectedType); // 點擊連動
+                                const selectedType = petTypeChart.data.labels[index];
+                                fetchAgeStats(selectedType);
                             }
                         },
+                        // ✅ 修復：滑鼠移上去變手掌
                         onHover: (event, chartElement) => {
                             event.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
                         }
@@ -603,51 +537,45 @@
             }
         }
 
-        // 3. 年齡分佈 (Pie Chart)
-        async function fetchAgeStats(type = null) {
-            try {
-                const params = {};
-                if (type) params.type = type;
-                const res = await $.getJSON('/memberPets/stats', params);
-                
-                const ctx = document.getElementById('petAgePieChart');
-                if(!ctx) return;
-                
-                const title = type ? `${type} - 年齡分佈` : '所有寵物 - 年齡分佈';
-                $('#petAgeTitle').text(title);
-
-                if (petAgeChart) {
-                    petAgeChart.data.labels = res.labels;
-                    petAgeChart.data.datasets[0].data = res.data;
+        async function fetchAgeStats(t=null) { 
+            try { 
+                const p={}; if(t) p.type=t; 
+                const res = await $.getJSON('/memberPets/stats', p); 
+                const ctx=document.getElementById('petAgePieChart'); 
+                $('#petAgeTitle').text(t?`${t} - 年齡分佈`:'所有寵物 - 年齡分佈'); 
+                if(petAgeChart){
+                    petAgeChart.data.labels=res.labels;
+                    petAgeChart.data.datasets[0].data=res.data;
                     petAgeChart.update();
-                } else {
-                    petAgeChart = new Chart(ctx, {
-                        type: 'doughnut',
-                        data: {
-                            labels: res.labels,
-                            datasets: [{
-                                data: res.data,
-                                // 改用大地色系配色
-                                backgroundColor: [themeColors.primary, themeColors.secondary, '#d2d6de']
-                            }]
+                }else{
+                    petAgeChart=new Chart(ctx,{
+                        type:'doughnut',
+                        data:{
+                            labels:res.labels,
+                            datasets:[{data:res.data,backgroundColor:[themeColors.primary, themeColors.secondary, '#d2d6de']}]
                         },
-                        options: { responsive: true, maintainAspectRatio: false }
+                        options:{responsive:true,maintainAspectRatio:false}
                     });
-                }
-            } catch (e) { console.error("讀取年齡分布失敗", e); }
+                } 
+            }catch(e){console.error(e);} 
         }
 
+        // ================= Chat Logic =================
 
-        // ================= Chat & WebSocket Logic (保持不變) =================
         function toggleAdminChat() {
             isWidgetOpen = !isWidgetOpen;
-            if (isWidgetOpen) { $('#adminChatWidget').css('display', 'flex').hide().fadeIn(); loadUserList(); } 
-            else { $('#adminChatWidget').fadeOut(); }
+            if (isWidgetOpen) {
+                $('#adminChatWidget').css('display', 'flex').hide().fadeIn();
+                loadUserList();
+            } else {
+                $('#adminChatWidget').fadeOut();
+                currentUser = null;
+            }
         }
 
         function showUserList() {
             currentUser = null;
-            $('#chatHeaderLeft').html('<i class="bi bi-chat-dots-fill mr-2" style="font-size: 1.2rem;"></i><span class="font-weight-bold">客服中心</span>');
+            $('#chatHeaderLeft').html('<i class="bi bi-chat-dots-fill mr-2" style="font-size: 1.5rem;"></i><span class="font-weight-bold">客服中心</span>');
             $('#backToListBtn').hide();
             $('#view-chat-room').hide(); $('#chatInputArea').hide();
             $('#view-user-list').fadeIn();
@@ -658,17 +586,24 @@
             currentUser = { id: id, name: name, pic: pic };
             $('#chatHeaderLeft').html(`
                 <div class="d-flex align-items-center">
-                    <img src="${pic}" style="width: 30px; height: 30px; border-radius: 50%; border: 1px solid #fff; margin-right: 8px;">
-                    <div><div class="font-weight-bold" style="line-height:1;">${name}</div><small style="opacity: 0.8; font-size: 0.7rem;">#${id}</small></div>
+                    <img src="${pic}" style="width: 45px; height: 45px; border-radius: 50%; border: 2px solid #fff; margin-right: 12px; object-fit: cover;">
+                    <div>
+                        <div class="font-weight-bold" style="line-height:1.2; font-size: 1.3rem;">${name}</div>
+                        <small style="opacity: 0.9; font-size: 0.95rem;">ID: ${id}</small>
+                    </div>
                 </div>
             `);
             $('#view-user-list').hide();
             $('#backToListBtn').show();
-            $('#view-chat-room').css('display', 'flex'); 
+            $('#view-chat-room').css('display', 'flex');
             $('#chatInputArea').show();
             $.post('/admin/chat/read?memberId=' + id);
+            
             const index = userList.findIndex(x => x.member.memberId === id);
-            if (index !== -1) { userList[index].unreadCount = 0; }
+            if (index !== -1) { 
+                userList[index].unreadCount = 0; 
+            }
+            
             calcTotalUnread();
             loadAdminHistory(id);
         }
@@ -694,23 +629,37 @@
         function renderUserListUI() {
             const listEl = $('#contactListBody'); listEl.empty();
             if (!userList || userList.length === 0) {
-                listEl.html('<div class="h-100 d-flex flex-column align-items-center justify-content-center text-muted"><i class="bi bi-chat-square-dots" style="font-size: 3rem; opacity:0.3;"></i><p class="mt-2">目前尚無訊息</p></div>');
+                listEl.html('<div class="h-100 d-flex flex-column align-items-center justify-content-center text-muted"><i class="bi bi-chat-square-dots" style="font-size: 4rem; opacity:0.3;"></i><p class="mt-2" style="font-size: 1.2rem;">目前尚無訊息</p></div>');
                 calcTotalUnread(); return;
             }
             userList.forEach(item => {
                 const m = item.member;
                 const pic = m.picture || '../../dist/img/default-150x150.png';
-                const unreadHtml = item.unreadCount > 0 ? `<span class="badge badge-danger rounded-pill ml-auto">${item.unreadCount}</span>` : '';
-                listEl.append(`<div class="contact-item" onclick="enterChatRoom(${m.memberId}, '${m.name}', '${pic}')"><img src="${pic}" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 12px;"><div style="flex-grow: 1; overflow: hidden;"><div class="d-flex align-items-center"><span class="font-weight-bold text-dark mr-2">${m.name}</span><small class="text-muted">ID: ${m.memberId}</small></div><div class="text-truncate text-muted small">點擊查看對話...</div></div>${unreadHtml}</div>`);
+                const count = parseInt(item.unreadCount) || 0;
+                const unreadHtml = count > 0 ? `<span class="badge badge-danger rounded-pill ml-auto" style="font-size: 0.9rem; padding: 5px 8px;">${count}</span>` : '';
+                
+                listEl.append(`
+                    <div class="contact-item" onclick="enterChatRoom(${m.memberId}, '${m.name}', '${pic}')">
+                        <img src="${pic}" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px;">
+                        <div style="flex-grow: 1; overflow: hidden;">
+                            <div class="d-flex align-items-center">
+                                <span class="contact-name text-dark mr-2">${m.name}</span>
+                                <small class="contact-id">ID: ${m.memberId}</small>
+                            </div>
+                            <div class="text-truncate text-muted" style="font-size: 1rem;">點擊查看對話...</div>
+                        </div>
+                        ${unreadHtml}
+                    </div>
+                `);
             });
             calcTotalUnread();
         }
 
         function loadAdminHistory(id) {
-            const box = $('#adminMsgBox'); box.html('<div class="text-center text-muted mt-4">載入中...</div>');
+            const box = $('#adminMsgBox'); box.html('<div class="text-center text-muted mt-4" style="font-size:1.2rem;">載入中...</div>');
             $.get('/admin/chat/history?memberId=' + id).done(msgs => {
                 box.empty();
-                if (!msgs || msgs.length === 0) { box.html('<div class="text-center text-muted mt-5 opacity-50"><small>— 尚無歷史訊息 —</small></div>'); } 
+                if (!msgs || msgs.length === 0) { box.html('<div class="text-center text-muted mt-5 opacity-50"><small style="font-size:1.1rem;">— 尚無歷史訊息 —</small></div>'); }
                 else { msgs.forEach(msg => appendAdminMsgUI(msg)); }
                 scrollToBottom();
             });
@@ -718,15 +667,21 @@
 
         function appendAdminMsgUI(msg) {
             const box = $('#adminMsgBox');
-            const isAdmin = (msg.sender === 'ADMIN');
-            const wrapperClass = isAdmin ? 'admin-wrapper' : 'member-wrapper';
-            let avatarHtml = '';
-            if (!isAdmin) {
-                const pic = (currentUser && currentUser.pic) ? currentUser.pic : '../../dist/img/default-150x150.png';
-                avatarHtml = `<img src="${pic}" class="chat-avatar">`;
-            }
+            const isSystem = (msg.sender === 'ADMIN' || msg.sender === 'AI');
+            const wrapperClass = isSystem ? 'admin-wrapper' : 'member-wrapper';
+            let contentHtml = md.render(msg.content);
             const timeStr = msg.createdAt ? msg.createdAt.substring(11, 16) : '';
-            box.append(`<div class="message-wrapper ${wrapperClass}"><div class="message-container">${!isAdmin ? avatarHtml : ''}<div class="message-bubble shadow-sm">${msg.content}</div><div class="message-time align-self-end mx-2">${timeStr}</div></div></div>`);
+
+            box.append(`
+                <div class="message-wrapper ${wrapperClass}">
+                    <div class="message-container">
+                        <div class="message-bubble shadow-sm">
+                            <div class="markdown-content">${contentHtml}</div>
+                        </div>
+                        <div class="message-time align-self-end mx-2">${timeStr}</div>
+                    </div>
+                </div>
+            `);
         }
 
         function scrollToBottom() { const box = document.getElementById('view-chat-room'); if (box) box.scrollTop = box.scrollHeight; }
@@ -743,23 +698,38 @@
         }
 
         function handleAdminNewMsg(msg) {
-            if (currentUser && currentUser.id == msg.memberId) {
-                appendAdminMsgUI(msg); scrollToBottom(); $.post('/admin/chat/read?memberId=' + currentUser.id);
-            } else {
-                let target = userList.find(u => u.member.memberId === msg.memberId);
-                if (!target) { loadUserList(); return; }
-                target.unreadCount++;
-                userList = userList.filter(u => u !== target); userList.unshift(target);
-                if (isWidgetOpen && !currentUser) { renderUserListUI(); } else { calcTotalUnread(); }
-            }
+            // ✅ 修復：若正在跟該會員聊天，直接已讀並 return，不加未讀數
+            if (isWidgetOpen && currentUser && currentUser.id == msg.memberId) {
+                appendAdminMsgUI(msg); 
+                scrollToBottom(); 
+                $.post('/admin/chat/read?memberId=' + currentUser.id);
+                return;
+            } 
+            
+            // 否則算未讀
+            let target = userList.find(u => u.member.memberId === msg.memberId);
+            if (!target) { loadUserList(); return; }
+            
+            target.unreadCount = (parseInt(target.unreadCount) || 0) + 1;
+            userList = userList.filter(u => u !== target); userList.unshift(target);
+            
+            if (isWidgetOpen && !currentUser) { renderUserListUI(); } else { calcTotalUnread(); }
         }
 
         function calcTotalUnread() {
             let total = 0;
-            if (userList && Array.isArray(userList)) { userList.forEach(u => { total += (parseInt(u.unreadCount) || 0); }); }
+            if (userList && Array.isArray(userList)) { 
+                userList.forEach(u => { total += (parseInt(u.unreadCount) || 0); }); 
+            }
             const badge = $('#globalUnreadBadge');
-            if (total > 0) { badge.text(total).fadeIn(); badge.addClass('animate__animated animate__bounceIn'); } else { badge.fadeOut(); }
+            if (total > 0) { 
+                badge.text(total).fadeIn(); 
+                badge.addClass('animate__animated animate__bounceIn'); 
+            } else { 
+                badge.fadeOut(); 
+            }
         }
     </script>
 </body>
+
 </html>

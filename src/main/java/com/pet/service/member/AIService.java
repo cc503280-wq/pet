@@ -20,169 +20,243 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException; // 新增這個 import
 import org.springframework.web.client.RestTemplate;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class AIService {
 
-        @Value("${gemini.api.key}")
-        private String apiKey;
+    @Value("${gemini.api.key}")
+    private String apiKey;
 
-        @Value("${gemini.api.url}")
-        private String apiUrl;
+    @Value("${gemini.api.url}")
+    private String apiUrl;
 
-        private final RestTemplate restTemplate = new RestTemplate();
-        private final ObjectMapper objectMapper = new ObjectMapper();
+    private final RestTemplate restTemplate = new RestTemplate();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
-        // 注入四大天王 Service
-        @Autowired
-        private ServiceItemService serviceItemService;
-        @Autowired
-        private ProductService productService;
-        @Autowired
-        private CouponService couponService;
-        @Autowired
-        private GroomerService groomerService;
+    // 注入四大天王 Service
+    @Autowired
+    private ServiceItemService serviceItemService;
+    @Autowired
+    private ProductService productService;
+    @Autowired
+    private CouponService couponService;
+    @Autowired
+    private GroomerService groomerService;
+    @Autowired
+    private com.pet.service.order.OrderService orderService; // 新增 OrderService
 
-        public String callGemini(String userMessage) {
-                try {
-                        String url = apiUrl + "?key=" + apiKey;
-                        StringBuilder contextBuilder = new StringBuilder();
+    // --- 關鍵字定義 (同義詞庫) ---
+    private static final List<String> PRODUCT_KEYWORDS = List.of("買", "推薦", "飼料", "罐頭", "貓砂", "玩具", "多少錢", "價格", "費用",
+            "cost", "price", "shop", "store");
+    private static final List<String> COUPON_KEYWORDS = List.of("優惠", "折扣", "便宜", "coupon", "discount", "promotion",
+            "代碼", "code");
+    private static final List<String> GROOMER_KEYWORDS = List.of("美容", "預約", "剪毛", "洗澡", "groomer", "cut", "hair",
+            "salon");
+    private static final List<String> ORDER_KEYWORDS = List.of("訂單", "進度", "出貨", "包裹", "order", "status", "track",
+            "shipping", "history");
 
-                        // 1. 【常駐資訊】美容服務價目表
-                        List<ServiceItem> services = serviceItemService.getAllActiveServiceItems();
-                        String servicesInfo = services.stream()
-                                        .map((ServiceItem s) -> String.format("- %s (價格: $%s, 適合: %s %s)",
-                                                        s.getServiceName(),
-                                                        s.getPrice(),
-                                                        s.getTargetPetType(), // 修正: getPetType -> getTargetPetType
-                                                        s.getTargetPetSize() // 修正: getPetSize -> getTargetPetSize
-                                        ))
-                                        .collect(Collectors.joining("\n"));
-                        contextBuilder.append("【美容服務價目表】:\n").append(servicesInfo).append("\n\n");
+    /**
+     * 呼叫 Gemini API
+     * 
+     * @param memberId    會員ID (可為 null，代表未登入或無法取得)
+     * @param userMessage 使用者輸入的訊息
+     */
+    public String callGemini(Integer memberId, String userMessage) {
+        // --- 設定重試參數 ---
+        int maxRetries = 3; // 最大重試次數
+        int retryCount = 0; // 目前次數
 
-                        // 2. 【動態資訊】依照關鍵字決定要不要撈資料
+        while (retryCount < maxRetries) {
+            try {
+                String url = apiUrl + "?key=" + apiKey;
+                // System.out.println("正在呼叫 Gemini API: " + url); // Debug用
+                StringBuilder contextBuilder = new StringBuilder();
+                String lowerMsg = userMessage.toLowerCase(); // 統一轉小寫比對
 
-                        // A. 商品搜尋
-                        if (userMessage.contains("買") || userMessage.contains("推薦") || userMessage.contains("飼料") ||
-                                        userMessage.contains("罐頭") || userMessage.contains("貓砂")
-                                        || userMessage.contains("玩具") || userMessage.contains("多少錢")) {
+                // 1. 【常駐資訊】美容服務價目表
+                List<ServiceItem> services = serviceItemService.getAllActiveServiceItems();
+                if (services == null)
+                    services = List.of();
 
-                                List<Product> products = productService.searchProducts(userMessage);
-                                if (products.isEmpty()) {
-                                        products = productService.findActiveProducts();
-                                }
-                                String productInfo = products.stream().limit(10)
-                                                .map((Product p) -> String.format("- %s ($%s, 庫存: %s)",
-                                                                p.getProductName(), p.getPrice(), p.getStock()))
-                                                .collect(Collectors.joining("\n"));
-                                contextBuilder.append("【相關商品推薦】:\n").append(productInfo).append("\n\n");
-                        }
+                String servicesInfo = services.stream()
+                        .map(s -> String.format("- %s (價格: $%s, 適合: %s %s)",
+                                s.getServiceName(), s.getPrice(), s.getTargetPetType(), s.getTargetPetSize()))
+                        .collect(Collectors.joining("\n"));
+                contextBuilder.append("【美容服務價目表】:\n").append(servicesInfo).append("\n\n");
 
-                        // B. 優惠券
-                        if (userMessage.contains("優惠") || userMessage.contains("折扣") || userMessage.contains("便宜")) {
-                                List<Coupon> coupons = couponService.getAvailableCoupons();
-                                String couponInfo = coupons.stream()
-                                                .map((Coupon c) -> {
-                                                        // 修正: Coupon 沒有 name，改由折扣規則自動生成描述
-                                                        String desc = "";
-                                                        if ("percent".equals(c.getDiscountType())) {
-                                                                int off = (int) (c.getDiscountValue() * 100);
-                                                                // 例如 0.8 -> 80 (8折), 0.85 -> 85 (85折)
-                                                                // 轉成中文習慣: 0.8 -> 8折, 0.5 -> 5折
-                                                                // 這裡簡單處理: 直接顯示 "XX折" (例如 80% Off) 或直接用中文 "X折"
-                                                                // 這裡寫簡單邏輯: 0.9 -> 9折
-                                                                int discount = (int) (c.getDiscountValue() * 10);
-                                                                desc = discount + "折優惠";
-                                                        } else {
-                                                                desc = "折抵 $" + c.getDiscountValue().intValue();
-                                                        }
-                                                        return String.format("- 代碼[%s]: %s (低消 $%s)", c.getCode(), desc,
-                                                                        c.getMinPurchase());
-                                                })
-                                                .collect(Collectors.joining("\n"));
-                                contextBuilder.append("【目前可領取的優惠券】:\n").append(couponInfo).append("\n\n");
-                        }
+                // 2. 【動態資訊】依照關鍵字決定要不要撈資料
 
-                        // C. 美容師
-                        if (userMessage.contains("美容師") || userMessage.contains("預約") || userMessage.contains("剪毛")) {
-                                List<Groomer> groomers = groomerService.getAllGroomer();
-                                String groomerInfo = groomers.stream()
-                                                .filter((Groomer g) -> g.getIsActive() != null && g.getIsActive())
-                                                .map((Groomer g) -> String.format("- %s (年資: %s)", g.getGroomerName(),
-                                                                g.getHiredate()))
-                                                .collect(Collectors.joining("\n"));
-                                contextBuilder.append("【我們的專業美容師團隊】:\n").append(groomerInfo).append("\n\n");
-                        }
+                // A. 商品搜尋
+                if (containsAny(lowerMsg, PRODUCT_KEYWORDS)) {
+                    List<Product> products = productService.searchProducts(userMessage);
+                    if (products == null || products.isEmpty()) {
+                        products = productService.findActiveProducts();
+                    }
+                    if (products == null)
+                        products = List.of();
 
-                        // 3. 組合 System Prompt (開場白優化)
-                        String systemPrompt = String.format("""
-                                        你是寵物電商『MaoMaoLand』的智能客服 AI 助理。請用繁體中文、親切可愛的語氣(🐶, 🐱)回答。
-
-                                        【重要：自我介紹】
-                                        **請在回答的第一句話，或適當時機，向使用者表明你是一個「AI 智能助理」。**
-                                        **若遇到無法處理的問題，請務必引導使用者輸入『真人客服』或『轉真人』以切換專人服務。**
-
-                                        【網站基礎規範 (必讀)】：
-                                        1. 免運政策：消費滿 $1,000 即享免運。
-                                        2. 會員幣：每筆訂單回饋 1%% 作為會員幣，可無上限折抵。
-                                        3. 修改資料/寵物/優惠券：請點擊右上方「會員中心圖示」進入「我的基本資料」或對應分頁。
-                                        4. 查詢訂單/收藏：請至「會員中心」>「購物訂單」或「收藏清單」。
-
-                                        %s
-
-                                        【回答守則】：
-                                        1. 請優先根據上方的【資訊卡】回答問題。
-                                        2. 若商品沒庫存，請誠實告知。
-                                        3.若詢問「訂單進度」或「個人隱私」，請引導至網站後台查詢，或輸入『真人客服』。
-                                        4. 通用的寵物知識 (如：狗不能吃什麼?)，請直接依照你的知識庫回答。
-
-                                        客戶的問題是：%s
-                                        """, contextBuilder.toString(), userMessage);
-
-                        // --- 呼叫 API ---
-                        // 1. 建立最外層的 { }
-                        ObjectNode rootNode = objectMapper.createObjectNode();
-
-                        // 2. 建立 "contents": [ ... ]
-                        ArrayNode contentsNode = rootNode.putArray("contents");
-
-                        // 3. 建立陣列裡的第一個物件 { ... }
-                        ObjectNode contentNode = contentsNode.addObject();
-
-                        // 4. 建立 "parts": [ ... ]
-                        ArrayNode partsNode = contentNode.putArray("parts");
-
-                        // 5. 把你的問題塞進去: { "text": "..." }
-                        partsNode.addObject().put("text", systemPrompt);
-
-                        // 6. 設定 Headers，告訴 Google 我們寄過去的是 JSON 格式
-                        HttpHeaders headers = new HttpHeaders();
-                        headers.setContentType(MediaType.APPLICATION_JSON);
-
-                        // 7. 把信紙 (JSON內容) 和 信封設定 (Headers) 裝在一起變成一個包裹 (Entity)
-                        HttpEntity<String> request = new HttpEntity<>(rootNode.toString(), headers);
-
-                        // 8. 透過 restTemplate (瀏覽器) 發送 POST 請求
-                        // 參數: 網址, 包裹, 回傳的這種類型(String)
-                        ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
-
-                        // 9. 解析回傳結果
-                        // 把回傳的字串翻譯成樹狀結構
-                        JsonNode responseJson = objectMapper.readTree(response.getBody());
-
-                        // 像剝洋蔥一樣，一層一層拿：
-                        return responseJson.path("candidates").get(0)
-                                        .path("content").path("parts").get(0)
-                                        .path("text").asText();
-
-                } catch (Exception e) {
-                        e.printStackTrace();
-                        return "抱歉，AI 大腦運轉過熱中... 請稍後再試 😵";
+                    String productInfo = products.stream().limit(10)
+                            .map(p -> String.format("- %s ($%s, 庫存: %s)", p.getProductName(), p.getPrice(),
+                                    p.getStock()))
+                            .collect(Collectors.joining("\n"));
+                    contextBuilder.append("【相關商品推薦】:\n").append(productInfo).append("\n\n");
                 }
+
+                // B. 優惠券
+                if (containsAny(lowerMsg, COUPON_KEYWORDS)) {
+                    List<Coupon> coupons = couponService.getAvailableCoupons();
+                    if (coupons == null)
+                        coupons = List.of();
+
+                    String couponInfo = coupons.stream()
+                            .map(c -> {
+                                String desc = "percent".equals(c.getDiscountType())
+                                        ? (int) (c.getDiscountValue() * 10) + "折"
+                                        : "折抵 $" + c.getDiscountValue().intValue();
+                                return String.format("- 代碼[%s]: %s (低消 $%s)", c.getCode(), desc, c.getMinPurchase());
+                            })
+                            .collect(Collectors.joining("\n"));
+                    contextBuilder.append("【目前可領取的優惠券】:\n").append(couponInfo).append("\n\n");
+                }
+
+                // C. 美容師
+                if (containsAny(lowerMsg, GROOMER_KEYWORDS)) {
+                    List<Groomer> groomers = groomerService.getAllGroomer();
+                    if (groomers == null)
+                        groomers = List.of();
+
+                    String groomerInfo = groomers.stream()
+                            .filter(g -> Boolean.TRUE.equals(g.getIsActive()))
+                            .map(g -> String.format("- %s (年資: %s)", g.getGroomerName(), g.getHiredate()))
+                            .collect(Collectors.joining("\n"));
+                    contextBuilder.append("【我們的專業美容師團隊】:\n").append(groomerInfo).append("\n\n");
+                }
+
+                // D. 訂單查詢 (新增功能)
+                if (memberId != null && containsAny(lowerMsg, ORDER_KEYWORDS)) {
+                    List<com.pet.model.order.Order> orders = orderService.getOrderByMemberId(memberId);
+                    if (orders != null && !orders.isEmpty()) {
+                        // 取最近 3 筆訂單
+                        String orderInfo = orders.stream()
+                                .sorted((o1, o2) -> o2.getOrderDate().compareTo(o1.getOrderDate())) // 時間新->舊
+                                .limit(3)
+                                .map(o -> String.format("- 訂單號[%s] 金額$%s (狀態: %s) 日期: %s",
+                                        o.getOrderId(), o.getTotalAmountDiscountPoints(), o.getStatus(),
+                                        o.getOrderDate()))
+                                .collect(Collectors.joining("\n"));
+                        contextBuilder.append("【您最近的訂單紀錄 (僅本人可見)】:\n").append(orderInfo).append("\n\n");
+                    } else {
+                        contextBuilder.append("【訂單查詢結果】: 您目前沒有歷史訂單或是查無資料。\n\n");
+                    }
+                } else if (memberId == null && containsAny(lowerMsg, ORDER_KEYWORDS)) {
+                    contextBuilder.append("【系統提示】: 使用者詢問訂單，但目前似乎未登入或無法取得身分，請引導他登入後再試。\n\n");
+                }
+
+                // 3. 組合 System Prompt
+                String systemPrompt = String.format("""
+                        你是寵物電商『MaoMaoLand』的智能客服 AI 助理。請用繁體中文、親切可愛的語氣(🐶, 🐱)回答。
+
+                        【回應策略】：
+                        1. **自我介紹**：若問「你是誰」，請簡短自我介紹。若直接問業務，直接回答問題。
+                        2. **排版規定**：
+                           - 禁止使用 Markdown 表格。
+                           - **通用卡片格式**：
+                             [圖示] **[名稱]**
+                             💰 [價格/折扣]：[...]
+                             ✨ [說明]：[...]
+                             -------------------
+                             (圖示參考: 美容✂️, 商品🐶, 優惠🎫, 美容師💇, 訂單📦)
+                        3. **合併邏輯**：相同服務不同價格請合併顯示 (例如: $500 - $1200)。
+                        4. **訂單查詢**：若上方有提供訂單資料，請整理給使用者；若無資料請誠實告知。
+
+                        【網站基礎規範】：
+                        1. 免運政策：消費滿 $1,000 即享免運。
+                        2. 會員幣：每筆訂單回饋 1%%，可無上限折抵。
+                        3. 修改資料：請點擊右上方「會員中心圖示」。
+
+                        %s
+
+                        【回答守則】：
+                        1. 優先根據上方資訊卡回答。
+                        2. 若商品沒庫存/查無訂單，請誠實告知。
+                        3. 若無法解決，請引導輸入『真人客服』。
+                        4. 通用寵物知識可直接回答。
+
+                        客戶的問題是：%s
+                        """, contextBuilder.toString(), userMessage);
+
+                // --- 呼叫 API ---
+                // 1. 建立最外層的 { }
+                ObjectNode rootNode = objectMapper.createObjectNode();
+
+                // 2. 建立 "contents": [ ... ]
+                ArrayNode contentsNode = rootNode.putArray("contents");
+
+                // 3. 建立陣列裡的第一個物件 { ... }
+                ObjectNode contentNode = contentsNode.addObject();
+
+                // 4. 建立 "parts": [ ... ]
+                ArrayNode partsNode = contentNode.putArray("parts");
+
+                // 5. 把你的問題塞進去: { "text": "..." }
+                partsNode.addObject().put("text", systemPrompt);
+
+                // 6. 設定 Headers，告訴 Google 我們寄過去的是 JSON 格式
+                HttpHeaders headers = new HttpHeaders();
+                headers.setContentType(MediaType.APPLICATION_JSON);
+
+                // 7. 把信紙 (JSON內容) 和 信封設定 (Headers) 裝在一起變成一個包裹 (Entity)
+                HttpEntity<String> request = new HttpEntity<>(rootNode.toString(), headers);
+
+                // 8. 透過 restTemplate (瀏覽器) 發送 POST 請求
+                ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
+
+                // 9. 解析回傳結果
+                JsonNode responseJson = objectMapper.readTree(response.getBody());
+
+                // 成功取得回應，直接 return 跳出迴圈
+                return responseJson.path("candidates").get(0)
+                        .path("content").path("parts").get(0)
+                        .path("text").asText();
+
+            } catch (HttpClientErrorException.TooManyRequests e) {
+                // --- 捕捉 429 錯誤 (Too Many Requests) ---
+                retryCount++;
+                System.err.println("API 請求過於頻繁 (429)，正在進行第 " + retryCount + " 次重試...");
+
+                if (retryCount >= maxRetries) {
+                    return "目前諮詢人數過多，AI 客服暫時忙碌中，請稍後再試 (429)。";
+                }
+
+                try {
+                    // 休息 2 秒再試
+                    Thread.sleep(2000);
+                } catch (InterruptedException ie) {
+                    Thread.currentThread().interrupt();
+                    return "系統忙碌中，請稍後再試。";
+                }
+
+            } catch (Exception e) {
+                // --- 其他錯誤不重試，直接報錯 ---
+                e.printStackTrace();
+                return "抱歉，AI 大腦運轉過熱中... (錯誤代碼: " + e.getClass().getSimpleName() + " - " + e.getMessage() + ")";
+            }
         }
+
+        return "系統忙碌中，請稍後再試。";
+    }
+
+    // 輔助方法：檢查訊息是否包含任一關鍵字
+    private boolean containsAny(String input, List<String> keywords) {
+        for (String k : keywords) {
+            if (input.contains(k.toLowerCase()))
+                return true;
+        }
+        return false;
+    }
 }
