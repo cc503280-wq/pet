@@ -843,6 +843,20 @@
              return; // 阻止送出
         }
 
+        // 驗證手機格式 (台灣手機: 09開頭，共10碼)
+        const phoneRegex = /^09\d{8}$/;
+        if (!phoneRegex.test(phone)) {
+            Swal.fire("錯誤", "手機號碼格式錯誤", "warning");
+            return;
+        }
+
+        // 驗證 Email 格式
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            Swal.fire("錯誤", "Email 格式錯誤", "warning");
+            return;
+        }
+
         let id = $("#modalGroomerId").val();
         
         // 如果是新增模式 (沒有 ID)，必須檢查密碼與圖片
@@ -851,9 +865,6 @@
                 Swal.fire("錯誤", "新增時請輸入密碼", "warning");
                 return;
             }
-            
-            // 雖然使用者只說資料要完全，但通常圖片也是必須的，這裡先不做硬性檢查，只檢查文字類
-            // 如果要檢查圖片可加: if(!$("#modalImageFile").val()) ...
         }
         // -------------------------
 
