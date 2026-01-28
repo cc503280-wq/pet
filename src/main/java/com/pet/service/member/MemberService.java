@@ -1,6 +1,7 @@
 package com.pet.service.member;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -14,8 +15,11 @@ import org.springframework.web.multipart.MultipartFile;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.pet.dao.member.MemberRepository;
+import com.pet.dto.member.MemberRegisterDTO;
 import com.pet.dto.member.RegistrationStatsDTO;
 import com.pet.model.member.Member;
+import com.pet.model.member.MemberPet;
+import com.pet.service.appointment.MailService;
 
 
 @Service
@@ -26,7 +30,13 @@ public class MemberService {
 	private MemberRepository memberRepository;
 	
 	@Autowired
+	private CouponUsersRealService couponUsersRealService;
+	
+	@Autowired
 	private Cloudinary cloudinary;
+	
+	@Autowired
+	private MailService mailService;
 	
 	public List<Member> getAllMembers() {
         return memberRepository.findAllByOrderByMemberIdAsc();
@@ -46,6 +56,10 @@ public class MemberService {
 
     public Member findMemberByEmail(String email) {
         return memberRepository.findByEmail(email).orElse(null);
+    }
+    
+    public Member findMemberByPhone(String phone) {
+        return memberRepository.findByPhone(phone).orElse(null);
     }
     
     public Member createMemberWithImage(Member input, MultipartFile file) throws IOException {
@@ -197,5 +211,63 @@ public class MemberService {
         }
 
         memberRepository.updatePoints(memberId, newPoints);
+    }
+    
+    public Member register(MemberRegisterDTO dto, MultipartFile file) throws IOException {
+        
+        // 1. 處理照片上傳 (利用你原本寫好的 saveImageToCloud)
+        String imageUrl = null;
+        if (file != null && !file.isEmpty()) {
+            imageUrl = saveImageToCloud(file); // 取得 Cloudinary 的 URL
+        }
+
+        // 2. 建立 Member 物件
+        Member member = Member.builder()
+                .email(dto.getEmail())
+                .password(BCrypt.hashpw(dto.getPassword(), BCrypt.gensalt())) // 密碼加密
+                .name(dto.getName())
+                .gender(dto.getGender())
+                .birthday(dto.getBirthday())
+                .phone(dto.getPhone())
+                .address(dto.getAddress())
+                .picture(imageUrl) // 存入雲端照片網址
+                .points(0)
+                .status("active")
+                .build();
+
+        // 3. 處理寵物資料 (如果有填寫)
+        if (!dto.isSkipPet()) {
+            MemberPet pet = MemberPet.builder()
+                    .petName(dto.getPetName())
+                    .petType(dto.getPetType())
+                    .petAge(dto.getPetAge())
+                    .petSize(dto.getPetSize())
+                    .petBreed(dto.getPetBreed())
+                    .member(member) // 重要：建立雙向關聯
+                    .build();
+
+            List<MemberPet> pets = new ArrayList<>();
+            pets.add(pet);
+            member.setPets(pets);
+        }
+
+        //先存 Member
+        Member savedMember = memberRepository.save(member);
+
+        //發放新手優惠券
+        couponUsersRealService.assignWelcomeCoupon(savedMember.getMemberId());
+        
+        // 寄送歡迎信
+        // 傳入註冊的 email 和 會員姓名
+        mailService.sendWelcomeEmail(savedMember.getEmail(), savedMember.getName());
+        
+        return savedMember;
+    }
+    
+    //重設密碼
+    public void updateMemberPassword(Integer id, String encodedPassword) {
+        Member member = memberRepository.findById(id).orElseThrow();
+        member.setPassword(encodedPassword);
+        memberRepository.save(member);
     }
 }

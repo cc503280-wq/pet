@@ -2,9 +2,13 @@ package com.pet.service.product;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +22,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import com.pet.dao.member.MemberPetRepository;
 import com.pet.dao.product.CategoryRepository;
 import com.pet.dao.product.ProductRepository;
 import com.pet.dto.product.ProductStockDTO;
+import com.pet.model.member.MemberPet;
 import com.pet.model.product.Category;
 import com.pet.model.product.Product;
 
@@ -33,7 +39,10 @@ public class ProductService {
 
 	@Autowired
 	private CategoryRepository cRepos;
-
+	
+	@Autowired
+	private MemberPetRepository petRepo;
+	
 	@Autowired
 	private Cloudinary cloudinary;
 	
@@ -237,25 +246,26 @@ public class ProductService {
 
         products.forEach(product -> {
             Integer newStock = stockMap.get(product.getProductId());
-            
-            // 記錄舊庫存 (為了避免重複發送，進階做法可以用)
-            // Integer oldStock = product.getStock(); 
-
-            // 更新庫存
             product.setStock(newStock);
             
             // ==========================================
-            // 🔥 新增：LINE 警報觸發邏輯
+            // 🔥 修改後的 LINE 通知邏輯
             // ==========================================
-            // 設定門檻：例如庫存 < 5 且大於 0 時發送
-            if (newStock < 5 && newStock > 0) {
-                // 呼叫 LINE 通知
+            
+            if (newStock == 0) {
+                // 情境 A：庫存變成 0 -> 發送下架通知
+                System.out.println("商品已下架：" + product.getProductName());
+                lineNotify.sendOutOfStockAlert(product.getProductName());
+                
+            } else if (newStock < 5 && newStock > 0) {
+                // 情境 B：庫存低於 5 但還沒光 -> 發送補貨警報
                 System.out.println("觸發庫存警報：" + product.getProductName());
                 lineNotify.sendStockAlert(product.getProductName(), newStock);
             }
+            
             // ==========================================
 
-            // 原本的上下架邏輯
+            // 自動上下架邏輯
             product.setIsActive(newStock > 0);
         });
 
@@ -284,46 +294,124 @@ public class ProductService {
 
 	
     // --- 功能 2: 取得前台商品 (包含分頁與分類邏輯) ---
-	public Page<Product> getStoreProducts(int page, int size, Integer categoryId,String keyword) {
-	    Pageable pageable = PageRequest.of(page, size);
+	// --- 功能 2: 取得前台商品 (包含分頁與分類邏輯) ---
+    // 這看起來是舊版的查詢方法，為了保險起見我們也一起改
+	public Page<Product> getStoreProducts(int page, int size, Integer categoryId, String keyword) {
+        Pageable pageable = PageRequest.of(page, size);
 
-	    // 情況 1：兩者都有 (分類 + 關鍵字) -> 呼叫剛剛寫的「組合技」
-	    if (categoryId != null && keyword != null && !keyword.trim().isEmpty()) {
-	        return pRepos.findByCategory_CategoryIdAndProductNameContainingAndIsActiveTrue(categoryId, keyword, pageable);
-	    }
-	    
-	    // 情況 2：如果有關鍵字 -> 優先搜尋商品名稱 (不管分類)
-	    if (keyword != null && !keyword.trim().isEmpty()) {
-	        return pRepos.findByProductNameContainingAndIsActiveTrue(keyword, pageable);
-	    }
-	    // 情況 3：如果沒關鍵字，但有選分類 -> 找該分類
-	    else if (categoryId != null) {
-	        // 呼叫新的 ID 搜尋方法
-	        return pRepos.findByCategory_CategoryIdAndIsActiveTrue(categoryId, pageable);
-	    }
-	    // 情況 4：什麼都沒選 -> 找全部
-	    else {
-	        return pRepos.findByIsActiveTrue(pageable);
-	    }
-	}
+        // 🟢 濃縮後的寫法：
+        // 不管前端傳什麼 (null 或 有值)，這個方法都能自動處理
+        return pRepos.findShopProducts(categoryId, keyword, pageable);
+    }
+
+    // 這個是您目前主要使用的萬用查詢方法 (包含價格區間與排序)
 	public Page<Product> getStoreProducts(int page, int size, Integer categoryId, String keyword, Integer minPrice, Integer maxPrice, String sortCode) {
-	    
-	    // 🟢 1. 處理排序邏輯
+	    // 1. 處理排序邏輯 (保持不變)
 	    Sort sort = Sort.unsorted();
-	    
 	    if ("price_asc".equals(sortCode)) {
-	        sort = Sort.by(Sort.Direction.ASC, "price"); // 價格由低到高
+	        sort = Sort.by(Sort.Direction.ASC, "price");
 	    } else if ("price_desc".equals(sortCode)) {
-	        sort = Sort.by(Sort.Direction.DESC, "price"); // 價格由高到低
+	        sort = Sort.by(Sort.Direction.DESC, "price");
 	    } else {
-	        sort = Sort.by(Sort.Direction.DESC, "productId"); // 預設：最新上架 (ID 越大越新)
+	        sort = Sort.by(Sort.Direction.DESC, "productId");
 	    }
 
-	    // 🟢 2. 建立分頁物件 (把 Sort 放進去)
+	    // 2. 建立分頁物件 (保持不變)
 	    Pageable pageable = PageRequest.of(page, size, sort);
 
-	    // 🟢 3. 呼叫剛剛寫的萬用查詢
+	    // 3. 呼叫萬用查詢
+        // 🟢 我們需要在 Repository 的 @Query 中確認是否已經加上了 stock > 0 的判斷
 	    return pRepos.searchProducts(categoryId, keyword, minPrice, maxPrice, pageable);
 	}
+	
+	public List<Product> getRecommendations(Integer memberId) {
+	    // 1. 訪客處理
+	    if (memberId == null) {
+	        System.out.println(">> 訪客模式，直接回傳隨機商品");
+	        return pRepos.findRandomProducts();
+	    }
+
+	    // 2. 抓取會員寵物
+	    List<MemberPet> pets = petRepo.findByMemberMemberId(memberId);
+	    System.out.println(">> 找到寵物數量: " + pets.size());
+
+	    if (pets.isEmpty()) {
+	        System.out.println(">> 會員無寵物，回傳隨機商品");
+	        return pRepos.findRandomProducts();
+	    }
+
+	    // 3. 準備大池子
+	    Set<Product> recommendationSet = new HashSet<>();
+
+	    // 4. 針對每一隻寵物搜尋
+	    for (MemberPet pet : pets) {
+	        // 準備一個清單來放「物種關鍵字」，因為狗可能有兩種講法
+	        List<String> typeKeywords = new ArrayList<>();
+	        String ageKey = "";
+
+	        // --- 1. 判斷物種 (擴充同義詞) ---
+	        if ("狗".equals(pet.getPetType())) {
+	            typeKeywords.add("犬"); // 抓: 幼犬, 全犬
+	            typeKeywords.add("狗"); // 抓: 狗零食, 狗狗罐頭
+	        } else if ("貓".equals(pet.getPetType())) {
+	            typeKeywords.add("貓"); // 貓通常就只有貓
+	        } else {
+	            continue;
+	        }
+
+	        // --- 2. 判斷年齡 ---
+	        if ("老年".equals(pet.getPetAge())) {
+	            ageKey = "老";
+	        } else if ("幼年".equals(pet.getPetAge())) {
+	            ageKey = "幼";
+	        } else {
+	            ageKey = "成";
+	        }
+
+	        // --- 3. 核心搜尋 (跑迴圈搜所有同義詞) ---
+	        // 因為 "狗" 跟 "犬" 都要搜，所以這裡再多一層迴圈
+	        for (String typeKey : typeKeywords) {
+	            
+	            // 策略 A: 精準搜尋 (物種 + 年齡)
+	            // 例如：先找 "犬"+"老"，再找 "狗"+"老"
+	        	List<Product> strictMatches = pRepos.findByTarget(typeKey, ageKey, PageRequest.of(0, 10));
+	        	recommendationSet.addAll(strictMatches);
+
+	            // 策略 B: 廣泛搜尋 (只看物種)
+	            // 例如：先找 "犬" (不限年齡)，再找 "狗" (不限年齡)
+	        	List<Product> broadMatches = pRepos.findByTarget(typeKey, "", PageRequest.of(0, 10));
+	        	recommendationSet.addAll(broadMatches);
+	        }
+	    }
+
+	    // 5. 轉換成 List
+	    List<Product> finalResults = new ArrayList<>(recommendationSet);
+
+	    // 6. 補隨機商品
+	    if (finalResults.size() < 4) {
+	        int need = 4 - finalResults.size();
+	        System.out.println(">> 數量不足 4 筆，需要補充 " + need + " 筆隨機商品");
+	        
+	        List<Product> randoms = pRepos.findRandomProducts();
+	        for (Product p : randoms) {
+	            if (finalResults.size() >= 4) break;
+	            
+	            // 檢查 ID 是否已存在
+	            boolean exists = finalResults.stream().anyMatch(existing -> existing.getProductId().equals(p.getProductId()));
+	            if (!exists) {
+	                finalResults.add(p);
+	                System.out.println("   + 補充隨機: " + p.getProductName());
+	            }
+	        }
+	    }
+
+	    // 7. 洗牌
+	    Collections.shuffle(finalResults);
+	    
+	    // 8. 取前 4 筆回傳
+	    List<Product> result = finalResults.stream().limit(4).collect(Collectors.toList());
+	    return result;
+	} 
+	
 	
 }

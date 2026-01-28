@@ -26,4 +26,5 @@ public interface CouponUsersRealRepository extends JpaRepository<CouponUsersReal
 	
 	// 用於檢查該會員是否已經領過該張券
     boolean existsByMemberIdAndCouponId(Integer memberId, Integer couponId);
+    
 }

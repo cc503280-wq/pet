@@ -46,6 +46,7 @@ public class Member {
 	@JsonFormat(pattern = "yyyy-MM-dd")
 	private LocalDate birthday;
 	
+	@Column(unique = true)
 	private String phone;
 	
 	private String address;
@@ -74,6 +75,9 @@ public class Member {
 	@JsonIgnore //FIX BY YIJIA
 	private List<MemberPet> pets;
 	
+	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL) // mappedBy 對應 ChatMessage 裡的 "member" 屬性名
+    @JsonIgnore 
+    private List<ChatMessage> chatMessages;
 	
     @PrePersist
     protected void onCreate() {

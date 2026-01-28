@@ -27,6 +27,9 @@ public interface MemberRepository extends JpaRepository<Member, Integer> {
     // 透過 Email 查詢會員 
     Optional<Member> findByEmail(String email);
     
+    // 透過手機號碼查詢
+    Optional<Member> findByPhone(String phone);
+    
     // 固定查詢「近六個月」的註冊統計
     @Query(value = "SELECT FORMAT(created_at, 'yyyy-MM') as month, COUNT(*) as count " +
                    "FROM members " +

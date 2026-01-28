@@ -380,6 +380,9 @@
 					</form>
                 </div>
                 <div class="modal-footer">
+                	<button type="button" class="btn btn-outline-warning mr-auto" onclick="fillDemoData()">
+				        <i class="fas fa-magic mr-1"></i> 一鍵輸入
+				    </button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
                     <button type="button" class="btn btn-primary" onclick="submitProduct()">儲存</button>
                 </div>
@@ -519,22 +522,39 @@
         // 1. 載入資料的通用函式 (GET)
         // ==========================================
         function loadData(url) {
-            $('#tableBody').html('<tr><td colspan="8" class="text-center">載入中...</td></tr>');
-
-            $.ajax({
-                url: url,
-                type: 'GET',
-                dataType: 'json',
-                success: function (data) {
-                    renderTable(data);
-                },
-                error: function (xhr) {
-                    console.error(xhr);
-                    // 這裡可以加強錯誤處理
-                    $('#tableBody').html('<tr><td colspan="8" class="text-center text-danger">載入失敗</td></tr>');
-                }
-            });
-        }
+		    $('#tableBody').html('<tr><td colspan="8" class="text-center">載入中...</td></tr>');
+		
+		    $.ajax({
+		        url: url,
+		        type: 'GET',
+		        dataType: 'json',
+		        success: function (data) {
+		            // 情況 A：後端回傳的是 Page 物件 (有 content, totalElements 等欄位)
+		            // 通常是用於 loadAllProducts
+		            if (data.content && Array.isArray(data.content)) {
+		                renderTable(data.content);
+		                $('#totalRecords').text(data.totalElements);
+		                renderPagination(data.totalPages, data.number);
+		            } 
+		            // 情況 B：後端回傳的是純 List 陣列 (用於搜尋或分類)
+		            // 如果搜尋/分類沒有做後端分頁，通常是這種格式
+		            else if (Array.isArray(data)) {
+		                renderTable(data);
+		                $('#totalRecords').text(data.length); // 更新為實際搜尋到的筆數
+		                $('#paginationContainer').html('');   // 搜尋結果通常不分頁(或是全部顯示)，所以清空分頁按鈕
+		            }
+		            // 情況 C：其他怪異格式
+		            else {
+		                console.error("未知的資料格式:", data);
+		                $('#tableBody').html('<tr><td colspan="8" class="text-center text-danger">資料格式錯誤</td></tr>');
+		            }
+		        },
+		        error: function (xhr) {
+		            console.error(xhr);
+		            $('#tableBody').html('<tr><td colspan="8" class="text-center text-danger">載入失敗</td></tr>');
+		        }
+		    });
+		}
 
         // ==========================================
         // 2. 渲染表格 HTML (把 JSON 變成 <tr>)
@@ -675,6 +695,11 @@
 
         function loadAllProducts(page = 0) {
 		    currentPage = page; // 更新全域變數
+		 	// 🟢 新增這行：將下拉選單重置為 "預設值" (value="")
+		    $('#categorySelect').val(''); 
+		    
+		    // (選用) 清空搜尋框，這樣邏輯比較一致，看您需求
+		    $('#searchInput').val('');
 		
 		    // 發送 AJAX，帶上參數 ?page=0&size=10
 		    $.ajax({
@@ -703,12 +728,28 @@
         }
 
         function searchProducts() {
-            let keyword = $('#searchInput').val();
-            if (keyword.trim() === '') {
-                loadAllProducts();
-            } else {
-                loadData(API_BASE + '/search?keyword=' + encodeURIComponent(keyword));
+            let keyword = $('#searchInput').val().trim();
+            let catId = $('#categorySelect').val(); // 取得下拉選單的值
+            // 情況 A: 沒輸入關鍵字
+            if (keyword === '') {
+                if (catId) {
+                    // 有選類別，沒關鍵字 -> 顯示該類別所有商品
+                    filterByCategory(); 
+                } else {
+                    // 沒選類別，沒關鍵字 -> 顯示全部
+                    loadAllProducts();
+                }
+                return;
             }
+            // 情況 B: 有輸入關鍵字
+            let url = API_BASE + '/search?keyword=' + encodeURIComponent(keyword);
+
+            // 🟢 關鍵修改：如果有選類別，就在 URL 後面多加一個參數
+            if (catId) {
+                url += '&categoryId=' + catId;
+            }
+            // 發送請求
+            loadData(url);
         }
 
         function filterByCategory() {
@@ -765,7 +806,46 @@
             });
         }
 
-
+	     // ==========================================
+	     // 🟢 一鍵輸入測試資料 (jQuery 版)
+	     // ==========================================
+	     function fillDemoData() {
+	         // 1. 設定文字欄位
+	         $('#modalProductName').val("【新品推薦】頂級無穀深海魚貓糧");
+	         $('#modalDescription').val("這是一筆由系統自動生成的測試資料。\n富含豐富 Omega-3，保護毛孩心血管健康。");
+	         $('#modalPrice').val(1580);
+	         $('#modalStock').val(99);
+	
+	         // 2. 設定分類 (自動選擇下拉選單的第 2 個選項，避開"請選擇分類")
+	         // 如果您想指定特定 ID，可以寫 $('#modalCategoryId').val(101);
+	         let firstCategoryVal = $('#modalCategoryId option:eq(1)').val();
+	         if (firstCategoryVal) {
+	             $('#modalCategoryId').val(firstCategoryVal);
+	         }
+	
+	         // 3. 設定日期 (格式必須是 YYYY-MM-DDTHH:mm)
+	         let now = new Date();
+	         // 簡單往後推一個月當作倒數日期
+	         now.setMonth(now.getMonth() + 1);
+	         
+	         // 格式化成 input datetime-local 接受的字串
+	         let year = now.getFullYear();
+	         let month =String(now.getMonth() + 1).padStart(2, '0');
+	         let day = String(now.getDate()).padStart(2, '0');
+	         let hours = String(now.getHours()).padStart(2, '0');
+	         let minutes = String(now.getMinutes()).padStart(2, '0');
+	         
+	         let dateString = `${year}-${month}-${day}T${hours}:${minutes}`;
+	         $('#modalExpireDate').val(dateString);
+	
+	         // 4. 清除錯誤紅框 (如果原本有驗證錯誤，一鍵輸入後應該要消除)
+	         $('#productForm .form-control').removeClass('is-invalid');
+	         
+	         // ⚠️ 注意：基於瀏覽器安全限制，JavaScript 無法自動幫您「選擇檔案(圖片)」
+	         // 您還是需要手動點擊圖片上傳
+	     }
+        
+     	
         function submitProduct() {
             // ==========================================
             // 🟢 1. 前端驗證區塊 (取代 alert)
