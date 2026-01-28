@@ -326,5 +326,12 @@ public class ProductService {
 	    // 🟢 3. 呼叫剛剛寫的萬用查詢
 	    return pRepos.searchProducts(categoryId, keyword, minPrice, maxPrice, pageable);
 	}
-	
+	//單筆更新庫存數量
+	public Product updateProductStock(Integer productId,Integer Increase,Integer reduce) {
+		Product product = pRepos.findById(productId).orElseThrow();
+		Integer oldStock =product.getStock();
+		Integer totalStock = oldStock + Increase - reduce;
+		product.setStock(totalStock);
+		return pRepos.save(product);
+	}
 }
