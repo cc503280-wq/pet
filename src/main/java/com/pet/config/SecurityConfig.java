@@ -78,6 +78,10 @@ public class SecurityConfig {
                 // 因為 SockJS 有時會用 Iframe 來模擬連線，預設 Spring Security 會擋住 (X-Frame-Options: DENY)
                 // 導致 "Refused to display ... in a frame" 錯誤
                 .headers(headers -> headers.frameOptions(frame -> frame.disable()))
+                
+                // 4. 🔥 強制關閉表單登入 (這行一定要加，防止 302) 1/23加的 購物車用
+                .formLogin(form -> form.disable())
+                .httpBasic(basic -> basic.disable())
 
                 // 3. 設定權限規則
                 .authorizeHttpRequests(auth -> auth
@@ -117,6 +121,14 @@ public class SecurityConfig {
                 // 如果設為 STATELESS 導致登入報錯，請改為 IF_REQUIRED
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
+                // 當沒登入時，直接回傳 401 狀態碼，而不是轉址到登入頁
+                .exceptionHandling(ex -> ex
+                    .authenticationEntryPoint((request, response, authException) -> {
+                        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                        response.setContentType("application/json");
+                        response.getWriter().write("{\"error\": \"Unauthorized\", \"message\": \"請先登入\"}");
+                    })
+                )
 
                 // 加入 JWT 過濾器
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
