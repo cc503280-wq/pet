@@ -130,8 +130,11 @@ public class AppointmentService {
         message.put("status", AppConstants.APPOINTMENT_STATUS_COMPLETED);  // "已完成"
         message.put("appointmentId", id);
         
+        //取得會員ID
+        Integer memberId = appointment.getMemberPet().getMember().getMemberId();
+        
        // 發送 WebSocket 通知給會員
-        messagingTemplate.convertAndSend("/topic/appointment/" + id, (Object) message);
+        messagingTemplate.convertAndSend("/topic/member/" + memberId + "/appointments", (Object) message);
     	
         //FIXME:記得改回來
         //sendCompletionNotifications(appointment);
@@ -170,8 +173,10 @@ public class AppointmentService {
         message.put("status", AppConstants.APPOINTMENT_STATUS_IN_PROGRESS);
         message.put("appointmentId", id);
 
+        Integer memberId = appointment.getMemberPet().getMember().getMemberId();
+
         // 使用 messagingTemplate 傳送 WebSocket 消息
-        messagingTemplate.convertAndSend("/topic/appointment/"+id, (Object)message);
+       messagingTemplate.convertAndSend("/topic/member/" + memberId + "/appointments", (Object) message);
         
         return updateStatus(appointment, AppConstants.APPOINTMENT_STATUS_IN_PROGRESS,
                 appt -> log.info("預約單號：{} 報到成功", appt.getAppointmentId()));

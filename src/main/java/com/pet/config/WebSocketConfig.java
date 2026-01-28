@@ -24,6 +24,10 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     //.addEndpoint("//ws-pet-grooming"):可自訂義地址
     //.setAllowedOriginPatterns("*"): 允許所有跨域連線
     //.withSockJS():WebSocket掛了，改用HTTP Long Polling (長輪詢)模擬連線
+
+
+    
+    registry.addEndpoint("/shop/ws-chat").setAllowedOriginPatterns("*").withSockJS();
 			    
     
     //前端設定   
