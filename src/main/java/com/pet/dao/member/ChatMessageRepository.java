@@ -31,4 +31,17 @@ public interface ChatMessageRepository extends JpaRepository<ChatMessage, Intege
 
     // 6. 找某會員所有的未讀訊息 (不分 sender，給 markAsReadForMember 用)
     List<ChatMessage> findByMemberIdAndIsReadFalse(Integer memberId);
+
+    // --- 新增功能 ---
+
+    // 7. 找某會員的「可見」歷史紀錄 (給前台用，過濾掉已結束的對話)
+    List<ChatMessage> findByMemberIdAndIsVisibleToUserTrueOrderByCreatedAtAsc(Integer memberId);
+
+    // 8. 軟刪除：將該會員的所有訊息設為「不可見」 (End Session 用)
+    @org.springframework.data.jpa.repository.Modifying
+    @Query("UPDATE ChatMessage c SET c.isVisibleToUser = false WHERE c.memberId = :memberId")
+    void hideMessagesByMemberId(Integer memberId);
+
+    // 9. 硬刪除：刪除舊資料 (排程用)
+    void deleteByCreatedAtBefore(java.time.LocalDateTime cutoffDate);
 }

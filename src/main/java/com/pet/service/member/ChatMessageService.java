@@ -56,16 +56,24 @@ public class ChatMessageService {
                 .content(content)
                 .createdAt(LocalDateTime.now())
                 .isRead(false) // 預設未讀
+                .isVisibleToUser(true) // 預設對使用者可見
                 .build();
 
         return chatMessageRepository.save(message);
     }
 
     /**
-     * 取得某會員的歷史對話
+     * (給後台用) 取得完整歷史對話 (包含使用者已刪除的)
      */
     public List<ChatMessage> getChatHistory(Integer memberId) {
         return chatMessageRepository.findByMemberIdOrderByCreatedAtAsc(memberId);
+    }
+
+    /**
+     * (給前台用) 取得可見的歷史對話
+     */
+    public List<ChatMessage> getVisibleChatHistory(Integer memberId) {
+        return chatMessageRepository.findByMemberIdAndIsVisibleToUserTrueOrderByCreatedAtAsc(memberId);
     }
 
     /**
@@ -136,14 +144,25 @@ public class ChatMessageService {
     /**
      * 結束對話 (End Session)
      * 1. 清除真人模式標記 (回歸 AI)
-     * 2. 刪除該會員的所有歷史紀錄
+     * 2. (軟刪除) 將該會員歷史訊息設為不可見，但保留在資料庫供 Admin 查閱
      */
     public void endSession(Integer memberId) {
-        // 1. 清除狀態 (回歸 AI 模式)
+        // 1. 清除狀態
         humanModeMap.remove(memberId);
 
-        // 2. (已修改) 不刪除資料庫紀錄，保留供管理員查閱
-        // chatMessageRepository.deleteByMemberId(memberId);
+        // 2. 軟刪除 (隱藏訊息)
+        chatMessageRepository.hideMessagesByMemberId(memberId);
+    }
+
+    /**
+     * 每日排程：清理真的過於老舊的訊息 (例如 1 年前)
+     * 避免資料庫無限膨脹
+     */
+    @org.springframework.scheduling.annotation.Scheduled(cron = "0 0 4 * * ?") // 每天凌晨 4 點執行
+    public void cleanupOldMessages() {
+        LocalDateTime oneYearAgo = LocalDateTime.now().minusYears(1);
+        chatMessageRepository.deleteByCreatedAtBefore(oneYearAgo);
+        System.out.println("已執行定期清理：刪除 " + oneYearAgo + " 之前的過期對話紀錄。");
     }
 
 }
