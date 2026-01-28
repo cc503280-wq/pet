@@ -139,11 +139,11 @@ public class ChatMessageService {
      * 2. 刪除該會員的所有歷史紀錄
      */
     public void endSession(Integer memberId) {
-        // 1. 清除狀態
+        // 1. 清除狀態 (回歸 AI 模式)
         humanModeMap.remove(memberId);
 
-        // 2. 刪除資料庫紀錄
-        chatMessageRepository.deleteByMemberId(memberId);
+        // 2. (已修改) 不刪除資料庫紀錄，保留供管理員查閱
+        // chatMessageRepository.deleteByMemberId(memberId);
     }
 
 }
