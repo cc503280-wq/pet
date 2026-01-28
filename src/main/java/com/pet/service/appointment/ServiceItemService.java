@@ -148,16 +148,25 @@ public class ServiceItemService {
             	//當Transaction Commit結束後才執行
             	@Override
                 public void afterCommit() {
-                    log.info("SQL 交易已提交，準備強制刪除 Redis Key [serviceItems::activeList] <<");
-                    
-                    //直接指定 Key 名稱刪除 "serviceItems::activeList"
-                    Boolean result = redisTemplate.delete("serviceItems::activeList");
-                    
-                    log.info("Redis Key 刪除結果: {}", result);
+                    try {
+                        log.info("SQL 交易已提交，準備強制刪除 Redis Key [serviceItems::activeList] <<");
+                        
+                        //直接指定 Key 名稱刪除 "serviceItems::activeList"
+                        Boolean result = redisTemplate.delete("serviceItems::activeList");
+                        
+                        log.info("Redis Key 刪除結果: {}", result);
+                    } catch (Exception e) {
+                        log.warn("Redis 清除快取失敗 (Redis 可能離線，不影響業務): {}", e.getMessage());
+                        // 不拋出例外，讓業務繼續正常運作
+                    }
                 }
             });
         } else {
-            redisTemplate.delete("serviceItems::activeList");
+            try {
+                redisTemplate.delete("serviceItems::activeList");
+            } catch (Exception e) {
+                log.warn("Redis 清除快取失敗 (Redis 可能離線): {}", e.getMessage());
+            }
         }
     }
 
