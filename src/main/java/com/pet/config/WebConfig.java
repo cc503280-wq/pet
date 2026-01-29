@@ -41,6 +41,7 @@ public class WebConfig implements WebMvcConfigurer {
                         "/auth/logout", // 排除登出 API
                         "/admin/layout/Login.html", // 排除登入頁面
                         "/css/**", "/js/**", "/images/**", // 排除靜態資源
+                        "/plugins/**", // AdminLTE 第三方函式庫 (jQuery, Bootstrap 等)
                         "/img/**", // 圖片資源
                         "/lib/**", // 第三方函式庫
                         "/scss/**", // 樣式資源
@@ -69,7 +70,8 @@ public class WebConfig implements WebMvcConfigurer {
                         "/swagger-ui/**",
                         "/v3/api-docs/**",
                         "/swagger-resources/**",
-                        "/webjars/**"
+                        "/webjars/**",
+                        "/dist/**"
                         ); // 排除錯誤路徑
 
     }

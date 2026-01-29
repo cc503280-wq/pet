@@ -234,10 +234,15 @@
 	<script th:src="@{/plugins/jquery/jquery.min.js}"></script>
 	<script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
 	<script th:src="@{/dist/js/adminlte.min.js}"></script>
+	<!-- 聊天室 WebSocket 依賴 (必須在 admin-layout.js 前載入) -->
+	<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+	
 	<script th:src="@{/dist/js/adminAuth.js}"></script>
 	<script th:src="@{/dist/js/admin-layout.js}"></script>
+	
 	<script th:inline="javascript">
-		<!-- AdminLTE for demo purposes
+		/* AdminLTE for demo purposes */
 			   
 		<!-- Page specific script -->
 

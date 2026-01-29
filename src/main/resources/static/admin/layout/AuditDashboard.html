@@ -250,18 +250,19 @@
     <script src="../../plugins/jquery/jquery.min.js"></script>
     <script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="../../dist/js/adminlte.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
     <script src="../../dist/js/admin-layout.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
-        const themeColors = {
-            primary: '#be8754',
-            secondary: '#ffc20f',
-            dark: '#6a2614',
+        // 使用 admin-layout.js 中已定義的 themeColors，補充此頁面需要的顏色
+        const pageColors = {
             success: '#28a745',
             info: '#17a2b8',
             warning: '#ffc107',
-            danger: '#dc3545'
+            danger: '#dc3545',
+            ...themeColors  // 繼承 admin-layout.js 的 themeColors
         };
 
         let groomerChart = null;
@@ -351,9 +352,9 @@
                         data: {
                             labels: labels,
                             datasets: [
-                                { label: '登入次數', data: loginData, backgroundColor: themeColors.success },
-                                { label: '報到次數', data: checkInData, backgroundColor: themeColors.info },
-                                { label: '完成次數', data: completeData, backgroundColor: themeColors.warning }
+                                { label: '登入次數', data: loginData, backgroundColor: pageColors.success },
+                                { label: '報到次數', data: checkInData, backgroundColor: pageColors.info },
+                                { label: '完成次數', data: completeData, backgroundColor: pageColors.warning }
                             ]
                         },
                         options: {
@@ -391,11 +392,11 @@
                                 label: '平均執行時間 (ms)',
                                 data: data,
                                 backgroundColor: [
-                                    themeColors.danger,
-                                    themeColors.warning,
-                                    themeColors.primary,
-                                    themeColors.info,
-                                    themeColors.success
+                                    pageColors.danger,
+                                    pageColors.warning,
+                                    pageColors.primary,
+                                    pageColors.info,
+                                    pageColors.success
                                 ]
                             }]
                         },
