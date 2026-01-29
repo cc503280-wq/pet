@@ -5,6 +5,7 @@ import com.pet.dao.member.MemberRepository;
 import com.pet.dto.member.ChatMessageDTO;
 import com.pet.model.member.ChatMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,7 +46,7 @@ public class ChatMessageService {
      * 儲存訊息
      * 
      * @param memberId 會員ID
-     * @param sender   發送者 (USER, AI, ADMIN)
+     * @param sender   發送者 (MEMBER, AI, ADMIN)
      * @param content  內容
      * @return 存好的訊息物件
      */
@@ -100,29 +101,42 @@ public class ChatMessageService {
      * 情境：管理員點開聊天視窗時呼叫
      */
     public void markMessagesAsRead(Integer memberId) {
+        // 1. 指定目標發送者 (只有 MEMBER)
+        List<String> targetSenders = List.of("MEMBER");
 
-        List<ChatMessage> unreadMessages = chatMessageRepository.findByMemberIdAndSenderAndIsReadFalse(memberId,
-                "MEMBER");
-        for (ChatMessage msg : unreadMessages) {
-            msg.setIsRead(true);
+        // 2. 直接呼叫新方法，只抓出 MEMBER 傳的未讀訊息
+        List<ChatMessage> unreadMessages = chatMessageRepository.findByMemberIdAndSenderInAndIsReadFalse(
+                memberId, targetSenders
+        );
+
+        // 3. 只有在真的有未讀訊息時才執行更新
+        if (!unreadMessages.isEmpty()) {
+            for (ChatMessage msg : unreadMessages) {
+                msg.setIsRead(true);
+            }
+            chatMessageRepository.saveAll(unreadMessages);
         }
-        chatMessageRepository.saveAll(unreadMessages);
     }
 
     /**
      * (前台用) 會員已讀了訊息 (標記 AI 或 ADMIN 的訊息為已讀)
      */
     public void markAsReadForMember(Integer memberId) {
-        // 找出所有該會員的未讀訊息
-        List<ChatMessage> msgs = chatMessageRepository.findByMemberIdAndIsReadFalse(memberId);
+        // 1. 指定目標發送者 (AI 和 ADMIN)
+        List<String> targetSenders = List.of("AI", "ADMIN");
 
-        for (ChatMessage msg : msgs) {
-            // 只標記別人寄給我的 (AI or ADMIN)
-            if ("AI".equals(msg.getSender()) || "ADMIN".equals(msg.getSender())) {
+        // 2. 直接呼叫新方法，資料庫會自動幫你篩選 sender IN ('AI', 'ADMIN')
+        List<ChatMessage> msgs = chatMessageRepository.findByMemberIdAndSenderInAndIsReadFalse(
+                memberId, targetSenders
+        );
+
+        // 3. 不需要再寫 if 判斷 sender 了，因為抓出來的一定是符合的
+        if (!msgs.isEmpty()) {
+            for (ChatMessage msg : msgs) {
                 msg.setIsRead(true);
             }
+            chatMessageRepository.saveAll(msgs);
         }
-        chatMessageRepository.saveAll(msgs);
     }
 
     /**
@@ -158,7 +172,7 @@ public class ChatMessageService {
      * 每日排程：清理真的過於老舊的訊息 (例如 1 年前)
      * 避免資料庫無限膨脹
      */
-    @org.springframework.scheduling.annotation.Scheduled(cron = "0 0 4 * * ?") // 每天凌晨 4 點執行
+    @Scheduled(cron = "0 0 4 * * ?") // 每天凌晨 4 點執行
     public void cleanupOldMessages() {
         LocalDateTime oneYearAgo = LocalDateTime.now().minusYears(1);
         chatMessageRepository.deleteByCreatedAtBefore(oneYearAgo);

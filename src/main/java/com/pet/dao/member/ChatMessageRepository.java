@@ -2,9 +2,11 @@ package com.pet.dao.member;
 
 import com.pet.model.member.ChatMessage;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -24,13 +26,10 @@ public interface ChatMessageRepository extends JpaRepository<ChatMessage, Intege
     long countByMemberIdAndSenderInAndIsReadFalse(Integer memberId, List<String> senders);
 
     // 4. 找某人傳的+未讀的 (給 markAsRead 用)
-    List<ChatMessage> findByMemberIdAndSenderAndIsReadFalse(Integer memberId, String sender);
+    List<ChatMessage> findByMemberIdAndSenderInAndIsReadFalse(Integer memberId, List<String> senders);
 
     // 5. 刪除某會員的所有對話紀錄 (End Session 用)
     void deleteByMemberId(Integer memberId);
-
-    // 6. 找某會員所有的未讀訊息 (不分 sender，給 markAsReadForMember 用)
-    List<ChatMessage> findByMemberIdAndIsReadFalse(Integer memberId);
 
     // --- 新增功能 ---
 
@@ -38,10 +37,10 @@ public interface ChatMessageRepository extends JpaRepository<ChatMessage, Intege
     List<ChatMessage> findByMemberIdAndIsVisibleToUserTrueOrderByCreatedAtAsc(Integer memberId);
 
     // 8. 軟刪除：將該會員的所有訊息設為「不可見」 (End Session 用)
-    @org.springframework.data.jpa.repository.Modifying
+    @Modifying //表示要改資料
     @Query("UPDATE ChatMessage c SET c.isVisibleToUser = false WHERE c.memberId = :memberId")
     void hideMessagesByMemberId(Integer memberId);
 
     // 9. 硬刪除：刪除舊資料 (排程用)
-    void deleteByCreatedAtBefore(java.time.LocalDateTime cutoffDate);
+    void deleteByCreatedAtBefore(LocalDateTime cutoffDate);
 }

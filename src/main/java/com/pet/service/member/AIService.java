@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.pet.model.appointment.ServiceItem;
 import com.pet.model.appointment.Groomer;
 import com.pet.model.member.Coupon;
+import com.pet.model.order.Order;
 import com.pet.model.product.Product;
 import com.pet.service.appointment.GroomerService;
 import com.pet.service.appointment.ServiceItemService;
@@ -52,7 +53,7 @@ public class AIService {
 
     // --- 關鍵字定義 (同義詞庫) ---
     private static final List<String> PRODUCT_KEYWORDS = List.of("買", "推薦", "飼料", "罐頭", "貓砂", "玩具", "多少錢", "價格", "費用",
-            "cost", "price", "shop", "store");
+            "cost", "price", "shop", "store", "東西");
     private static final List<String> COUPON_KEYWORDS = List.of("優惠", "折扣", "便宜", "coupon", "discount", "promotion",
             "代碼", "code");
     private static final List<String> GROOMER_KEYWORDS = List.of("美容", "預約", "剪毛", "洗澡", "groomer", "cut", "hair",
@@ -62,12 +63,13 @@ public class AIService {
 
     /**
      * 呼叫 Gemini API
-     * * @param memberId    會員ID (可為 null，代表未登入或無法取得)
+     * * @param memberId 會員ID (可為 null，代表未登入或無法取得)
+     * 
      * @param userMessage 使用者輸入的訊息
      */
     public String callGemini(Integer memberId, String userMessage) {
 
-    	System.out.println("🔥 收到請求！準備呼叫 Google... 時間：" + System.currentTimeMillis());
+        System.out.println("🔥 收到請求！準備呼叫 Google... 時間：" + System.currentTimeMillis());
         try {
             String url = apiUrl + "?key=" + apiKey;
             // System.out.println("正在呼叫 Gemini API: " + url); // Debug用
@@ -88,19 +90,46 @@ public class AIService {
             // 2. 【動態資訊】依照關鍵字決定要不要撈資料
 
             // A. 商品搜尋
-            if (containsAny(lowerMsg, PRODUCT_KEYWORDS)) {
+            // 策略 1: 先檢查是否包含「分類名稱」 (精準推薦)
+            List<Category> allCategories = productService.getAllCategories();
+            boolean categoryFound = false;
+
+            for (Category cat : allCategories) {
+                if (lowerMsg.contains(cat.getCategoryName().toLowerCase())) {
+                    List<Product> catProducts = productService.getProductsByCategory(cat.getCategoryId());
+                    if (catProducts != null && !catProducts.isEmpty()) {
+                        String catInfo = catProducts.stream().limit(5) // 每個分類最多推 5 個
+                                .map(p -> String.format("- %s ($%s, 庫存: %s)", p.getProductName(), p.getPrice(),
+                                        p.getStock()))
+                                .collect(Collectors.joining("\n"));
+                        contextBuilder.append("【").append(cat.getCategoryName()).append("推薦】:\n").append(catInfo)
+                                .append("\n\n");
+                        categoryFound = true;
+                    }
+                }
+            }
+
+            // 策略 2: 如果沒找到特定分類，才用關鍵字模糊搜尋
+            // 或者：如果使用者明確問「推薦」，也跑一下關鍵字搜尋
+            if (!categoryFound || containsAny(lowerMsg, PRODUCT_KEYWORDS)) {
                 List<Product> products = productService.searchProducts(userMessage);
-                if (products == null || products.isEmpty()) {
+
+                // 如果關鍵字搜尋沒東西，但有提到「商品」關鍵字，就推熱門商品 (Active Products)
+                // 注意：這裡如果不設限，searchProducts 可能回傳空
+                if ((products == null || products.isEmpty()) && containsAny(lowerMsg, PRODUCT_KEYWORDS)) {
                     products = productService.findActiveProducts();
                 }
-                if (products == null)
-                    products = List.of();
 
-                String productInfo = products.stream().limit(10)
-                        .map(p -> String.format("- %s ($%s, 庫存: %s)", p.getProductName(), p.getPrice(),
-                                p.getStock()))
-                        .collect(Collectors.joining("\n"));
-                contextBuilder.append("【相關商品推薦】:\n").append(productInfo).append("\n\n");
+                if (products != null && !products.isEmpty()) {
+                    // 過濾掉已經在分類推薦裡出現過的 (簡單做: 這裡就不特別過濾了，重複出現也無妨，當作強調)
+                    String productInfo = products.stream().limit(10)
+                            .map(p -> String.format("- %s ($%s, 庫存: %s)", p.getProductName(), p.getPrice(),
+                                    p.getStock()))
+                            .collect(Collectors.joining("\n"));
+
+                    // 只有當真的有東西時才 append，避免標題空空的
+                    contextBuilder.append("【相關商品搜尋結果】:\n").append(productInfo).append("\n\n");
+                }
             }
 
             // B. 優惠券
@@ -133,9 +162,9 @@ public class AIService {
                 contextBuilder.append("【我們的專業美容師團隊】:\n").append(groomerInfo).append("\n\n");
             }
 
-            // D. 訂單查詢 (新增功能)
+            // D. 訂單查詢
             if (memberId != null && containsAny(lowerMsg, ORDER_KEYWORDS)) {
-                List<com.pet.model.order.Order> orders = orderService.getOrderByMemberId(memberId);
+                List<Order> orders = orderService.getOrderByMemberId(memberId);
                 if (orders != null && !orders.isEmpty()) {
                     // 取最近 3 筆訂單
                     String orderInfo = orders.stream()

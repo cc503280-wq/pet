@@ -1,0 +1,237 @@
+/* admin-custom.css */
+
+/* --- 全域主題配色 --- */
+:root {
+    --primary-color: #be8754;
+    --secondary-color: #ffc20f;
+    --dark-color: #6a2614;
+    --light-color: #fbf7ea;
+    --body-color: #5a4530;
+    --chat-bg: #f4d9d9;
+    --msg-admin-bg: #f9a7a7;
+    --msg-member-bg: #ffffff;
+}
+
+body {
+    color: var(--body-color);
+    background-color: var(--light-color);
+    font-family: 'Quicksand', sans-serif;
+}
+
+/* 標題顏色強化 */
+h1, h2, h3, h4, h5, h6, .card-title {
+    color: var(--dark-color) !important;
+    font-weight: 700;
+}
+
+/* Navbar & Sidebar */
+.main-header {
+    background-color: var(--primary-color) !important;
+    border-bottom: none;
+    height: 57px;
+}
+
+.main-sidebar {
+    background-color: var(--primary-color) !important;
+    box-shadow: none !important;
+}
+
+.brand-link {
+    display: flex;
+    justify-content: center !important;
+    align-items: center;
+    padding: 0.8125rem 0.5rem;
+    height: 57px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    background-color: var(--primary-color) !important;
+}
+
+/* Sidebar 樣式 */
+.nav-sidebar>.nav-item>.nav-link { color: #fff !important; }
+.nav-sidebar>.nav-item>.nav-link:hover { background-color: rgba(255, 255, 255, 0.2) !important; }
+.nav-sidebar>.nav-item>.nav-link.active { background-color: var(--secondary-color) !important; color: var(--dark-color) !important; font-weight: bold; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); }
+.nav-sidebar>.nav-item>.nav-link.active i { color: var(--dark-color) !important; }
+
+/* 下拉選單樣式 */
+.nav-treeview>.nav-item>.nav-link { color: #fff !important; }
+.nav-treeview>.nav-item>.nav-link:hover,
+.nav-treeview>.nav-item>.nav-link.active { background-color: var(--secondary-color) !important; color: var(--dark-color) !important; font-weight: bold; }
+.nav-treeview>.nav-item>.nav-link:hover p, .nav-treeview>.nav-item>.nav-link:hover i,
+.nav-treeview>.nav-item>.nav-link.active p, .nav-treeview>.nav-item>.nav-link.active i { color: var(--dark-color) !important; }
+
+.content-wrapper { background-color: var(--light-color) !important; }
+
+/* 按鈕樣式 */
+.btn-theme-action { background-color: var(--dark-color) !important; color: #fff !important; border: none; border-radius: 5px; }
+.btn-theme-action:hover { background-color: #501e0f !important; color: var(--secondary-color) !important; }
+
+/* Card 樣式 */
+.card { background-color: #fff; border: none; box-shadow: 0 0 10px rgba(0, 0, 0, 0.05); }
+.card-primary.card-outline { border-top: 3px solid var(--primary-color) !important; }
+.card-success.card-outline { border-top: 3px solid var(--secondary-color) !important; }
+.card-danger.card-outline { border-top: 3px solid var(--dark-color) !important; }
+
+.nav-pills .nav-link.active, .nav-pills .show>.nav-link { background-color: var(--dark-color) !important; color: #fff !important; }
+.nav-pills .nav-link { color: var(--primary-color); }
+.chart-container { position: relative; height: 300px; width: 100%; }
+
+/* --- 聊天室 Widget --- */
+#adminChatWidget {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 600px;
+    height: 600px;
+    background: white;
+    border-radius: 20px;
+    z-index: 9999;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+#adminChatWidget .chat-header {
+    background: var(--msg-admin-bg);
+    color: white; 
+    padding: 20px !important;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#chatHeaderLeft i { font-size: 1.5rem; }
+#chatHeaderLeft .font-weight-bold { font-size: 1.3rem; }
+
+#adminChatWidget .chat-body {
+    background: var(--chat-bg);
+    flex: 1;
+    padding: 20px !important;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+#adminChatWidget .user-list-body {
+    background: #fff;
+    flex: 1;
+    overflow-y: auto;
+    padding: 0;
+}
+
+.message-wrapper { display: flex; width: 100%; margin-bottom: 15px; }
+.message-container { display: flex; align-items: flex-end; max-width: 95%; }
+
+.admin-wrapper { justify-content: flex-end; }
+.admin-wrapper .message-container { flex-direction: row-reverse; }
+.admin-wrapper .message-bubble { background: var(--msg-admin-bg); color: white; border-bottom-right-radius: 4px; }
+.admin-wrapper .message-time { margin-right: 8px; text-align: right; }
+
+.member-wrapper { justify-content: flex-start; }
+.member-wrapper .message-container { flex-direction: row; }
+.member-wrapper .message-bubble { background: white; color: #333; border-bottom-left-radius: 4px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08); }
+.member-wrapper .message-time { margin-left: 8px; text-align: left; }
+
+.message-bubble { padding: 15px 20px; border-radius: 20px; font-size: 18px; line-height: 1.6; word-break: break-word; position: relative; }
+.message-time { font-size: 14px; color: #888; white-space: nowrap; margin-bottom: 4px; }
+
+.chat-footer { background: #fff; padding: 15px !important; border-top: 1px solid #eee; }
+.chat-input { border-radius: 20px; background: #f1f1f1; font-size: 1.1rem !important; padding: 10px; height: auto; }
+
+.contact-item { padding: 15px 20px; border-bottom: 1px solid #f0f0f0; cursor: pointer; transition: background 0.2s; display: flex; align-items: center; }
+.contact-item:hover { background-color: #f9f9f9; }
+.contact-item img { width: 50px; height: 50px; }
+.contact-name { font-size: 1.2rem; font-weight: bold; }
+.contact-id { font-size: 0.95rem; color: #888; }
+
+.markdown-content { font-size: 18px; line-height: 1.6; }
+.markdown-content p { margin-bottom: 0.4rem; }
+.markdown-content strong { color: #d63384; font-weight: 700; font-size: 18px !important; }
+.markdown-content h1, .markdown-content h2, .markdown-content h3 { font-size: 20px !important; font-weight: 700; margin: 8px 0; }
+.markdown-content ul { padding-left: 25px; margin-bottom: 0.4rem; }
+.markdown-content hr { border: 0; border-top: 2px dashed #ddd; margin: 12px 0; }
+
+/* 內容內縮調整 */
+.content-wrapper > .content-header .container-fluid,
+.content-wrapper > .content .container-fluid {
+    padding-left: 40px !important;
+    padding-right: 40px !important;
+}
+
+@media (max-width: 768px) {
+    .content-wrapper > .content-header .container-fluid,
+    .content-wrapper > .content .container-fluid {
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+    }
+}
+
+/* 1. 基礎字體放大 */
+body {
+    font-size: 1.1rem; 
+}
+
+/* 2. 標題放大 */
+h1 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--dark-color);
+}
+
+.card-title {
+    font-size: 1.4rem !important;
+    font-weight: 700;
+}
+
+/* 3. 表格優化 (置中 + 放大 + 舒適間距) */
+/* 這裡直接針對所有 DataTable 生效，不用每個頁面寫 ID */
+.table td, .table th {
+    text-align: center !important;
+    vertical-align: middle !important;
+    font-size: 1.15rem !important;
+    padding: 12px 8px !important;
+}
+
+/* 4. 輸入框與下拉選單放大 */
+.form-control, .custom-select {
+    font-size: 1.1rem !important;
+    height: calc(2.5rem + 2px) !important;
+}
+
+/* 5. 按鈕放大 */
+.btn-sm {
+    font-size: 1rem !important;
+    padding: 6px 12px !important;
+}
+
+/* 6. 狀態標籤 (Badge) 放大 */
+.badge {
+    font-size: 1rem !important;
+    padding: 6px 10px !important;
+}
+
+/* 7. 表格分頁按鈕放大 */
+.page-link {
+    font-size: 1.1rem !important;
+    padding: 8px 12px !important;
+}
+
+/* ========================================= */
+/* === 通用工具類別 (Utilities) === */
+/* ========================================= */
+
+/* 用於標題列的排版 */
+.box1 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* 禁用按鈕樣式 */
+.disabled-btn {
+    pointer-events: none !important;
+    opacity: 0.5;
+    cursor: not-allowed !important;
+}

@@ -1,133 +1,282 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-TW">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>管理員登入 | MaoMaoLand</title>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <link rel="stylesheet" href="../../plugins/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="../../dist/css/adminlte.min.css">
+    
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-        }
-
+        /* --- 全頁背景 --- */
         body {
-            background: #f4f6f8;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            background-color: #f4f6f9;
+            background-image: radial-gradient(#e9ecef 1px, transparent 1px);
+            background-size: 20px 20px;
+            font-family: 'Source Sans Pro', sans-serif;
             height: 100vh;
-        }
-
-        .login-container {
-            background: #fff;
-            padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            width: 350px;
-        }
-
-        .login-container h2 {
-            text-align: center;
-            margin-bottom: 30px;
-            color: #333;
-        }
-
-        .login-container input[type="text"],
-        .login-container input[type="password"] {
-            width: 100%;
-            padding: 12px 15px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            outline: none;
-            transition: 0.3s;
-        }
-
-        .login-container input[type="text"]:focus,
-        .login-container input[type="password"]:focus {
-            border-color: #5c9bde;
-        }
-
-        .login-container button {
-            width: 100%;
-            padding: 12px;
-            margin-top: 20px;
-            border: none;
-            border-radius: 5px;
-            background-color: #5c9bde;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .login-container button:hover {
-            background-color: #3687cd;
-        }
-
-        .remember {
-            display: flex;
-            align-items: center;
-            margin-top: 10px;
-            font-size: 14px;
-            color: #333;
-        }
-
-        .remember input[type="checkbox"] {
-            margin-right: 8px;
-            width: 16px;
-            height: 16px;
-            cursor: pointer;
-        }
-
-        .remember label {
-            cursor: pointer;
-        }
-
-        #alertEmail,
-        #alertPassword {
-            color: red;
             display: flex;
             align-items: center;
             justify-content: center;
+            margin: 0;
+        }
+
+        /* --- 容器與毛玻璃 --- */
+        .login-page-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .glass-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(5px);
+        }
+
+        /* --- 登入卡片 --- */
+        .login-card {
+            position: relative;
+            z-index: 10;
+            background: #ffffff;
+            padding: 3.5rem 3rem; /* 增加內距，讓大字體有呼吸空間 */
+            border-radius: 30px;
+            width: 90%;
+            max-width: 480px; /* 稍微加寬，適配大字體 */
+            box-shadow: 0 10px 25px rgba(190, 135, 84, 0.15);
+            border: 1px solid rgba(190, 135, 84, 0.1);
+        }
+
+        /* --- 字體放大專區 --- */
+        
+        /* 1. Logo 與標題 */
+        .brand-logo i {
+            color: #be8754;
+            font-size: 4rem; /* Logo 放大 */
+        }
+        
+        h2 {
+            color: #333;
+            font-weight: 700;
+            letter-spacing: 1px;
+            font-size: 2.2rem; /* 標題放大 */
+        }
+        
+        .text-muted.small {
+            font-size: 1rem !important; /* 副標題放大 */
+        }
+
+        /* 2. 表單標籤 (帳號/密碼文字) */
+        .form-label {
+            font-size: 1.1rem; /* 標籤放大 */
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        /* 3. 輸入框內文字與高度 */
+        .input-group-text {
+            background-color: #f8f9fa;
+            border: 1px solid #ced4da;
+            border-right: 0;
+            color: #6c757d;
+            border-radius: 15px 0 0 15px !important;
+            padding-left: 18px;
+            font-size: 1.2rem; /* Icon 放大 */
+        }
+
+        .form-control {
+            background-color: #f8f9fa;
+            border: 1px solid #ced4da;
+            border-left: 0;
+            height: 50px; /* 輸入框變高 */
+            border-radius: 0 15px 15px 0 !important;
+            font-size: 1.1rem; /* 輸入文字放大 */
+        }
+
+        .form-control::placeholder {
+            font-size: 1rem; /* 提示文字大小 */
+        }
+
+        /* 輸入框聚焦 */
+        .form-control:focus {
+            background-color: #fff;
+            border-color: #be8754;
+            box-shadow: none;
+        }
+        .form-control:focus + .input-group-prepend .input-group-text,
+        .input-group-text-focus {
+            background-color: #fff;
+            border-color: #be8754;
+            color: #be8754;
+        }
+
+        /* 4. 按鈕樣式 */
+        .btn-theme {
+            background-color: #be8754;
+            border-color: #be8754;
+            color: #fff;
+            border-radius: 50rem;
+            font-weight: 600;
+            padding: 12px 0; /* 按鈕變高 */
+            transition: all 0.3s ease;
+            font-size: 1.3rem; /* 按鈕文字放大 */
+            letter-spacing: 1px;
+        }
+
+        .btn-theme:hover {
+            background-color: #a67649;
+            border-color: #a67649;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(190, 135, 84, 0.3);
+            color: #fff;
+        }
+
+        /* 5. 記住帳號文字 */
+        .custom-control-label {
+            font-size: 1rem !important;
+            padding-top: 3px;
+            padding-left: 5px;
+            cursor: pointer;
+        }
+        
+        /* Checkbox 顏色 */
+        .custom-control-input:checked ~ .custom-control-label::before {
+            background-color: #be8754;
+            border-color: #be8754;
+        }
+        
+        /* 放大 Checkbox 框框 */
+        .custom-control-label::before, 
+        .custom-control-label::after {
+            width: 1.2rem;
+            height: 1.2rem;
+            top: 0.2rem;
+        }
+
+        /* 關閉按鈕 */
+        .btn-close-custom {
+            position: absolute;
+            top: 25px;
+            right: 30px;
+            border: none;
+            background: none;
+            font-size: 1.5rem; /* 稍微放大 */
+            color: #adb5bd;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-close-custom:hover {
+            color: #be8754;
+            transform: rotate(90deg);
         }
     </style>
 </head>
 
 <body>
-    <div class="login-container">
-        <h2>管理員登入</h2>
-        <div id="alertEmail"></div>
-        <div id="alertPassword"></div>
-        <form id="loginForm">
-            <input type="text" id="email" placeholder="請輸入 Email" autocomplete="off" required>
-            <input type="password" id="password" placeholder="請輸入密碼" autocomplete="off">
-            <div class="remember">
-                <input type="checkbox" id="rememberMe">
-                <label for="rememberMe">記住帳號</label>
+
+    <div class="login-page-container">
+        <div class="glass-overlay"></div>
+
+        <div class="login-card">
+            <button class="btn-close-custom" onclick="location.reload()">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <div class="text-center mb-5"> <div class="brand-logo mb-3">
+                    <i class="fas fa-paw"></i>
+                </div>
+                <h2 class="mb-2">後台登入</h2>
+                <p class="text-muted small">MaoMaoLand 管理系統</p>
             </div>
-            <button type="submit" id="login">登入</button>
-        </form>
+
+            <form id="loginForm">
+                
+                <div class="mb-4"> <label class="form-label font-weight-bold text-secondary pl-1">帳號 / Email</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-user"></i></span>
+                        </div>
+                        <input type="text" id="email" class="form-control" placeholder="請輸入 Email" autocomplete="off">
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label font-weight-bold text-secondary pl-1">密碼</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                        </div>
+                        <input type="password" id="password" class="form-control" placeholder="請輸入密碼" autocomplete="off">
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mb-5 pl-1">
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="rememberMe">
+                        <label class="custom-control-label text-muted" for="rememberMe">
+                            記住帳號
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-theme w-100 shadow-sm">
+                    登 入
+                </button>
+
+                <div class="text-center mt-4 text-muted" style="font-size: 0.9rem; opacity: 0.6;">
+                    &copy; 2026 MaoMaoLand Admin
+                </div>
+
+            </form>
+        </div>
     </div>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <script src="../../plugins/jquery/jquery.min.js"></script>
+    <script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
     $(function () {
-        // 1. 頁面載入時檢查 localStorage (記住帳號功能維持不變)
+        // --- 視覺效果：輸入框聚焦時，讓左邊 Icon 也變色 ---
+        $('.form-control').focus(function() {
+            $(this).prev('.input-group-prepend').find('.input-group-text').addClass('input-group-text-focus');
+        }).blur(function() {
+            $(this).prev('.input-group-prepend').find('.input-group-text').removeClass('input-group-text-focus');
+        });
+
+        // 1. 讀取記住的帳號
         const savedEmail = localStorage.getItem('savedEmail');
         if (savedEmail) {
             $('#email').val(savedEmail);
             $('#rememberMe').prop('checked', true);
         }
 
-        // ----------- Email 格式驗證 -----------
+        // 驗證 Email
         function isValidEmail(email) {
             const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             return regex.test(email);
         }
 
+        // 定義 Toast
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true
+        });
+
+        // 2. 表單提交
         $('#loginForm').on('submit', function (e) {
             e.preventDefault();
             
@@ -135,40 +284,35 @@
             const pwd = $('#password').val().trim();
             const remember = $('#rememberMe').prop('checked');
 
-            // 2. 前端驗證
+            // 前端驗證
             if (email === '') {
-                $('#alertEmail').text('Email不得為空白');
-                return;
+                return Toast.fire({ icon: 'warning', title: '請輸入 Email' });
             }
-
             if (!isValidEmail(email)) {
-                $('#alertEmail').text('Email 格式不正確');
-                return;
-            } else {
-                $('#alertEmail').text('');
+                return Toast.fire({ icon: 'warning', title: 'Email 格式不正確' });
             }
-
             if (pwd === '') {
-                $('#alertPassword').text('密碼不得為空白');
-                return;
-            } else {
-                $('#alertPassword').text('');
+                return Toast.fire({ icon: 'warning', title: '請輸入密碼' });
             }
 
-            // 3. 處理「記住帳號」 (localStorage)
+            // 處理記住帳號
             if (remember) {
                 localStorage.setItem('savedEmail', email);
             } else {
                 localStorage.removeItem('savedEmail');
             }
 
-            // 4. 準備登入資料 (JSON)
-            const loginData = {
-                email: email,
-                password: pwd
-            };
+            // 顯示 Loading
+            Swal.fire({
+                title: '登入中...',
+                text: '正在驗證身分',
+                allowOutsideClick: false,
+                didOpen: () => { Swal.showLoading(); }
+            });
 
-            // 5. 發送 AJAX 至 Spring Boot Controller
+            // 發送請求
+            const loginData = { email: email, password: pwd };
+
             $.ajax({
                 url: '/auth/login',         
                 type: 'POST',
@@ -176,36 +320,35 @@
                 data: JSON.stringify(loginData),  
                 dataType: 'json',
                 success: function (response) {
-                    // 假設後端成功回傳物件包含 { "adminId": 1, "name": "王小明", "role": "admin" }
                     if (response && response.role) {
-                        // 登入前先清空舊的 session 資料
                         sessionStorage.clear();
-                        
-                        // 儲存新的登入資訊
                         sessionStorage.setItem('role', response.role);
                         sessionStorage.setItem('adminName', response.name);
                         sessionStorage.setItem('adminId', response.adminId);
                         
-                        // 跳轉至首頁 
-                        window.location.href = 'Home.html';
+                        Swal.fire({
+                            icon: 'success',
+                            title: '登入成功',
+                            text: '歡迎回來，' + response.name + '！',
+                            timer: 1500,
+                            showConfirmButton: false
+                        }).then(() => {
+                            window.location.href = 'Home.html';
+                        });
                     } else {
-                        $('#alertPassword').text('帳號或密碼錯誤');
+                        Swal.fire({ icon: 'error', title: '登入失敗', text: '帳號或密碼錯誤' });
                     }
                 },
                 error: function (xhr) {
-                    // 根據後端回傳的 HttpStatus (如 401) 顯示錯誤
+                    let msg = '系統連線失敗';
                     if (xhr.status === 401) {
-                        $('#alertPassword').text('帳號密碼錯誤或帳號已被停用');
-                    } else {
-                        alert('系統連線失敗，請稍後再試');
+                        msg = '帳號密碼錯誤或權限不足';
                     }
+                    Swal.fire({ icon: 'error', title: '登入失敗', text: msg });
                 }
             });
         });
     });
     </script>
-    </script>
-
 </body>
-
 </html>
