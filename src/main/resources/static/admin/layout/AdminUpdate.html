@@ -1,212 +1,293 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-TW">
 
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>AdminUpdate</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>修改管理員 | 管理中心</title>
 
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-  <link rel="stylesheet" href="../../plugins/fontawesome-free/css/all.min.css">
-  <link rel="stylesheet" href="../../dist/css/adminlte.min.css">
-  <link rel="stylesheet" href="../../plugins/select2/css/select2.min.css">
-  <link rel="stylesheet" href="../../plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
-  <style type="text/css">
-    .brand-link { display: flex; align-items: center; justify-content: flex-start; padding: 0.5rem 1rem; }
-    .sidebar-collapse .brand-link { justify-content: center; }
-    .brand-link i { width: 1.5rem; text-align: center; }
-    .sidebar-collapse .brand-text { display: none; }
-    .box1 { display: flex; justify-content: space-between; align-items: center; }
-  </style>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <link rel="stylesheet" href="../../plugins/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="../../dist/css/adminlte.min.css">
+    
+    <link rel="stylesheet" href="../../plugins/select2/css/select2.min.css">
+    <link rel="stylesheet" href="../../plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+
+    <link rel="stylesheet" href="../../dist/css/admin-custom.css">
+
+    <style>
+        /* 標題區塊排版 */
+        .box1 {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* 頁面專屬微調 */
+        .form-container {
+            max-width: 1000px; /* 維持加寬 */
+            margin: 0 auto;
+        }
+        
+        .input-group-text {
+            background-color: #f4f6f9;
+            border-color: #ced4da;
+            color: #6c757d;
+            min-width: 45px;
+            justify-content: center;
+        }
+
+        .form-control:focus + .input-group-append .input-group-text, 
+        .form-control:focus ~ .input-group-prepend .input-group-text {
+            border-color: #be8754;
+            color: #be8754;
+        }
+        
+        .select2-container .select2-selection--single {
+            height: calc(2.5rem + 2px) !important;
+        }
+    </style>
 </head>
 
 <body class="hold-transition sidebar-mini sidebar-collapse">
-  <div class="wrapper">
-    <nav class="main-header navbar navbar-expand navbar-white navbar-light">
-      <ul class="navbar-nav">
-        <li class="nav-item"><a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a></li>
-      </ul>
-      <ul class="navbar-nav ml-auto">
-        <li class="nav-item">
-          <a href="javascript:void(0)" id="logoutBtn" class="btn btn-secondary btn-sm">
-            <i class="fas fa-sign-out-alt"></i> 登出
-          </a>
-        </li>
-      </ul>
-    </nav>
+    <div class="wrapper">
+        
+        <div class="content-wrapper">
+            <section class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-12 box1">
+                            <h1>修改管理員</h1>
+                            <a href="AdminQueryAll.html" class="btn btn-default btn-sm shadow-sm border">
+                                <i class="fas fa-arrow-left mr-1"></i> 回列表
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
-    <aside class="main-sidebar sidebar-dark-primary elevation-4">
-      <a href="Home.html" class="brand-link">
-        <i class="fas fa-paw" style="color: #FFD43B; font-size: 1.5rem;"></i>
-        <span class="brand-text font-weight-light">後台管理系統</span>
-      </a>
-      <div class="sidebar">
-        <nav class="mt-2">
-          <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-            <li class="nav-item menu-open">
-              <a href="#" class="nav-link active">
-                <i class="nav-icon fas fa-edit"></i>
-                <p>會員管理 <i class="right fas fa-angle-left"></i></p>
-              </a>
-              <ul class="nav nav-treeview">
-                <li class="nav-item"><a href="AdminQueryAll.html" class="nav-link active"><i class="far fa-circle nav-icon"></i><p>管理員資料</p></a></li>
-                <li class="nav-item"><a href="MemberQueryAll.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>會員基本資料</p></a></li>
-                <li class="nav-item"><a href="MemberPetQueryAll.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>會員寵物資料</p></a></li>
-                <li class="nav-item"><a href="CouponQueryAll.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>優惠券總覽</p></a></li>
-                <li class="nav-item"><a href="CouponUsersQueryAll.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>會員持有優惠券</p></a></li>
-                <li class="nav-item"><a href="FavoritesQueryAll.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>會員收藏清單</p></a></li>
-              </ul>
-            </li>
-            </ul>
-        </nav>
-      </div>
-    </aside>
+            <section class="content">
+                <div class="container-fluid">
+                    <div class="row justify-content-center"> 
+                        <div class="col-md-10 form-container">
+                            
+                            <div class="card card-outline card-primary shadow-lg">
+                                <div class="card-header">
+                                    <h3 class="card-title" style="font-weight: 700;">
+                                        <i class="fas fa-user-edit mr-2" style="color: #be8754;"></i>修改資料
+                                    </h3>
+                                </div>
+                                
+                                <form id="updateForm" class="form-horizontal">
+                                    <div class="card-body">
+                                        
+                                        <div class="form-group row">
+                                            <label for="adminId" class="col-sm-2 col-form-label text-right">ID</label>
+                                            <div class="col-sm-9">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text"><i class="fas fa-id-badge"></i></span>
+                                                    </div>
+                                                    <input type="text" class="form-control" id="adminId" readonly style="background-color: #e9ecef;">
+                                                </div>
+                                            </div>
+                                        </div>
 
-    <div class="content-wrapper">
-      <section class="content-header">
-        <div class="container-fluid">
-          <div class="row mb-2">
-            <div class="col-sm-12 box1">
-              <h1>會員管理</h1>
-              <a href="AdminQueryAll.html" class="btn btn-secondary btn-sm">回列表</a>
-            </div>
-          </div>
+                                        <div class="form-group row">
+                                            <label for="name" class="col-sm-2 col-form-label text-right">姓名 </label>
+                                            <div class="col-sm-9">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                                    </div>
+                                                    <input type="text" class="form-control" id="name" placeholder="請輸入姓名">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label for="email" class="col-sm-2 col-form-label text-right">Email </label>
+                                            <div class="col-sm-9">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                                    </div>
+                                                    <input type="email" class="form-control" id="email" placeholder="example@mail.com" autocomplete="off">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label for="phone" class="col-sm-2 col-form-label text-right">電話</label>
+                                            <div class="col-sm-9">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                                    </div>
+                                                    <input type="text" class="form-control" id="phone" placeholder="09xx-xxx-xxx" autocomplete="off">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label for="role" class="col-sm-2 col-form-label text-right">權限設定</label>
+                                            <div class="col-sm-9">
+                                                <select class="form-control select2" id="role" style="width: 100%;">
+                                                    <option value="admin">一般管理員 (Admin)</option>
+                                                    <option value="super_admin">超級管理員 (Super Admin)</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    
+                                    <div class="card-footer d-flex justify-content-center pt-4 pb-4">
+                                        <button type="submit" class="btn btn-theme-action px-5 mr-3">
+                                            <i class="fas fa-save mr-1"></i> 確認修改
+                                        </button>
+                                        
+                                        <button type="reset" class="btn btn-default px-5">
+                                            <i class="fas fa-undo mr-1"></i> 還原
+                                        </button>
+                                    </div>
+                                    
+                                </form>
+                            </div>
+                            </div>
+                    </div>
+                </div>
+            </section>
         </div>
-      </section>
 
-      <section class="content">
-        <div class="container-fluid">
-          <div class="row">
-            <div class="col-12">
-              <div class="card card-info">
-                <div class="card-header"><h3 class="card-title">修改管理員資料</h3></div>
-                <form class="form-horizontal" id="updateForm">
-                  <div class="card-body">
-                    <div class="form-group row">
-                      <label class="col-sm-2 col-form-label">ID:</label>
-                      <div class="col-sm-10">
-                        <input type="text" class="form-control" id="adminId" readonly>
-                      </div>
-                    </div>
-                    <div class="form-group row">
-                      <label class="col-sm-2 col-form-label">姓名:</label>
-                      <div class="col-sm-10">
-                        <input type="text" class="form-control" id="name">
-                      </div>
-                    </div>
-                    <div class="form-group row">
-                      <label class="col-sm-2 col-form-label">Email:</label>
-                      <div class="col-sm-10">
-                        <input type="text" class="form-control" id="email">
-                      </div>
-                    </div>
-                    <div class="form-group row">
-                      <label class="col-sm-2 col-form-label">電話:</label>
-                      <div class="col-sm-10">
-                        <input type="text" class="form-control" id="phone">
-                      </div>
-                    </div>
-                    <div class="form-group row">
-                      <label class="col-sm-2 col-form-label">權限:</label>
-                      <div class="col-sm-10">
-                        <select class="form-control" id="role">
-                          <option value="admin">Admin</option>
-                          <option value="super_admin">Super Admin</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="card-footer">
-                      <button type="submit" class="btn btn-info">送出</button>
-                      <button type="reset" class="btn btn-default float-right">清除</button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
     </div>
-  </div>
 
-  <script src="../../plugins/jquery/jquery.min.js"></script>
-  <script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="../../dist/js/adminlte.min.js"></script>
-  <script src="../../dist/js/adminAuth.js"></script>
+    <script src="../../plugins/jquery/jquery.min.js"></script>
+    <script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../../plugins/select2/js/select2.full.min.js"></script>
+    
+    <script src="../../dist/js/adminlte.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 
-  <script>
+    <script src="../../dist/js/admin-layout.js"></script>
+
+    <script>
     $(function () {
-      function isValidEmail(email) {
-          const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-          return regex.test(email);
-      }
+        // 初始化 Select2
+        $('.select2').select2({
+            theme: 'bootstrap4',
+            minimumResultsForSearch: Infinity
+        });
 
-      const urlParams = new URLSearchParams(window.location.search);
-      const adminId = urlParams.get('adminId');
-      
-      if (!adminId) {
-          alert('無效的識別碼');
-          window.location.href = 'AdminQueryAll.html';
-          return;
-      }
-      
-      $('#adminId').val(adminId);
+        // 驗證函式
+        function isValidEmail(email) {
+            const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return regex.test(email);
+        }
 
-      $.ajax({
-          url: `/admins/${adminId}`, 
-          method: 'GET',
-          dataType: 'json',
-          success: function(admin) {
-              if (admin) {
-                  $('#name').val(admin.name);
-                  $('#email').val(admin.email);
-                  $('#phone').val(admin.phone);
-                  $('#role').val(admin.role);
-              } else {
-                  alert('找不到該資料');
-                  window.location.href = 'AdminQueryAll.html';
-              }
-          },
-          error: function() {
-              alert('載入資料失敗');
-          }
-      });
+        // 取得 URL 參數
+        const urlParams = new URLSearchParams(window.location.search);
+        const adminId = urlParams.get('adminId');
+        
+        if (!adminId) {
+            Swal.fire('錯誤', '無效的識別碼', 'error').then(() => {
+                window.location.href = 'AdminQueryAll.html';
+            });
+        } else {
+            $('#adminId').val(adminId);
+            loadAdminData(adminId);
+        }
 
-      $('#updateForm').submit(function(e) {
-          e.preventDefault();
-          
-          const email = $('#email').val().trim();
-          if (email === '') { alert('Email不得為空白'); return; }
-          if (!isValidEmail(email)) { alert('Email 格式不正確'); return; }
+        // 載入資料
+        function loadAdminData(id) {
+            Swal.fire({
+                title: '載入中...',
+                allowOutsideClick: false,
+                didOpen: () => { Swal.showLoading(); }
+            });
 
-          const updateData = {
-              adminId: $('#adminId').val(),
-              name: $('#name').val().trim(),
-              email: email,
-              phone: $('#phone').val().trim(),
-              role: $('#role').val()
-          };
+            $.ajax({
+                url: `/admins/${id}`, 
+                method: 'GET',
+                dataType: 'json',
+                success: function(admin) {
+                    Swal.close();
+                    if (admin) {
+                        $('#name').val(admin.name);
+                        $('#email').val(admin.email);
+                        $('#phone').val(admin.phone);
+                        // 更新 Select2 的值
+                        $('#role').val(admin.role).trigger('change');
+                    } else {
+                        Swal.fire('錯誤', '找不到該資料', 'error').then(() => {
+                            window.location.href = 'AdminQueryAll.html';
+                        });
+                    }
+                },
+                error: function() {
+                    Swal.fire('錯誤', '載入資料失敗', 'error');
+                }
+            });
+        }
 
-          $.ajax({
-              url: `/admins/${adminId}`, 
-              method: 'PUT',             
-              contentType: 'application/json',
-              data: JSON.stringify(updateData),
-              dataType: 'json',
-              success: function(res) {
-                  if (res) {
-                      sessionStorage.setItem('updatedAdmin', JSON.stringify(res));
-                      window.location.href = 'AdminUpdateDone.html';
-                  } else {
-                      alert('更新失敗');
-                  }
-              },
-              error: function(xhr) {
-                  alert('更新失敗：' + xhr.responseText);
-              }
-          });
-      });
+        // 表單提交
+        $('#updateForm').submit(function(e) {
+            e.preventDefault();
+            
+            const email = $('#email').val().trim();
+            const name = $('#name').val().trim();
+
+            if (!name) { return Swal.fire('欄位未填', '請輸入姓名', 'warning'); }
+            if (!email) { return Swal.fire('欄位未填', '請輸入 Email', 'warning'); }
+            if (!isValidEmail(email)) { return Swal.fire('格式錯誤', 'Email 格式不正確', 'warning'); }
+
+            const updateData = {
+                adminId: $('#adminId').val(),
+                name: name,
+                email: email,
+                phone: $('#phone').val().trim(),
+                role: $('#role').val()
+            };
+
+            Swal.fire({
+                title: '更新中...',
+                text: '請稍候',
+                allowOutsideClick: false,
+                didOpen: () => { Swal.showLoading(); }
+            });
+
+            $.ajax({
+                url: `/admins/${adminId}`, 
+                method: 'PUT',             
+                contentType: 'application/json',
+                data: JSON.stringify(updateData),
+                dataType: 'json',
+                success: function(res) {
+                    if (res) {
+                        sessionStorage.setItem('updatedAdmin', JSON.stringify(res));
+                        
+                        Swal.fire({
+                            icon: 'success',
+                            title: '更新成功！',
+                            text: '即將跳轉至完成頁面',
+                            timer: 1500,
+                            showConfirmButton: false
+                        }).then(() => {
+                            window.location.href = 'AdminUpdateDone.html';
+                        });
+                    } else {
+                        Swal.fire('失敗', '更新失敗', 'error');
+                    }
+                },
+                error: function(xhr) {
+                    Swal.fire('失敗', '更新失敗：' + xhr.responseText, 'error');
+                }
+            });
+        });
     });
-  </script>
+    </script>
 </body>
+
 </html>

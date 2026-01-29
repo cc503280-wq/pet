@@ -1,238 +1,94 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-TW">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>會員資料修改</title>
+    <title>修改會員 | 管理中心</title>
 
-    <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <link rel="stylesheet" href="../../plugins/fontawesome-free/css/all.min.css">
     <link rel="stylesheet" href="../../dist/css/adminlte.min.css">
-    <link rel="stylesheet" href="../../plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
-    <link rel="stylesheet" href="../../plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+    
     <link rel="stylesheet" href="../../plugins/select2/css/select2.min.css">
     <link rel="stylesheet" href="../../plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
     <link rel="stylesheet" href="../../plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
-    <style type="text/css">
-        .brand-link {
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            padding: 0.5rem 1rem;
-        }
 
-        .sidebar-collapse .brand-link {
-            justify-content: center;
-        }
+    <link rel="stylesheet" href="../../dist/css/admin-custom.css">
 
-        .brand-link i {
-            width: 1.5rem;
-            text-align: center;
-        }
-
-        .sidebar-collapse .brand-text {
-            display: none;
-        }
-
+    <style>
+        /* 標題區塊排版 */
         .box1 {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        /* 讓圖片變成 120x120 的正方形 */
-        #currentPicture {
-            width: 120px;
-            height: 120px;
-            object-fit: cover;
-            /* 關鍵：這會像手機大頭貼一樣，自動裁切多餘部分而不變形 */
-            border-radius: 8px;
-            /* 加點圓角看起來比較精緻 */
-            border: 2px solid #dee2e6;
+        /* 頁面專屬微調 */
+        .form-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .input-group-text {
+            background-color: #f4f6f9;
+            border-color: #ced4da;
+            color: #6c757d;
+            min-width: 45px;
+            justify-content: center;
+        }
+
+        /* 輸入框聚焦時的顏色 */
+        .form-control:focus + .input-group-append .input-group-text, 
+        .form-control:focus ~ .input-group-prepend .input-group-text,
+        .custom-file-input:focus ~ .custom-file-label {
+            border-color: #be8754;
+            color: #be8754;
+        }
+        
+        .select2-container .select2-selection--single {
+            height: calc(2.5rem + 2px) !important;
+        }
+
+        /* 日期選擇器樣式修復 */
+        .bootstrap-datetimepicker-widget.dropdown-menu {
+            background-color: #fff !important;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            padding: 10px;
+            width: auto !important;
+            z-index: 9999 !important;
+        }
+        
+        .input-group-prepend[data-toggle="datetimepicker"] {
+            cursor: pointer;
+        }
+
+        /* 大頭貼預覽樣式 */
+        .profile-img-preview {
+            width: 100px; 
+            height: 100px; 
+            object-fit: cover; 
+            border: 3px solid #dee2e6; /* 灰邊 */
+            border-radius: 50%; /* 圓形 */
             margin-bottom: 10px;
-            display: block;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
     </style>
 </head>
 
 <body class="hold-transition sidebar-mini sidebar-collapse">
     <div class="wrapper">
-        <nav class="main-header navbar navbar-expand navbar-white navbar-light">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
-                </li>
-            </ul>
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a href="javascript:void(0)" id="logoutBtn" class="btn btn-secondary btn-sm">
-                        <i class="fas fa-sign-out-alt"></i> 登出
-                    </a>
-                </li>
-            </ul>
-        </nav>
-
-        <aside class="main-sidebar sidebar-dark-primary elevation-4">
-            <a href="Home.html" class="brand-link">
-                <i class="fas fa-paw" style="color: #FFD43B; font-size: 1.5rem;"></i>
-                <span class="brand-text font-weight-light">後台管理</span>
-            </a>
-            <div class="sidebar">
-                <nav class="mt-2">
-                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu">
-                        <li class="nav-item menu-open">
-                            <a href="#" class="nav-link active">
-                                <i class="nav-icon fas fa-edit"></i>
-                                <p>會員管理<i class="right fas fa-angle-left"></i></p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item"><a href="AdminQueryAll.html" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>管理員資料</p>
-                                    </a></li>
-                                <li class="nav-item"><a href="MemberQueryAll.html" class="nav-link active"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>會員基本資料</p>
-                                    </a></li>
-                                <li class="nav-item"><a href="MemberPetQueryAll.html" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>會員寵物資料</p>
-                                    </a></li>
-                                <li class="nav-item"><a href="CouponQueryAll.html" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>優惠券總覽</p>
-                                    </a></li>
-                                <li class="nav-item"><a href="CouponUsersQueryAll.html" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>會員持有優惠券</p>
-                                    </a></li>
-                                <li class="nav-item"><a href="FavoritesQueryAll.html" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>會員收藏清單</p>
-                                    </a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-edit"></i>
-                                <p>
-                                    商品管理
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="/admin/products" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>商品管理</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="/admin/categories" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>分類管理</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-
-
-                        <li class="nav-item"><a href="#" class="nav-link"> <i class="nav-icon fas fa-edit"></i>
-                                <p>
-                                    訂單管理 <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item"><a href="/orders/list" class="nav-link"> <i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>查詢全部訂單</p>
-                                    </a></li>
-                                <li class="nav-item"><a href="/shipment/list" class="nav-link"> <i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>物流查詢</p>
-                                    </a></li>
-                                <li class="nav-item"><a href="/ordersItem/list" class="nav-link"> <i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>查詢全部訂單明細</p>
-                                    </a></li>
-                                <li class="nav-item"><a href="/Cart/shopping" class="nav-link"> <i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>新增訂單</p>
-                                    </a></li>
-                            </ul>
-                        </li>
-                       <li class="nav-item"><a href="#" class="nav-link"> <i class="nav-icon fas fa-edit"></i>
-                <p>
-                  預約管理 <i class="right fas fa-angle-left"></i>
-                </p>
-              </a>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="GetAllDailySchedules.html" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>班表總覽
-                    </p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="GetAllAppointments.html" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>預約訂單列表</p>
-                  </a>
-                </li>
-
-                <li class="nav-item">
-                  <a href="GetAllAppointmentDetails.html" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>預約明細</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="GetAllServiceItems.html" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>服務項目</p>
-                  </a>
-                </li>
-              </ul>
-            </li>
-
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="nav-icon fas fa-edit"></i>
-                <p>人員管理 <i class="right fas fa-angle-left"></i></p>
-              </a>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="GetAllGroomers.html" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>美容師列表</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="GetAllLeaveRecords.html" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>休假審核</p>
-                  </a>
-                </li>
-              </ul>
-            </li>
-          </ul>
-          </li>
-        </nav>
-        <!-- /.sidebar-menu -->
-      </div>
-      <!-- /.sidebar -->
-    </aside>
-
+        
         <div class="content-wrapper">
             <section class="content-header">
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-12 box1">
                             <h1>修改會員資料</h1>
-                            <a href="MemberQueryAll.html" class="btn btn-secondary btn-sm">回列表</a>
+                            <a href="MemberQueryAll.html" class="btn btn-default btn-sm shadow-sm border">
+                                <i class="fas fa-arrow-left mr-1"></i> 回列表
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -240,107 +96,215 @@
 
             <section class="content">
                 <div class="container-fluid">
-                    <div class="card card-info">
-                        <div class="card-header">
-                            <h3 class="card-title">會員 ID: <span id="memberIdDisplay"></span></h3>
-                        </div>
-                        <form class="form-horizontal" id="updateForm" enctype="multipart/form-data">
-                            <div class="card-body">
-                                <div class="form-group row">
-                                    <label class="col-sm-2 col-form-label">姓名:</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" class="form-control" id="name" required>
-                                    </div>
+                    <div class="row justify-content-center"> 
+                        <div class="col-md-10 form-container">
+                            
+                            <div class="card card-outline card-primary shadow-lg">
+                                <div class="card-header">
+                                    <h3 class="card-title" style="font-weight: 700;">
+                                        <i class="fas fa-user-edit mr-2" style="color: #be8754;"></i>修改資料
+                                    </h3>
                                 </div>
-                                <div class="form-group row">
-                                    <label class="col-sm-2 col-form-label">Email:</label>
-                                    <div class="col-sm-10">
-                                        <input type="email" class="form-control" id="email" required>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-sm-2 col-form-label">性別:</label>
-                                    <div class="col-sm-10">
-                                        <select class="form-control select2" id="gender">
-                                            <option value="M">男</option>
-                                            <option value="F">女</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-sm-2 col-form-label">生日:</label>
-                                    <div class="col-sm-10">
-                                        <div class="input-group date" id="reservationdate" data-target-input="nearest">
-                                            <input type="text" class="form-control datetimepicker-input" id="birthday"
-                                                data-target="#reservationdate" />
-                                            <div class="input-group-append" data-target="#reservationdate"
-                                                data-toggle="datetimepicker">
-                                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                
+                                <form id="updateForm" class="form-horizontal" enctype="multipart/form-data">
+                                    <div class="card-body">
+                                        
+                                        <div class="form-group row">
+                                            <label class="col-sm-2 col-form-label text-right">會員 ID</label>
+                                            <div class="col-sm-9">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text"><i class="fas fa-id-card"></i></span>
+                                                    </div>
+                                                    <input type="text" class="form-control" id="memberIdDisplay" readonly style="background-color: #e9ecef;">
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-sm-2 col-form-label">電話:</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" class="form-control" id="phone">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-sm-2 col-form-label">地址:</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" class="form-control" id="address">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-sm-2 col-form-label">目前大頭貼:</label>
-                                    <div class="col-sm-10">
-                                        <img id="currentPicture" src="../../dist/img/avatar.png" alt="No Image">
-                                        <div class="custom-file">
-                                            <input type="file" class="custom-file-input" id="picture"
-                                                name="pictureFile">
-                                            <label class="custom-file-label" for="picture">更換照片 (若不更換請留空)</label>
+
+                                        <div class="form-group row">
+                                            <label for="name" class="col-sm-2 col-form-label text-right">姓名 </label>
+                                            <div class="col-sm-9">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                                    </div>
+                                                    <input type="text" class="form-control" id="name" placeholder="請輸入姓名" autocomplete="off">
+                                                </div>
+                                            </div>
                                         </div>
+
+                                        <div class="form-group row">
+                                            <label for="email" class="col-sm-2 col-form-label text-right">Email </label>
+                                            <div class="col-sm-9">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                                    </div>
+                                                    <input type="email" class="form-control" id="email" placeholder="example@mail.com" autocomplete="off">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label for="gender" class="col-sm-2 col-form-label text-right">性別</label>
+                                            <div class="col-sm-9">
+                                                <select class="form-control select2" style="width: 100%;" id="gender">
+                                                    <option value="M">男</option>
+                                                    <option value="F">女</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label for="birthday" class="col-sm-2 col-form-label text-right">生日</label>
+                                            <div class="col-sm-9">
+                                                <div class="input-group date" id="reservationdate" data-target-input="nearest">
+                                                    <div class="input-group-prepend" data-target="#reservationdate" data-toggle="datetimepicker">
+                                                        <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+                                                    </div>
+                                                    <input type="text" class="form-control datetimepicker-input" id="birthday" data-target="#reservationdate" data-toggle="datetimepicker" placeholder="YYYY-MM-DD" autocomplete="off"/>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label for="phone" class="col-sm-2 col-form-label text-right">電話</label>
+                                            <div class="col-sm-9">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                                    </div>
+                                                    <input type="text" class="form-control" id="phone" placeholder="09xx-xxx-xxx" autocomplete="off">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label for="address" class="col-sm-2 col-form-label text-right">地址</label>
+                                            <div class="col-sm-9">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                                                    </div>
+                                                    <input type="text" class="form-control" id="address" placeholder="請輸入地址" autocomplete="off">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label class="col-sm-2 col-form-label text-right">大頭貼</label>
+                                            <div class="col-sm-9">
+                                                <img id="currentPicture" src="../../dist/img/default-avatar.png" class="profile-img-preview" alt="User Image">
+                                                
+                                                <div class="input-group">
+                                                    <div class="custom-file">
+                                                        <input type="file" class="custom-file-input" id="picture" name="pictureFile" accept="image/*">
+                                                        <label class="custom-file-label" for="picture">更換照片 (若不更換請留空)</label>
+                                                    </div>
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text">上傳</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                     </div>
-                                </div>
+                                    
+                                    <div class="card-footer d-flex justify-content-center pt-4 pb-4">
+                                        <button type="submit" class="btn btn-theme-action px-5 mr-3">
+                                            <i class="fas fa-save mr-1"></i> 確認修改
+                                        </button>
+                                        
+                                        <button type="reset" class="btn btn-default px-5">
+                                            <i class="fas fa-undo mr-1"></i> 還原
+                                        </button>
+                                    </div>
+                                    
+                                </form>
                             </div>
-                            <div class="card-footer">
-                                <button type="submit" class="btn btn-info">送出</button>
-                                <button type="reset" class="btn btn-default float-right">清除</button>
                             </div>
-                        </form>
                     </div>
                 </div>
             </section>
         </div>
+
     </div>
 
     <script src="../../plugins/jquery/jquery.min.js"></script>
     <script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../../plugins/select2/js/select2.full.min.js"></script>
     <script src="../../plugins/moment/moment.min.js"></script>
     <script src="../../plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
+    
     <script src="../../dist/js/adminlte.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+
+    <script src="../../dist/js/admin-layout.js"></script>
 
     <script>
-        $(function () {
-            const urlParams = new URLSearchParams(window.location.search);
-            const memberId = urlParams.get('memberId');
+    $(function () {
+        // 初始化 Select2
+        $('.select2').select2({
+            theme: 'bootstrap4',
+            minimumResultsForSearch: Infinity
+        });
 
-            if (!memberId) {
-                alert('未指定會員 ID');
-                window.location.href = 'MemberQueryAll.html';
-                return;
+        // 初始化 DatePicker
+        $('#reservationdate').datetimepicker({
+            format: 'YYYY-MM-DD',
+            useCurrent: false,
+            maxDate: moment(),
+            icons: { time: 'far fa-clock', date: 'far fa-calendar', up: 'fas fa-arrow-up', down: 'fas fa-arrow-down', previous: 'fas fa-chevron-left', next: 'fas fa-chevron-right', today: 'fas fa-calendar-check', clear: 'fas fa-trash', close: 'fas fa-times' }
+        });
+
+        // 檔案上傳名稱顯示 + 預覽
+        $('.custom-file-input').on('change', function (e) {
+            var fileName = e.target.files[0] ? e.target.files[0].name : "更換照片";
+            $(this).next('.custom-file-label').html(fileName);
+
+            // 即時預覽圖片
+            if (this.files && this.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    $('#currentPicture').attr('src', e.target.result);
+                }
+                reader.readAsDataURL(this.files[0]);
             }
+        });
 
-            // 1. 初始化 DatePicker
-            $('#reservationdate').datetimepicker({ format: 'YYYY-MM-DD' });
+        // 驗證函式
+        function isValidEmail(email) {
+            const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return regex.test(email);
+        }
 
-            // 2. 載入原始資料 (使用相對路徑防止解析失敗)
+        const urlParams = new URLSearchParams(window.location.search);
+        const memberId = urlParams.get('memberId');
+
+        if (!memberId) {
+            Swal.fire('錯誤', '未指定會員 ID', 'error').then(() => {
+                window.location.href = 'MemberQueryAll.html';
+            });
+        } else {
+            loadMemberData(memberId);
+        }
+
+        function loadMemberData(id) {
+            Swal.fire({
+                title: '載入中...',
+                allowOutsideClick: false,
+                didOpen: () => { Swal.showLoading(); }
+            });
+
             $.ajax({
-                url: `/members/${memberId}`,
+                url: `/members/${id}`,
                 type: 'GET',
                 success: function (member) {
-                    $('#memberIdDisplay').text(member.memberId);
+                    Swal.close();
+                    $('#memberIdDisplay').val(member.memberId);
                     $('#name').val(member.name);
                     $('#email').val(member.email);
                     $('#gender').val(member.gender).trigger('change');
@@ -351,46 +315,77 @@
                         $('#currentPicture').attr('src', member.picture);
                     }
                 },
-                error: function () { alert('讀取會員資料失敗'); }
-            });
-
-            // 顯示檔名
-            $('.custom-file-input').on('change', function (e) {
-                var fileName = e.target.files[0] ? e.target.files[0].name : "更換照片";
-                $(this).next('.custom-file-label').html(fileName);
-            });
-
-            // 3. 提交表單 (PUT)
-            $('#updateForm').on('submit', function (e) {
-                e.preventDefault();
-
-                const formData = new FormData();
-                formData.append('name', $('#name').val());
-                formData.append('email', $('#email').val());
-                formData.append('gender', $('#gender').val());
-                formData.append('birthday', $('#birthday').val());
-                formData.append('phone', $('#phone').val());
-                formData.append('address', $('#address').val());
-
-                const pictureFile = $('#picture')[0].files[0];
-                if (pictureFile) {
-                    formData.append('pictureFile', pictureFile);
+                error: function () { 
+                    Swal.fire('錯誤', '讀取會員資料失敗', 'error').then(() => {
+                         window.location.href = 'MemberQueryAll.html';
+                    });
                 }
+            });
+        }
 
-                $.ajax({
-                    url: `/members/${memberId}`,
-                    type: 'PUT',
-                    data: formData,
-                    contentType: false,
-                    processData: false,
-                    success: function (res) {
-                        sessionStorage.setItem('updatedMember', JSON.stringify(res));
+        // 表單提交 (PUT)
+        $('#updateForm').on('submit', function (e) {
+            e.preventDefault();
+
+            const name = $('#name').val().trim();
+            const email = $('#email').val().trim();
+            
+            // 驗證
+            if (!name) { return Swal.fire('欄位未填', '請輸入姓名', 'warning'); }
+            if (!email) { return Swal.fire('欄位未填', '請輸入 Email', 'warning'); }
+            if (!isValidEmail(email)) { return Swal.fire('格式錯誤', 'Email 格式不正確', 'warning'); }
+
+            const formData = new FormData();
+            formData.append('name', name);
+            formData.append('email', email);
+            formData.append('gender', $('#gender').val());
+            formData.append('birthday', $('#birthday').val());
+            formData.append('phone', $('#phone').val());
+            formData.append('address', $('#address').val());
+
+            const pictureFile = $('#picture')[0].files[0];
+            if (pictureFile) {
+                formData.append('pictureFile', pictureFile);
+            }
+
+            Swal.fire({
+                title: '更新中...',
+                text: '正在上傳資料，請稍候',
+                allowOutsideClick: false,
+                didOpen: () => { Swal.showLoading(); }
+            });
+
+            $.ajax({
+                url: `/members/${memberId}`,
+                type: 'PUT',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (res) {
+                    sessionStorage.setItem('updatedMember', JSON.stringify(res));
+                    
+                    Swal.fire({
+                        icon: 'success',
+                        title: '更新成功！',
+                        text: '即將跳轉至完成頁面',
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => {
                         window.location.href = 'MemberUpdateDone.html';
-                    },
-                    error: function () { alert('修改失敗'); }
-                });
+                    });
+                },
+                error: function () { 
+                    Swal.fire('失敗', '修改失敗，請稍後再試', 'error'); 
+                }
             });
         });
+        
+        // 還原按鈕邏輯 (重刷頁面最快，確保圖片也還原)
+        $('button[type="reset"]').on('click', function(e){
+            e.preventDefault();
+            loadMemberData(memberId);
+        });
+    });
     </script>
 </body>
 

@@ -1,217 +1,68 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-TW">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>CouponUpdate</title>
+    <title>修改優惠券 | 管理中心</title>
 
-    <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <link rel="stylesheet" href="../../plugins/fontawesome-free/css/all.min.css">
     <link rel="stylesheet" href="../../dist/css/adminlte.min.css">
+    
     <link rel="stylesheet" href="../../plugins/select2/css/select2.min.css">
     <link rel="stylesheet" href="../../plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 
-    <style type="text/css">
-        .brand-link {
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            padding: 0.5rem 1rem;
-        }
+    <link rel="stylesheet" href="../../dist/css/admin-custom.css">
 
-        .sidebar-collapse .brand-link {
-            justify-content: center;
-        }
-
-        .brand-link i {
-            width: 1.5rem;
-            text-align: center;
-        }
-
-        .sidebar-collapse .brand-text {
-            display: none;
-        }
-
+    <style>
+        /* 標題區塊排版 */
         .box1 {
             display: flex;
             justify-content: space-between;
             align-items: center;
+        }
+
+        /* 頁面專屬微調 */
+        .form-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .input-group-text {
+            background-color: #f4f6f9;
+            border-color: #ced4da;
+            color: #6c757d;
+            min-width: 45px;
+            justify-content: center;
+        }
+
+        /* 輸入框聚焦時的顏色 */
+        .form-control:focus + .input-group-append .input-group-text, 
+        .form-control:focus ~ .input-group-prepend .input-group-text {
+            border-color: #be8754;
+            color: #be8754;
+        }
+        
+        .select2-container .select2-selection--single {
+            height: calc(2.5rem + 2px) !important;
         }
     </style>
 </head>
 
 <body class="hold-transition sidebar-mini sidebar-collapse">
     <div class="wrapper">
-        <nav class="main-header navbar navbar-expand navbar-white navbar-light">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
-                </li>
-            </ul>
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a href="javascript:void(0)" id="logoutBtn" class="btn btn-secondary btn-sm">
-                        <i class="fas fa-sign-out-alt"></i> 登出
-                    </a>
-                </li>
-            </ul>
-        </nav>
-
-        <aside class="main-sidebar sidebar-dark-primary elevation-4">
-            <a href="Home.html" class="brand-link">
-                <i class="fas fa-paw" style="color: #FFD43B; font-size: 1.5rem;"></i>
-                <span class="brand-text font-weight-light">後台管理系統</span>
-            </a>
-            <div class="sidebar">
-                <nav class="mt-2">
-                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
-                        data-accordion="false">
-                        <li class="nav-item menu-open">
-                            <a href="#" class="nav-link active">
-                                <i class="nav-icon fas fa-edit"></i>
-                                <p>會員管理 <i class="right fas fa-angle-left"></i></p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item"><a href="AdminQueryAll.html" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>管理員資料</p>
-                                    </a></li>
-                                <li class="nav-item"><a href="MemberQueryAll.html" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>會員基本資料</p>
-                                    </a></li>
-                                <li class="nav-item"><a href="MemberPetQueryAll.html" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>會員寵物資料</p>
-                                    </a></li>
-                                <li class="nav-item"><a href="CouponQueryAll.html" class="nav-link active"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>優惠券總覽</p>
-                                    </a></li>
-                                <li class="nav-item"><a href="CouponUsersQueryAll.html" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>會員持有優惠券</p>
-                                    </a></li>
-                                <li class="nav-item"><a href="FavoritesQueryAll.html" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>會員收藏清單</p>
-                                    </a></li>
-                            </ul>
-                        </li>
-
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-edit"></i>
-                                <p>商品管理 <i class="right fas fa-angle-left"></i></p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item"><a href="/admin/products" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>商品管理</p>
-                                    </a></li>
-                                <li class="nav-item"><a href="/admin/categories" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>類別管理</p>
-                                    </a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-edit"></i>
-                                <p>訂單管理 <i class="right fas fa-angle-left"></i></p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item"><a href="/orders/list" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>查詢全部訂單</p>
-                                    </a></li>
-                                <li class="nav-item"><a href="/shipment/list" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>物流查詢</p>
-                                    </a></li>
-                                <li class="nav-item"><a href="/ordersItem/list" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>查詢全部訂單明細</p>
-                                    </a></li>
-                                <li class="nav-item"><a href="/Cart/shopping" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>新增訂單</p>
-                                    </a></li>
-                            </ul>
-                        </li>
-                       <li class="nav-item"><a href="#" class="nav-link"> <i class="nav-icon fas fa-edit"></i>
-                <p>
-                  預約管理 <i class="right fas fa-angle-left"></i>
-                </p>
-              </a>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="GetAllDailySchedules.html" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>班表總覽
-                    </p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="GetAllAppointments.html" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>預約訂單列表</p>
-                  </a>
-                </li>
-
-                <li class="nav-item">
-                  <a href="GetAllAppointmentDetails.html" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>預約明細</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="GetAllServiceItems.html" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>服務項目</p>
-                  </a>
-                </li>
-              </ul>
-            </li>
-
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="nav-icon fas fa-edit"></i>
-                <p>人員管理 <i class="right fas fa-angle-left"></i></p>
-              </a>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="GetAllGroomers.html" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>美容師列表</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="GetAllLeaveRecords.html" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>休假審核</p>
-                  </a>
-                </li>
-              </ul>
-            </li>
-          </ul>
-          </li>
-        </nav>
-        <!-- /.sidebar-menu -->
-      </div>
-      <!-- /.sidebar -->
-    </aside>
-
+        
         <div class="content-wrapper">
             <section class="content-header">
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-12 box1">
-                            <h1>會員管理</h1>
-                            <a href="CouponQueryAll.html" class="btn btn-secondary btn-sm">回列表</a>
+                            <h1>修改優惠券</h1>
+                            <a href="CouponQueryAll.html" class="btn btn-default btn-sm shadow-sm border">
+                                <i class="fas fa-arrow-left mr-1"></i> 回列表
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -219,115 +70,180 @@
 
             <section class="content">
                 <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="card card-info">
+                    <div class="row justify-content-center"> 
+                        <div class="col-md-10 form-container">
+                            
+                            <div class="card card-outline card-primary shadow-lg">
                                 <div class="card-header">
-                                    <h3 class="card-title">修改優惠券資料</h3>
+                                    <h3 class="card-title" style="font-weight: 700;">
+                                        <i class="fas fa-edit mr-2" style="color: #be8754;"></i>修改優惠券資料
+                                    </h3>
                                 </div>
-                                <form class="form-horizontal" id="updateForm">
+                                
+                                <form id="updateForm" class="form-horizontal">
                                     <input type="hidden" id="couponId">
+
                                     <div class="card-body">
+                                        
                                         <div class="form-group row">
-                                            <label for="code" class="col-sm-2 col-form-label">折扣碼:</label>
-                                            <div class="col-sm-10">
-                                                <input type="text" class="form-control" id="code" required>
+                                            <label for="code" class="col-sm-2 col-form-label text-right">折扣碼</label>
+                                            <div class="col-sm-9">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text"><i class="fas fa-barcode"></i></span>
+                                                    </div>
+                                                    <input type="text" class="form-control" id="code" required autocomplete="off">
+                                                </div>
                                             </div>
                                         </div>
+
                                         <div class="form-group row">
-                                            <label class="col-sm-2 col-form-label">折扣類型:</label>
-                                            <div class="col-sm-10">
-                                                <select class="form-control select2" style="width: 100%;"
-                                                    id="discountType">
-                                                    <option value="amount">固定金額 (amount)</option>
-                                                    <option value="percent">百分比 (percent)</option>
+                                            <label for="discountType" class="col-sm-2 col-form-label text-right">折扣類型</label>
+                                            <div class="col-sm-9">
+                                                <select class="form-control select2" style="width: 100%;" id="discountType">
+                                                    <option value="amount">固定金額 (Amount)</option>
+                                                    <option value="percent">百分比 (Percent)</option>
                                                 </select>
                                             </div>
                                         </div>
+
                                         <div class="form-group row">
-                                            <label for="discountValue" class="col-sm-2 col-form-label">折扣金額/百分比:</label>
-                                            <div class="col-sm-10">
-                                                <input type="number" step="0.05" class="form-control" id="discountValue"
-                                                    required>
+                                            <label for="discountValue" class="col-sm-2 col-form-label text-right">折扣數值</label>
+                                            <div class="col-sm-9">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text"><i class="fas fa-tags"></i></span>
+                                                    </div>
+                                                    <input type="number" step="0.05" class="form-control" id="discountValue" required autocomplete="off">
+                                                </div>
                                             </div>
                                         </div>
+
                                         <div class="form-group row">
-                                            <label class="col-sm-2 col-form-label">是否限量:</label>
-                                            <div class="col-sm-10">
-                                                <select class="form-control select2" style="width: 100%;"
-                                                    id="isLimited">
-                                                    <option value="0">0:不限量</option>
-                                                    <option value="1">1:限量</option>
+                                            <label for="isLimited" class="col-sm-2 col-form-label text-right">是否限量</label>
+                                            <div class="col-sm-9">
+                                                <select class="form-control select2" style="width: 100%;" id="isLimited">
+                                                    <option value="0">不限量</option>
+                                                    <option value="1">限量</option>
                                                 </select>
                                             </div>
                                         </div>
+
                                         <div class="form-group row">
-                                            <label for="totalAmount" class="col-sm-2 col-form-label">總發放量:</label>
-                                            <div class="col-sm-10">
-                                                <input type="number" class="form-control" id="totalAmount">
+                                            <label for="totalAmount" class="col-sm-2 col-form-label text-right">總發放量</label>
+                                            <div class="col-sm-9">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text"><i class="fas fa-layer-group"></i></span>
+                                                    </div>
+                                                    <input type="number" class="form-control" id="totalAmount" autocomplete="off">
+                                                </div>
                                             </div>
                                         </div>
+
                                         <div class="form-group row">
-                                            <label for="issuedAmount" class="col-sm-2 col-form-label">已發放數量:</label>
-                                            <div class="col-sm-10">
-                                                <input type="number" class="form-control" id="issuedAmount" readonly>
+                                            <label for="issuedAmount" class="col-sm-2 col-form-label text-right">已發放數量</label>
+                                            <div class="col-sm-9">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text"><i class="fas fa-check-double"></i></span>
+                                                    </div>
+                                                    <input type="number" class="form-control" id="issuedAmount" readonly style="background-color: #e9ecef;">
+                                                </div>
                                             </div>
                                         </div>
+
                                         <div class="form-group row">
-                                            <label for="minPurchase" class="col-sm-2 col-form-label">使用門檻金額:</label>
-                                            <div class="col-sm-10">
-                                                <input type="number" class="form-control" id="minPurchase">
+                                            <label for="minPurchase" class="col-sm-2 col-form-label text-right">使用門檻</label>
+                                            <div class="col-sm-9">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text"><i class="fas fa-coins"></i></span>
+                                                    </div>
+                                                    <input type="number" class="form-control" id="minPurchase" autocomplete="off">
+                                                </div>
                                             </div>
                                         </div>
+
                                         <div class="form-group row">
-                                            <label class="col-sm-2 col-form-label">發放區間:</label>
-                                            <div class="col-sm-10">
-                                                <input type="text" class="form-control" id="issueRange">
-                                                <input type="hidden" id="issueStartAt">
-                                                <input type="hidden" id="issueEndAt">
+                                            <label for="issueRange" class="col-sm-2 col-form-label text-right">發放區間</label>
+                                            <div class="col-sm-9">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                                    </div>
+                                                    <input type="text" class="form-control" id="issueRange" autocomplete="off">
+                                                    <input type="hidden" id="issueStartAt">
+                                                    <input type="hidden" id="issueEndAt">
+                                                </div>
                                             </div>
                                         </div>
+
                                         <div class="form-group row">
-                                            <label class="col-sm-2 col-form-label">使用區間:</label>
-                                            <div class="col-sm-10">
-                                                <input type="text" class="form-control" id="useRange">
-                                                <input type="hidden" id="useStartAt">
-                                                <input type="hidden" id="useEndAt">
+                                            <label for="useRange" class="col-sm-2 col-form-label text-right">使用區間</label>
+                                            <div class="col-sm-9">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text"><i class="far fa-calendar-check"></i></span>
+                                                    </div>
+                                                    <input type="text" class="form-control" id="useRange" autocomplete="off">
+                                                    <input type="hidden" id="useStartAt">
+                                                    <input type="hidden" id="useEndAt">
+                                                </div>
                                             </div>
                                         </div>
+
                                     </div>
-                                    <div class="card-footer">
-                                        <button type="submit" class="btn btn-info">送出</button>
-                                        <button type="reset" class="btn btn-default float-right">清除</button>
+                                    
+                                    <div class="card-footer d-flex justify-content-center pt-4 pb-4">
+                                        <button type="submit" class="btn btn-theme-action px-5 mr-3">
+                                            <i class="fas fa-save mr-1"></i> 確認修改
+                                        </button>
+                                        
+                                        <button type="reset" class="btn btn-default px-5">
+                                            <i class="fas fa-undo mr-1"></i> 還原
+                                        </button>
                                     </div>
+                                    
                                 </form>
                             </div>
-                        </div>
+                            </div>
                     </div>
                 </div>
             </section>
         </div>
 
-        <footer class="main-footer">
-            <strong>Copyright &copy; 2026 Pet Admin.</strong>
-        </footer>
     </div>
 
     <script src="../../plugins/jquery/jquery.min.js"></script>
     <script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="../../plugins/moment/moment.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <script src="../../plugins/select2/js/select2.full.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    
     <script src="../../dist/js/adminlte.min.js"></script>
-    <script src="../../dist/js/adminAuth.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+
+    <script src="../../dist/js/admin-layout.js"></script>
 
     <script>
         $(function () {
+            // Select2
+            $('.select2').select2({
+                theme: 'bootstrap4',
+                minimumResultsForSearch: Infinity
+            });
+
             const urlParams = new URLSearchParams(window.location.search);
             const couponId = urlParams.get('couponId');
 
             if (!couponId) {
-                alert("缺少 Coupon ID");
-                window.location.href = 'CouponQueryAll.html';
+                Swal.fire('錯誤', '缺少 Coupon ID', 'error').then(() => {
+                    window.location.href = 'CouponQueryAll.html';
+                });
                 return;
             }
 
@@ -347,36 +263,49 @@
             });
 
             // --- 2. 載入原始資料 ---
-            $.ajax({
-                url: `/coupon/${couponId}`,
-                method: 'GET',
-                success: function (coupon) {
-                    $('#couponId').val(coupon.couponId);
-                    $('#code').val(coupon.code);
-                    $('#discountType').val(coupon.discountType);
-                    $('#discountValue').val(coupon.discountValue);
-                    $('#isLimited').val(coupon.isLimited);
-                    $('#totalAmount').val(coupon.totalAmount);
-                    $('#issuedAmount').val(coupon.issuedAmount);
-                    $('#minPurchase').val(coupon.minPurchase);
+            loadCouponData(couponId);
 
-                    if (coupon.issueStartAt && coupon.issueEndAt) {
-                        $('#issueRange').val(`${coupon.issueStartAt} ~ ${coupon.issueEndAt}`);
-                        $('#issueStartAt').val(coupon.issueStartAt);
-                        $('#issueEndAt').val(coupon.issueEndAt);
-                    }
-                    if (coupon.useStartAt && coupon.useEndAt) {
-                        $('#useRange').val(`${coupon.useStartAt} ~ ${coupon.useEndAt}`);
-                        $('#useStartAt').val(coupon.useStartAt);
-                        $('#useEndAt').val(coupon.useEndAt);
-                    }
+            function loadCouponData(id) {
+                Swal.fire({
+                    title: '載入中...',
+                    allowOutsideClick: false,
+                    didOpen: () => { Swal.showLoading(); }
+                });
 
-                    toggleQuantityInputs();
-                },
-                error: function () {
-                    alert('載入資料失敗');
-                }
-            });
+                $.ajax({
+                    url: `/coupon/${id}`,
+                    method: 'GET',
+                    success: function (coupon) {
+                        Swal.close();
+                        $('#couponId').val(coupon.couponId);
+                        $('#code').val(coupon.code);
+                        $('#discountType').val(coupon.discountType).trigger('change'); // 確保 Select2 更新
+                        $('#discountValue').val(coupon.discountValue);
+                        $('#isLimited').val(coupon.isLimited).trigger('change');
+                        $('#totalAmount').val(coupon.totalAmount);
+                        $('#issuedAmount').val(coupon.issuedAmount);
+                        $('#minPurchase').val(coupon.minPurchase);
+
+                        if (coupon.issueStartAt && coupon.issueEndAt) {
+                            $('#issueRange').val(`${coupon.issueStartAt} ~ ${coupon.issueEndAt}`);
+                            $('#issueStartAt').val(coupon.issueStartAt);
+                            $('#issueEndAt').val(coupon.issueEndAt);
+                        }
+                        if (coupon.useStartAt && coupon.useEndAt) {
+                            $('#useRange').val(`${coupon.useStartAt} ~ ${coupon.useEndAt}`);
+                            $('#useStartAt').val(coupon.useStartAt);
+                            $('#useEndAt').val(coupon.useEndAt);
+                        }
+
+                        toggleQuantityInputs();
+                    },
+                    error: function () {
+                        Swal.fire('錯誤', '載入資料失敗', 'error').then(() => {
+                             window.location.href = 'CouponQueryAll.html';
+                        });
+                    }
+                });
+            }
 
             // --- 3. 限量控制邏輯 ---
             function toggleQuantityInputs() {
@@ -409,6 +338,13 @@
                     useEndAt: $('#useEndAt').val()
                 };
 
+                Swal.fire({
+                    title: '更新中...',
+                    text: '請稍候',
+                    allowOutsideClick: false,
+                    didOpen: () => { Swal.showLoading(); }
+                });
+
                 $.ajax({
                     url: `/coupon/${couponId}`,
                     method: 'PUT',
@@ -416,12 +352,28 @@
                     data: JSON.stringify(updateData),
                     success: function (res) {
                         sessionStorage.setItem('lastUpdatedCoupon', JSON.stringify(res));
-                        window.location.href = 'CouponUpdateDone.html';
+                        
+                        Swal.fire({
+                            icon: 'success',
+                            title: '更新成功！',
+                            text: '即將跳轉至完成頁面',
+                            timer: 1500,
+                            showConfirmButton: false
+                        }).then(() => {
+                            window.location.href = 'CouponUpdateDone.html';
+                        });
                     },
                     error: function (xhr) {
-                        alert("更新失敗: " + (xhr.responseJSON?.message || "資料格式錯誤"));
+                        const msg = (xhr.responseJSON?.message || "資料格式錯誤");
+                        Swal.fire('更新失敗', msg, 'error');
                     }
                 });
+            });
+
+            // 還原按鈕邏輯
+            $('button[type="reset"]').on('click', function(e){
+                e.preventDefault();
+                loadCouponData(couponId);
             });
         });
     </script>

@@ -1,49 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-TW">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>CouponQueryAll.html</title>
+    <title>優惠券總覽 | 管理中心</title>
 
-    <!-- Google Font: Source Sans Pro -->
-    <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <link rel="stylesheet" href="../../plugins/fontawesome-free/css/all.min.css">
-    <!-- Theme style -->
     <link rel="stylesheet" href="../../dist/css/adminlte.min.css">
+    
     <link rel="stylesheet" href="../../plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
     <link rel="stylesheet" href="../../plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+    
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 
-    <style type="text/css">
-        /* 調整 sidebar logo 排版 */
-        .brand-link {
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            /* 展開時靠左 */
-            padding: 0.5rem 1rem;
-        }
+    <link rel="stylesheet" href="../../dist/css/admin-custom.css">
 
-        /* 收起 sidebar 時，icon 置中 */
-        .sidebar-collapse .brand-link {
-            justify-content: center;
-        }
-
-        /* 調整 icon 與文字間距 */
-        .brand-link i {
-            width: 1.5rem;
-            /* 固定寬度讓文字距離固定 */
-            text-align: center;
-        }
-
-        /* 收起 sidebar 時文字隱藏 */
-        .sidebar-collapse .brand-text {
-            display: none;
-        }
-
+    <style>
         .box1 {
             display: flex;
             justify-content: space-between;
@@ -52,252 +26,56 @@
 
         .disabled-btn {
             pointer-events: none !important;
-            /* 禁止滑鼠事件 */
             opacity: 0.5;
-            /* 變淡灰色 */
             cursor: not-allowed !important;
-            /* 滑鼠變禁止符號 */
+        }
+        
+        /* 強制不換行，配合水平捲軸 */
+        #example2 td, #example2 th {
+            white-space: nowrap; 
+            vertical-align: middle !important; /* 確保垂直置中 */
+            text-align: center !important;     /* 確保水平置中 */
         }
 
-        /* DataTable 所有欄位水平 + 垂直置中 */
-        #example2 td,
-        #example2 th {
-            text-align: center !important;
-            vertical-align: middle !important;
-            font-size: 0.8rem;
-            padding: 0.25rem 0.5rem;
-            white-space: nowrap;
+        /* --- 關鍵修正：消除標題與資料間的縫隙 --- */
+        .dataTables_scrollHeadInner {
+            width: 100% !important;
+        }
+        .dataTables_scrollHeadInner table {
+            width: 100% !important;
+            margin-bottom: 0 !important; /* 消除標題下方的留白 */
         }
     </style>
 </head>
 
 <body class="hold-transition sidebar-mini sidebar-collapse">
-    <!-- Site wrapper -->
     <div class="wrapper">
-        <!-- Navbar -->
-        <nav class="main-header navbar navbar-expand navbar-white navbar-light">
-            <!-- Left navbar links -->
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
-                </li>
-            </ul>
-            <!-- 右側 Navbar 按鈕 -->
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a href="javascript:void(0)" id="logoutBtn" class="btn btn-secondary btn-sm">
-                        <i class="fas fa-sign-out-alt"></i> 登出
-                    </a>
-                </li>
-            </ul>
-
-        </nav>
-        <!-- /.navbar -->
-
-        <!-- Main Sidebar Container -->
-        <aside class="main-sidebar sidebar-dark-primary elevation-4">
-            <!-- Brand Logo -->
-            <a href="Home.html" class="brand-link">
-                <i class="fas fa-paw" style="color: #FFD43B; font-size: 1.5rem;"></i>
-                <span class="brand-text font-weight-light"></span>
-            </a>
-
-            <!-- Sidebar -->
-            <div class="sidebar">
-                <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-
-                </div>
-
-
-
-                <!-- Sidebar Menu -->
-                <nav class="mt-2">
-                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
-                        data-accordion="false">
-                        <!-- Add icons to the links using the .nav-icon class
-               with font-awesome or any other icon font library -->
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-edit"></i>
-                                <p>
-                                    會員管理
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="AdminQueryAll.html" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>管理員資料</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="MemberQueryAll.html" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>會員基本資料</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="MemberPetQueryAll.html" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>會員寵物資料</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="CouponQueryAll.html" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>優惠券總覽</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="CouponUsersQueryAll.html" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>會員持有優惠券</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="FavoritesQueryAll.html" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>會員收藏清單</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-edit"></i>
-                                <p>商品管理 <i class="right fas fa-angle-left"></i></p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item"><a href="/admin/products" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>商品管理</p>
-                                    </a></li>
-                                <li class="nav-item"><a href="/admin/categories" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>類別管理</p>
-                                    </a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-edit"></i>
-                                <p>訂單管理 <i class="right fas fa-angle-left"></i></p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item"><a href="/orders/list" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>查詢全部訂單</p>
-                                    </a></li>
-                                <li class="nav-item"><a href="/shipment/list" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>物流查詢</p>
-                                    </a></li>
-                                <li class="nav-item"><a href="/ordersItem/list" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>查詢全部訂單明細</p>
-                                    </a></li>
-                                <li class="nav-item"><a href="/Cart/shopping" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>新增訂單</p>
-                                    </a></li>
-                            </ul>
-                        </li>
-                       <li class="nav-item"><a href="#" class="nav-link"> <i class="nav-icon fas fa-edit"></i>
-                <p>
-                  預約管理 <i class="right fas fa-angle-left"></i>
-                </p>
-              </a>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="GetAllDailySchedules.html" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>班表總覽
-                    </p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="GetAllAppointments.html" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>預約訂單列表</p>
-                  </a>
-                </li>
-
-                <li class="nav-item">
-                  <a href="GetAllAppointmentDetails.html" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>預約明細</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="GetAllServiceItems.html" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>服務項目</p>
-                  </a>
-                </li>
-              </ul>
-            </li>
-
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="nav-icon fas fa-edit"></i>
-                <p>人員管理 <i class="right fas fa-angle-left"></i></p>
-              </a>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="GetAllGroomers.html" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>美容師列表</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="GetAllLeaveRecords.html" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>休假審核</p>
-                  </a>
-                </li>
-              </ul>
-            </li>
-          </ul>
-          </li>
-        </nav>
-        <!-- /.sidebar-menu -->
-      </div>
-      <!-- /.sidebar -->
-    </aside>
-
-        <!-- Content Wrapper. Contains page content -->
+        
         <div class="content-wrapper">
-            <!-- Content Header (Page header) -->
             <section class="content-header">
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-12 box1">
                             <h1>會員管理</h1>
-
-                        </div>
-                        <div class="col-sm-6">
-
                         </div>
                     </div>
-                </div><!-- /.container-fluid -->
+                </div>
             </section>
 
-            <!-- Main content -->
             <section class="content">
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-12">
-                            <div class="card">
-                                <div class="card-header d-flex align-items-center justify-content-between">
+                            <div class="card card-outline card-primary">
+                                <div class="card-header d-flex flex-wrap align-items-center">
+                                    <h3 class="card-title me-auto mb-2 mb-md-0">優惠券列表</h3>
 
-                                    <h3 class="card-title me-auto">優惠券列表</h3>
-
-                                    <div class="d-flex align-items-center" style="gap: 0.5rem;">
-                                        <a href="CouponCreate.html" class="btn btn-secondary btn-sm mr-2 btn-add">
-                                            新增資料
+                                    <div class="d-flex flex-wrap align-items-center ml-auto" style="gap: 0.5rem;">
+                                        <a href="CouponCreate.html" class="btn btn-theme-action mr-2 btn-add">
+                                            <i class="fas fa-plus"></i> 新增資料
                                         </a>
-                                        <!-- 查詢狀態 -->
-                                        <div class="input-group input-group-sm mr-2" style="width: 180px;">
+                                        
+                                        <div class="input-group mr-2" style="width: 150px;">
                                             <select id="statusSelect" class="form-control">
                                                 <option value="all">查詢全部</option>
                                                 <option value="active">查詢啟用中</option>
@@ -305,141 +83,105 @@
                                             </select>
                                         </div>
 
-                                        <!-- 依ID查詢 -->
-                                        <div class="input-group input-group-sm mr-2" style="width: 180px;">
-                                            <input id="idSearchInput" type="text" class="form-control"
-                                                placeholder="依ID查詢">
+                                        <div class="input-group mr-2" style="width: 160px;">
+                                            <input id="idSearchInput" type="text" class="form-control" placeholder="依ID查詢">
                                             <div class="input-group-append">
-                                                <a href="#" id="idSearchBtn" class="btn btn-secondary">
+                                                <button id="idSearchBtn" class="btn btn-default">
                                                     <i class="fas fa-search"></i>
-                                                </a>
+                                                </button>
                                             </div>
                                         </div>
 
-                                        <!-- 發放區間查詢 -->
-                                        <div class="input-group input-group-sm mr-2" style="width: 220px;">
-                                            <input type="text" id="issueRange" class="form-control float-right"
-                                                placeholder="查詢發放區間" />
+                                        <div class="input-group mr-2" style="width: 240px;"> 
+                                            <input type="text" id="issueRange" class="form-control float-right" placeholder="查詢發放區間" />
                                             <div class="input-group-append">
-                                                <a href="#" id="issueSearchBtn" class="btn btn-secondary">
+                                                <button id="issueSearchBtn" class="btn btn-default">
                                                     <i class="fas fa-search"></i>
-                                                </a>
+                                                </button>
                                             </div>
                                         </div>
 
-                                        <!-- 使用區間查詢 -->
-                                        <div class="input-group input-group-sm mr-2" style="width: 220px;">
-                                            <input type="text" id="useRange" class="form-control float-right"
-                                                placeholder="查詢使用區間" />
+                                        <div class="input-group mr-2" style="width: 240px;"> 
+                                            <input type="text" id="useRange" class="form-control float-right" placeholder="查詢使用區間" />
                                             <div class="input-group-append">
-                                                <a href="#" id="useSearchBtn" class="btn btn-secondary">
+                                                <button id="useSearchBtn" class="btn btn-default">
                                                     <i class="fas fa-search"></i>
-                                                </a>
+                                                </button>
                                             </div>
                                         </div>
-
 
                                     </div>
                                 </div>
-                                <!-- /.card-header -->
                                 <div class="card-body">
-                                    <table id="example2" class="table table-bordered table-hover">
+                                    <table id="example2" class="table table-bordered table-hover" style="width:100% !important;">
                                         <thead>
                                             <tr>
                                                 <th>ID</th>
                                                 <th>折扣碼</th>
-                                                <th>折扣類型</th>
-                                                <th>折扣金額/百分比</th>
-                                                <th>是否限量</th>
-                                                <th>總發放數量</th>
-                                                <th>已發放數量</th>
-                                                <th>開始發放時間</th>
-                                                <th>結束發放時間</th>
-                                                <th>開始使用時間</th>
-                                                <th>結束使用時間</th>
-                                                <th>使用門檻金額</th>
+                                                <th>類型</th>
+                                                <th>面額</th>
+                                                <th>限量</th>
+                                                <th>總量</th>
+                                                <th>已發</th>
+                                                <th>發放起日</th>
+                                                <th>發放迄日</th>
+                                                <th>使用起日</th>
+                                                <th>使用迄日</th>
+                                                <th>門檻</th>
                                                 <th>狀態</th>
-                                                <th class="text-center">變更</th>
+                                                <th class="text-center">操作</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-
-                                        </tbody>
-
+                                            </tbody>
                                     </table>
-
                                 </div>
-                                <!-- /.card-body -->
                             </div>
-                            <!-- /.card -->
                         </div>
                     </div>
                 </div>
             </section>
-            <!-- /.content -->
         </div>
-        <!-- /.content-wrapper -->
-
-        <footer class="main-footer">
-            <div class="float-right d-none d-sm-block">
-                <b>Version</b> 3.2.0
-            </div>
-            <strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.</strong> All rights
-            reserved.
-        </footer>
-
-        <!-- Control Sidebar -->
-        <aside class="control-sidebar control-sidebar-dark">
-            <!-- Control sidebar content goes here -->
-        </aside>
-        <!-- /.control-sidebar -->
     </div>
-    <!-- ./wrapper -->
 
-    <!-- jQuery -->
     <script src="../../plugins/jquery/jquery.min.js"></script>
-    <!-- Bootstrap 4 -->
     <script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <!-- DataTables  & Plugins -->
+    
     <script src="../../plugins/datatables/jquery.dataTables.min.js"></script>
     <script src="../../plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
     <script src="../../plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
     <script src="../../plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
-    <script src="../../plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
-    <script src="../../plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
-    <script src="../../plugins/jszip/jszip.min.js"></script>
-    <script src="../../plugins/pdfmake/pdfmake.min.js"></script>
-    <script src="../../plugins/pdfmake/vfs_fonts.js"></script>
-    <script src="../../plugins/datatables-buttons/js/buttons.html5.min.js"></script>
-    <script src="../../plugins/datatables-buttons/js/buttons.print.min.js"></script>
-    <script src="../../plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-    <!-- AdminLTE App -->
+    
+    <script src="../../plugins/moment/moment.min.js"></script>
+    <script src="../../plugins/daterangepicker/daterangepicker.js"></script>
+    
     <script src="../../dist/js/adminlte.min.js"></script>
-    <script src="../../dist/js/adminAuth.js"></script>
-    <!-- AdminLTE for demo purposes
-            <script src="../../dist/js/demo.js"></script> -->
-    <!-- Page specific script -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+
+    <script src="../../dist/js/admin-layout.js"></script>
+
     <script>
         $(function () {
-            //初始化DataTable	
-            $('#example2').DataTable({
+            // 初始化 DataTable
+            const dataTableConfig = {
                 "paging": true,
-                "lengthChange": false, // 關閉每頁筆數選項
-                "searching": false,    // 關閉搜索框
+                "lengthChange": false,
+                "searching": false,
                 "ordering": true,
-                "info": true,          // 顯示資訊文字
-                "autoWidth": true,
-                "responsive": true,
-
-                // **【關鍵修正】使用 dom 屬性強制分頁 (p) 靠右 (col-md-7)**
-                // 結構: 表格本體(t) / 新的一行: [資訊(i) - 左 5 欄] [分頁(p) - 右 7 欄]
+                "info": true,
+                "autoWidth": false,
+                "responsive": false, 
+                "scrollX": true, 
+                "language": { "url": "https://cdn.datatables.net/plug-ins/1.11.3/i18n/zh_Hant.json" },
                 "dom": '<"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7 d-flex justify-content-end"p>>'
+            };
 
-            });
+            $('#example2').DataTable(dataTableConfig);
 
-         // 2. 清空「其他」欄位的核心邏輯
+            // 清空其他搜尋欄位的函式
             function clearOthers(currentId) {
                 const inputs = {
                     'idSearchInput': $('#idSearchInput'),
@@ -451,60 +193,47 @@
                 Object.keys(inputs).forEach(key => {
                     if (key !== currentId) {
                         if (key === 'statusSelect') {
-                            inputs[key].val('all'); // 下拉選單回歸全部
+                            inputs[key].val('all'); 
                         } else {
-                            inputs[key].val(''); // 文字框清空
+                            inputs[key].val(''); 
                         }
                     }
                 });
             }
          
-            // 發放區間
-            $('#issueRange').daterangepicker({
+            // DateRangePicker 設定
+            const drpConfig = {
                 autoUpdateInput: false,
                 locale: {
                     format: 'YYYY-MM-DD',
-                    separator: ' ~ ', // 強制中間符號為 波浪號
-                    cancelLabel: '清除'
+                    separator: ' ~ ',
+                    applyLabel: '確定',
+                    cancelLabel: '清除',
+                    fromLabel: '從',
+                    toLabel: '到',
+                    daysOfWeek: ['日', '一', '二', '三', '四', '五', '六'],
+                    monthNames: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月']
                 }
-            });
+            };
 
-            $('#issueRange').on('apply.daterangepicker', function (ev, picker) {
+            $('#issueRange, #useRange').daterangepicker(drpConfig);
+
+            $('#issueRange, #useRange').on('apply.daterangepicker', function (ev, picker) {
                 $(this).val(picker.startDate.format('YYYY-MM-DD') + ' ~ ' + picker.endDate.format('YYYY-MM-DD'));
             });
 
-            $('#issueRange').on('cancel.daterangepicker', function (ev, picker) {
+            $('#issueRange, #useRange').on('cancel.daterangepicker', function (ev, picker) {
                 $(this).val('');
             });
 
-            // 使用區間
-            $('#useRange').daterangepicker({
-                autoUpdateInput: false,
-                locale: {
-                    format: 'YYYY-MM-DD',
-                    separator: ' ~ ', // 強制中間符號為 波浪號
-                    cancelLabel: '清除'
-                }
-            });
-
-            $('#useRange').on('apply.daterangepicker', function (ev, picker) {
-                $(this).val(picker.startDate.format('YYYY-MM-DD') + ' ~ ' + picker.endDate.format('YYYY-MM-DD'));
-            });
-
-            $('#useRange').on('cancel.daterangepicker', function (ev, picker) {
-                $(this).val('');
-            });
-
-            //查詢全部、啟用中、停用
+            // 查詢狀態
             $('#statusSelect').on('change', function () {
             	clearOthers('statusSelect');
                 loadCoupons($(this).val());
             });
 
             function loadCoupons(status = 'all') {
-                // 根據 status 決定 URL
                 const url = (status === 'all') ? '/coupon' : `/coupon?status=${status}`;
-
                 $.ajax({
                     url: url,
                     method: 'GET',
@@ -513,105 +242,118 @@
                         renderTable(data);
                     },
                     error: function (xhr) {
-                        console.error("載入失敗:", xhr.responseText);
+                        Swal.fire('錯誤', '資料載入失敗', 'error');
                     }
                 });
             }
 
-            //依ID查詢
+            // 依 ID 查詢
             $('#idSearchBtn').on('click', function (e) {
                 e.preventDefault();
-
                 const id = $('#idSearchInput').val().trim();
-                if (!id) return alert("請輸入 ID");
+                if (!id) return Swal.fire('提示', '請輸入 ID', 'info');
 	
                 clearOthers('idSearchInput');
                 $.ajax({
-                    url: `/coupon/${id}`, // RESTful 路徑
+                    url: `/coupon/${id}`,
                     method: 'GET',
                     dataType: 'json',
                     success: function (data) {
                         if (data && data.couponId) {
                             renderTable([data]);
                         } else {
-                            alert("找不到該 ID");
-                            loadCoupons(); // 刷回全部
+                            Swal.fire('提示', '找不到該 ID', 'info');
+                            loadCoupons(); 
                         }
+                    },
+                    error: function() {
+                        Swal.fire('提示', '找不到該 ID', 'info');
                     }
                 });
             });
 
-            //修改
+            // 修改
             $(document).on('click', '.btn-edit', function (e) {
                 e.preventDefault();
-
                 const couponId = $(this).data("id");
-
-                // 跳頁
                 window.location.href = `CouponUpdate.html?couponId=${couponId}`;
             });
 
-            //停用啟用
+            // 停用啟用
             $(document).on('click', '.btn-toggle-status', function (e) {
                 e.preventDefault();
                 const id = $(this).data('id');
                 const currentStatus = $(this).data('status');
                 const newStatus = currentStatus == 'active' ? 'disabled' : 'active';
-                const confirmMsg = newStatus == 'disabled' ? '確定要停用？' : '確定要啟用？';
-                if (!confirm(confirmMsg)) return;
-
-                $.ajax({
-                    url: `/coupon/${id}/toggle`,
-                    method: 'PATCH',
-                    success: function () {
-                        const status = $('#statusSelect').val();
-                        loadCoupons(status);
-                    },
-                    error: function (xhr) {
-                        alert("切換失敗: " + xhr.status);
+                const actionText = newStatus == 'disabled' ? '停用' : '啟用';
+                
+                Swal.fire({
+                    title: `確定要${actionText}嗎？`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#be8754',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: '確定',
+                    cancelButtonText: '取消'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: `/coupon/${id}/toggle`,
+                            method: 'PATCH',
+                            success: function () {
+                                Swal.fire('成功', '狀態已更新', 'success');
+                                const status = $('#statusSelect').val();
+                                loadCoupons(status);
+                            },
+                            error: function (xhr) {
+                                Swal.fire('失敗', '切換失敗', 'error');
+                            }
+                        });
                     }
                 });
             });
-            //點擊發放區間查詢
+
+            // 發放區間查詢
             $('#issueSearchBtn').on('click', function () {
                 const range = $('#issueRange').val().trim();
-                if (!range) return alert("請選擇發放區間");
+                if (!range) return Swal.fire('提示', '請選擇發放區間', 'info');
                 clearOthers('issueRange');
                 const dates = range.split(' ~ ');
-                const start = dates[0];
-                const end = dates[1];
-
+                
                 $.ajax({
-                    url: `/coupon/search/issue?start=${start}&end=${end}`,
+                    url: `/coupon/search/issue?start=${dates[0]}&end=${dates[1]}`,
                     method: 'GET',
                     dataType: 'json',
                     success: function (data) {
                         renderTable(data);
+                    },
+                    error: function() {
+                        Swal.fire('錯誤', '查詢失敗', 'error');
                     }
                 });
             });
 
+            // 使用區間查詢
             $('#useSearchBtn').on('click', function () {
                 const range = $('#useRange').val().trim();
-                if (!range) return alert("請選擇使用區間");
+                if (!range) return Swal.fire('提示', '請選擇使用區間', 'info');
                 clearOthers('useRange');
                 const dates = range.split(' ~ ');
-                const start = dates[0];
-                const end = dates[1];
 
                 $.ajax({
-                    url: `/coupon/search/use?start=${start}&end=${end}`,
+                    url: `/coupon/search/use?start=${dates[0]}&end=${dates[1]}`,
                     method: 'GET',
                     dataType: 'json',
                     success: function (data) {
                         renderTable(data);
                     },
                     error: function (xhr) {
-                        console.error(xhr.responseText);
+                        Swal.fire('錯誤', '查詢失敗', 'error');
                     }
                 });
             });
-            //更新表格
+
+            // 更新表格
             function renderTable(list) {
                 const table = $('#example2');
                 if ($.fn.DataTable.isDataTable(table)) {
@@ -620,60 +362,55 @@
                 const tbody = $('#example2 tbody');
                 tbody.empty();
 
-                list.forEach(item => {
-                    const actionText = item.status === 'active' ? '停用' : '啟用';
+                if(list && list.length > 0) {
+                    list.forEach(item => {
+                        const actionText = item.status === 'active' ? '停用' : '啟用';
+                        const btnClass = item.status === 'active' ? 'btn-danger' : 'btn-success';
+                        const isLimitedText = (item.isLimited === 1) ? '限量' : '不限量';
+                        const totalAmountText = (item.isLimited === 0) ? '-' : item.totalAmount;
+                        const issuedAmountText = (item.issuedAmount == null) ? 0 : item.issuedAmount;
 
-                    // 1. 處理「是否限量」顯示文字
-                    const isLimitedText = (item.isLimited === 1) ? '限量' : '不限量';
+                        tbody.append(`
+                            <tr>
+                                <td>${item.couponId}</td>
+                                <td>${item.code}</td>
+                                <td>${item.discountType}</td>
+                                <td>${item.discountValue}</td>
+                                <td>${isLimitedText}</td> 
+                                <td>${totalAmountText}</td> 
+                                <td>${issuedAmountText}</td> 
+                                <td>${formatDate(item.issueStartAt)}</td>
+                                <td>${formatDate(item.issueEndAt)}</td>
+                                <td>${formatDate(item.useStartAt)}</td>
+                                <td>${formatDate(item.useEndAt)}</td>
+                                <td>${item.minPurchase}</td>
+                                <td>
+                                    <span class="badge ${item.status === 'active' ? 'badge-success' : 'badge-secondary'}">
+                                        ${item.status}
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    <button class="btn btn-info btn-sm btn-edit mr-1" data-id="${item.couponId}" title="修改">
+                                        <i class="fas fa-pencil-alt"></i>
+                                    </button>
+                                    <button class="btn ${btnClass} btn-sm btn-toggle-status" data-id="${item.couponId}" data-status="${item.status}" title="${actionText}">
+                                        <i class="fas fa-power-off"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        `);
+                    });
+                }
 
-                    // 2. 處理「總發放數量」：不限量時顯示橫線或文字
-                    const totalAmountText = (item.isLimited === 0) ? '-' : item.totalAmount;
-
-                    // 3. 處理「已發放數量」：如果是 null 則顯示 0
-                    const issuedAmountText = (item.issuedAmount == null) ? 0 : item.issuedAmount;
-
-                    tbody.append(`
-			            <tr>
-			                <td>${item.couponId}</td>
-			                <td>${item.code}</td>
-			                <td>${item.discountType}</td>
-			                <td>${item.discountValue}</td>
-			                <td>${isLimitedText}</td> 
-			                <td>${totalAmountText}</td> 
-			                <td>${issuedAmountText}</td> 
-			                <td>${formatDate(item.issueStartAt)}</td>
-			                <td>${formatDate(item.issueEndAt)}</td>
-			                <td>${formatDate(item.useStartAt)}</td>
-			                <td>${formatDate(item.useEndAt)}</td>
-			                <td>${item.minPurchase}</td>
-			                <td>${item.status}</td>
-			                <td class="text-center">
-			                    <a href="#" class="btn btn-secondary btn-sm btn-edit" data-id="${item.couponId}">修改</a>
-			                    <a href="#" class="btn btn-secondary btn-sm btn-toggle-status" data-id="${item.couponId}" data-status="${item.status}">${actionText}</a>
-			                </td>
-			            </tr>
-			        `);
-                });
-
-                table.DataTable({
-                    "paging": true,
-                    "lengthChange": false,
-                    "searching": false,
-                    "ordering": true,
-                    "info": true,
-                    "autoWidth": true,
-                    "responsive": true,
-                    "dom": '<"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7 d-flex justify-content-end"p>>'
-                });
+                table.DataTable(dataTableConfig);
             }
-
 
             function formatDate(dateStr) {
                 if (!dateStr) return '';
                 return moment(dateStr).format('YYYY-MM-DD');
             }
 
-            // 頁面一載入就呼叫
+            // 初始載入
             loadCoupons();
         });
     </script>
