@@ -30,10 +30,10 @@ public class ChatMessageController {
 
     // ================= REST API =================
 
-    // 1. (前台) 取得我的歷史紀錄
+    // 1. (前台) 取得我的歷史紀錄 (只回傳未隱藏的)
     @GetMapping("/shop/chat/history")
     public ResponseEntity<List<ChatMessage>> getMyHistory(@LoginUser Integer memberId) {
-        return ResponseEntity.ok(chatService.getChatHistory(memberId));
+        return ResponseEntity.ok(chatService.getVisibleChatHistory(memberId));
     }
 
     // 2. (前台) 取得未讀數量
@@ -140,7 +140,7 @@ public class ChatMessageController {
             // --- 情境 B：管理員/真人客服講話 ---
 
             // 動作：推播給「該位會員」
-            // 這裡很關鍵！路徑是動態的："/topic/user/" + memberId
+            // 這裡很關鍵！路徑是動態的："/topic/member/" + memberId
             // 修正：必須配合前台 ChatSupport.vue 訂閱的頻道名稱 (/topic/user/...)
             messagingTemplate.convertAndSend("/topic/member/" + memberId, savedMsg);
 

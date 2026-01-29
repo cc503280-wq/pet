@@ -103,6 +103,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/products/**").permitAll() // 前台查詢皆公開 (含 /store/categories)
                         .requestMatchers(HttpMethod.GET, "/api/reviews/**").permitAll()
                         .requestMatchers("/shop/coupons/active").permitAll()
+                        //UPDATE: 新增appointments權限   
+                        .requestMatchers("/appointments/**").authenticated()
                         .anyRequest().authenticated())
 
                 // --- 新增：OAuth2 登入配置 ---

@@ -33,11 +33,12 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * 處理所有 RuntimeException
+     * 處理所有 RuntimeException (業務邏輯錯誤)
      */
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ApiResponse> handleRuntimeException(RuntimeException e) {
-        log.error("RuntimeException: {}", e.getMessage(), e);
+        // 業務邏輯錯誤使用 WARN 級別，不印出完整 stack trace
+        log.warn("RuntimeException: {}", e.getMessage());
         return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
     }
 

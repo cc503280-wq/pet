@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Map;
 
 @Component
 public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
@@ -24,62 +26,125 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     @Autowired
     private MemberRepository memberRepository;
 
+    @Autowired
+    private com.pet.service.appointment.MailService mailService;
+
+    @Autowired
+    private com.pet.service.member.CouponUsersRealService couponUsersRealService;
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-                                        Authentication authentication) throws IOException, ServletException {
-        
-        // 1. 取得 OAuth2 用戶資訊
-        OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
-        
-        // 💡 修正：增加防呆，避免拿不到 Email 導致後續報錯
-        String email = oAuth2User.getAttribute("email");
+            Authentication authentication) throws IOException, ServletException {
+
+        OAuth2AuthenticationToken authToken = (OAuth2AuthenticationToken) authentication;
+        String provider = authToken.getAuthorizedClientRegistrationId(); // google 或 line
+        OAuth2User oAuth2User = authToken.getPrincipal();
+        Map<String, Object> attributes = oAuth2User.getAttributes();
+
+        // 1. 解析資料
+        String email = null;
+        String name = null;
+        String picture = null;
+        String googleId = null;
+        String lineId = null;
+
+        if ("google".equals(provider)) {
+            googleId = (String) attributes.get("sub");
+            email = (String) attributes.get("email");
+            name = (String) attributes.get("name");
+            picture = (String) attributes.get("picture");
+        } else if ("line".equals(provider)) {
+            lineId = (String) attributes.get("sub");
+            email = (String) attributes.get("email");
+            name = (String) attributes.get("name");
+            picture = (String) attributes.get("picture");
+
+            // LINE 的大頭貼欄位有時候叫 pictureUrl
+            if (picture == null) {
+                picture = (String) attributes.get("pictureUrl");
+            }
+        }
+
+        // 2. 防呆：如果真的拿不到 Email
         if (email == null) {
-            System.err.println("OAuth2 登入失敗：無法從提供者獲取 Email");
+            System.err.println("OAuth2 登入失敗：無法獲取 Email");
             response.sendRedirect("http://localhost:5173/#/login?error=no_email");
             return;
         }
 
-        // 2. 從資料庫抓取這個人 (這時 CustomOAuth2UserService 應該已經幫我們存好或更新好了)
-        Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("找不到使用者: " + email));
+        // 3. 整合註冊/登入邏輯 (避免 Race Condition，移轉自 CustomOAuth2UserService)
+        String finalName = (name != null) ? name : "新會員";
+        String finalPicture = picture;
+        String finalGoogleId = googleId;
+        String finalLineId = lineId;
 
-        // 3. 產生 JWT Token
-        String token = jwtUtils.createToken(member.getMemberId()); 
+        // 優先查找會員
+        Member member = memberRepository.findByEmail(email).orElse(null);
+        boolean isNew = false; // 用於判斷前端顯示
 
-        // 4. 判斷是否為新註冊用戶 (10 秒邏輯)
-        boolean isNew = false;
-        if (member.getCreatedAt() != null) {
-            long diffInSeconds = Duration.between(
-                member.getCreatedAt(), 
-                LocalDateTime.now()
-            ).getSeconds();
-            
-            if (diffInSeconds < 10) {
-                isNew = true;
+        if (member != null) {
+            // 已存在：檢查是否需要更新 ID (綁定帳號)
+            boolean updated = false;
+            if (finalGoogleId != null && member.getGoogleId() == null) {
+                member.setGoogleId(finalGoogleId);
+                updated = true;
+            }
+            if (finalLineId != null && member.getLineId() == null) {
+                member.setLineId(finalLineId);
+                updated = true;
+            }
+            // 更新基本資料 (可選，確保頭像是最新的)
+            if (finalPicture != null && !finalPicture.equals(member.getPicture())) {
+                member.setPicture(finalPicture);
+                updated = true;
+            }
+
+            // 使用 saveAndFlush 確保立即寫入
+            member = memberRepository.saveAndFlush(member);
+            System.out.println("✅ OAuth2 舊會員登入成功 (ID:" + member.getMemberId() + "): " + email);
+        } else {
+            // 不存在：註冊新會員
+            System.out.println("🎉 OAuth2 發現新用戶，執行註冊: " + email);
+            isNew = true;
+
+            Member newMember = new Member();
+            newMember.setEmail(email);
+            newMember.setName(finalName);
+            newMember.setPicture(finalPicture);
+            newMember.setGoogleId(finalGoogleId);
+            newMember.setLineId(finalLineId);
+            newMember.setCreatedAt(LocalDateTime.now());
+
+            // 使用 saveAndFlush 確保立即寫入
+            member = memberRepository.saveAndFlush(newMember);
+
+            // 派發優惠券與寄送歡迎信
+            try {
+                couponUsersRealService.assignWelcomeCoupon(member.getMemberId());
+                mailService.sendWelcomeEmail(member.getEmail(), member.getName());
+            } catch (Exception e) {
+                System.err.println("⚠️ 歡迎信/優惠券派發失敗: " + e.getMessage());
             }
         }
 
-        // 5. 💡 結合動態網域判定 (本機 5173 vs Cloudflare Tunnel)
-        String requestHost = request.getServerName(); // 取得當前請求的域名
-        String frontendBaseUrl;
+        // 4. 產生 Token
+        String token = jwtUtils.createToken(member.getMemberId());
 
-        // 如果域名包含 trycloudflare，表示使用者是從外網連進來的
+        // 5. 動態網域判定
+        String requestHost = request.getServerName();
+        String frontendBaseUrl;
         if (requestHost.contains("trycloudflare.com")) {
-            // 自動組裝 https://你的域名 (通常前端也在同一個 Tunnel 下)
             frontendBaseUrl = "https://" + requestHost;
         } else {
-            // 否則預設為本機開發環境
             frontendBaseUrl = "http://localhost:5173";
         }
 
-        // 6. 組裝跳轉 URL 並執行重導向
-        // 使用 Vue Hash 模式，將參數放在 #/ 之後
+        // 6. 導向
         String targetUrl = frontendBaseUrl + "/#/login-success?token=" + token;
         if (isNew) {
             targetUrl += "&new=true";
         }
-        
-        System.out.println("OAuth2 登入成功，導向至: " + targetUrl);
+
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
     }
 }

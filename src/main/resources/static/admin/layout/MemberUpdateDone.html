@@ -1,340 +1,189 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-TW">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>MemberUpdateDone</title>
+    <title>修改完成 | 管理中心</title>
 
-    <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <link rel="stylesheet" href="../../plugins/fontawesome-free/css/all.min.css">
     <link rel="stylesheet" href="../../dist/css/adminlte.min.css">
+    
+    <link rel="stylesheet" href="../../dist/css/admin-custom.css">
 
-    <style type="text/css">
-        .brand-link {
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            padding: 0.5rem 1rem;
-        }
-
-        .sidebar-collapse .brand-link {
-            justify-content: center;
-        }
-
-        .brand-link i {
-            width: 1.5rem;
-            text-align: center;
-        }
-
-        .sidebar-collapse .brand-text {
-            display: none;
-        }
-
+    <style>
+        /* 標題區塊排版 */
         .box1 {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .form-control-static {
-            padding-top: 7px;
-            margin-bottom: 0;
-            font-weight: bold;
-            color: #333;
+        /* 成功頁面專屬樣式 */
+        .success-icon {
+            font-size: 4rem;
+            color: #28a745;
+            margin-bottom: 1rem;
+        }
+        
+        .data-row {
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .data-row:last-child {
+            border-bottom: none;
+        }
+        
+        .data-label {
+            font-weight: 600;
+            color: #6c757d;
+        }
+        
+        .data-value {
+            font-weight: 500;
+            color: #343a40;
+            word-break: break-all;
         }
 
-        .box2 {
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        /* 大頭貼樣式 */
+        .profile-img {
+            width: 120px; 
+            height: 120px; 
+            object-fit: cover; 
+            border: 4px solid #fff; 
+            box-shadow: 0 3px 10px rgba(0,0,0,0.15);
         }
     </style>
 </head>
 
 <body class="hold-transition sidebar-mini sidebar-collapse">
     <div class="wrapper">
-        <nav class="main-header navbar navbar-expand navbar-white navbar-light">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
-                </li>
-            </ul>
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a href="javascript:void(0)" id="logoutBtn" class="btn btn-secondary btn-sm">
-                        <i class="fas fa-sign-out-alt"></i> 登出
-                    </a>
-                </li>
-            </ul>
-        </nav>
-
-        <aside class="main-sidebar sidebar-dark-primary elevation-4">
-            <a href="Home.html" class="brand-link">
-                <i class="fas fa-paw" style="color: #FFD43B; font-size: 1.5rem;"></i>
-                <span class="brand-text font-weight-light">後台管理系統</span>
-            </a>
-            <div class="sidebar">
-                <nav class="mt-2">
-                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
-                        data-accordion="false">
-                        <li class="nav-item menu-open">
-                            <a href="#" class="nav-link active">
-                                <i class="nav-icon fas fa-edit"></i>
-                                <p>會員管理 <i class="right fas fa-angle-left"></i></p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item"><a href="AdminQueryAll.html" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>管理員資料</p>
-                                    </a></li>
-                                <li class="nav-item"><a href="MemberQueryAll.html" class="nav-link active"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>會員基本資料</p>
-                                    </a></li>
-                                <li class="nav-item"><a href="MemberPetQueryAll.html" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>會員寵物資料</p>
-                                    </a></li>
-                                <li class="nav-item"><a href="CouponQueryAll.html" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>優惠券總覽</p>
-                                    </a></li>
-                                <li class="nav-item"><a href="CouponUsersQueryAll.html" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>會員持有優惠券</p>
-                                    </a></li>
-                                <li class="nav-item"><a href="FavoritesQueryAll.html" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>會員收藏清單</p>
-                                    </a></li>
-                            </ul>
-                        </li>
-
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-edit"></i>
-                                <p>
-                                    商品管理
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="/admin/products" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>商品管理</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="/admin/categories" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>分類管理</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-
-
-                        <li class="nav-item"><a href="#" class="nav-link"> <i class="nav-icon fas fa-edit"></i>
-                                <p>
-                                    訂單管理 <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item"><a href="/orders/list" class="nav-link"> <i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>查詢全部訂單</p>
-                                    </a></li>
-                                <li class="nav-item"><a href="/shipment/list" class="nav-link"> <i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>物流查詢</p>
-                                    </a></li>
-                                <li class="nav-item"><a href="/ordersItem/list" class="nav-link"> <i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>查詢全部訂單明細</p>
-                                    </a></li>
-                                <li class="nav-item"><a href="/Cart/shopping" class="nav-link"> <i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>新增訂單</p>
-                                    </a></li>
-                            </ul>
-                        </li>
-                       <li class="nav-item"><a href="#" class="nav-link"> <i class="nav-icon fas fa-edit"></i>
-                <p>
-                  預約管理 <i class="right fas fa-angle-left"></i>
-                </p>
-              </a>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="GetAllDailySchedules.html" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>班表總覽
-                    </p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="GetAllAppointments.html" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>預約訂單列表</p>
-                  </a>
-                </li>
-
-                <li class="nav-item">
-                  <a href="GetAllAppointmentDetails.html" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>預約明細</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="GetAllServiceItems.html" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>服務項目</p>
-                  </a>
-                </li>
-              </ul>
-            </li>
-
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="nav-icon fas fa-edit"></i>
-                <p>人員管理 <i class="right fas fa-angle-left"></i></p>
-              </a>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="GetAllGroomers.html" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>美容師列表</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="GetAllLeaveRecords.html" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>休假審核</p>
-                  </a>
-                </li>
-              </ul>
-            </li>
-          </ul>
-          </li>
-        </nav>
-        <!-- /.sidebar-menu -->
-      </div>
-      <!-- /.sidebar -->
-    </aside>
-
+        
         <div class="content-wrapper">
             <section class="content-header">
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-12 box1">
-                            <h1>會員管理</h1>
-                            <a href="MemberQueryAll.html" class="btn btn-secondary btn-sm">回列表</a>
+                            <h1>修改會員</h1>
+                            <a href="MemberQueryAll.html" class="btn btn-default btn-sm shadow-sm border">
+                                <i class="fas fa-arrow-left mr-1"></i> 回列表
+                            </a>
                         </div>
                     </div>
                 </div>
             </section>
 
             <section class="content">
-                <div class="container-fluid d-flex justify-content-center">
-                    <div class="row w-100 box2">
-                        <div class="col-md-6">
-                            <div class="card card-info">
-                                <div class="card-header">
-                                    <h3 class="card-title">修改資料檢視</h3>
-                                </div>
-
-                                <div class="alert alert-success mx-4 mt-3 py-2">
-                                    <i class="icon fas fa-check-circle"></i>
-                                    <strong>修改成功!</strong>
-                                </div>
-
-                                <div class="card-body">
-                                    <div class="form-group row justify-content-center mb-4">
-                                        <img id="show-picture" src="https://via.placeholder.com/120" alt="大頭貼"
-                                            class="rounded-circle"
-                                            style="width:120px; height:120px; object-fit:cover; border:2px solid #FFD43B;">
+                <div class="container-fluid">
+                    <div class="row justify-content-center"> 
+                        <div class="col-md-6"> 
+                            
+                            <div class="card card-outline card-success shadow-lg">
+                                <div class="card-body text-center pt-5 pb-5">
+                                    
+                                    <div class="mb-4">
+                                        <i class="fas fa-check-circle success-icon"></i>
+                                        <h3 class="text-success font-weight-bold">修改成功！</h3>
+                                        <p class="text-muted">該會員資料已更新完成。</p>
                                     </div>
 
-                                    <div class="form-group row">
-                                        <label class="col-sm-4 col-form-label text-right">ID:</label>
-                                        <div class="col-sm-8">
-                                            <p id="show-id" class="form-control-static">-</p>
+                                    <div class="text-left bg-light p-4 rounded mb-5 mx-auto" style="max-width: 450px;">
+                                        
+                                        <div class="text-center mb-4">
+                                            <img id="show-picture" src="../../dist/img/default-avatar.png" alt="大頭貼" class="rounded-circle profile-img">
+                                        </div>
+
+                                        <div class="row data-row">
+                                            <div class="col-4 data-label">會員 ID</div>
+                                            <div class="col-8 data-value" id="show-id">Loading...</div>
+                                        </div>
+                                        <div class="row data-row">
+                                            <div class="col-4 data-label">姓名</div>
+                                            <div class="col-8 data-value" id="show-name">Loading...</div>
+                                        </div>
+                                        <div class="row data-row">
+                                            <div class="col-4 data-label">Email</div>
+                                            <div class="col-8 data-value" id="show-email">Loading...</div>
+                                        </div>
+                                        <div class="row data-row">
+                                            <div class="col-4 data-label">電話</div>
+                                            <div class="col-8 data-value" id="show-phone">Loading...</div>
+                                        </div>
+                                        <div class="row data-row">
+                                            <div class="col-4 data-label">性別</div>
+                                            <div class="col-8 data-value" id="show-gender">Loading...</div>
+                                        </div>
+                                        <div class="row data-row">
+                                            <div class="col-4 data-label">生日</div>
+                                            <div class="col-8 data-value" id="show-birthday">Loading...</div>
+                                        </div>
+                                        <div class="row data-row">
+                                            <div class="col-4 data-label">地址</div>
+                                            <div class="col-8 data-value" id="show-address">Loading...</div>
                                         </div>
                                     </div>
-                                    <div class="form-group row">
-                                        <label class="col-sm-4 col-form-label text-right">姓名:</label>
-                                        <div class="col-sm-8">
-                                            <p id="show-name" class="form-control-static">-</p>
-                                        </div>
+
+                                    <div>
+                                        <a href="MemberQueryAll.html" class="btn btn-theme-action px-5 shadow-sm">
+                                            <i class="fas fa-check mr-1"></i> 完成
+                                        </a>
                                     </div>
-                                    <div class="form-group row">
-                                        <label class="col-sm-4 col-form-label text-right">性別:</label>
-                                        <div class="col-sm-8">
-                                            <p id="show-gender" class="form-control-static">-</p>
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-sm-4 col-form-label text-right">生日:</label>
-                                        <div class="col-sm-8">
-                                            <p id="show-birthday" class="form-control-static">-</p>
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-sm-4 col-form-label text-right">Email:</label>
-                                        <div class="col-sm-8">
-                                            <p id="show-email" class="form-control-static">-</p>
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-sm-4 col-form-label text-right">電話:</label>
-                                        <div class="col-sm-8">
-                                            <p id="show-phone" class="form-control-static">-</p>
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-sm-4 col-form-label text-right">地址:</label>
-                                        <div class="col-sm-8">
-                                            <p id="show-address" class="form-control-static">-</p>
-                                        </div>
-                                    </div>
+
                                 </div>
                             </div>
+                            
                         </div>
                     </div>
                 </div>
             </section>
         </div>
 
-        <footer class="main-footer">
-            <strong>Copyright &copy; 2026 Pet Admin.</strong>
-        </footer>
     </div>
 
     <script src="../../plugins/jquery/jquery.min.js"></script>
     <script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    
     <script src="../../dist/js/adminlte.min.js"></script>
-    <script src="../../dist/js/adminAuth.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+
+    <script src="../../dist/js/admin-layout.js"></script>
 
     <script>
         $(function () {
-            const memberData = sessionStorage.getItem('updatedMember');
-            if (memberData) {
-                const member = JSON.parse(memberData);
+            const memberJson = sessionStorage.getItem('updatedMember');
+            
+            if (memberJson) {
+                const member = JSON.parse(memberJson);
+                
                 $('#show-id').text(member.memberId);
                 $('#show-name').text(member.name);
-                $('#show-gender').text(member.gender === 'M' ? '男' : '女');
-                $('#show-birthday').text(member.birthday || '未設定');
                 $('#show-email').text(member.email);
                 $('#show-phone').text(member.phone || '無');
+                $('#show-gender').text(member.gender === 'M' ? '男' : '女');
+                $('#show-birthday').text(member.birthday || '未設定');
                 $('#show-address').text(member.address || '無');
-                if (member.picture) {
-                    $('#show-picture').attr('src', member.picture);
+                
+                if (member.picture) { 
+                    $('#show-picture').attr('src', member.picture); 
+                } else {
+                    $('#show-picture').attr('src', '../../dist/img/default-avatar.png');
                 }
+
             } else {
-                alert('查無更新紀錄');
-                window.location.href = 'MemberQueryAll.html';
+                Swal.fire({
+                    icon: 'warning',
+                    title: '無資料',
+                    text: '查無更新紀錄，即將返回列表',
+                    timer: 2000,
+                    showConfirmButton: false
+                }).then(() => {
+                    window.location.href = 'MemberQueryAll.html';
+                });
             }
         });
     </script>

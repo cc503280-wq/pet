@@ -40,6 +40,9 @@
     />
     <script src="https://uicdn.toast.com/calendar/latest/toastui-calendar.min.js"></script>
 
+    <!-- SweetAlert2 (Bootstrap 4 Theme) -->
+    <link rel="stylesheet" href="../../plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
+
     <style type="text/css">
       /* 調整 sidebar logo 排版 */
       .brand-link {
@@ -395,6 +398,7 @@
                         <option value="預約確認">預約確認</option>
                         <option value="已取消">已取消</option>
                         <option value="已完成">已完成</option>
+                        <option value="未到店">未到店</option>
                       </select>
                       <select
                         id="groomerSelect"
@@ -469,7 +473,6 @@
                           <th>預約日期</th>
                           <th>開始時間</th>
                           <th>預約狀態</th>
-                          <th>付款狀態</th>
                           <th>建立時間</th>
                           <th class="text-center">操作</th>
                         </tr>
@@ -728,6 +731,8 @@
     ></script>
     <script src="../../dist/js/adminAuth.js"></script>
     <script src="../../dist/js/adminlte.min.js"></script>
+    <!-- SweetAlert2 -->
+    <script src="../../plugins/sweetalert2/sweetalert2.min.js"></script>
 
     <!-- Page Script -->
     <script>
@@ -774,7 +779,11 @@
           },
           error: function (xhr) {
             console.error("Error:", xhr);
-            alert("無法載入資料，請確認後端 Server 是否啟動");
+            Swal.fire({
+              icon: "error",
+              title: "錯誤",
+              text: "無法載入資料，請確認後端 Server 是否啟動",
+            });
           },
         });
       }
@@ -786,11 +795,19 @@
           type: "PATCH",
           success: function (data) {
             loadAllAppointments(); // 成功後重新整理列表
-            alert("預約已成功取消！");
+            Swal.fire({
+              icon: "success",
+              title: "成功",
+              text: "預約已成功取消！",
+            });
           },
           error: function (xhr) {
             console.error("Error:", xhr);
-            alert("操作失敗，請稍後再試");
+            Swal.fire({
+              icon: "error",
+              title: "失敗",
+              text: "操作失敗，請稍後再試",
+            });
           },
         });
       }
@@ -837,7 +854,6 @@
                             <td>${app.appointmentDate}</td>
                             <td>${app.startTime}</td>
                             <td>${app.appointmentStatus}</td>
-                            <td>${app.payStatus}</td>
 							<td>${formatDateTime(app.createdAt)}</td>
                             <td class="text-center">
 								<div class="d-flex justify-content-center align-items-center" style="gap: 5px;">
@@ -892,9 +908,18 @@
         $(document).on("click", ".btn-delete", function (e) {
           e.preventDefault();
           let appointmentId = $(this).data("id");
-          if (confirm("確定要取消此預約訂單嗎？(將設定為取消狀態)")) {
-            cancelAppointments(appointmentId);
-          }
+          Swal.fire({
+            title: "確定要取消此預約訂單嗎？",
+            text: "將設定為取消狀態",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "確定",
+            cancelButtonText: "取消",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              cancelAppointments(appointmentId);
+            }
+          });
         });
       }
 
@@ -948,7 +973,11 @@
           },
           error: function (xhr) {
             console.error("Search Error:", xhr);
-            alert("查詢失敗");
+            Swal.fire({
+              icon: "error",
+              title: "失敗",
+              text: "查詢失敗",
+            });
           },
         });
       }

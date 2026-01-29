@@ -28,5 +28,6 @@ Thumbs.db
 
 ### VS Code & IntelliJ (防範組員使用不同 IDE) ###
 .vscode/
+src/main/resources/application-secret.properties
 .idea/
 *.iml

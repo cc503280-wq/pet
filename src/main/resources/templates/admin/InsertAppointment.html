@@ -12,7 +12,8 @@
 	<link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
 	<link rel="stylesheet" th:href="@{/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css}">
 	<link rel="stylesheet" th:href="@{/plugins/datatables-responsive/css/responsive.bootstrap4.min.css}">
-
+	<!-- SweetAlert2 (Bootstrap 4 Theme) -->
+	<link rel="stylesheet" th:href="@{/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css}">
 	<style>
 		.brand-link {
 			display: flex;
@@ -411,7 +412,8 @@
 		<!-- /.control-sidebar -->
 	</div>
 	<!-- ./wrapper -->
-
+	<!-- SweetAlert2 -->
+	<script th:src="@{/plugins/sweetalert2/sweetalert2.min.js}"></script>
 	<script th:src="@{/plugins/jquery/jquery.min.js}"></script>
 	<script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
 	<script th:src="@{/dist/js/adminlte.min.js}"></script>
@@ -459,7 +461,11 @@
 						$petSelect.prop('disabled', false);
 					},
 					error: function () {
-						alert('無法取得寵物資料，請稍後再試');
+						Swal.fire({
+							icon: 'error',
+							title: '錯誤',
+							text: '無法取得寵物資料，請稍後再試',
+						});
 					}
 				});
 			}
@@ -663,7 +669,24 @@
 
 				},
 				error: function (xhr) {
-					alert("預約失敗：" + xhr.responseText);
+					let errorMsg = '未知錯誤，請稍後再試。';
+					try {
+						// 嘗試解析 JSON 回傳
+						const res = JSON.parse(xhr.responseText);
+						if (res.message) {
+							errorMsg = res.message;
+						}
+					} catch (e) {
+						// 解析失敗，直接顯示原始文字 (或維持預設值)
+						if (xhr.responseText) {
+							errorMsg = xhr.responseText;
+						}
+					}
+
+					Swal.fire({
+						icon: 'error',
+						text: errorMsg,
+					});
 				}
 			});
 		});

@@ -1,7 +1,7 @@
 package com.pet.controller.appointment;
 
-import java.util.List;
 
+import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +20,7 @@ import com.pet.model.appointment.AppointmentList;
 import com.pet.model.appointment.AppointmentRequest;
 import com.pet.model.appointment.ServiceItem;
 import com.pet.service.appointment.AppointmentService;
+import com.pet.util.LoginUser;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +36,7 @@ import lombok.extern.slf4j.Slf4j;
 public class AppointmentController {
 
     private final AppointmentService appointmentService;
+    
 
     // ==================== 查詢 API ====================
 
@@ -43,6 +45,15 @@ public class AppointmentController {
         List<AppointmentList> list = appointmentService.getAllAppointments();
         return ResponseEntity.ok(list);
     }
+
+    @GetMapping("/my")
+    public ResponseEntity<List<AppointmentList>> getMyAppointments(@LoginUser Integer userId) {
+        if (userId == null) {
+            return ResponseEntity.status(401).build();
+        }
+        List<AppointmentList> list = appointmentService.getAppointmentsByMemberId(userId);
+        return ResponseEntity.ok(list);
+}
 
     @GetMapping("/{id}")
     public ResponseEntity<AppointmentList> getAppointmentById(@PathVariable Integer id) {

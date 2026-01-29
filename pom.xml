@@ -175,13 +175,28 @@
 			<groupId>org.hibernate.orm</groupId>
 			<artifactId>hibernate-core</artifactId>
 		</dependency>
-	
+		<!--樂觀鎖衝突，同天不同時段的解決辦法Retry套件-->
+		<dependency>
+    		<groupId>org.springframework.retry</groupId>
+    		<artifactId>spring-retry</artifactId>
+    		<version>2.0.12</version>
+		</dependency>
+		<dependency>
+    		<groupId>org.springframework</groupId>
+    		<artifactId>spring-aspects</artifactId>
+		</dependency>
+		
+		<!--websocket-->
+		<dependency>
+    		<groupId>org.springframework.boot</groupId>
+    		<artifactId>spring-boot-starter-websocket</artifactId>
+		</dependency>
 		
 		<!--swagger 整理所有後端有的API資訊-->
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-			<version>2.6.0</version>
+			<version>2.8.5</version>
 		</dependency>
 
 		<!--spring mail 寄送預約成功通知信給會員 -->
