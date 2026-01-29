@@ -78,7 +78,7 @@ public class SecurityConfig {
                 // 因為 SockJS 有時會用 Iframe 來模擬連線，預設 Spring Security 會擋住 (X-Frame-Options: DENY)
                 // 導致 "Refused to display ... in a frame" 錯誤
                 .headers(headers -> headers.frameOptions(frame -> frame.disable()))
-                
+
                 // 4. 🔥 強制關閉表單登入 (這行一定要加，防止 302) 1/23加的 購物車用
                 .formLogin(form -> form.disable())
                 .httpBasic(basic -> basic.disable())
@@ -98,7 +98,9 @@ public class SecurityConfig {
                                 "/shop/ws-chat/**")
                         .permitAll()
 
-                        .requestMatchers("/shop/products/**").permitAll()
+                        // --- 修正：ProductController 路徑設定 ---
+                        .requestMatchers("/products/admin/**").authenticated() // 後台 API 需登入
+                        .requestMatchers(HttpMethod.GET, "/products/**").permitAll() // 前台查詢皆公開 (含 /store/categories)
                         .requestMatchers(HttpMethod.GET, "/api/reviews/**").permitAll()
                         .requestMatchers("/shop/coupons/active").permitAll()
                         .anyRequest().authenticated())
@@ -123,12 +125,11 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                 // 當沒登入時，直接回傳 401 狀態碼，而不是轉址到登入頁
                 .exceptionHandling(ex -> ex
-                    .authenticationEntryPoint((request, response, authException) -> {
-                        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                        response.setContentType("application/json");
-                        response.getWriter().write("{\"error\": \"Unauthorized\", \"message\": \"請先登入\"}");
-                    })
-                )
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                            response.setContentType("application/json");
+                            response.getWriter().write("{\"error\": \"Unauthorized\", \"message\": \"請先登入\"}");
+                        }))
 
                 // 加入 JWT 過濾器
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
