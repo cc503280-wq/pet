@@ -8,6 +8,7 @@ import com.pet.model.appointment.ServiceItem;
 import com.pet.model.appointment.Groomer;
 import com.pet.model.member.Coupon;
 import com.pet.model.order.Order;
+import com.pet.model.product.Category;
 import com.pet.model.product.Product;
 import com.pet.service.appointment.GroomerService;
 import com.pet.service.appointment.ServiceItemService;
