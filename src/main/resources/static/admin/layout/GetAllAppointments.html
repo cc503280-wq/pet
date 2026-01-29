@@ -42,6 +42,7 @@
 
     <!-- SweetAlert2 (Bootstrap 4 Theme) -->
     <link rel="stylesheet" href="../../plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
+    <link rel="stylesheet" href="../../dist/css/admin-custom.css">
 
     <style type="text/css">
       /* 調整 sidebar logo 排版 */
@@ -118,211 +119,7 @@
   </head>
 
   <body class="hold-transition sidebar-mini sidebar-collapse">
-    <!-- Wrapper: AdminLTE 的主要容器 -->
     <div class="wrapper">
-      <!-- Navbar: 頂部導覽列 -->
-      <nav class="main-header navbar navbar-expand navbar-white navbar-light">
-        <ul class="navbar-nav">
-          <!-- 漢堡選單按鈕 (控制 Sidebar 收合) -->
-          <li class="nav-item">
-            <a class="nav-link" data-widget="pushmenu" href="#" role="button"
-              ><i class="fas fa-bars"></i
-            ></a>
-          </li>
-        </ul>
-        <ul class="navbar-nav ml-auto">
-          <li class="nav-item">
-            <a
-              href="javascript:void(0)"
-              id="logoutBtn"
-              class="btn btn-secondary btn-sm"
-            >
-              <i class="fas fa-sign-out-alt"></i> 登出
-            </a>
-          </li>
-        </ul>
-      </nav>
-
-      <!-- Main Sidebar: 左側選單 -->
-      <aside class="main-sidebar sidebar-dark-primary elevation-4">
-        <a href="Home.html" class="brand-link">
-          <i class="fas fa-paw" style="color: #ffd43b; font-size: 1.5rem"></i>
-          <span class="brand-text font-weight-light"></span>
-        </a>
-
-        <div class="sidebar">
-          <div class="user-panel mt-3 pb-3 mb-3 d-flex"></div>
-
-          <!-- Sidebar Menu (選單結構) -->
-          <nav class="mt-2">
-            <ul
-              class="nav nav-pills nav-sidebar flex-column"
-              data-widget="treeview"
-              role="menu"
-              data-accordion="false"
-            >
-              <!-- 會員管理 -->
-              <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="nav-icon fas fa-edit"></i>
-                  <p>會員管理 <i class="right fas fa-angle-left"></i></p
-                ></a>
-                <ul class="nav nav-treeview">
-                  <li class="nav-item">
-                    <a href="AdminQueryAll.html" class="nav-link">
-                      <i class="far fa-circle nav-icon"></i>
-                      <p>管理員資料</p></a
-                    >
-                  </li>
-                  <li class="nav-item">
-                    <a href="MemberQueryAll.html" class="nav-link">
-                      <i class="far fa-circle nav-icon"></i>
-                      <p>會員基本資料</p></a
-                    >
-                  </li>
-                  <li class="nav-item">
-                    <a href="MemberPetQueryAll.html" class="nav-link">
-                      <i class="far fa-circle nav-icon"></i>
-                      <p>會員寵物資料</p></a
-                    >
-                  </li>
-                  <li class="nav-item">
-                    <a href="CouponQueryAll.html" class="nav-link">
-                      <i class="far fa-circle nav-icon"></i>
-                      <p>優惠券總覽</p></a
-                    >
-                  </li>
-                  <li class="nav-item">
-                    <a href="CouponUsersQueryAll.html" class="nav-link">
-                      <i class="far fa-circle nav-icon"></i>
-                      <p>會員持有優惠券</p></a
-                    >
-                  </li>
-                  <li class="nav-item">
-                    <a href="FavoritesQueryAll.html" class="nav-link">
-                      <i class="far fa-circle nav-icon"></i>
-                      <p>會員收藏清單</p></a
-                    >
-                  </li>
-                </ul>
-              </li>
-
-              <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="nav-icon fas fa-edit"></i>
-                  <p>
-                    商品管理
-                    <i class="right fas fa-angle-left"></i>
-                  </p>
-                </a>
-                <ul class="nav nav-treeview">
-                  <li class="nav-item">
-                    <a href="/admin/products" class="nav-link">
-                      <i class="far fa-circle nav-icon"></i>
-                      <p>商品管理</p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="/admin/categories" class="nav-link">
-                      <i class="far fa-circle nav-icon"></i>
-                      <p>分類管理</p>
-                    </a>
-                  </li>
-                </ul>
-              </li>
-
-              <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="nav-icon fas fa-edit"></i>
-                  <p>訂單管理 <i class="right fas fa-angle-left"></i></p>
-                </a>
-                <ul class="nav nav-treeview">
-                  <li class="nav-item">
-                    <a href="/orders/list" class="nav-link">
-                      <i class="far fa-circle nav-icon"></i>
-                      <p>查詢全部訂單</p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="/shipment/list" class="nav-link">
-                      <i class="far fa-circle nav-icon"></i>
-                      <p>物流查詢</p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="/ordersItem/list" class="nav-link">
-                      <i class="far fa-circle nav-icon"></i>
-                      <p>查詢全部訂單明細</p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="/Cart/shopping" class="nav-link">
-                      <i class="far fa-circle nav-icon"></i>
-                      <p>新增訂單</p>
-                    </a>
-                  </li>
-                </ul>
-              </li>
-
-              <!-- 預約管理 (目前所在區域) -->
-              <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="nav-icon fas fa-edit"></i>
-                  <p>預約管理 <i class="right fas fa-angle-left"></i></p
-                ></a>
-                <ul class="nav nav-treeview">
-                  <li class="nav-item">
-                    <a href="GetAllDailySchedules.html" class="nav-link">
-                      <i class="far fa-circle nav-icon"></i>
-                      <p>班表總覽</p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="GetAllAppointments.html" class="nav-link">
-                      <i class="far fa-circle nav-icon"></i>
-                      <p>預約訂單列表</p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="GetAllAppointmentDetails.html" class="nav-link">
-                      <i class="far fa-circle nav-icon"></i>
-                      <p>預約明細</p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="GetAllServiceItems.html" class="nav-link">
-                      <i class="far fa-circle nav-icon"></i>
-                      <p>服務項目</p>
-                    </a>
-                  </li>
-                </ul>
-              </li>
-
-              <!-- 人員管理 -->
-              <li class="nav-item">
-                <a href="#" class="nav-link"
-                  ><i class="nav-icon fas fa-edit"></i>
-                  <p>人員管理 <i class="right fas fa-angle-left"></i></p>
-                </a>
-                <ul class="nav nav-treeview">
-                  <li class="nav-item">
-                    <a href="GetAllGroomers.html" class="nav-link"
-                      ><i class="far fa-circle nav-icon"></i>
-                      <p>美容師列表</p></a
-                    >
-                  </li>
-                  <li class="nav-item">
-                    <a href="GetAllLeaveRecords.html" class="nav-link"
-                      ><i class="far fa-circle nav-icon"></i>
-                      <p>休假審核</p></a
-                    >
-                  </li>
-                </ul>
-              </li>
-            </ul>
-          </nav>
-        </div>
-      </aside>
 
       <!-- Content Wrapper: 主要內容區塊 -->
       <div class="content-wrapper">
@@ -731,6 +528,7 @@
     ></script>
     <script src="../../dist/js/adminAuth.js"></script>
     <script src="../../dist/js/adminlte.min.js"></script>
+    <script src="../../dist/js/admin-layout.js"></script>
     <!-- SweetAlert2 -->
     <script src="../../plugins/sweetalert2/sweetalert2.min.js"></script>
 
