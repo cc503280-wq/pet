@@ -228,7 +228,11 @@
    			<artifactId>spring-boot-starter-cache</artifactId>
 		</dependency>
 		
-	
+		<!--MongoDB for Audit Logging (操作日誌) -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-mongodb</artifactId>
+		</dependency>
 		
 		<!--Spring Security-->
 		<dependency>

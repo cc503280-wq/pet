@@ -22,6 +22,7 @@ import com.pet.model.appointment.LeaveRecoredGroomerView;
 import com.pet.service.appointment.GroomerService;
 import lombok.extern.slf4j.Slf4j;
 
+
 /**
  * GroomerController: 處理「美容師」相關 API
  * 包含：登入/登出、資料 CRUD、搜尋、以及「請假單」的管理
@@ -39,42 +40,7 @@ public class GroomerController {
 	public List<Groomer> getAllGroomer() {
 		return groomerService.getAllGroomer();
 	}
-	
 
-	//登入登出應該另外寫在一個Controller
-    // 美容師登入 (Authentication)
-	@PostMapping("/login") // POST /groomers/login
-	public ResponseEntity<?> login(@RequestBody java.util.Map<String, String> credentials) {
-		String email = credentials.get("email");
-		String password = credentials.get("password");
-		
-		if (email == null || password == null) {
-			return ResponseEntity.badRequest().body("Email 和密碼不能為空");
-		}
-		
-		try {
-            // 呼叫 Service 驗證帳密 (含 BCrypt 比對)
-			Groomer groomer = groomerService.groomerLogin(email, password);
-			if (groomer != null) {
-				return ResponseEntity.ok(groomer);
-			} else {
-				return ResponseEntity.status(401).body("帳號或密碼錯誤");
-			}
-		} catch (RuntimeException e) {
-			if ("ACCOUNT_DISABLED".equals(e.getMessage())) {
-				return ResponseEntity.status(403).body("帳號已被停用，無法登入");
-			}
-			throw e;
-		}
-	}
-	
-    // 美容師登出
-	@PostMapping("/logout") // POST /groomers/logout
-	public ResponseEntity<?> logout(@RequestBody java.util.Map<String, Object> payload) {
-		// 前端使用 Pinia 管理登入狀態，這裡僅做紀錄
-		log.info("美容師登出: {}", payload.get("groomerId"));
-		return ResponseEntity.ok().body("{\"message\": \"登出成功\"}");
-	}
 	
     // 複合條件搜尋美容師
 	@GetMapping("/search") // GET /groomers/search

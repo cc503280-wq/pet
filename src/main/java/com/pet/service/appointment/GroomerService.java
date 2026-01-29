@@ -70,7 +70,6 @@ public class GroomerService {
 		
 		// 驗證密碼 (比對明碼與雜湊後的密碼)
 		if (groomer.getPassword() != null && BCrypt.checkpw(password, groomer.getPassword())) {
-			log.info("美容師 {} 登入成功", groomer.getGroomerId());
 			return groomer;
 		}
 		

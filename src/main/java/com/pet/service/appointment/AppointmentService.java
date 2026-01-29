@@ -136,8 +136,8 @@ public class AppointmentService {
        // 發送 WebSocket 通知給會員
         messagingTemplate.convertAndSend("/topic/member/" + memberId + "/appointments", (Object) message);
     	
-        //FIXME:記得改回來
-        //sendCompletionNotifications(appointment);
+       //FIMXE:數量有限 
+       //sendCompletionNotifications(appointment);
     	
         return updateStatus(appointment, AppConstants.APPOINTMENT_STATUS_COMPLETED,
                 appt -> log.info("預約單號：{} 服務完成", appt.getAppointmentId()));
@@ -280,8 +280,8 @@ public class AppointmentService {
                         ? appointment.getGroomer().getGroomerName()
                         : "Unknown";
                 log.info("偵測到臨時取消 (< {} 小時)。觸發 LINE 通知...", URGENT_CANCEL_HOURS_THRESHOLD);
-                //TODO:等等需要再打開通知，目前先取消
-                //lineNotificationService.sendCancellationNotification(appointment, groomerName);
+                
+                lineNotificationService.sendCancellationNotification(appointment, groomerName);
             } else {
                 log.info("取消時間在 {} 小時之前。不觸發通知。", URGENT_CANCEL_HOURS_THRESHOLD);
             }

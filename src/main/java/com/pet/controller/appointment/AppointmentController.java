@@ -25,6 +25,8 @@ import com.pet.util.LoginUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import com.pet.annotation.LogAction;
+
 /**
  * AppointmentController: 負責處理所有與「預約」相關的 HTTP 請求
  * 包含：前台預約、後台管理列表、搜尋、狀態變更(取消/完成/報到)
@@ -166,17 +168,25 @@ public class AppointmentController {
         appointmentService.cancelAppointment(appointmentId);
         return ResponseEntity.ok(ApiResponse.success("取消成功"));
     }
-
+    
+    @LogAction(actionType = "COMPLETE", description = "完成美容服務")
     @PatchMapping("/complete/{id}")
     public ResponseEntity<ApiResponse> completeAppointment(@PathVariable Integer id) {
-        appointmentService.completeAppointment(id);
-        return ResponseEntity.ok(ApiResponse.success("預約已完成"));
+        // 🛡️ 安全性改進：不再從前端接收 groomerId（改從 Session 取得）
+        Appointment appointment = appointmentService.completeAppointment(id);
+        log.info("預約 {} 完成", id);
+        // ⚡ 效能優化：回傳 Appointment 物件供 AOP 使用
+        return ResponseEntity.ok(ApiResponse.success("預約已完成", appointment));
     }
 
+    @LogAction(actionType = "CHECK_IN", description = "會員到店報到")
     @PatchMapping("/check-in/{id}")
     public ResponseEntity<ApiResponse> checkInAppointment(@PathVariable Integer id) {
-        appointmentService.checkInAppointment(id);
-        return ResponseEntity.ok(ApiResponse.success("報到成功"));
+        // 🛡️ 安全性改進：不再從前端接收 groomerId（改從 Session 取得）
+        Appointment appointment = appointmentService.checkInAppointment(id);
+        log.info("預約 {} 報到", id);
+        // ⚡ 效能優化：回傳 Appointment 物件供 AOP 使用
+        return ResponseEntity.ok(ApiResponse.success("報到成功", appointment));
     }
 
 }
