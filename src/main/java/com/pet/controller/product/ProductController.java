@@ -1,10 +1,14 @@
 package com.pet.controller.product;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,6 +16,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -152,6 +157,30 @@ public class ProductController {
 			return ResponseEntity.badRequest().body("更新失敗: " + e.getMessage());
 		}
 	}
+	
+	@GetMapping("/stats")
+	@ResponseBody // 確保回傳 JSON
+	public Map<String, Object> getProductStats() {
+	    Map<String, Object> response = new HashMap<>();
+
+	    // 1. 庫存告急 (stock < 10 的前 5 名)
+	    // 這裡應該呼叫 Service -> Repository 查詢
+	    // 模擬數據：
+	    Map<String, Object> lowStock = new HashMap<>();
+	    lowStock.put("labels", Arrays.asList("特級貓罐頭", "狗狗潔牙骨", "貓抓板", "餵食器", "貓草"));
+	    lowStock.put("data", Arrays.asList(2, 5, 0, 1, 8));
+	    
+	    // 2. 分類統計
+	    // 模擬數據：
+	    Map<String, Object> categories = new HashMap<>();
+	    categories.put("labels", Arrays.asList("貓食", "狗食", "玩具", "保健品"));
+	    categories.put("data", Arrays.asList(120, 80, 45, 30));
+
+	    response.put("lowStock", lowStock);
+	    response.put("categories", categories);
+
+	    return response;
+	}
 
 	// 給前台用的 API：只抓上架商品
 	@GetMapping("/store/all")
@@ -177,6 +206,11 @@ public class ProductController {
 	    // Controller 只需要把 memberId (可能是 null) 傳給 Service
 	    // Service 會自己判斷是訪客還是會員
 	    return ResponseEntity.ok(pService.getRecommendations(memberId));
+	}
+	@GetMapping("/best-sellers")
+	public ResponseEntity<List<Product>> getBestSellers() {
+	    List<Product> list = pService.getBestSellers();
+	    return ResponseEntity.ok(list);
 	}
 	
 }

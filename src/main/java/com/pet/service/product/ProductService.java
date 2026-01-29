@@ -413,5 +413,8 @@ public class ProductService {
 	    return result;
 	} 
 	
-	
+	public List<Product> getBestSellers() {
+	    // PageRequest.of(0, 8) 代表取第 0 頁，共 8 筆 (即前 8 名)
+	    return pRepos.findBestSellers(PageRequest.of(0, 8));
+	}
 }
