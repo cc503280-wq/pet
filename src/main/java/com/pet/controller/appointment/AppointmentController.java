@@ -189,4 +189,12 @@ public class AppointmentController {
         return ResponseEntity.ok(ApiResponse.success("報到成功", appointment));
     }
 
+    @LogAction(actionType = "START", description = "開始美容服務")
+    @PatchMapping("/start/{id}")
+    public ResponseEntity<ApiResponse> startAppointment(@PathVariable Integer id) {
+        Appointment appointment = appointmentService.startAppointment(id);
+        log.info("預約 {} 開始服務", id);
+        return ResponseEntity.ok(ApiResponse.success("開始服務", appointment));
+    }
+
 }
