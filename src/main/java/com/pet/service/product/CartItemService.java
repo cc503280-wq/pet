@@ -16,12 +16,13 @@ import com.pet.dao.product.ProductRepository;
 import com.pet.model.member.Member;
 import com.pet.model.product.CartItem;
 import com.pet.model.product.Product;
+import com.pet.aspect.LogAction;
 
 @Service
 @Transactional
 public class CartItemService {
-	
-	@Autowired
+
+    @Autowired
     private CartItemRepository cartRepos;
 
     @Autowired
@@ -33,7 +34,9 @@ public class CartItemService {
     /**
      * 邏輯：如果車裡已經有，就加數量；如果沒有，就新增一筆。
      */
+    @LogAction(type = LogAction.ActionType.CART) // [AOP] 紀錄加購物車
     public void addToCart(Integer memberId, Integer productId, Integer quantity) {
+
         // 1. 檢查商品是否存在 (防止 ID 亂傳)
         Product product = productRepos.findById(productId)
                 .orElseThrow(() -> new RuntimeException("找不到商品 ID: " + productId));
@@ -45,14 +48,14 @@ public class CartItemService {
             // A. 【已存在】：更新數量
             CartItem existingItem = existingItemOpt.get();
             int newQuantity = existingItem.getQuantity() + quantity;
-            
+
             // 檢查庫存
             if (newQuantity > product.getStock()) {
-                 throw new RuntimeException("庫存不足！目前剩餘: " + product.getStock());
+                throw new RuntimeException("庫存不足！目前剩餘: " + product.getStock());
             }
 
             existingItem.setQuantity(newQuantity);
-            
+
             existingItem.setPriceAtAdded(BigDecimal.valueOf(product.getPrice()));
             // JPA 有 Dirty Checking 機制，其實這裡不 call save 也會更新，但寫出來比較明確
             cartRepos.save(existingItem);
@@ -67,7 +70,7 @@ public class CartItemService {
             newItem.setMember(member);
             newItem.setProduct(product);
             newItem.setQuantity(quantity);
-            
+
             // 🔥【修正點】：這裡原本被註解掉了，現在打開並加上轉型
             if (product.getPrice() != null) {
                 newItem.setPriceAtAdded(BigDecimal.valueOf(product.getPrice()));
@@ -84,24 +87,24 @@ public class CartItemService {
      * 📋 查詢某人的購物車清單
      */
     public List<CartItemResponse> getMyCart(Integer memberId) {
-        
+
         // 🔥 1. 把嚴謹檢查搬進來
         if (memberId == null) {
             throw new IllegalArgumentException("會員 ID 不能為空");
         }
-        
+
         boolean exists = memberRepos.existsById(memberId);
         if (!exists) {
             // 建議拋出自定義異常，讓全域異常處理器捕捉
-            throw new RuntimeException("查無此會員"); 
+            throw new RuntimeException("查無此會員");
         }
 
         // 2. 撈資料
         List<CartItem> cartItems = cartRepos.findByMember_MemberId(memberId);
-        
+
         // 3. 轉換 DTO (在這裡做最安全)
         List<CartItemResponse> responseList = new ArrayList<>();
-        
+
         for (CartItem item : cartItems) {
             CartItemResponse dto = new CartItemResponse();
             dto.setCartItemId(item.getCartItemId());
@@ -111,13 +114,13 @@ public class CartItemService {
             dto.setPrice(item.getProduct().getPrice());
             dto.setQuantity(item.getQuantity());
             dto.setStock(item.getProduct().getStock());
-            
+
             // 計算小計的邏輯放在 Service 是最正確的
             dto.setSubtotal(item.getProduct().getPrice() * item.getQuantity());
-            
+
             responseList.add(dto);
         }
-        
+
         return responseList;
     }
 
@@ -127,7 +130,7 @@ public class CartItemService {
     public void updateQuantity(Integer memberId, Integer productId, Integer newQuantity) {
         CartItem item = cartRepos.findByMember_MemberIdAndProduct_ProductId(memberId, productId)
                 .orElseThrow(() -> new RuntimeException("購物車找不到該商品"));
-        
+
         if (newQuantity <= 0) {
             // 如果數量改為 0 或負數，視為刪除
             cartRepos.delete(item);
@@ -140,10 +143,11 @@ public class CartItemService {
     /**
      * 🗑️ 移除購物車項目
      */
+    @LogAction(type = LogAction.ActionType.CART)
     public void removeFromCart(Integer memberId, Integer productId) {
         cartRepos.deleteByMember_MemberIdAndProduct_ProductId(memberId, productId);
     }
-    
+
     /**
      * 🧹 清空購物車 (結帳後用)
      */

@@ -14,6 +14,7 @@ import com.pet.service.appointment.GroomerService;
 import com.pet.service.appointment.ServiceItemService;
 import com.pet.service.product.ProductService;
 import com.pet.service.member.CouponService;
+import com.pet.service.appointment.AppointmentService; // 新增 AppointmentService
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -50,7 +51,9 @@ public class AIService {
     @Autowired
     private GroomerService groomerService;
     @Autowired
-    private com.pet.service.order.OrderService orderService; // 新增 OrderService
+    private com.pet.service.order.OrderService orderService;
+    @Autowired
+    private AppointmentService appointmentService; // 新增 AppointmentService 注入
 
     // --- 關鍵字定義 (同義詞庫) ---
     private static final List<String> PRODUCT_KEYWORDS = List.of("買", "推薦", "飼料", "罐頭", "貓砂", "玩具", "多少錢", "價格", "費用",
@@ -61,6 +64,8 @@ public class AIService {
             "salon");
     private static final List<String> ORDER_KEYWORDS = List.of("訂單", "進度", "出貨", "包裹", "order", "status", "track",
             "shipping", "history");
+    private static final List<String> APPOINTMENT_KEYWORDS = List.of("預約紀錄", "美容紀錄", "我的預約", "查詢預約",
+            "appointment history", "booking status"); // 新增關鍵字
 
     /**
      * 呼叫 Gemini API
@@ -183,6 +188,28 @@ public class AIService {
                 contextBuilder.append("【系統提示】: 使用者詢問訂單，但目前似乎未登入或無法取得身分，請引導他登入後再試。\n\n");
             }
 
+            // E. 美容預約查詢 (新增功能)
+            if (memberId != null && containsAny(lowerMsg, APPOINTMENT_KEYWORDS)) {
+                List<com.pet.model.appointment.AppointmentList> appointments = appointmentService
+                        .getAppointmentsByMemberId(memberId);
+
+                if (appointments != null && !appointments.isEmpty()) {
+                    // 這邊取「未來」或「最近」的預約比較有意義，這邊簡單做：依照日期排序 (新->舊) 取前 3 筆
+                    String apptInfo = appointments.stream()
+                            .sorted((a1, a2) -> a2.getAppointmentDate().compareTo(a1.getAppointmentDate()))
+                            .limit(3)
+                            .map(a -> String.format("- %s %s (%s) 寵物:%s 美容師:%s (狀態:%s)",
+                                    a.getAppointmentDate(), a.getStartTime(), a.getMainService(),
+                                    a.getPetName(), a.getGroomerName(), a.getAppointmentStatus()))
+                            .collect(Collectors.joining("\n"));
+                    contextBuilder.append("【您最近的美容預約紀錄 (僅本人可見)】:\n").append(apptInfo).append("\n\n");
+                } else {
+                    contextBuilder.append("【預約查詢結果】: 您目前沒有美容預約紀錄。\n\n");
+                }
+            } else if (memberId == null && containsAny(lowerMsg, APPOINTMENT_KEYWORDS)) {
+                contextBuilder.append("【系統提示】: 使用者詢問預約紀錄，但未登入，請引導登入。\n\n");
+            }
+
             // 3. 組合 System Prompt
             String systemPrompt = String.format("""
                     你是寵物電商『MaoMaoLand』的智能客服 AI 助理。請用繁體中文、親切可愛的語氣(🐶, 🐱)回答。
@@ -196,9 +223,9 @@ public class AIService {
                          💰 [價格/折扣]：[...]
                          ✨ [說明]：[...]
                          -------------------
-                         (圖示參考: 美容✂️, 商品🐶, 優惠🎫, 美容師💇, 訂單📦)
+                         (圖示參考: 美容✂️, 商品🐶, 優惠🎫, 美容師💇, 訂單📦, 預約📅)
                     3. **合併邏輯**：相同服務不同價格請合併顯示 (例如: $500 - $1200)。
-                    4. **訂單查詢**：若上方有提供訂單資料，請整理給使用者；若無資料請誠實告知。
+                    4. **訂單/預約查詢**：若上方有提供資料，請整理給使用者；若無資料請誠實告知。
 
                     【網站基礎規範】：
                     1. 免運政策：消費滿 $1,000 即享免運。
@@ -209,7 +236,7 @@ public class AIService {
 
                     【回答守則】：
                     1. 優先根據上方資訊卡回答。
-                    2. 若商品沒庫存/查無訂單，請誠實告知。
+                    2. 若商品沒庫存/查無紀錄，請誠實告知。
                     3. 若無法解決，請引導輸入『真人客服』。
                     4. 通用寵物知識可直接回答。
 
