@@ -6,10 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>新增會員 | 管理中心</title>
 
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <link rel="stylesheet" href="../../plugins/fontawesome-free/css/all.min.css">
     <link rel="stylesheet" href="../../dist/css/adminlte.min.css">
-    
+
     <link rel="stylesheet" href="../../plugins/select2/css/select2.min.css">
     <link rel="stylesheet" href="../../plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
     <link rel="stylesheet" href="../../plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
@@ -29,7 +30,7 @@
             max-width: 1000px;
             margin: 0 auto;
         }
-        
+
         .input-group-text {
             background-color: #f4f6f9;
             border-color: #ced4da;
@@ -39,32 +40,39 @@
         }
 
         /* 輸入框聚焦時的顏色 */
-        .form-control:focus + .input-group-append .input-group-text, 
-        .form-control:focus ~ .input-group-prepend .input-group-text,
-        .custom-file-input:focus ~ .custom-file-label {
+        .form-control:focus+.input-group-append .input-group-text,
+        .form-control:focus~.input-group-prepend .input-group-text,
+        .custom-file-input:focus~.custom-file-label {
             border-color: #be8754;
             color: #be8754;
         }
-        
+
         .select2-container .select2-selection--single {
             height: calc(2.5rem + 2px) !important;
         }
 
         /* --- 關鍵修復：強制給日曆選單加上背景色，解決「數字飄浮」問題 --- */
         .bootstrap-datetimepicker-widget.dropdown-menu {
-            background-color: #fff !important; /* 強制白底 */
-            border: 1px solid #ced4da;        /* 加上邊框 */
-            border-radius: 0.25rem;           /* 圓角 */
-            padding: 10px;                    /* 內距 */
-            width: auto !important;           /* 寬度自動 */
-            z-index: 9999 !important;         /* 確保浮在最上層 */
+            background-color: #fff !important;
+            /* 強制白底 */
+            border: 1px solid #ced4da;
+            /* 加上邊框 */
+            border-radius: 0.25rem;
+            /* 圓角 */
+            padding: 10px;
+            /* 內距 */
+            width: auto !important;
+            /* 寬度自動 */
+            z-index: 9999 !important;
+            /* 確保浮在最上層 */
         }
-        
+
         .bootstrap-datetimepicker-widget table td,
         .bootstrap-datetimepicker-widget table th {
-            color: #333; /* 確保文字顏色 */
+            color: #333;
+            /* 確保文字顏色 */
         }
-        
+
         /* 讓左邊的圖示變成手指游標，提示可點擊 */
         .input-group-prepend[data-toggle="datetimepicker"] {
             cursor: pointer;
@@ -74,7 +82,7 @@
 
 <body class="hold-transition sidebar-mini sidebar-collapse">
     <div class="wrapper">
-        
+
         <div class="content-wrapper">
             <section class="content-header">
                 <div class="container-fluid">
@@ -91,27 +99,33 @@
 
             <section class="content">
                 <div class="container-fluid">
-                    <div class="row justify-content-center"> 
+                    <div class="row justify-content-center">
                         <div class="col-md-10 form-container">
-                            
+
                             <div class="card card-outline card-primary shadow-lg">
                                 <div class="card-header">
                                     <h3 class="card-title" style="font-weight: 700;">
                                         <i class="fas fa-user-plus mr-2" style="color: #be8754;"></i>請填寫資料
+                                        <button type="button" class="btn btn-sm btn-link text-muted p-0 ml-2"
+                                            onclick="demoFill()" style="font-size: 0.8rem; opacity: 0.5;">
+                                            (Demo)
+                                        </button>
                                     </h3>
                                 </div>
-                                
+
                                 <form id="createMemberForm" class="form-horizontal" enctype="multipart/form-data">
                                     <div class="card-body">
-                                        
+
                                         <div class="form-group row">
                                             <label for="name" class="col-sm-2 col-form-label text-right">姓名</label>
                                             <div class="col-sm-9">
                                                 <div class="input-group">
                                                     <div class="input-group-prepend">
-                                                        <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                                        <span class="input-group-text"><i
+                                                                class="fas fa-user"></i></span>
                                                     </div>
-                                                    <input type="text" class="form-control" id="name" placeholder="請輸入姓名" autocomplete="off">
+                                                    <input type="text" class="form-control" id="name"
+                                                        placeholder="請輸入姓名" autocomplete="off">
                                                 </div>
                                             </div>
                                         </div>
@@ -121,9 +135,11 @@
                                             <div class="col-sm-9">
                                                 <div class="input-group">
                                                     <div class="input-group-prepend">
-                                                        <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                                        <span class="input-group-text"><i
+                                                                class="fas fa-envelope"></i></span>
                                                     </div>
-                                                    <input type="email" class="form-control" id="email" placeholder="example@mail.com" autocomplete="off">
+                                                    <input type="email" class="form-control" id="email"
+                                                        placeholder="example@mail.com" autocomplete="off">
                                                 </div>
                                             </div>
                                         </div>
@@ -133,9 +149,11 @@
                                             <div class="col-sm-9">
                                                 <div class="input-group">
                                                     <div class="input-group-prepend">
-                                                        <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                                        <span class="input-group-text"><i
+                                                                class="fas fa-lock"></i></span>
                                                     </div>
-                                                    <input type="password" class="form-control" id="password" placeholder="8碼以上，需含英文與數字" autocomplete="off">
+                                                    <input type="password" class="form-control" id="password"
+                                                        placeholder="8碼以上，需含英文與數字" autocomplete="off">
                                                 </div>
                                             </div>
                                         </div>
@@ -153,11 +171,17 @@
                                         <div class="form-group row">
                                             <label for="birthday" class="col-sm-2 col-form-label text-right">生日</label>
                                             <div class="col-sm-9">
-                                                <div class="input-group date" id="reservationdate" data-target-input="nearest">
-                                                    <div class="input-group-prepend" data-target="#reservationdate" data-toggle="datetimepicker">
-                                                        <div class="input-group-text"><i class="fas fa-calendar"></i></div>
+                                                <div class="input-group date" id="reservationdate"
+                                                    data-target-input="nearest">
+                                                    <div class="input-group-prepend" data-target="#reservationdate"
+                                                        data-toggle="datetimepicker">
+                                                        <div class="input-group-text"><i class="fas fa-calendar"></i>
+                                                        </div>
                                                     </div>
-                                                    <input type="text" class="form-control datetimepicker-input" id="birthday" data-target="#reservationdate" data-toggle="datetimepicker" placeholder="YYYY-MM-DD" autocomplete="off"/>
+                                                    <input type="text" class="form-control datetimepicker-input"
+                                                        id="birthday" data-target="#reservationdate"
+                                                        data-toggle="datetimepicker" placeholder="YYYY-MM-DD"
+                                                        autocomplete="off" />
                                                 </div>
                                             </div>
                                         </div>
@@ -167,9 +191,11 @@
                                             <div class="col-sm-9">
                                                 <div class="input-group">
                                                     <div class="input-group-prepend">
-                                                        <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                                        <span class="input-group-text"><i
+                                                                class="fas fa-phone"></i></span>
                                                     </div>
-                                                    <input type="text" class="form-control" id="phone" placeholder="09xx-xxx-xxx" autocomplete="off">
+                                                    <input type="text" class="form-control" id="phone"
+                                                        placeholder="09xx-xxx-xxx" autocomplete="off">
                                                 </div>
                                             </div>
                                         </div>
@@ -179,9 +205,11 @@
                                             <div class="col-sm-9">
                                                 <div class="input-group">
                                                     <div class="input-group-prepend">
-                                                        <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                                                        <span class="input-group-text"><i
+                                                                class="fas fa-map-marker-alt"></i></span>
                                                     </div>
-                                                    <input type="text" class="form-control" id="address" placeholder="請輸入地址" autocomplete="off">
+                                                    <input type="text" class="form-control" id="address"
+                                                        placeholder="請輸入地址" autocomplete="off">
                                                 </div>
                                             </div>
                                         </div>
@@ -191,7 +219,8 @@
                                             <div class="col-sm-9">
                                                 <div class="input-group">
                                                     <div class="custom-file">
-                                                        <input type="file" class="custom-file-input" id="picture" name="pictureFile" accept="image/*">
+                                                        <input type="file" class="custom-file-input" id="picture"
+                                                            name="pictureFile" accept="image/*">
                                                         <label class="custom-file-label" for="picture">選擇檔案...</label>
                                                     </div>
                                                     <div class="input-group-append">
@@ -202,20 +231,20 @@
                                         </div>
 
                                     </div>
-                                    
+
                                     <div class="card-footer d-flex justify-content-center pt-4 pb-4">
                                         <button type="submit" class="btn btn-theme-action px-5 mr-3">
                                             <i class="fas fa-save mr-1"></i> 確認新增
                                         </button>
-                                        
+
                                         <button type="reset" class="btn btn-default px-5">
                                             <i class="fas fa-undo mr-1"></i> 清除重填
                                         </button>
                                     </div>
-                                    
+
                                 </form>
                             </div>
-                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -228,128 +257,173 @@
     <script src="../../plugins/select2/js/select2.full.min.js"></script>
     <script src="../../plugins/moment/moment.min.js"></script>
     <script src="../../plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
-    
+
     <script src="../../dist/js/adminlte.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 
     <script src="../../dist/js/admin-layout.js"></script>
 
     <script>
-    $(function () {
-        // 初始化 Select2
-        $('.select2').select2({
-            theme: 'bootstrap4',
-            minimumResultsForSearch: Infinity
-        });
-
-        // 初始化 DatePicker
-        $('#reservationdate').datetimepicker({
-            format: 'YYYY-MM-DD',
-            useCurrent: false,
-            maxDate: moment(),
-            icons: { time: 'far fa-clock', date: 'far fa-calendar', up: 'fas fa-arrow-up', down: 'fas fa-arrow-down', previous: 'fas fa-chevron-left', next: 'fas fa-chevron-right', today: 'fas fa-calendar-check', clear: 'fas fa-trash', close: 'fas fa-times' }
-        });
-
-        // 檔案上傳名稱顯示
-        $('.custom-file-input').on('change', function (e) {
-            var fileName = e.target.files[0] ? e.target.files[0].name : "選擇檔案...";
-            $(this).next('.custom-file-label').html(fileName);
-        });
-
-        // 驗證函式
-        function isValidEmail(email) {
-            const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return regex.test(email);
-        }
-
-        function validatePassword(pwd) {
-            if (pwd.length < 8) {
-                Swal.fire('密碼太短', '密碼不得小於 8 碼', 'warning');
-                return false;
-            }
-            if (!/[0-9]/.test(pwd)) {
-                Swal.fire('密碼過於簡單', '密碼必須包含數字', 'warning');
-                return false;
-            }
-            if (!/[A-Za-z]/.test(pwd)) {
-                Swal.fire('密碼過於簡單', '密碼必須包含英文字母', 'warning');
-                return false;
-            }
-            return true;
-        }
-
-        // 表單提交事件
-        $('#createMemberForm').on('submit', function (e) {
-            e.preventDefault();
-
-            const name = $('#name').val().trim();
-            const email = $('#email').val().trim();
-            const password = $('#password').val().trim();
-            const phone = $('#phone').val().trim();
-            const address = $('#address').val().trim();
-            const gender = $('#gender').val();
-            const birthday = $('#birthday').val();
-            const pictureFile = $('#picture')[0].files[0];
-
-            // 前端驗證
-            if (!name) { return Swal.fire('欄位未填', '請輸入姓名', 'warning'); }
-            if (!email) { return Swal.fire('欄位未填', '請輸入 Email', 'warning'); }
-            if (!isValidEmail(email)) { return Swal.fire('格式錯誤', 'Email 格式不正確', 'warning'); }
-            if (!password) { return Swal.fire('欄位未填', '請輸入密碼', 'warning'); }
-            if (!validatePassword(password)) { return; }
-
-            // 建立 FormData
-            const formData = new FormData();
-            formData.append('name', name);
-            formData.append('email', email);
-            formData.append('password', password);
-            formData.append('phone', phone);
-            formData.append('address', address);
-            formData.append('gender', gender);
-            formData.append('birthday', birthday);
-            
-            if (pictureFile) {
-                formData.append('pictureFile', pictureFile);
-            }
-
-            // 發送請求
-            Swal.fire({
-                title: '新增中...',
-                text: '正在上傳資料，請稍候',
-                allowOutsideClick: false,
-                didOpen: () => { Swal.showLoading(); }
+        $(function () {
+            // 初始化 Select2
+            $('.select2').select2({
+                theme: 'bootstrap4',
+                minimumResultsForSearch: Infinity
             });
 
-            $.ajax({
-                url: '/members',
-                type: 'POST',
-                data: formData,
-                contentType: false,
-                processData: false,
-                success: function (res) {
-                    sessionStorage.setItem('newMember', JSON.stringify(res));
-                    
-                    Swal.fire({
-                        icon: 'success',
-                        title: '新增成功！',
-                        text: '即將跳轉至完成頁面',
-                        timer: 1500,
-                        showConfirmButton: false
-                    }).then(() => {
-                        window.location.href = 'MemberCreateDone.html';
-                    });
-                },
-                error: function (xhr) {
-                    let msg = '新增失敗，請稍後再試';
-                    if(xhr.status === 409) msg = '該 Email 已被註冊';
-                    Swal.fire('新增失敗', msg, 'error');
+            window.demoFill = async function () {
+                // 基礎資料
+                $('#name').val('王小明');
+                $('#email').val('demo_member@gmail.com');
+                $('#password').val('member1234');
+                $('#phone').val('0987-654-321');
+                $('#address').val('台北市信義區信義路五段7號');
+                $('#gender').val('M').trigger('change');
+                $('#birthday').val('1995-10-10');
+
+                // 視覺效果 - 觸發 Focus 動畫
+                $('#name, #email, #password, #phone, #address, #birthday').focus().blur();
+
+                // 圖片自動帶入 (模擬檔案選擇)
+                try {
+                    // 使用專案內既有的預設圖檔 (AdminLTE 範例圖)
+                    const response = await fetch('../../dist/img/user4-128x128.jpg');
+                    const blob = await response.blob();
+                    // 建立假的 File 物件
+                    const file = new File([blob], "demo_avatar.jpg", { type: "image/jpeg" });
+
+                    // 使用 DataTransfer 模擬檔案拖曳/選擇行為
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(file);
+
+                    const fileInput = document.getElementById('picture');
+                    fileInput.files = dataTransfer.files;
+
+                    // 更新 Label 文字 (這是原本 change 事件做的事，手動觸發一下)
+                    $(fileInput).next('.custom-file-label').html("demo_avatar.jpg");
+
+                } catch (error) {
+                    console.warn("Demo 圖片載入失敗，可能是路徑問題", error);
                 }
+
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'info',
+                    title: '已帶入 Demo 資料 (含頭像)',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            };
+
+            // 初始化 DatePicker
+            $('#reservationdate').datetimepicker({
+                format: 'YYYY-MM-DD',
+                useCurrent: false,
+                maxDate: moment(),
+                icons: { time: 'far fa-clock', date: 'far fa-calendar', up: 'fas fa-arrow-up', down: 'fas fa-arrow-down', previous: 'fas fa-chevron-left', next: 'fas fa-chevron-right', today: 'fas fa-calendar-check', clear: 'fas fa-trash', close: 'fas fa-times' }
+            });
+
+            // 檔案上傳名稱顯示
+            $('.custom-file-input').on('change', function (e) {
+                var fileName = e.target.files[0] ? e.target.files[0].name : "選擇檔案...";
+                $(this).next('.custom-file-label').html(fileName);
+            });
+
+            // 驗證函式
+            function isValidEmail(email) {
+                const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return regex.test(email);
+            }
+
+            function validatePassword(pwd) {
+                if (pwd.length < 8) {
+                    Swal.fire('密碼太短', '密碼不得小於 8 碼', 'warning');
+                    return false;
+                }
+                if (!/[0-9]/.test(pwd)) {
+                    Swal.fire('密碼過於簡單', '密碼必須包含數字', 'warning');
+                    return false;
+                }
+                if (!/[A-Za-z]/.test(pwd)) {
+                    Swal.fire('密碼過於簡單', '密碼必須包含英文字母', 'warning');
+                    return false;
+                }
+                return true;
+            }
+
+            // 表單提交事件
+            $('#createMemberForm').on('submit', function (e) {
+                e.preventDefault();
+
+                const name = $('#name').val().trim();
+                const email = $('#email').val().trim();
+                const password = $('#password').val().trim();
+                const phone = $('#phone').val().trim();
+                const address = $('#address').val().trim();
+                const gender = $('#gender').val();
+                const birthday = $('#birthday').val();
+                const pictureFile = $('#picture')[0].files[0];
+
+                // 前端驗證
+                if (!name) { return Swal.fire('欄位未填', '請輸入姓名', 'warning'); }
+                if (!email) { return Swal.fire('欄位未填', '請輸入 Email', 'warning'); }
+                if (!isValidEmail(email)) { return Swal.fire('格式錯誤', 'Email 格式不正確', 'warning'); }
+                if (!password) { return Swal.fire('欄位未填', '請輸入密碼', 'warning'); }
+                if (!validatePassword(password)) { return; }
+
+                // 建立 FormData
+                const formData = new FormData();
+                formData.append('name', name);
+                formData.append('email', email);
+                formData.append('password', password);
+                formData.append('phone', phone);
+                formData.append('address', address);
+                formData.append('gender', gender);
+                formData.append('birthday', birthday);
+
+                if (pictureFile) {
+                    formData.append('pictureFile', pictureFile);
+                }
+
+                // 發送請求
+                Swal.fire({
+                    title: '新增中...',
+                    text: '正在上傳資料，請稍候',
+                    allowOutsideClick: false,
+                    didOpen: () => { Swal.showLoading(); }
+                });
+
+                $.ajax({
+                    url: '/members',
+                    type: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (res) {
+                        sessionStorage.setItem('newMember', JSON.stringify(res));
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: '新增成功！',
+                            text: '即將跳轉至完成頁面',
+                            timer: 1500,
+                            showConfirmButton: false
+                        }).then(() => {
+                            window.location.href = 'MemberCreateDone.html';
+                        });
+                    },
+                    error: function (xhr) {
+                        let msg = '新增失敗，請稍後再試';
+                        if (xhr.status === 409) msg = '該 Email 已被註冊';
+                        Swal.fire('新增失敗', msg, 'error');
+                    }
+                });
             });
         });
-    });
     </script>
 </body>
 
