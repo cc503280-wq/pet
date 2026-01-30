@@ -64,6 +64,8 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET,"/api/reviews/**").permitAll()
                 //FIXME: 允許未登入查看優惠券
                 .requestMatchers("/shop/coupons/active").permitAll() // 允許未登入查看優惠券
+                .requestMatchers("/shop/checkout/callback").permitAll()//允許綠界金流回調 (Callback) 不需要登入
+                .requestMatchers("/shop/checkout/map_callback").permitAll()//允許綠界地圖回調 (Callback) 不需要登入
                 .requestMatchers("/cart/**").authenticated() // 購物車必須登入
                 .anyRequest().authenticated() // 其他 /shop 下的所有請求都要登入
             )

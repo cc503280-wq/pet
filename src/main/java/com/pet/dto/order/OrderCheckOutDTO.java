@@ -31,6 +31,8 @@ public class OrderCheckOutDTO {
     // 對應前端: shippingMethod
     private String shippingMethod;
     
+    private String paymentMethod;
+    
     // 對應前端: totalAmount
     // 注意：雖然前端有傳總金額，但後端通常只用來比對，實際金額應由後端重算
     private Integer totalAmount;
