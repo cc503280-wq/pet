@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -148,9 +148,16 @@
                       <div>
                         <!-- 新增 + 查看班表 -->
                         <!-- 連結到後端 Controller /appointments/insert 回傳 HTML -->
+                         <button
+                          type="button"
+                          class="btn btn-primary btn-sm shadow-sm"
+                          onclick="openScanModal()"
+                        >
+                          <i class="fas fa-qrcode"></i> 掃描報到
+                        </button>
                         <a
                           href="/admin/appointments/insert"
-                          class="btn btn-success btn-sm shadow-sm"
+                          class="btn btn-success btn-sm shadow-sm ml-2"
                         >
                           <i class="fas fa-plus"></i> 新增預約
                         </a>
@@ -270,6 +277,7 @@
                           <th>預約日期</th>
                           <th>開始時間</th>
                           <th>預約狀態</th>
+                          <th>付款狀態</th>
                           <th>建立時間</th>
                           <th class="text-center">操作</th>
                         </tr>
@@ -294,6 +302,78 @@
         >
         All rights reserved.
       </footer>
+    </div>
+
+    <!-- Modal: QR Code Scanner -->
+    <div class="modal fade" id="scanModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title font-weight-bold">掃描報到</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-center">
+                    <div id="reader" style="width: 100%;"></div>
+                    <p class="text-muted mt-2">請將 QR Code 對準鏡頭</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Payment Check-in Confirmation -->
+    <div class="modal fade" id="checkInModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title font-weight-bold">報到與付款確認</h5>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-check-circle text-success" style="font-size: 4rem;"></i>
+                        <h4 class="mt-3">確認報到</h4>
+                    </div>
+                    
+                    <div class="card bg-light">
+                        <div class="card-body">
+                            <h5 class="card-title font-weight-bold mb-3">費用詳情</h5>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>預約編號:</span>
+                                <span id="checkin-appt-id" class="font-weight-bold"></span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>會員姓名:</span>
+                                <span id="checkin-member-name"></span>
+                            </div>
+                             <div class="d-flex justify-content-between mb-2">
+                                <span>服務項目:</span>
+                                <span id="checkin-service"></span>
+                            </div>
+                            <hr>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="h5 mb-0">應收金額:</span>
+                                <span class="h3 text-danger font-weight-bold mb-0" id="checkin-price"></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-check mt-3 text-center">
+                        <input class="form-check-input" type="checkbox" id="paymentReceivedCheck">
+                        <label class="form-check-label font-weight-bold" for="paymentReceivedCheck">
+                            我已確認收到款項 (Cash/Credit Card)
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-success px-4" id="btn-confirm-checkin" disabled onclick="submitCheckIn()">確認報到</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Modal: 預約詳情彈窗 -->
@@ -531,6 +611,8 @@
     <script src="../../dist/js/adminAuth.js"></script>
     <script src="../../dist/js/adminlte.min.js"></script>
     <script src="../../dist/js/admin-layout.js"></script>
+    <!-- Html5-QRCode -->
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     <!-- SweetAlert2 -->
     <script src="../../plugins/sweetalert2/sweetalert2.min.js"></script>
 
@@ -547,6 +629,7 @@
         handleDeleteButtonClick(); // 綁定「取消」按鈕
         handleQueryAllButtonClick(); // 綁定「重置」按鈕
         handleBatchSearch(); // 綁定「查詢」按鈕
+        connectWebSocket(); // 啟動 WebSocket 連線
       });
 
       // 全域變數，存放後端回傳的所有資料 (供 Modal 查詢詳情用)
@@ -562,6 +645,7 @@
           lengthChange: false,
           searching: false, // 關閉內建搜尋 (改用自訂的後端搜尋)
           ordering: true,
+          order: [[4, 'desc'], [5, 'asc']], // 預約日期 (index 4) 降序 + 開始時間 (index 5) 升序
           info: true,
           autoWidth: true,
           responsive: true,
@@ -656,6 +740,7 @@
                             <td>${app.appointmentDate}</td>
                             <td>${app.startTime}</td>
                             <td>${app.appointmentStatus}</td>
+                            <td>${getPayStatusBadge(app.payStatus)}</td>
 							<td>${formatDateTime(app.createdAt)}</td>
                             <td class="text-center">
 								<div class="d-flex justify-content-center align-items-center" style="gap: 5px;">
@@ -1143,6 +1228,157 @@
 
       function hideEventTooltip() {
         $("#calendarTooltip").hide();
+      }
+
+      // ============ QR Code & Payment Logic ============
+      let html5QrcodeScanner = null;
+
+    function openScanModal() {
+        $('#scanModal').modal('show');
+    }
+
+    // Initialize Scanner when modal is fully shown (prevents aria-hidden focus issues)
+    $('#scanModal').on('shown.bs.modal', function () {
+        if (!html5QrcodeScanner) {
+            html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
+            html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+        }
+    });
+
+    // Stop Scanner when modal is hidden
+    $('#scanModal').on('hidden.bs.modal', function () {
+        if (html5QrcodeScanner) {
+             html5QrcodeScanner.clear().catch(error => console.error("Failed to clear scanner", error));
+             html5QrcodeScanner = null;
+        }
+    });
+
+    function onScanSuccess(decodedText, decodedResult) {
+        // Stop scanning
+        html5QrcodeScanner.clear();
+        $('#scanModal').modal('hide');
+        html5QrcodeScanner = null;
+
+        // Open Check-in Modal using the scanned ID (Appointment ID)
+        openCheckInModal(decodedText);
+    }
+
+    function onScanFailure(error) {
+        // handle scan failure
+    }
+
+    let currentCheckInId = null;
+
+    function openCheckInModal(appointmentId) {
+        // Find appointment data
+        let appData = allAppointments.find(item => item.appointmentId == appointmentId);
+        
+        if (!appData) {
+            Swal.fire('錯誤', '找不到此預約紀錄! ID:' + appointmentId, 'error');
+            return;
+        }
+
+        if(appData.appointmentStatus !== '預約確認') {
+             Swal.fire('提示', `此預約狀態為「${appData.appointmentStatus}」，無法進行報到操作。`, 'warning');
+             return;
+        }
+
+        currentCheckInId = appointmentId; // Store ID
+        
+        // Fill Modal Data
+        $('#checkin-appt-id').text('#' + appData.appointmentId);
+        $('#checkin-member-name').text(appData.memberName);
+        $('#checkin-service').text(appData.mainService);
+        $('#checkin-price').text('$' + appData.price);
+        
+        // Reset Checkbox & Button
+        $('#paymentReceivedCheck').prop('checked', false);
+        $('#btn-confirm-checkin').prop('disabled', true);
+
+        $('#checkInModal').modal('show');
+    }
+
+    // Listener for Payment Checkbox
+    $('#paymentReceivedCheck').change(function() {
+        if(this.checked) {
+            $('#btn-confirm-checkin').prop('disabled', false);
+        } else {
+             $('#btn-confirm-checkin').prop('disabled', true);
+        }
+    });
+
+    function submitCheckIn() {
+        if(!currentCheckInId) return;
+
+        $.ajax({
+            url: "/appointments/check-in/" + currentCheckInId,
+            type: "PATCH",
+            success: function(response) {
+                $('#checkInModal').modal('hide');
+                Swal.fire({
+                    icon: 'success',
+                    title: '報到成功',
+                    text: '狀態已更新為「進行中」，且標記為「已付款」',
+                    timer: 2000
+                });
+                loadAllAppointments(); // Refresh Table
+            },
+            error: function(xhr) {
+                 Swal.fire('失敗', '報到失敗: ' + xhr.responseText, 'error');
+            }
+        });
+    }
+
+    function getPayStatusBadge(status) {
+        if (status === true) {
+            return '<span class="badge badge-success">已付款</span>';
+        } else {
+             return '<span class="badge badge-warning">未付款</span>';
+        }
+    }
+
+      // ============ WebSocket Logic for Admin ============
+      let stompClient = null;
+
+      function connectWebSocket() {
+          var socket = new SockJS('/ws-pet-grooming'); // Ensure this matches backend config (check SecurityConfig/WebSocketConfig)
+          stompClient = Stomp.over(socket);
+          stompClient.debug = null; // Disable debug logs
+
+          stompClient.connect({}, function (frame) {
+              console.log('Connected: ' + frame);
+              
+              // Subscribe to Admin Appointments Topic
+              stompClient.subscribe('/topic/admin/appointments', function (messageOutput) {
+                  var message = JSON.parse(messageOutput.body);
+                  if(message.type === 'NEW_APPOINTMENT' || 
+                     message.type === 'APPOINTMENT_COMPLETED' || 
+                     message.type === 'APPOINTMENT_CANCELLED' || 
+                     message.type === 'APPOINTMENT_CHECKIN' || 
+                     message.type === 'APPOINTMENT_START') {
+                      // Show Toast
+                      const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true
+                      });
+                      
+                      Toast.fire({
+                        icon: 'info',
+                        title: message.message
+                      });
+
+                      // Reload Table
+                      loadAllAppointments();
+                  }
+              });
+          }, function(error) {
+              console.error("WebSocket Connection Error: " + error);
+              // Retry connection after 5 seconds
+              setTimeout(connectWebSocket, 5000);
+          });
       }
     </script>
   </body>
