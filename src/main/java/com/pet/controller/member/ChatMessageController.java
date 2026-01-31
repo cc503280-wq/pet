@@ -13,6 +13,7 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -81,6 +82,12 @@ public class ChatMessageController {
     @PostMapping("/shop/chat/end")
     public ResponseEntity<String> endSession(@LoginUser Integer memberId) {
         chatService.endSession(memberId);
+
+        // 2. 通知後台管理員：使用者已離開 (並寫入資料庫，確保歷史紀錄看得到)
+        ChatMessage sysMsg = chatService.saveMessage(memberId, "SYSTEM", "使用者已結束對話。");
+
+        messagingTemplate.convertAndSend("/topic/admin", sysMsg);
+
         return ResponseEntity.ok("Session Ended. History Cleared.");
     }
 
@@ -150,6 +157,21 @@ public class ChatMessageController {
 
         } else if ("ADMIN".equals(sender)) {
             // --- 情境 B：管理員/真人客服講話 ---
+
+            // 0. 檢查：若使用者已結束對話，禁止傳送 (防止管理員騷擾)
+            if (chatService.isSessionEnded(memberId)) {
+                // 發送一個 SYSTEM 訊息回給 ADMIN (不存入資料庫，只推播給 Admin)
+                ChatMessage errorMsg = ChatMessage.builder()
+                        .memberId(memberId)
+                        .sender("SYSTEM")
+                        .content("【系統提示】使用者已結束對話，無法傳送訊息。")
+                        .createdAt(LocalDateTime.now())
+                        .build();
+                // 這裡我們直接推給 Admin，假裝是一條新訊息，或者可以有特殊的處理
+                // 因為 admin 訂閱的是 /topic/admin，所以所有管理員都會收到
+                messagingTemplate.convertAndSend("/topic/admin", errorMsg);
+                return;
+            }
 
             // 動作：推播給「該位會員」
             // 這裡很關鍵！路徑是動態的："/topic/member/" + memberId
