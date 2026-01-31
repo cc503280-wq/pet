@@ -74,7 +74,6 @@ const sidebarHTML = `
                 <li class="nav-item">
                     <a href="#" class="nav-link"><i class="nav-icon fas fa-edit"></i><p>預約管理 <i class="right fas fa-angle-left"></i></p></a>
                     <ul class="nav nav-treeview">
-                        <li class="nav-item"><a href="GetAllDailySchedules.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>班表總覽</p></a></li>
                         <li class="nav-item"><a href="GetAllAppointments.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>預約訂單列表</p></a></li>
                         <li class="nav-item"><a href="GetAllAppointmentDetails.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>預約明細</p></a></li>
                         <li class="nav-item"><a href="GetAllServiceItems.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>服務項目</p></a></li>
@@ -83,6 +82,7 @@ const sidebarHTML = `
                 <li class="nav-item">
                     <a href="#" class="nav-link"><i class="nav-icon fas fa-edit"></i><p>人員管理 <i class="right fas fa-angle-left"></i></p></a>
                     <ul class="nav nav-treeview">
+					    <li class="nav-item"><a href="AuditDashboard.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>系統監控儀表板</p></a></li>
                         <li class="nav-item"><a href="GetAllGroomers.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>美容師列表</p></a></li>
                         <li class="nav-item"><a href="GetAllLeaveRecords.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>休假審核</p></a></li>
                     </ul>
@@ -116,6 +116,11 @@ const chatWidgetHTML = `
     </div>
     <div id="view-chat-room" class="chat-body" style="display: none;">
         <div id="adminMsgBox" style="display: flex; flex-direction: column;"></div>
+    </div>
+    <div id="quickReplyArea" class="px-2 pb-1 border-top pt-2 bg-light" style="display: none;">
+        <button class="btn btn-outline-secondary btn-sm rounded-pill" onclick="sendQuickReply()" style="font-size: 0.85rem;">
+            您好，請問有什麼可以協助您的嗎?
+        </button>
     </div>
     <div id="chatInputArea" class="chat-footer" style="display: none;">
         <div class="input-group">
@@ -157,6 +162,13 @@ $(function () {
         $wrapper.prepend(navbarHTML);
         $wrapper.children('.navbar').after(sidebarHTML);
         $wrapper.append(footerHTML);
+        
+        // 修正：動態插入 HTML 後，需手動觸發 AdminLTE 的 Treeview 與 PushMenu 初始化
+        // 因為 AdminLTE 可能在我們插入這些元素之前就已經跑完初始化了 (Race Condition)
+        if ($.fn.Layout) {
+            $('[data-widget="pushmenu"]').PushMenu();
+            $('[data-widget="treeview"]').Treeview('init');
+        }
     }
     $('body').append(chatWidgetHTML);
 
@@ -258,7 +270,7 @@ function showUserList() {
     currentUser = null;
     $('#chatHeaderLeft').html('<i class="bi bi-chat-dots-fill mr-2" style="font-size: 1.5rem;"></i><span class="font-weight-bold">客服中心</span>');
     $('#backToListBtn').hide();
-    $('#view-chat-room').hide(); $('#chatInputArea').hide();
+    $('#view-chat-room').hide(); $('#chatInputArea').hide(); $('#quickReplyArea').hide();
     $('#view-user-list').fadeIn();
     loadUserList();
 }
@@ -277,6 +289,7 @@ function enterChatRoom(id, name, pic) {
     $('#view-user-list').hide();
     $('#backToListBtn').show();
     $('#view-chat-room').css('display', 'flex');
+    $('#quickReplyArea').show(); // 顯示快速回覆區域
     $('#chatInputArea').show();
     $.post('/admin/chat/read?memberId=' + id);
 
@@ -383,6 +396,12 @@ function sendAdminMessage() {
             confirmButtonColor: themeColors.primary
         });
     }
+}
+
+function sendQuickReply() {
+    const msg = "您好，請問有什麼可以協助您的嗎?";
+    $('#adminMsgInput').val(msg);
+    sendAdminMessage();
 }
 
 function handleAdminNewMsg(msg) {

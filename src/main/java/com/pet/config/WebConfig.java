@@ -41,6 +41,7 @@ public class WebConfig implements WebMvcConfigurer {
                         "/auth/logout", // 排除登出 API
                         "/admin/layout/Login.html", // 排除登入頁面
                         "/css/**", "/js/**", "/images/**", // 排除靜態資源
+                        "/plugins/**", // AdminLTE 第三方函式庫 (jQuery, Bootstrap 等)
                         "/img/**", // 圖片資源
                         "/lib/**", // 第三方函式庫
                         "/scss/**", // 樣式資源
@@ -79,7 +80,9 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**") // 允許後端所有網址
-                .allowedOriginPatterns("*") // 🟢 改為允許所有來源 (支援 ngrok)
+                 // 正式部屬後，只允許正式域名
+                .allowedOriginPatterns(  "http://localhost:5173",
+                "https://*.trycloudflare.com")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH") // 允許的動作
                 .allowCredentials(true);
     }

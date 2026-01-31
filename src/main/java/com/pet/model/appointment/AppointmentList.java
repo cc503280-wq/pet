@@ -52,6 +52,8 @@ public class AppointmentList {
 	private String memberPhone;
 	@Column(name = "final_price")
 	private Integer price;
+	@Column(name = "pay_status")
+	private Boolean payStatus;
 	@Column(name = "created_at")
 	private String createdAt;
 	@Column(name = "updated_at")
