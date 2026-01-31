@@ -106,8 +106,7 @@ public class ChatMessageService {
 
         // 2. 直接呼叫新方法，只抓出 MEMBER 傳的未讀訊息
         List<ChatMessage> unreadMessages = chatMessageRepository.findByMemberIdAndSenderInAndIsReadFalse(
-                memberId, targetSenders
-        );
+                memberId, targetSenders);
 
         // 3. 只有在真的有未讀訊息時才執行更新
         if (!unreadMessages.isEmpty()) {
@@ -127,8 +126,7 @@ public class ChatMessageService {
 
         // 2. 直接呼叫新方法，資料庫會自動幫你篩選 sender IN ('AI', 'ADMIN')
         List<ChatMessage> msgs = chatMessageRepository.findByMemberIdAndSenderInAndIsReadFalse(
-                memberId, targetSenders
-        );
+                memberId, targetSenders);
 
         // 3. 不需要再寫 if 判斷 sender 了，因為抓出來的一定是符合的
         if (!msgs.isEmpty()) {
@@ -151,6 +149,10 @@ public class ChatMessageService {
      * 給「後台管理員」用：這個會員傳了幾則訊息我還沒看 (來源: MEMBER)
      */
     public long countUnreadForAdmin(Integer memberId) {
+        // 如果該會員不在真人模式，管理員不需看到未讀通知
+        if (!isHumanMode(memberId)) {
+            return 0;
+        }
         return chatMessageRepository.countByMemberIdAndSenderInAndIsReadFalse(
                 memberId, List.of("MEMBER"));
     }

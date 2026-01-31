@@ -109,7 +109,10 @@ public class ChatMessageController {
             // 語法：messagingTemplate.convertAndSend(訂閱路徑, 訊息物件)
             // 這裡的意思是：把信丟到 "/topic/admin" 這個信箱
             // 因為所有管理員都在監聽這個信箱，所以他們都會收到通知！
-            messagingTemplate.convertAndSend("/topic/admin", savedMsg);
+            // 動作：推播給「管理員」 (僅在真人模式下通知，避免 AI 訊息洗版)
+            if (chatService.isHumanMode(memberId)) {
+                messagingTemplate.convertAndSend("/topic/admin", savedMsg);
+            }
 
             // --- B. 判斷是否需要 AI 回覆 ---
 
@@ -133,7 +136,16 @@ public class ChatMessageController {
 
                 ChatMessage aiMsg = chatService.saveMessage(memberId, "AI", aiReplyContent);
                 messagingTemplate.convertAndSend("/topic/member/" + memberId, aiMsg);
-                messagingTemplate.convertAndSend("/topic/admin", aiMsg);
+
+                // 🔥 1. 先檢查是否需要切換模式
+                if (aiReplyContent.contains("已為您轉接真人客服")) {
+                    chatService.setHumanMode(memberId, true);
+                }
+
+                // 🔥 2. 再決定要不要推播給管理員 (只有真人模式才推)
+                if (chatService.isHumanMode(memberId)) {
+                    messagingTemplate.convertAndSend("/topic/admin", aiMsg);
+                }
             }
 
         } else if ("ADMIN".equals(sender)) {

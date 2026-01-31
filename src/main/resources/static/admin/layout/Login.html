@@ -6,10 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>管理員登入 | MaoMaoLand</title>
 
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <link rel="stylesheet" href="../../plugins/fontawesome-free/css/all.min.css">
     <link rel="stylesheet" href="../../dist/css/adminlte.min.css">
-    
+
     <style>
         /* --- 全頁背景 --- */
         body {
@@ -49,36 +50,42 @@
             position: relative;
             z-index: 10;
             background: #ffffff;
-            padding: 3.5rem 3rem; /* 增加內距，讓大字體有呼吸空間 */
+            padding: 3.5rem 3rem;
+            /* 增加內距，讓大字體有呼吸空間 */
             border-radius: 30px;
             width: 90%;
-            max-width: 480px; /* 稍微加寬，適配大字體 */
+            max-width: 480px;
+            /* 稍微加寬，適配大字體 */
             box-shadow: 0 10px 25px rgba(190, 135, 84, 0.15);
             border: 1px solid rgba(190, 135, 84, 0.1);
         }
 
         /* --- 字體放大專區 --- */
-        
+
         /* 1. Logo 與標題 */
         .brand-logo i {
             color: #be8754;
-            font-size: 4rem; /* Logo 放大 */
+            font-size: 4rem;
+            /* Logo 放大 */
         }
-        
+
         h2 {
             color: #333;
             font-weight: 700;
             letter-spacing: 1px;
-            font-size: 2.2rem; /* 標題放大 */
+            font-size: 2.2rem;
+            /* 標題放大 */
         }
-        
+
         .text-muted.small {
-            font-size: 1rem !important; /* 副標題放大 */
+            font-size: 1rem !important;
+            /* 副標題放大 */
         }
 
         /* 2. 表單標籤 (帳號/密碼文字) */
         .form-label {
-            font-size: 1.1rem; /* 標籤放大 */
+            font-size: 1.1rem;
+            /* 標籤放大 */
             margin-bottom: 8px;
             display: block;
         }
@@ -91,20 +98,24 @@
             color: #6c757d;
             border-radius: 15px 0 0 15px !important;
             padding-left: 18px;
-            font-size: 1.2rem; /* Icon 放大 */
+            font-size: 1.2rem;
+            /* Icon 放大 */
         }
 
         .form-control {
             background-color: #f8f9fa;
             border: 1px solid #ced4da;
             border-left: 0;
-            height: 50px; /* 輸入框變高 */
+            height: 50px;
+            /* 輸入框變高 */
             border-radius: 0 15px 15px 0 !important;
-            font-size: 1.1rem; /* 輸入文字放大 */
+            font-size: 1.1rem;
+            /* 輸入文字放大 */
         }
 
         .form-control::placeholder {
-            font-size: 1rem; /* 提示文字大小 */
+            font-size: 1rem;
+            /* 提示文字大小 */
         }
 
         /* 輸入框聚焦 */
@@ -113,7 +124,8 @@
             border-color: #be8754;
             box-shadow: none;
         }
-        .form-control:focus + .input-group-prepend .input-group-text,
+
+        .form-control:focus+.input-group-prepend .input-group-text,
         .input-group-text-focus {
             background-color: #fff;
             border-color: #be8754;
@@ -127,9 +139,11 @@
             color: #fff;
             border-radius: 50rem;
             font-weight: 600;
-            padding: 12px 0; /* 按鈕變高 */
+            padding: 12px 0;
+            /* 按鈕變高 */
             transition: all 0.3s ease;
-            font-size: 1.3rem; /* 按鈕文字放大 */
+            font-size: 1.3rem;
+            /* 按鈕文字放大 */
             letter-spacing: 1px;
         }
 
@@ -148,15 +162,15 @@
             padding-left: 5px;
             cursor: pointer;
         }
-        
+
         /* Checkbox 顏色 */
-        .custom-control-input:checked ~ .custom-control-label::before {
+        .custom-control-input:checked~.custom-control-label::before {
             background-color: #be8754;
             border-color: #be8754;
         }
-        
+
         /* 放大 Checkbox 框框 */
-        .custom-control-label::before, 
+        .custom-control-label::before,
         .custom-control-label::after {
             width: 1.2rem;
             height: 1.2rem;
@@ -170,11 +184,13 @@
             right: 30px;
             border: none;
             background: none;
-            font-size: 1.5rem; /* 稍微放大 */
+            font-size: 1.5rem;
+            /* 稍微放大 */
             color: #adb5bd;
             cursor: pointer;
             transition: 0.3s;
         }
+
         .btn-close-custom:hover {
             color: #be8754;
             transform: rotate(90deg);
@@ -192,7 +208,8 @@
                 <i class="fas fa-times"></i>
             </button>
 
-            <div class="text-center mb-5"> <div class="brand-logo mb-3">
+            <div class="text-center mb-5">
+                <div class="brand-logo mb-3">
                     <i class="fas fa-paw"></i>
                 </div>
                 <h2 class="mb-2">後台登入</h2>
@@ -200,7 +217,7 @@
             </div>
 
             <form id="loginForm">
-                
+
                 <div class="mb-4"> <label class="form-label font-weight-bold text-secondary pl-1">帳號 / Email</label>
                     <div class="input-group">
                         <div class="input-group-prepend">
@@ -216,7 +233,8 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-lock"></i></span>
                         </div>
-                        <input type="password" id="password" class="form-control" placeholder="請輸入密碼" autocomplete="off">
+                        <input type="password" id="password" class="form-control" placeholder="請輸入密碼"
+                            autocomplete="off">
                     </div>
                 </div>
 
@@ -235,6 +253,10 @@
 
                 <div class="text-center mt-4 text-muted" style="font-size: 0.9rem; opacity: 0.6;">
                     &copy; 2026 MaoMaoLand Admin
+                    <button type="button" class="btn btn-sm btn-link text-muted p-0 ml-2" onclick="demoLogin()"
+                        style="font-size: 0.8rem; opacity: 0.5;">
+                        (Demo)
+                    </button>
                 </div>
 
             </form>
@@ -246,109 +268,126 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
-    $(function () {
-        // --- 視覺效果：輸入框聚焦時，讓左邊 Icon 也變色 ---
-        $('.form-control').focus(function() {
-            $(this).prev('.input-group-prepend').find('.input-group-text').addClass('input-group-text-focus');
-        }).blur(function() {
-            $(this).prev('.input-group-prepend').find('.input-group-text').removeClass('input-group-text-focus');
-        });
-
-        // 1. 讀取記住的帳號
-        const savedEmail = localStorage.getItem('savedEmail');
-        if (savedEmail) {
-            $('#email').val(savedEmail);
-            $('#rememberMe').prop('checked', true);
-        }
-
-        // 驗證 Email
-        function isValidEmail(email) {
-            const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return regex.test(email);
-        }
-
-        // 定義 Toast
-        const Toast = Swal.mixin({
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true
-        });
-
-        // 2. 表單提交
-        $('#loginForm').on('submit', function (e) {
-            e.preventDefault();
-            
-            const email = $('#email').val().trim();
-            const pwd = $('#password').val().trim();
-            const remember = $('#rememberMe').prop('checked');
-
-            // 前端驗證
-            if (email === '') {
-                return Toast.fire({ icon: 'warning', title: '請輸入 Email' });
-            }
-            if (!isValidEmail(email)) {
-                return Toast.fire({ icon: 'warning', title: 'Email 格式不正確' });
-            }
-            if (pwd === '') {
-                return Toast.fire({ icon: 'warning', title: '請輸入密碼' });
-            }
-
-            // 處理記住帳號
-            if (remember) {
-                localStorage.setItem('savedEmail', email);
-            } else {
-                localStorage.removeItem('savedEmail');
-            }
-
-            // 顯示 Loading
+        function demoLogin() {
+            $('#email').val('superadmin@gmail.com');
+            $('#password').val('superadmin1234');
+            // 觸發視覺效果
+            $('#email, #password').focus().blur();
+            // 由於 Toast 定義在下方，這裡直接使用 Swal
             Swal.fire({
-                title: '登入中...',
-                text: '正在驗證身分',
-                allowOutsideClick: false,
-                didOpen: () => { Swal.showLoading(); }
+                toast: true,
+                position: 'top-end',
+                icon: 'info',
+                title: '已帶入 Demo 帳號',
+                showConfirmButton: false,
+                timer: 1500
+            });
+        }
+
+        $(function () {
+            // --- 視覺效果：輸入框聚焦時，讓左邊 Icon 也變色 ---
+            $('.form-control').focus(function () {
+                $(this).prev('.input-group-prepend').find('.input-group-text').addClass('input-group-text-focus');
+            }).blur(function () {
+                $(this).prev('.input-group-prepend').find('.input-group-text').removeClass('input-group-text-focus');
             });
 
-            // 發送請求
-            const loginData = { email: email, password: pwd };
+            // 1. 讀取記住的帳號
+            const savedEmail = localStorage.getItem('savedEmail');
+            if (savedEmail) {
+                $('#email').val(savedEmail);
+                $('#rememberMe').prop('checked', true);
+            }
 
-            $.ajax({
-                url: '/auth/login',         
-                type: 'POST',
-                contentType: 'application/json', 
-                data: JSON.stringify(loginData),  
-                dataType: 'json',
-                success: function (response) {
-                    if (response && response.role) {
-                        sessionStorage.clear();
-                        sessionStorage.setItem('role', response.role);
-                        sessionStorage.setItem('adminName', response.name);
-                        sessionStorage.setItem('adminId', response.adminId);
-                        
-                        Swal.fire({
-                            icon: 'success',
-                            title: '登入成功',
-                            text: '歡迎回來，' + response.name + '！',
-                            timer: 1500,
-                            showConfirmButton: false
-                        }).then(() => {
-                            window.location.href = 'Home.html';
-                        });
-                    } else {
-                        Swal.fire({ icon: 'error', title: '登入失敗', text: '帳號或密碼錯誤' });
-                    }
-                },
-                error: function (xhr) {
-                    let msg = '系統連線失敗';
-                    if (xhr.status === 401) {
-                        msg = '帳號密碼錯誤或權限不足';
-                    }
-                    Swal.fire({ icon: 'error', title: '登入失敗', text: msg });
+            // 驗證 Email
+            function isValidEmail(email) {
+                const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return regex.test(email);
+            }
+
+            // 定義 Toast
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+            });
+
+            // 2. 表單提交
+            $('#loginForm').on('submit', function (e) {
+                e.preventDefault();
+
+                const email = $('#email').val().trim();
+                const pwd = $('#password').val().trim();
+                const remember = $('#rememberMe').prop('checked');
+
+                // 前端驗證
+                if (email === '') {
+                    return Toast.fire({ icon: 'warning', title: '請輸入 Email' });
                 }
+                if (!isValidEmail(email)) {
+                    return Toast.fire({ icon: 'warning', title: 'Email 格式不正確' });
+                }
+                if (pwd === '') {
+                    return Toast.fire({ icon: 'warning', title: '請輸入密碼' });
+                }
+
+                // 處理記住帳號
+                if (remember) {
+                    localStorage.setItem('savedEmail', email);
+                } else {
+                    localStorage.removeItem('savedEmail');
+                }
+
+                // 顯示 Loading
+                Swal.fire({
+                    title: '登入中...',
+                    text: '正在驗證身分',
+                    allowOutsideClick: false,
+                    didOpen: () => { Swal.showLoading(); }
+                });
+
+                // 發送請求
+                const loginData = { email: email, password: pwd };
+
+                $.ajax({
+                    url: '/auth/login',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(loginData),
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response && response.role) {
+                            sessionStorage.clear();
+                            sessionStorage.setItem('role', response.role);
+                            sessionStorage.setItem('adminName', response.name);
+                            sessionStorage.setItem('adminId', response.adminId);
+
+                            Swal.fire({
+                                icon: 'success',
+                                title: '登入成功',
+                                text: '歡迎回來，' + response.name + '！',
+                                timer: 1500,
+                                showConfirmButton: false
+                            }).then(() => {
+                                window.location.href = 'Home.html';
+                            });
+                        } else {
+                            Swal.fire({ icon: 'error', title: '登入失敗', text: '帳號或密碼錯誤' });
+                        }
+                    },
+                    error: function (xhr) {
+                        let msg = '系統連線失敗';
+                        if (xhr.status === 401) {
+                            msg = '帳號密碼錯誤或權限不足';
+                        }
+                        Swal.fire({ icon: 'error', title: '登入失敗', text: msg });
+                    }
+                });
             });
         });
-    });
     </script>
 </body>
+
 </html>

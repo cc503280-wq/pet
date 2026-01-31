@@ -11,12 +11,13 @@ import com.pet.dao.product.FavoriteRepository;
 import com.pet.dao.product.ProductRepository;
 import com.pet.model.product.Favorite;
 import com.pet.model.product.Product;
+import com.pet.aspect.LogAction;
 
 @Service
 @Transactional
 public class FavoriteService {
 
-	@Autowired
+    @Autowired
     private FavoriteRepository favRepo;
     @Autowired
     private ProductRepository productRepo;
@@ -27,6 +28,7 @@ public class FavoriteService {
     }
 
     // 🟢 重寫：Toggle 功能 (回傳 boolean: true=已收藏, false=已取消)
+    @LogAction(type = LogAction.ActionType.FAVORITE) // [AOP] 紀錄收藏
     public boolean toggleFavorite(Integer memberId, Integer productId) {
         // 1. 先試著找找看這筆收藏存不存在
         Optional<Favorite> existingFav = favRepo.findByMemberIdAndProduct_ProductId(memberId, productId);
@@ -43,7 +45,7 @@ public class FavoriteService {
             Favorite fav = new Favorite();
             fav.setMemberId(memberId);
             fav.setProduct(product); // 這裡設定關聯，JPA 會自動存入 product_id
-            
+
             favRepo.save(fav); // 🟢 這裡確保執行 Save
             return true; // 回傳 true 代表現在「有」收藏了
         }

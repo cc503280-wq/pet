@@ -14,6 +14,8 @@ import com.pet.model.appointment.AppointmentRequest;
 import com.pet.model.appointment.DailySchedule;
 import com.pet.model.appointment.ServiceItem;
 import com.pet.util.TimeSlotUtils;
+import com.pet.aspect.LogAction;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -129,7 +131,7 @@ public class AppointmentService {
 
         LocalDate today = LocalDate.now();
         LocalDate appointmentDate = appointment.getAppointmentDate();
-       
+
         if (!appointmentDate.equals(today)) {
              // 報到日期檢查邏輯保留在此，或是也可以移到 ValidationService
              // 但這牽涉到 "今天" 的動態時間，且有特定錯誤訊息
@@ -177,6 +179,7 @@ public class AppointmentService {
             backoff = @Backoff(delay = 20, multiplier = 1.1, maxDelay = 300, random = true)
         )
     @Transactional
+    @LogAction(type = LogAction.ActionType.BOOKING) // [AOP] 紀錄預約
     public Appointment saveAppointment(AppointmentRequest request) {
        
             // 1. 資料準備 (使用 ValidationService)
@@ -207,7 +210,7 @@ public class AppointmentService {
             return savedAppt;
 
     }
-    
+
     @Recover
     public Appointment recover(RuntimeException e, AppointmentRequest request) {
         log.warn("🛑 攔截到非併發錯誤 ({}): {}", e.getClass().getSimpleName(), e.getMessage());

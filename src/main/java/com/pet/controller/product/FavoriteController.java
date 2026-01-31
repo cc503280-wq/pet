@@ -18,8 +18,8 @@ public class FavoriteController {
 	@Autowired
     private FavoriteService favService;
 
-    @GetMapping("/member/{memberId}")
-    public ResponseEntity<List<Favorite>> getFavorites(@PathVariable Integer memberId) {
+    @GetMapping("/my")
+    public ResponseEntity<List<Favorite>> getFavorites(@LoginUser Integer memberId) {
         return ResponseEntity.ok(favService.getMyFavorites(memberId));
     }
 

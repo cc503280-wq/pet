@@ -22,7 +22,7 @@ const navbarHTML = `
             <a href="#" class="btn btn-theme-action btn-sm shadow-sm mr-2 position-relative" onclick="toggleAdminChat(); return false;">
                 <i class="far fa-comments"></i> 客服中心
                 <span class="badge badge-danger position-absolute" id="globalUnreadBadge"
-                    style="display: none; top: -8px; right: -8px; border-radius: 50%; padding: 4px 6px; font-size: 10px; z-index: 10; border: 2px solid white;">0</span>
+                    style="display: none; top: -5px !important; right: -5px !important; border-radius: 50%; padding: 3px 6px !important; font-size: 11px !important; line-height: 1 !important; z-index: 10; border: 1.5px solid white;">0</span>
             </a>
         </li>
         <li class="nav-item">
@@ -117,6 +117,11 @@ const chatWidgetHTML = `
     <div id="view-chat-room" class="chat-body" style="display: none;">
         <div id="adminMsgBox" style="display: flex; flex-direction: column;"></div>
     </div>
+    <div id="quickReplyArea" class="px-2 pb-1 border-top pt-2 bg-light" style="display: none;">
+        <button class="btn btn-outline-secondary btn-sm rounded-pill" onclick="sendQuickReply()" style="font-size: 0.85rem;">
+            您好，請問有什麼可以協助您的嗎?
+        </button>
+    </div>
     <div id="chatInputArea" class="chat-footer" style="display: none;">
         <div class="input-group">
             <input type="text" id="adminMsgInput" placeholder="請輸入訊息..." class="form-control border-0 chat-input">
@@ -144,13 +149,13 @@ let stompClientAdmin = null;
 let currentUser = null;
 let userList = [];
 let isWidgetOpen = false;
-let md; 
+let md;
 
 // ==========================================
 // 4. 主程式入口 (Document Ready)
 // ==========================================
-$(function() {
-    
+$(function () {
+
     // --- [A] 插入版型結構 (Layout) ---
     const $wrapper = $('.wrapper');
     if ($wrapper.length > 0) {
@@ -170,7 +175,7 @@ $(function() {
     // --- [B] 權限驗證 (Auth) - 這裡就是你的 adminAuth 邏輯 ---
     const adminRole = sessionStorage.getItem('role');
     const adminName = sessionStorage.getItem('adminName');
-    
+
     // 取得當前檔名
     const currentPage = window.location.pathname.split("/").pop();
 
@@ -185,7 +190,7 @@ $(function() {
     // 使用 document.on 是因為 #logoutBtn 是動態生成的
     $(document).on('click', '#logoutBtn', function (e) {
         e.preventDefault();
-        
+
         // 使用 SweetAlert2 替代原生的 confirm
         Swal.fire({
             title: '確定要登出嗎？',
@@ -220,7 +225,7 @@ $(function() {
         md = window.markdownit({ breaks: true, linkify: true });
     }
     highlightActiveMenu();
-    
+
     // Chat 初始化
     $('#adminMsgInput').keypress(function (e) { if (e.which == 13) sendAdminMessage(); });
     initAdminWebSocket();
@@ -234,9 +239,9 @@ $(function() {
 // 自動標記當前選單
 function highlightActiveMenu() {
     const path = window.location.pathname;
-    const page = path.split("/").pop(); 
+    const page = path.split("/").pop();
 
-    $('.nav-sidebar a.nav-link').each(function() {
+    $('.nav-sidebar a.nav-link').each(function () {
         const href = $(this).attr('href');
         // 修正比對邏輯，支援相對路徑
         if (href === page || href.endsWith('/' + page) || (page === '' && href === 'Home.html')) {
@@ -265,7 +270,7 @@ function showUserList() {
     currentUser = null;
     $('#chatHeaderLeft').html('<i class="bi bi-chat-dots-fill mr-2" style="font-size: 1.5rem;"></i><span class="font-weight-bold">客服中心</span>');
     $('#backToListBtn').hide();
-    $('#view-chat-room').hide(); $('#chatInputArea').hide();
+    $('#view-chat-room').hide(); $('#chatInputArea').hide(); $('#quickReplyArea').hide();
     $('#view-user-list').fadeIn();
     loadUserList();
 }
@@ -284,14 +289,15 @@ function enterChatRoom(id, name, pic) {
     $('#view-user-list').hide();
     $('#backToListBtn').show();
     $('#view-chat-room').css('display', 'flex');
+    $('#quickReplyArea').show(); // 顯示快速回覆區域
     $('#chatInputArea').show();
     $.post('/admin/chat/read?memberId=' + id);
-    
+
     const index = userList.findIndex(x => x.member.memberId === id);
-    if (index !== -1) { 
-        userList[index].unreadCount = 0; 
+    if (index !== -1) {
+        userList[index].unreadCount = 0;
     }
-    
+
     calcTotalUnread();
     loadAdminHistory(id);
 }
@@ -325,7 +331,7 @@ function renderUserListUI() {
         const pic = m.picture || '../../dist/img/default-150x150.png';
         const count = parseInt(item.unreadCount) || 0;
         const unreadHtml = count > 0 ? `<span class="badge badge-danger rounded-pill ml-auto" style="font-size: 0.9rem; padding: 5px 8px;">${count}</span>` : '';
-        
+
         listEl.append(`
             <div class="contact-item" onclick="enterChatRoom(${m.memberId}, '${m.name}', '${pic}')">
                 <img src="${pic}" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px;">
@@ -382,7 +388,7 @@ function sendAdminMessage() {
         stompClientAdmin.send("/app/sendMessage", {}, JSON.stringify(payload));
         appendAdminMsgUI({ sender: 'ADMIN', content: content, createdAt: new Date().toISOString() });
         input.val(''); scrollToBottom();
-    } else { 
+    } else {
         Swal.fire({
             icon: 'error',
             title: '連線中斷',
@@ -392,33 +398,39 @@ function sendAdminMessage() {
     }
 }
 
+function sendQuickReply() {
+    const msg = "您好，請問有什麼可以協助您的嗎?";
+    $('#adminMsgInput').val(msg);
+    sendAdminMessage();
+}
+
 function handleAdminNewMsg(msg) {
     if (isWidgetOpen && currentUser && currentUser.id == msg.memberId) {
-        appendAdminMsgUI(msg); 
-        scrollToBottom(); 
+        appendAdminMsgUI(msg);
+        scrollToBottom();
         $.post('/admin/chat/read?memberId=' + currentUser.id);
         return;
-    } 
-    
+    }
+
     let target = userList.find(u => u.member.memberId === msg.memberId);
     if (!target) { loadUserList(); return; }
-    
+
     target.unreadCount = (parseInt(target.unreadCount) || 0) + 1;
     userList = userList.filter(u => u !== target); userList.unshift(target);
-    
+
     if (isWidgetOpen && !currentUser) { renderUserListUI(); } else { calcTotalUnread(); }
 }
 
 function calcTotalUnread() {
     let total = 0;
-    if (userList && Array.isArray(userList)) { 
-        userList.forEach(u => { total += (parseInt(u.unreadCount) || 0); }); 
+    if (userList && Array.isArray(userList)) {
+        userList.forEach(u => { total += (parseInt(u.unreadCount) || 0); });
     }
     const badge = $('#globalUnreadBadge');
-    if (total > 0) { 
-        badge.text(total).fadeIn(); 
-        badge.addClass('animate__animated animate__bounceIn'); 
-    } else { 
-        badge.fadeOut(); 
+    if (total > 0) {
+        badge.text(total).fadeIn();
+        badge.addClass('animate__animated animate__bounceIn');
+    } else {
+        badge.fadeOut();
     }
 }

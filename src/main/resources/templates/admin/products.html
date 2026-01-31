@@ -13,6 +13,7 @@
     <link rel="stylesheet" th:href="@{/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css}">
     <link rel="stylesheet" th:href="@{/plugins/datatables-responsive/css/responsive.bootstrap4.min.css}">
 
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         .brand-link {
             display: flex;
@@ -244,6 +245,35 @@
 
             <section class="content">
                 <div class="container-fluid">
+                <div class="row mb-3">
+				    <div class="col-md-6">
+				        <div class="card card-danger shadow-sm">
+				            <div class="card-header">
+				                <h3 class="card-title"><i class="fas fa-exclamation-triangle"></i> 庫存告急商品 (Top 5)</h3>
+				                <div class="card-tools">
+				                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+				                </div>
+				            </div>
+				            <div class="card-body">
+				                <canvas id="stockChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+				            </div>
+				        </div>
+				    </div>
+				
+				    <div class="col-md-6">
+				        <div class="card card-primary shadow-sm">
+				            <div class="card-header">
+				                <h3 class="card-title"><i class="fas fa-chart-pie"></i> 商品分類佔比</h3>
+				                <div class="card-tools">
+				                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+				                </div>
+				            </div>
+				            <div class="card-body">
+				                <canvas id="categoryChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+				            </div>
+				        </div>
+				    </div>
+				</div>
                     <div class="row">
                         <div class="col-12">
                             <div class="card">
@@ -512,6 +542,7 @@
             loadCategories();   // 1. 載入分類下拉選單
             loadAllProducts();  // 2. 載入所有商品
             loadCreateCategories();
+            loadCharts();
             // 綁定搜尋框 Enter 事件
             $('#searchInput').keypress(function (e) {
                 if (e.which == 13) searchProducts();
@@ -1211,6 +1242,80 @@
 
 	    	    $('#paginationContainer').html(html);
 	    	}
+		  // ==========================================
+		  // 🟢 新增：載入並繪製圖表
+		  // ==========================================
+		  function loadCharts() {
+		      $.ajax({
+		          url: API_BASE + '/stats', // 假設後端路徑是 /products/stats
+		          type: 'GET',
+		          dataType: 'json',
+		          success: function (data) {
+		              // data 結構範例:
+		              // {
+		              //    lowStock: { labels: ['A商品', 'B商品'], data: [2, 5] },
+		              //    categories: { labels: ['貓食', '狗食'], data: [100, 50] }
+		              // }
+	
+		              renderStockChart(data.lowStock);
+		              renderCategoryChart(data.categories);
+		          },
+		          error: function (err) {
+		              console.error('無法載入圖表數據', err);
+		          }
+		      });
+		  }
+	
+		  function renderStockChart(chartData) {
+		      var ctx = document.getElementById('stockChart').getContext('2d');
+		      new Chart(ctx, {
+		          type: 'bar',
+		          data: {
+		              labels: chartData.labels,
+		              datasets: [{
+		                  label: '剩餘庫存',
+		                  data: chartData.data,
+		                  backgroundColor: 'rgba(220, 53, 69, 0.8)', // 紅色
+		                  borderColor: 'rgba(220, 53, 69, 1)',
+		                  borderWidth: 1
+		              }]
+		          },
+		          options: {
+		              indexAxis: 'y', // 橫向長條圖
+		              responsive: true,
+		              maintainAspectRatio: false,
+		              plugins: {
+		                  legend: { display: false } // 隱藏圖例
+		              },
+		              scales: {
+		                  x: { beginAtZero: true }
+		              }
+		          }
+		      });
+		  }
+	
+		  function renderCategoryChart(chartData) {
+		      var ctx = document.getElementById('categoryChart').getContext('2d');
+		      new Chart(ctx, {
+		          type: 'doughnut',
+		          data: {
+		              labels: chartData.labels,
+		              datasets: [{
+		                  data: chartData.data,
+		                  backgroundColor: [
+		                      '#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc', '#d2d6de'
+		                  ],
+		              }]
+		          },
+		          options: {
+		              responsive: true,
+		              maintainAspectRatio: false,
+		              plugins: {
+		                  legend: { position: 'right' }
+		              }
+		          }
+		      });
+		  }
 
         /*]]>*/
     </script>
