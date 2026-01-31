@@ -9,6 +9,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.pet.aspect.LogAction;
 import com.pet.config.CloudinaryConfig;
 import com.pet.dao.member.CouponRepository;
 import com.pet.dao.member.CouponUsersRealRepository;
@@ -106,6 +108,7 @@ public class OrderService {
     }
 	
 	@Transactional
+	@LogAction(type = LogAction.ActionType.CREATE_ORDER) // [AOP]
 	public Order userOrder(OrderCheckOutDTO orderCheckOutDTO) {
 		
 		List<CartItem> cartItems = cRepository.findByMember_MemberId(orderCheckOutDTO.getMemberId());
