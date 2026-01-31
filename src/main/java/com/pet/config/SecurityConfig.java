@@ -40,7 +40,8 @@ public class SecurityConfig {
                 //FIXME: 增加cloudflare的host
                 corsConfiguration.setAllowedOriginPatterns(List.of(
                     "http://localhost:5173",
-                    "https://*.trycloudflare.com"
+                    "https://*.trycloudflare.com",
+                    "https://*.ecpay.com.tw"
                 ));
                 corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
                 corsConfiguration.setAllowedHeaders(List.of("*"));

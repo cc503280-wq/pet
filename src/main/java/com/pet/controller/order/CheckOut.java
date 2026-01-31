@@ -36,7 +36,7 @@ public class CheckOut {
 	private OrderService orderService;
 	@Autowired
 	private EcpayService ecpayService;
-	private final String FRONTEND_URL = "http://localhost:5173/checkout";
+	private final String FRONTEND_URL = "http://localhost:5173/#/checkout";
 
 	@GetMapping("/coupon")
 	public List<CouponDTO> checkCouponUsers(@LoginUser Integer userId) {
