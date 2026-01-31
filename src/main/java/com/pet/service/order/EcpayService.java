@@ -27,7 +27,7 @@ public class EcpayService {
 
     // 回傳網址 (請改為您的實際網址，本地開發需用 ngrok)
     // ReturnURL: 綠界背景呼叫，告知付款結果
-    private final String RETURN_URL = "https://unchid-technologically-pok.ngrok-free.dev/shop/checkout/callback";
+    private final String RETURN_URL = "https://mercy-pgp-cingular-opening.trycloudflare.com/shop/checkout/callback";
     // ClientBackURL: 使用者付款完成後，點擊按鈕返回的網址
     private final String CLIENT_BACK_URL = "http://localhost:5173/member?active=shop-orders";
     
@@ -35,7 +35,7 @@ public class EcpayService {
     private final String LOGISTICS_ACTION_URL = "https://logistics-stage.ecpay.com.tw/Express/map";
     
     // 地圖選完後，綠界 POST 回來的後端網址 (必須是 ngrok 外網)
-    private final String MAP_CALLBACK_URL = "https://unchid-technologically-pok.ngrok-free.dev/shop/checkout/map_callback";
+    private final String MAP_CALLBACK_URL = "https://mercy-pgp-cingular-opening.trycloudflare.com/shop/checkout/map_callback";
 
 
     /**

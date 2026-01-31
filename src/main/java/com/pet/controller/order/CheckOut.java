@@ -3,6 +3,8 @@ package com.pet.controller.order;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -55,7 +57,9 @@ public class CheckOut {
 		// 3.判斷付款方式
 		if ("ECPay".equals(orderRequest.getPaymentMethod())) {
 			// 產生綠界金流的 HTML 表單字串
-			String checkOutId = "ORD" + order.getOrderId() + "s7e5c8edsf";
+			String timestamp = new SimpleDateFormat("yyMMddHHmmss").format(new Date());
+			   // 產生綠界金流的 HTML 表單字串
+			String checkOutId = order.getOrderId()+"T" + timestamp ;
 			String ecpayHtml = ecpayService.createEcpayForm(checkOutId, order.getTotalAmountDiscountPoints(), "寵物商城商品", // 或是從
 																														// request
 																														// 組合商品名稱
