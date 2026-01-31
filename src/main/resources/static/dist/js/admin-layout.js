@@ -74,7 +74,6 @@ const sidebarHTML = `
                 <li class="nav-item">
                     <a href="#" class="nav-link"><i class="nav-icon fas fa-edit"></i><p>預約管理 <i class="right fas fa-angle-left"></i></p></a>
                     <ul class="nav nav-treeview">
-                        <li class="nav-item"><a href="GetAllDailySchedules.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>班表總覽</p></a></li>
                         <li class="nav-item"><a href="GetAllAppointments.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>預約訂單列表</p></a></li>
                         <li class="nav-item"><a href="GetAllAppointmentDetails.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>預約明細</p></a></li>
                         <li class="nav-item"><a href="GetAllServiceItems.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>服務項目</p></a></li>
@@ -158,6 +157,13 @@ $(function() {
         $wrapper.prepend(navbarHTML);
         $wrapper.children('.navbar').after(sidebarHTML);
         $wrapper.append(footerHTML);
+        
+        // 修正：動態插入 HTML 後，需手動觸發 AdminLTE 的 Treeview 與 PushMenu 初始化
+        // 因為 AdminLTE 可能在我們插入這些元素之前就已經跑完初始化了 (Race Condition)
+        if ($.fn.Layout) {
+            $('[data-widget="pushmenu"]').PushMenu();
+            $('[data-widget="treeview"]').Treeview('init');
+        }
     }
     $('body').append(chatWidgetHTML);
 
