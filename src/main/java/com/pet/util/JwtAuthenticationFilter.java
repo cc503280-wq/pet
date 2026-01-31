@@ -44,4 +44,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // 4. 繼續往下走
         filterChain.doFilter(request, response);
     }
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getRequestURI();
+        return path.startsWith("/shop/checkout/map_callback");
+    }
 }

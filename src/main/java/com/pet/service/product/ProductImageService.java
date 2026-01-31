@@ -97,59 +97,43 @@ public class ProductImageService {
 	
 	// 刪除圖片
 	public void deleteImage(Integer imageId) {
-		// 1. 先從資料庫找出這筆資料 (因為我們需要它的 URL)
-	    ProductImage img = productImageRepository.findById(imageId)
-	            .orElseThrow(() -> new RuntimeException("找不到圖片 ID: " + imageId));
+		// 1. 先查出這張圖庫的圖片資料
+        ProductImage productImage = productImageRepository.findById(imageId)
+                .orElseThrow(() -> new RuntimeException("找不到圖片 ID: " + imageId));
 
-	    Product product = img.getProduct();
-	    Integer productId = img.getProduct().getProductId();
-	    // 2. 嘗試刪除 Cloudinary 上的檔案
-	    try {
-	        String publicId = getPublicIdFromUrl(img.getImageUrl());
-	        
-	        if (publicId != null) {
-	            // 呼叫 Cloudinary 刪除 API
-	            cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
-	            System.out.println("Cloudinary 刪除成功: " + publicId);
-	        }
-	    } catch (IOException e) {
-	        // 注意：這裡我們只印出錯誤，但不阻擋資料庫刪除。
-	        // 因為就算雲端刪除失敗，使用者還是希望這張圖從網站消失。
-	        System.err.println("Cloudinary 刪除失敗: " + e.getMessage());
-	    }
-		
-		productImageRepository.deleteById(imageId);
-		// 強制執行一次 Flush，確保資料庫已經把那一行刪掉了
-	    // 這樣下一步查詢時，才不會又查到剛剛刪掉的那筆
-		productImageRepository.flush(); 
+        // 2. 取得這張圖的網址
+        String imageUrl = productImage.getImageUrl();
+        
+        // 3. 取得這張圖所屬的商品 (Product)
+        Product product = productImage.getProduct();
+        
+        // 4. 🛑 關鍵檢查：這張圖的網址，是否等於該商品的「封面圖」網址？
+        boolean isUsedAsCover = false;
+        if (product.getImageUrl() != null && product.getImageUrl().equals(imageUrl)) {
+            isUsedAsCover = true;
+        }
 
-	    // 核心邏輯】重新排序剩下的圖片
-	    // 抓出該商品剩下的所有圖，依照舊的順序排好
-	    List<ProductImage> remainingImages = productImageRepository.findByProduct_ProductIdOrderBySortOrderAsc(productId);
+        // 5. 決定是否刪除雲端檔案
+        if (isUsedAsCover) {
+            // A. 如果是封面圖 -> 【只刪資料庫，保留雲端檔案】
+            System.out.println("此圖片同時為封面圖，僅移除圖庫關聯，保留雲端檔案: " + imageUrl);
+        } else {
+            // B. 如果不是封面圖 -> 【刪除雲端檔案】
+            try {
+                // 從網址中解析出 Cloudinary 的 publicId
+                String publicId = getPublicIdFromUrl(imageUrl);
+                if (publicId != null) {
+                    cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
+                    System.out.println("已刪除雲端檔案: " + publicId);
+                }
+            } catch (Exception e) {
+                System.err.println("雲端圖片刪除失敗 (可能已不存在): " + e.getMessage());
+                // 這裡可以選擇是否要拋出異常，通常建議吞掉異常繼續刪除資料庫紀錄
+            }
+        }
 
-	    // 跑迴圈，從 0 開始重新發牌
-	    for (int i = 0; i < remainingImages.size(); i++) {
-	        ProductImage p = remainingImages.get(i);
-	        
-	        // 如果目前的順序跟 i 不一樣，才需要更新 (節省效能)
-	        if (p.getSortOrder() != i) {
-	            p.setSortOrder(i);
-	            productImageRepository.save(p);
-	        }
-	    }
-	 // 🟢 5. 【新增邏輯】同步更新 Products 表格的封面圖
-	    if (remainingImages.isEmpty()) {
-	        // 情況 A: 圖片全刪光了，封面設為 null 或預設圖
-	        product.setImageUrl(null); 
-	    } else {
-	        // 情況 B: 有剩下的圖，第一張 (index 0) 就是新的封面
-	        // 因為上面迴圈已經把它的 sortOrder 改成 0 了
-	        String newCoverUrl = remainingImages.get(0).getImageUrl();
-	        product.setImageUrl(newCoverUrl);
-	    }
-
-	    // 6. 儲存商品 (更新 image_url 欄位)
-	    productRepository.save(product);
+        // 6. 最後：一定要刪除圖庫資料表的紀錄
+        productImageRepository.delete(productImage);
     }
 	
 	// 輔助方法：從完整網址中解析出 public_id
