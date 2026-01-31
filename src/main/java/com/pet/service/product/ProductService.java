@@ -351,18 +351,19 @@ public class ProductService {
         List<String> stockLabels = new ArrayList<>();
         List<Integer> stockData = new ArrayList<>();
 
-		for (Product p : lowStockList) {
-			String name = p.getProductName();
-			// 字串截斷處理，避免圖表爆版
-			if (name.length() > 8)
-				name = name.substring(0, 8) + "...";
-			stockLabels.add(name);
-			stockData.add(p.getStock());
-		}
+        for (Product p : lowStockList) {
+            String name = p.getProductName();
+            // 字串截斷處理，避免圖表爆版
+            if (name.length() > 8) name = name.substring(0, 8) + "...";
+            stockLabels.add(name);
+            stockData.add(p.getStock());
+        }
 
-		Map<String, Object> lowStockMap = new HashMap<>();
-		lowStockMap.put("labels", stockLabels);
-		lowStockMap.put("data", stockData);
+        Map<String, Object> lowStockMap = new HashMap<>();
+        lowStockMap.put("labels", stockLabels);
+        lowStockMap.put("data", stockData);
+        
+        response.put("lowStock", lowStockMap);
 
         // --- 2. 商品分類佔比數據 (Category Distribution) ---
         List<Object[]> categoryCounts = pRepos.countProductsByCategory();
@@ -370,32 +371,24 @@ public class ProductService {
         List<String> catLabels = new ArrayList<>();
         List<Integer> catData = new ArrayList<>();
 
-		// ==========================================
-		// 2. 🔥 新增：商品分類佔比數據 (Category Distribution)
-		// ==========================================
-		List<Object[]> categoryCounts = pRepos.countProductsByCategory();
+        for (Object[] row : categoryCounts) {
+            // row[0] 是分類名稱, row[1] 是數量 (Count 回傳的是 Long)
+            String categoryName = (String) row[0];
+            Long count = (Long) row[1];
 
-		List<String> catLabels = new ArrayList<>();
-		List<Integer> catData = new ArrayList<>();
+            catLabels.add(categoryName);
+            catData.add(count.intValue());
+        }
 
-		for (Object[] row : categoryCounts) {
-			// row[0] 是分類名稱, row[1] 是數量 (Count 回傳的是 Long)
-			String categoryName = (String) row[0];
-			Long count = (Long) row[1];
+        Map<String, Object> catMap = new HashMap<>();
+        catMap.put("labels", catLabels);
+        catMap.put("data", catData);
 
-			catLabels.add(categoryName);
-			catData.add(count.intValue());
-		}
+        // 將分類數據放入回傳物件 (key 必須叫 "categories"，因為前端 JS 是這樣抓的)
+        response.put("categories", catMap);
 
-		Map<String, Object> catMap = new HashMap<>();
-		catMap.put("labels", catLabels);
-		catMap.put("data", catData);
-
-		// 將分類數據放入回傳物件 (key 必須叫 "categories"，因為前端 JS 是這樣抓的)
-		response.put("categories", catMap);
-
-		return response;
-	}
+        return response;
+    }
 
     // ==========================================
     // 前台商城功能 (Store Frontend)
