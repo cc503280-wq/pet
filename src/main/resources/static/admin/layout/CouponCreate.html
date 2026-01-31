@@ -6,10 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>新增優惠券 | 管理中心</title>
 
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <link rel="stylesheet" href="../../plugins/fontawesome-free/css/all.min.css">
     <link rel="stylesheet" href="../../dist/css/adminlte.min.css">
-    
+
     <link rel="stylesheet" href="../../plugins/select2/css/select2.min.css">
     <link rel="stylesheet" href="../../plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
@@ -29,7 +30,7 @@
             max-width: 1000px;
             margin: 0 auto;
         }
-        
+
         .input-group-text {
             background-color: #f4f6f9;
             border-color: #ced4da;
@@ -39,12 +40,12 @@
         }
 
         /* 輸入框聚焦時的顏色 */
-        .form-control:focus + .input-group-append .input-group-text, 
-        .form-control:focus ~ .input-group-prepend .input-group-text {
+        .form-control:focus+.input-group-append .input-group-text,
+        .form-control:focus~.input-group-prepend .input-group-text {
             border-color: #be8754;
             color: #be8754;
         }
-        
+
         .select2-container .select2-selection--single {
             height: calc(2.5rem + 2px) !important;
         }
@@ -53,7 +54,7 @@
 
 <body class="hold-transition sidebar-mini sidebar-collapse">
     <div class="wrapper">
-        
+
         <div class="content-wrapper">
             <section class="content-header">
                 <div class="container-fluid">
@@ -70,35 +71,43 @@
 
             <section class="content">
                 <div class="container-fluid">
-                    <div class="row justify-content-center"> 
+                    <div class="row justify-content-center">
                         <div class="col-md-10 form-container">
-                            
+
                             <div class="card card-outline card-primary shadow-lg">
                                 <div class="card-header">
                                     <h3 class="card-title" style="font-weight: 700;">
                                         <i class="fas fa-ticket-alt mr-2" style="color: #be8754;"></i>請填寫優惠券資料
+                                        <button type="button" class="btn btn-sm btn-link text-muted p-0 ml-2"
+                                            onclick="demoFill()" style="font-size: 0.8rem; opacity: 0.5;">
+                                            (Demo)
+                                        </button>
                                     </h3>
                                 </div>
-                                
+
                                 <form id="createCouponForm" class="form-horizontal" enctype="multipart/form-data">
                                     <div class="card-body">
-                                        
+
                                         <div class="form-group row">
                                             <label for="code" class="col-sm-2 col-form-label text-right">折扣碼</label>
                                             <div class="col-sm-9">
                                                 <div class="input-group">
                                                     <div class="input-group-prepend">
-                                                        <span class="input-group-text"><i class="fas fa-barcode"></i></span>
+                                                        <span class="input-group-text"><i
+                                                                class="fas fa-barcode"></i></span>
                                                     </div>
-                                                    <input type="text" class="form-control" id="code" placeholder="請輸入折扣碼" autocomplete="off">
+                                                    <input type="text" class="form-control" id="code"
+                                                        placeholder="請輸入折扣碼" autocomplete="off">
                                                 </div>
                                             </div>
                                         </div>
 
                                         <div class="form-group row">
-                                            <label for="discountType" class="col-sm-2 col-form-label text-right">折扣類型</label>
+                                            <label for="discountType"
+                                                class="col-sm-2 col-form-label text-right">折扣類型</label>
                                             <div class="col-sm-9">
-                                                <select class="form-control select2" style="width: 100%;" id="discountType">
+                                                <select class="form-control select2" style="width: 100%;"
+                                                    id="discountType">
                                                     <option value="amount">固定金額 (Amount)</option>
                                                     <option value="percent" selected>百分比 (Percent)</option>
                                                 </select>
@@ -106,14 +115,17 @@
                                         </div>
 
                                         <div class="form-group row">
-                                            <label for="discountValue" class="col-sm-2 col-form-label text-right">折扣數值</label>
+                                            <label for="discountValue"
+                                                class="col-sm-2 col-form-label text-right">折扣數值</label>
                                             <div class="col-sm-9">
                                                 <div class="input-group">
                                                     <div class="input-group-prepend">
-                                                        <span class="input-group-text"><i class="fas fa-tags"></i></span>
+                                                        <span class="input-group-text"><i
+                                                                class="fas fa-tags"></i></span>
                                                     </div>
-                                                    <input type="number" step="0.05" min="0" max="1" class="form-control" id="discountValue"
-                                                         placeholder="請輸入 0.0 ~ 1.0（例如六折=0.6）" autocomplete="off">
+                                                    <input type="number" step="0.05" min="0" max="1"
+                                                        class="form-control" id="discountValue"
+                                                        placeholder="請輸入 0.0 ~ 1.0（例如六折=0.6）" autocomplete="off">
                                                 </div>
                                             </div>
                                         </div>
@@ -121,7 +133,8 @@
                                         <div class="form-group row">
                                             <label class="col-sm-2 col-form-label text-right">是否限量</label>
                                             <div class="col-sm-9">
-                                                <select class="form-control select2" style="width: 100%;" id="isLimited">
+                                                <select class="form-control select2" style="width: 100%;"
+                                                    id="isLimited">
                                                     <option value="0" selected>不限量</option>
                                                     <option value="1">限量</option>
                                                 </select>
@@ -129,51 +142,63 @@
                                         </div>
 
                                         <div class="form-group row">
-                                            <label for="totalAmount" class="col-sm-2 col-form-label text-right">總發放量</label>
+                                            <label for="totalAmount"
+                                                class="col-sm-2 col-form-label text-right">總發放量</label>
                                             <div class="col-sm-9">
                                                 <div class="input-group">
                                                     <div class="input-group-prepend">
-                                                        <span class="input-group-text"><i class="fas fa-layer-group"></i></span>
+                                                        <span class="input-group-text"><i
+                                                                class="fas fa-layer-group"></i></span>
                                                     </div>
-                                                    <input type="text" class="form-control" id="totalAmount" placeholder="若限量請輸入數量" autocomplete="off">
+                                                    <input type="text" class="form-control" id="totalAmount"
+                                                        placeholder="若限量請輸入數量" autocomplete="off">
                                                 </div>
                                             </div>
                                         </div>
 
                                         <div class="form-group row">
-                                            <label for="minPurchase" class="col-sm-2 col-form-label text-right">使用門檻</label>
+                                            <label for="minPurchase"
+                                                class="col-sm-2 col-form-label text-right">使用門檻</label>
                                             <div class="col-sm-9">
                                                 <div class="input-group">
                                                     <div class="input-group-prepend">
-                                                        <span class="input-group-text"><i class="fas fa-coins"></i></span>
+                                                        <span class="input-group-text"><i
+                                                                class="fas fa-coins"></i></span>
                                                     </div>
-                                                    <input type="text" class="form-control" id="minPurchase" placeholder="最低消費金額" autocomplete="off">
+                                                    <input type="text" class="form-control" id="minPurchase"
+                                                        placeholder="最低消費金額" autocomplete="off">
                                                 </div>
                                             </div>
                                         </div>
 
                                         <div class="form-group row">
-                                            <label for="issueRange" class="col-sm-2 col-form-label text-right">發放區間</label>
+                                            <label for="issueRange"
+                                                class="col-sm-2 col-form-label text-right">發放區間</label>
                                             <div class="col-sm-9">
                                                 <div class="input-group">
                                                     <div class="input-group-prepend">
-                                                        <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                                        <span class="input-group-text"><i
+                                                                class="far fa-calendar-alt"></i></span>
                                                     </div>
-                                                    <input type="text" class="form-control" id="issueRange" placeholder="選擇發放起訖日" autocomplete="off">
+                                                    <input type="text" class="form-control" id="issueRange"
+                                                        placeholder="選擇發放起訖日" autocomplete="off">
                                                     <input type="hidden" id="issueStartAt" name="issueStartAt">
                                                     <input type="hidden" id="issueEndAt" name="issueEndAt">
                                                 </div>
                                             </div>
                                         </div>
-                                        
+
                                         <div class="form-group row">
-                                            <label for="useRange" class="col-sm-2 col-form-label text-right">使用區間</label>
+                                            <label for="useRange"
+                                                class="col-sm-2 col-form-label text-right">使用區間</label>
                                             <div class="col-sm-9">
                                                 <div class="input-group">
                                                     <div class="input-group-prepend">
-                                                        <span class="input-group-text"><i class="far fa-calendar-check"></i></span>
+                                                        <span class="input-group-text"><i
+                                                                class="far fa-calendar-check"></i></span>
                                                     </div>
-                                                    <input type="text" class="form-control" id="useRange" placeholder="選擇使用起訖日" autocomplete="off">
+                                                    <input type="text" class="form-control" id="useRange"
+                                                        placeholder="選擇使用起訖日" autocomplete="off">
                                                     <input type="hidden" id="useStartAt" name="useStartAt">
                                                     <input type="hidden" id="useEndAt" name="useEndAt">
                                                 </div>
@@ -181,20 +206,20 @@
                                         </div>
 
                                     </div>
-                                    
+
                                     <div class="card-footer d-flex justify-content-center pt-4 pb-4">
                                         <button type="submit" class="btn btn-theme-action px-5 mr-3">
                                             <i class="fas fa-save mr-1"></i> 確認新增
                                         </button>
-                                        
+
                                         <button type="reset" class="btn btn-default px-5">
                                             <i class="fas fa-undo mr-1"></i> 清除重填
                                         </button>
                                     </div>
-                                    
+
                                 </form>
                             </div>
-                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -207,10 +232,10 @@
     <script src="../../plugins/select2/js/select2.full.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-    
+
     <script src="../../dist/js/adminlte.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 
@@ -224,6 +249,51 @@
                 minimumResultsForSearch: Infinity
             });
 
+            window.demoFill = function () {
+                // 1. 一般欄位
+                $('#code').val('DEMO2026');
+                $('#discountType').val('percent').trigger('change');
+
+                // 等待 change 事件觸發後再填入數值
+                setTimeout(() => {
+                    $('#discountValue').val('0.8'); // 八折
+                }, 100);
+
+                $('#isLimited').val('1').trigger('change');
+                setTimeout(() => {
+                    $('#totalAmount').val('100');
+                }, 100);
+
+                $('#minPurchase').val('1000');
+
+                // 2. 日期區間 (計算日期)
+                const today = moment().format('YYYY-MM-DD');
+                const nextMonth = moment().add(30, 'days').format('YYYY-MM-DD');
+                const nextTwoMonth = moment().add(60, 'days').format('YYYY-MM-DD');
+
+                // 發放期間: 今天 ~ 30天後
+                $('#issueRange').val(today + ' ~ ' + nextMonth);
+                $('#issueStartAt').val(today);
+                $('#issueEndAt').val(nextMonth);
+
+                // 使用期間: 今天 ~ 60天後
+                $('#useRange').val(today + ' ~ ' + nextTwoMonth);
+                $('#useStartAt').val(today);
+                $('#useEndAt').val(nextTwoMonth);
+
+                // 3. 視覺效果
+                $('#code, #discountValue, #totalAmount, #minPurchase, #issueRange, #useRange').focus().blur();
+
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'info',
+                    title: '已帶入 Demo 資料',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            };
+
             // 限量控管
             function toggleQuantityInputs() {
                 if ($('#isLimited').val() === "0") {
@@ -235,7 +305,7 @@
 
             toggleQuantityInputs();
             $('#isLimited').change(toggleQuantityInputs);
-            
+
             // 發放區間
             $('#issueRange').daterangepicker({
                 autoUpdateInput: false,
@@ -245,13 +315,13 @@
                 }
             });
 
-            $('#issueRange').on('apply.daterangepicker', function(ev, picker) {
+            $('#issueRange').on('apply.daterangepicker', function (ev, picker) {
                 $(this).val(picker.startDate.format('YYYY-MM-DD') + ' ~ ' + picker.endDate.format('YYYY-MM-DD'));
                 $('#issueStartAt').val(picker.startDate.format('YYYY-MM-DD'));
                 $('#issueEndAt').val(picker.endDate.format('YYYY-MM-DD'));
             });
 
-            $('#issueRange').on('cancel.daterangepicker', function(ev, picker) {
+            $('#issueRange').on('cancel.daterangepicker', function (ev, picker) {
                 $(this).val('');
                 $('#issueStartAt').val('');
                 $('#issueEndAt').val('');
@@ -266,18 +336,18 @@
                 }
             });
 
-            $('#useRange').on('apply.daterangepicker', function(ev, picker) {
+            $('#useRange').on('apply.daterangepicker', function (ev, picker) {
                 $(this).val(picker.startDate.format('YYYY-MM-DD') + ' ~ ' + picker.endDate.format('YYYY-MM-DD'));
                 $('#useStartAt').val(picker.startDate.format('YYYY-MM-DD'));
                 $('#useEndAt').val(picker.endDate.format('YYYY-MM-DD'));
             });
 
-            $('#useRange').on('cancel.daterangepicker', function(ev, picker) {
+            $('#useRange').on('cancel.daterangepicker', function (ev, picker) {
                 $(this).val('');
                 $('#useStartAt').val('');
                 $('#useEndAt').val('');
             });
-         	
+
             $('#discountType').change(function () {
                 const type = $(this).val();
                 const input = $('#discountValue');
@@ -291,7 +361,7 @@
                         'step': '0.05',
                         'placeholder': '請輸入 0.0 ~ 1.0（例如六折=0.6）'
                     });
-                    input.val(''); 
+                    input.val('');
                 } else {
                     // 金額折扣
                     input.attr({
@@ -304,7 +374,7 @@
                     input.val('');
                 }
             });
-            
+
             function validateCouponFront(discountType, discountValue, minPurchase, issueStartAt, useStartAt) {
                 // 折扣金額 vs 最低消費 
                 if (discountType === 'amount') {
@@ -322,7 +392,7 @@
                         return "使用開始日期不能早於發放開始日期";
                     }
                 }
-                return null; 
+                return null;
             }
 
             $('form').on('submit', function (e) {
@@ -342,7 +412,7 @@
                 };
 
                 const err = validateCouponFront(couponData.discountType, couponData.discountValue, couponData.minPurchase, couponData.issueStartAt, couponData.useStartAt);
-                
+
                 // 改用 SweetAlert 提示錯誤
                 if (err) return Swal.fire('資料錯誤', err, 'warning');
 
@@ -355,13 +425,13 @@
                 });
 
                 $.ajax({
-                    url: '/coupon', 
+                    url: '/coupon',
                     type: 'POST',
                     contentType: 'application/json',
                     data: JSON.stringify(couponData),
-                    success: function(res) {
+                    success: function (res) {
                         sessionStorage.setItem('lastCreatedCoupon', JSON.stringify(res));
-                        
+
                         Swal.fire({
                             icon: 'success',
                             title: '新增成功！',
@@ -372,7 +442,7 @@
                             window.location.href = 'CouponCreateDone.html';
                         });
                     },
-                    error: function(xhr) {
+                    error: function (xhr) {
                         const msg = (xhr.responseJSON ? xhr.responseJSON.error : '資料格式有誤');
                         Swal.fire('新增失敗', msg, 'error');
                     }

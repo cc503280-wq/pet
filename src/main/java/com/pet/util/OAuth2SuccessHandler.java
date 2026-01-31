@@ -1,6 +1,11 @@
 package com.pet.util;
 
 import com.pet.model.member.Member;
+import com.pet.model.member.MemberActionLog;
+import com.pet.service.appointment.MailService;
+import com.pet.service.member.CouponUsersRealService;
+import com.pet.aspect.LogAction;
+import com.pet.dao.member.MemberActionLogRepository;
 import com.pet.dao.member.MemberRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,13 +29,16 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     private JwtUtils jwtUtils;
 
     @Autowired
+    private MemberActionLogRepository logRepository; // [AOP] 手動注入
+
+    @Autowired
     private MemberRepository memberRepository;
 
     @Autowired
-    private com.pet.service.appointment.MailService mailService;
+    private MailService mailService;
 
     @Autowired
-    private com.pet.service.member.CouponUsersRealService couponUsersRealService;
+    private CouponUsersRealService couponUsersRealService;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -125,6 +133,19 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
             } catch (Exception e) {
                 System.err.println("⚠️ 歡迎信/優惠券派發失敗: " + e.getMessage());
             }
+        }
+
+        // [AOP] 手動紀錄登入行為 (OAuth2)
+        try {
+            MemberActionLog log = MemberActionLog.builder()
+                    .memberId(member.getMemberId())
+                    .actionType(LogAction.ActionType.LOGIN)
+                    .detail("OAuth2登入 (" + (googleId != null ? "Google" : "LINE") + ")")
+                    .clientIp(request.getRemoteAddr())
+                    .build();
+            logRepository.save(log);
+        } catch (Exception e) {
+            System.err.println("OAuth2 登入紀錄失敗: " + e.getMessage());
         }
 
         // 4. 產生 Token

@@ -6,19 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Home | 管理中心</title>
 
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <link rel="stylesheet" href="../../plugins/fontawesome-free/css/all.min.css">
     <link rel="stylesheet" href="../../dist/css/adminlte.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    
+
     <link rel="stylesheet" href="../../dist/css/admin-custom.css">
-    
+
     <script src="https://cdn.jsdelivr.net/npm/markdown-it@14.0.0/dist/markdown-it.min.js"></script>
 </head>
 
 <body class="hold-transition sidebar-mini sidebar-collapse">
     <div class="wrapper">
-        
+
         <div class="content-wrapper">
             <section class="content-header">
                 <div class="container-fluid">
@@ -34,9 +35,11 @@
                                 <div class="card-header d-flex p-0">
                                     <h3 class="card-title p-3"><i class="fas fa-chart-line mr-1"></i> 會員註冊人數趨勢</h3>
                                     <ul class="nav nav-pills ml-auto p-2" id="regChartFilters">
-                                        <li class="nav-item"><a class="nav-link active" href="#" data-period="6m">近六個月</a></li>
+                                        <li class="nav-item"><a class="nav-link active" href="#"
+                                                data-period="6m">近六個月</a></li>
                                         <li class="nav-item"><a class="nav-link" href="#" data-period="1y">本年度</a></li>
-                                        <li class="nav-item"><a class="nav-link" href="#" data-period="all">歷年總覽</a></li>
+                                        <li class="nav-item"><a class="nav-link" href="#" data-period="all">歷年總覽</a>
+                                        </li>
                                     </ul>
                                 </div>
                                 <div class="card-body">
@@ -45,7 +48,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="row">
                         <div class="col-md-8">
                             <div class="card card-outline card-success">
@@ -60,7 +63,8 @@
                         <div class="col-md-4">
                             <div class="card card-outline card-danger">
                                 <div class="card-header">
-                                    <h3 class="card-title"><i class="fas fa-birthday-cake mr-1"></i> <span id="petAgeTitle">寵物年齡層比例</span></h3>
+                                    <h3 class="card-title"><i class="fas fa-birthday-cake mr-1"></i> <span
+                                            id="petAgeTitle">寵物年齡層比例</span></h3>
                                 </div>
                                 <div class="card-body">
                                     <div class="chart-container"><canvas id="petAgePieChart"></canvas></div>
@@ -68,16 +72,85 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- 新增：會員行為紀錄表格 -->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card card-outline card-primary">
+                                <div class="card-header border-0">
+                                    <h3 class="card-title"><i class="fas fa-history mr-1"></i> 即時會員行為紀錄 (最近 20 筆)</h3>
+                                    <div class="card-tools d-flex align-items-center">
+                                        <!-- 篩選條件 -->
+                                        <input type="number" id="searchMemberId"
+                                            class="form-control form-control-sm mr-1" placeholder="會員ID"
+                                            style="width: 110px;">
+
+                                        <select id="searchActionType" class="form-control form-control-sm mr-1"
+                                            style="width: 130px;">
+                                            <option value="">全部動作</option>
+                                            <option value="LOGIN">登入</option>
+                                            <option value="SEARCH">搜尋</option>
+                                            <option value="CART">購物車</option>
+                                            <option value="CREATE_ORDER">訂單</option>
+                                            <option value="BOOKING">預約</option>
+                                            <option value="FAVORITE">收藏</option>
+                                        </select>
+
+                                        <input type="date" id="exportStartDate"
+                                            class="form-control form-control-sm mr-1" style="width: 140px;">
+                                        <span class="mr-1">-</span>
+                                        <input type="date" id="exportEndDate" class="form-control form-control-sm mr-2"
+                                            style="width: 140px;">
+
+                                        <button type="button" class="btn btn-tool mr-1" title="重新整理"
+                                            onclick="fetchRecentLogs()">
+                                            <i class="fas fa-sync-alt"></i>
+                                        </button>
+
+                                        <button type="button" class="btn btn-tool" title="匯出報表"
+                                            onclick="exportLogsToCSV()">
+                                            <i class="fas fa-file-csv"></i> 匯出
+                                        </button>
+
+                                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-body table-responsive p-0" style="height: 450px;">
+
+                                    <table class="table table-head-fixed text-nowrap table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>時間</th>
+                                                <th>會員ID</th>
+                                                <th>動作類型</th>
+                                                <th>目標ID</th>
+                                                <th>詳細內容</th>
+                                                <th>IP來源</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="logTableBody">
+                                            <tr>
+                                                <td colspan="6" class="text-center">載入中...</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </section>
         </div>
-        </div>
+    </div>
     <script src="../../plugins/jquery/jquery.min.js"></script>
     <script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="../../dist/js/adminlte.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 
@@ -90,6 +163,12 @@
 
             // 初始化圖表
             initCharts();
+
+            // 自動搜尋監聽 (Auto-Search)
+            // 當任一篩選條件變更時，自動重新載入紀錄
+            $('#searchMemberId, #searchActionType, #exportStartDate, #exportEndDate').on('change', function () {
+                fetchRecentLogs();
+            });
         });
 
         // ================= Chart Logic (Home 頁面專屬) =================
@@ -103,30 +182,31 @@
         };
 
         function initCharts() {
-            setTimeout(() => { fetchStats('6m'); initPetStats(); fetchAgeStats(); }, 100);
+            setTimeout(() => { fetchStats('6m'); initPetStats(); fetchAgeStats(); fetchRecentLogs(); }, 100);
             $('#regChartFilters').on('click', '.nav-link', function (e) {
+
                 e.preventDefault(); $('#regChartFilters .nav-link').removeClass('active'); $(this).addClass('active'); fetchStats($(this).data('period'));
             });
         }
 
-        function renderTrendChart(labels, data) { 
-            const ctx = document.getElementById('registrationChart'); 
-            if(!ctx) return; 
-            
-            if(regChart){ 
-                regChart.data.labels=labels; 
-                regChart.data.datasets[0].data=data; 
+        function renderTrendChart(labels, data) {
+            const ctx = document.getElementById('registrationChart');
+            if (!ctx) return;
+
+            if (regChart) {
+                regChart.data.labels = labels;
+                regChart.data.datasets[0].data = data;
                 regChart.update();
-            } else { 
-                regChart = new Chart(ctx, { 
-                    type:'line', 
-                    data:{ 
-                        labels:labels, 
-                        datasets:[{ label:'新註冊人數', data:data, borderColor:themeColors.dark, backgroundColor:'rgba(190, 135, 84, 0.2)', fill:true, tension:0.4 }] 
-                    }, 
-                    options:{ 
-                        responsive:true, 
-                        maintainAspectRatio:false, 
+            } else {
+                regChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{ label: '新註冊人數', data: data, borderColor: themeColors.dark, backgroundColor: 'rgba(190, 135, 84, 0.2)', fill: true, tension: 0.4 }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
                         // --- 插件設定 (Legend, Tooltip) ---
                         plugins: {
                             legend: {
@@ -146,30 +226,30 @@
                                 ticks: { font: { size: fontSettings.ticks.size } }
                             }
                         },
-                        onClick:(e,el)=>{ 
-                            if(el.length>0){ 
-                                const idx=el[0].index; 
-                                const l=regChart.data.labels[idx]; 
-                                if(l.length===4) fetchStats("all_"+l); 
-                            } 
-                        }, 
-                        onHover:(e,ce)=>{ e.native.target.style.cursor=ce[0]?'pointer':'default'; } 
-                    } 
-                }); 
-            } 
+                        onClick: (e, el) => {
+                            if (el.length > 0) {
+                                const idx = el[0].index;
+                                const l = regChart.data.labels[idx];
+                                if (l.length === 4) fetchStats("all_" + l);
+                            }
+                        },
+                        onHover: (e, ce) => { e.native.target.style.cursor = ce[0] ? 'pointer' : 'default'; }
+                    }
+                });
+            }
         }
 
         function fetchStats(p) { $.getJSON('/members/stats', { period: p }).done(res => renderTrendChart(res.labels, res.data)); }
 
-        async function initPetStats() { 
-            try { 
-                const res = await $.getJSON('/memberPets/stats', { type: 'stacked' }); 
-                const colors={'小型':themeColors.primary,'中型':themeColors.dark,'大型':themeColors.secondary}; 
-                let gd={}; ['狗','貓','其他'].forEach(t=>gd[t]={'小型':0,'中型':0,'大型':0}); 
-                res.labels.forEach((l,i)=>{ const[t,s]=l.split(','); if(gd[t]) gd[t][s]=res.data[i]; }); 
-                const ds=['小型','中型','大型'].map(s=>({label:s,backgroundColor:colors[s],data:['狗','貓','其他'].map(t=>gd[t][s])})); 
-                renderStackedBar(['狗','貓','其他'], ds);
-            }catch(e){console.error(e);} 
+        async function initPetStats() {
+            try {
+                const res = await $.getJSON('/memberPets/stats', { type: 'stacked' });
+                const colors = { '小型': themeColors.primary, '中型': themeColors.dark, '大型': themeColors.secondary };
+                let gd = {};['狗', '貓', '其他'].forEach(t => gd[t] = { '小型': 0, '中型': 0, '大型': 0 });
+                res.labels.forEach((l, i) => { const [t, s] = l.split(','); if (gd[t]) gd[t][s] = res.data[i]; });
+                const ds = ['小型', '中型', '大型'].map(s => ({ label: s, backgroundColor: colors[s], data: ['狗', '貓', '其他'].map(t => gd[t][s]) }));
+                renderStackedBar(['狗', '貓', '其他'], ds);
+            } catch (e) { console.error(e); }
         }
 
         function renderStackedBar(labels, datasets) {
@@ -198,15 +278,15 @@
                             }
                         },
                         // --- 座標軸設定 ---
-                        scales: { 
-                            x: { 
+                        scales: {
+                            x: {
                                 stacked: true,
                                 ticks: { font: { size: fontSettings.ticks.size } }
-                            }, 
-                            y: { 
-                                stacked: true, 
-                                ticks: { stepSize: 1, font: { size: fontSettings.ticks.size } } 
-                            } 
+                            },
+                            y: {
+                                stacked: true,
+                                ticks: { stepSize: 1, font: { size: fontSettings.ticks.size } }
+                            }
                         },
                         onClick: (event, elements) => {
                             if (elements.length > 0) {
@@ -223,26 +303,26 @@
             }
         }
 
-        async function fetchAgeStats(t=null) { 
-            try { 
-                const p={}; if(t) p.type=t; 
-                const res = await $.getJSON('/memberPets/stats', p); 
-                const ctx=document.getElementById('petAgePieChart'); 
-                $('#petAgeTitle').text(t?`${t} - 年齡分佈`:'所有寵物 - 年齡分佈'); 
-                if(petAgeChart){
-                    petAgeChart.data.labels=res.labels;
-                    petAgeChart.data.datasets[0].data=res.data;
+        async function fetchAgeStats(t = null) {
+            try {
+                const p = {}; if (t) p.type = t;
+                const res = await $.getJSON('/memberPets/stats', p);
+                const ctx = document.getElementById('petAgePieChart');
+                $('#petAgeTitle').text(t ? `${t} - 年齡分佈` : '所有寵物 - 年齡分佈');
+                if (petAgeChart) {
+                    petAgeChart.data.labels = res.labels;
+                    petAgeChart.data.datasets[0].data = res.data;
                     petAgeChart.update();
-                }else{
-                    petAgeChart=new Chart(ctx,{
-                        type:'doughnut',
-                        data:{
-                            labels:res.labels,
-                            datasets:[{data:res.data,backgroundColor:[themeColors.primary, themeColors.secondary, '#d2d6de']}]
+                } else {
+                    petAgeChart = new Chart(ctx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: res.labels,
+                            datasets: [{ data: res.data, backgroundColor: [themeColors.primary, themeColors.secondary, '#d2d6de'] }]
                         },
-                        options:{
-                            responsive:true,
-                            maintainAspectRatio:false,
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
                             // --- 插件設定 (圓餅圖沒有XY軸，只需設定 Legend) ---
                             plugins: {
                                 legend: {
@@ -255,10 +335,88 @@
                             }
                         }
                     });
-                } 
-            }catch(e){console.error(e);} 
+                }
+            } catch (e) { console.error(e); }
         }
+
+        function fetchRecentLogs() {
+            const memberId = $('#searchMemberId').val();
+            const actionType = $('#searchActionType').val();
+            const startDate = $('#exportStartDate').val();
+            const endDate = $('#exportEndDate').val();
+
+            // 建立查詢參數
+            const params = { limit: 20 };
+            if (memberId) params.memberId = memberId;
+            if (actionType) params.actionType = actionType;
+            if (startDate) params.startDate = startDate;
+            if (endDate) params.endDate = endDate;
+
+            $.getJSON('/logs/recent', params, function (logs) {
+                const tbody = $('#logTableBody');
+                tbody.empty();
+                if (!logs || logs.length === 0) {
+                    tbody.append('<tr><td colspan="6" class="text-center">查無符合條件的紀錄</td></tr>');
+                    return;
+                }
+
+                logs.forEach(log => {
+                    // 根據 actionType 給予不同顏色標籤
+                    let badgeClass = 'bg-secondary';
+                    if (log.actionType === 'LOGIN') badgeClass = 'bg-primary';
+                    else if (log.actionType === 'SEARCH') badgeClass = 'bg-info';
+                    else if (log.actionType === 'CART') {
+                        if (log.detail && log.detail.includes('移除')) badgeClass = 'bg-danger';
+                        else badgeClass = 'bg-warning';
+                    }
+                    else if (log.actionType === 'CREATE_ORDER') badgeClass = 'bg-success';
+                    else if (log.actionType === 'BOOKING') badgeClass = 'bg-purple'; // 自定義顏色
+                    else if (log.actionType === 'FAVORITE') badgeClass = 'bg-pink'; // 收藏用粉色
+
+                    const row = `
+                        <tr>
+                            <td>${log.time}</td>
+                            <td>${log.memberId}</td>
+                            <td><span class="badge ${badgeClass}">${log.actionType}</span></td>
+                            <td>${log.targetId || '-'}</td>
+                            <td>${log.detail || '-'}</td>
+                            <td>${log.clientIp}</td>
+                        </tr>
+                    `;
+                    tbody.append(row);
+                });
+            }).fail(function () {
+                $('#logTableBody').html('<tr><td colspan="6" class="text-center text-danger">載入失敗</td></tr>');
+            });
+        }
+        function exportLogsToCSV() {
+            const memberId = $('#searchMemberId').val();
+            const actionType = $('#searchActionType').val();
+            const startDate = $('#exportStartDate').val();
+            const endDate = $('#exportEndDate').val();
+
+            let url = '/logs/export?';
+            const params = [];
+
+            if (memberId) params.push(`memberId=${memberId}`);
+            if (actionType) params.push(`actionType=${actionType}`);
+            if (startDate) params.push(`startDate=${startDate}`);
+            if (endDate) params.push(`endDate=${endDate}`);
+
+            // 日期邏輯檢核
+            if (startDate && endDate && startDate > endDate) {
+                Swal.fire('日期錯誤', '開始日期不能晚於結束日期', 'warning');
+                return;
+            }
+
+            // 直接呼叫後端下載 API
+            window.location.href = url + params.join('&');
+        }
+
+
     </script>
+
+
 </body>
 
 </html>
