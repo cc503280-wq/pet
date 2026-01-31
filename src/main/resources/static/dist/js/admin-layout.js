@@ -118,8 +118,11 @@ const chatWidgetHTML = `
         <div id="adminMsgBox" style="display: flex; flex-direction: column;"></div>
     </div>
     <div id="quickReplyArea" class="px-2 pb-1 border-top pt-2 bg-light" style="display: none;">
-        <button class="btn btn-outline-secondary btn-sm rounded-pill" onclick="sendQuickReply()" style="font-size: 0.85rem;">
+        <button class="btn btn-outline-secondary btn-sm rounded-pill mb-1 mr-1" onclick="sendQuickReply('您好，請問有什麼可以協助您的嗎?')" style="font-size: 0.85rem;">
             您好，請問有什麼可以協助您的嗎?
+        </button>
+        <button class="btn btn-outline-secondary btn-sm rounded-pill mb-1 mr-1" onclick="sendQuickReply('正在替您確認中，請稍後哦')" style="font-size: 0.85rem;">
+            正在替您確認中，請稍後哦
         </button>
     </div>
     <div id="chatInputArea" class="chat-footer" style="display: none;">
@@ -162,7 +165,7 @@ $(function () {
         $wrapper.prepend(navbarHTML);
         $wrapper.children('.navbar').after(sidebarHTML);
         $wrapper.append(footerHTML);
-        
+
         // 修正：動態插入 HTML 後，需手動觸發 AdminLTE 的 Treeview 與 PushMenu 初始化
         // 因為 AdminLTE 可能在我們插入這些元素之前就已經跑完初始化了 (Race Condition)
         if ($.fn.Layout) {
@@ -255,6 +258,22 @@ function highlightActiveMenu() {
 // ==========================================
 // 6. 客服聊天室邏輯 (Chat Logic)
 // ==========================================
+// 輔助：安全解析時間格式
+function safeParseTime(createdAt) {
+    if (!createdAt) return '';
+    // 如果是 ISO 字串 (2026-01-31T16:15:20)
+    if (typeof createdAt === 'string' && createdAt.length >= 16) {
+        return createdAt.substring(11, 16);
+    }
+    // 如果是陣列 [2026, 1, 31, 16, 15, 30]
+    if (Array.isArray(createdAt) && createdAt.length >= 5) {
+        const hh = createdAt[3].toString().padStart(2, '0');
+        const mm = createdAt[4].toString().padStart(2, '0');
+        return `${hh}:${mm}`;
+    }
+    return '';
+}
+
 function toggleAdminChat() {
     isWidgetOpen = !isWidgetOpen;
     if (isWidgetOpen) {
@@ -361,10 +380,24 @@ function loadAdminHistory(id) {
 
 function appendAdminMsgUI(msg) {
     const box = $('#adminMsgBox');
+
+    // 特殊處理：系統訊息 (SYSTEM)
+    if (msg.sender === 'SYSTEM') {
+        const timeStr = safeParseTime(msg.createdAt);
+        box.append(`
+            <div class="d-flex justify-content-center my-3">
+                <span class="badge badge-secondary px-3 py-2 shadow-sm" style="font-size: 0.9rem; opacity: 0.9; border-radius: 20px;">
+                    <i class="fas fa-info-circle mr-1"></i> ${msg.content} <small class="ml-1 opacity-75">${timeStr}</small>
+                </span>
+            </div>
+        `);
+        return;
+    }
+
     const isSystem = (msg.sender === 'ADMIN' || msg.sender === 'AI');
     const wrapperClass = isSystem ? 'admin-wrapper' : 'member-wrapper';
     let contentHtml = md ? md.render(msg.content) : msg.content;
-    const timeStr = msg.createdAt ? msg.createdAt.substring(11, 16) : '';
+    const timeStr = safeParseTime(msg.createdAt);
 
     box.append(`
         <div class="message-wrapper ${wrapperClass}">
@@ -398,8 +431,8 @@ function sendAdminMessage() {
     }
 }
 
-function sendQuickReply() {
-    const msg = "您好，請問有什麼可以協助您的嗎?";
+function sendQuickReply(msg) {
+    if (!msg) msg = "您好，請問有什麼可以協助您的嗎?";
     $('#adminMsgInput').val(msg);
     sendAdminMessage();
 }
@@ -409,7 +442,31 @@ function handleAdminNewMsg(msg) {
         appendAdminMsgUI(msg);
         scrollToBottom();
         $.post('/admin/chat/read?memberId=' + currentUser.id);
+
+        // 如果是 SYSTEM 訊息，除了顯示在聊天室，也跳個 Toast 提醒
+        if (msg.sender === 'SYSTEM') {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'info',
+                title: msg.content,
+                showConfirmButton: false,
+                timer: 3000
+            });
+        }
         return;
+    }
+
+    // 如果不在聊天室，如果是 SYSTEM 訊息，也跳個 Toast
+    if (msg.sender === 'SYSTEM') {
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'info',
+            title: `會員 ${msg.memberId}: ${msg.content}`,
+            showConfirmButton: false,
+            timer: 3000
+        });
     }
 
     let target = userList.find(u => u.member.memberId === msg.memberId);

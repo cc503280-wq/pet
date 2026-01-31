@@ -27,6 +27,10 @@ public class ChatMessageService {
     // --- 新增：用來紀錄哪些會員正在「真人服務模式」 (True = 真人模式, False/Null = AI 模式) ---
     private final ConcurrentHashMap<Integer, Boolean> humanModeMap = new ConcurrentHashMap<>();
 
+    // --- 新增：紀錄哪些會員已經「結束對話」 (True = 已結束) ---
+    // 只有當會員主動發言時，才會移除這個標記
+    private final ConcurrentHashMap<Integer, Boolean> sessionEndedMap = new ConcurrentHashMap<>();
+
     // 檢查是否為真人模式
     public boolean isHumanMode(Integer memberId) {
         Boolean value = humanModeMap.get(memberId);
@@ -40,6 +44,16 @@ public class ChatMessageService {
     // 切換模式
     public void setHumanMode(Integer memberId, boolean isHuman) {
         humanModeMap.put(memberId, isHuman);
+    }
+
+    // 檢查對話是否已結束
+    public boolean isSessionEnded(Integer memberId) {
+        return sessionEndedMap.getOrDefault(memberId, false);
+    }
+
+    // 重啟對話 (當會員發言時)
+    public void reopenSession(Integer memberId) {
+        sessionEndedMap.remove(memberId);
     }
 
     /**
@@ -59,6 +73,11 @@ public class ChatMessageService {
                 .isRead(false) // 預設未讀
                 .isVisibleToUser(true) // 預設對使用者可見
                 .build();
+
+        // 如果是會員發言，自動重啟對話
+        if ("MEMBER".equals(sender)) {
+            reopenSession(memberId);
+        }
 
         return chatMessageRepository.save(message);
     }
@@ -165,6 +184,9 @@ public class ChatMessageService {
     public void endSession(Integer memberId) {
         // 1. 清除狀態
         humanModeMap.remove(memberId);
+
+        // 1.5 標記為已結束
+        sessionEndedMap.put(memberId, true);
 
         // 2. 軟刪除 (隱藏訊息)
         chatMessageRepository.hideMessagesByMemberId(memberId);
