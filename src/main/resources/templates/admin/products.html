@@ -17,9 +17,7 @@
 
     <link rel="stylesheet" th:href="@{/dist/css/admin-custom.css}">
     
-    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/markdown-it@14.0.0/dist/markdown-it.min.js"></script>
 
     <style>
         .box1 {
@@ -221,7 +219,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="productModal" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="productModal" tabindex="-1" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -239,9 +237,10 @@
                             <div class="invalid-feedback">請輸入商品名稱</div>
                         </div>
                         <div class="form-group">
-                            <label>商品描述</label>
-                            <textarea class="form-control" id="modalDescription" rows="3"></textarea>
-                        </div>
+						    <label>商品描述</label>
+						    <textarea class="form-control" id="modalDescription" rows="5" 
+						              style="height: 120px !important; min-height: 120px; resize: vertical;"></textarea>
+						</div>
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label>價格 <span class="text-danger">*</span></label>
@@ -262,9 +261,9 @@
                             <div class="invalid-feedback">請選擇一個分類</div>
                         </div>
                         <div class="form-group">
-                            <label>倒數日期</label>
-                            <input type="datetime-local" class="form-control" id="modalExpireDate">
-                        </div>
+						    <label>倒數日期 (YYYY/MM/DD)</label>
+						    <input type="date" class="form-control" id="modalExpireDate">
+						</div>
                         <div class="form-group">
                             <label>商品圖片</label>
                             <input type="file" class="form-control-file" id="modalImageFile" accept="image/*" onchange="previewImage()">
@@ -285,7 +284,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="viewModal" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="viewModal" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header bg-info text-white">
@@ -311,7 +310,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="galleryModal" tabindex="-1">
+    <div class="modal fade" id="galleryModal" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header bg-warning">
@@ -347,6 +346,7 @@
     <script th:src="@{/dist/js/admin-layout.js}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/markdown-it@14.0.0/dist/markdown-it.min.js"></script>
 
     <script th:inline="javascript">
         /*<![CDATA[*/
@@ -366,15 +366,21 @@
             $('#searchInput').keypress(function (e) {
                 if (e.which == 13) searchProducts();
             });
+         	// ==========================================
             // 🟢 新增：圖片懸浮預覽邏輯
+            // ==========================================
             const preview = $('#imagePreview');
+
             // 1. 當滑鼠移入圖片時
             $(document).on('mouseenter', '.table-img', function (e) {
                 const src = $(this).attr('src');
+                
                 // 如果是預設圖就不放大 (看您需求，這行可選)
                 if (src.includes('placeholder')) return; 
+
                 preview.attr('src', src).fadeIn(100);
             });
+
             // 2. 當滑鼠移動時，預覽圖跟著跑
             $(document).on('mousemove', '.table-img', function (e) {
                 // 設定位置在滑鼠右下方一點點
@@ -383,9 +389,14 @@
                     left: e.clientX + 15 + 'px'
                 });
             });
+
             // 3. 當滑鼠離開時，隱藏預覽圖
             $(document).on('mouseleave', '.table-img', function () {
                 preview.hide();
+            });
+         	// 🟢 新增：解決 aria-hidden 警告
+            $('.modal').on('shown.bs.modal', function () {
+                $(this).removeAttr('aria-hidden');
             });
         });
 
@@ -413,91 +424,59 @@
                 }
             });
         }
-        
+
         // ==========================================
-		// 🟢 renderTable (優化版：按鈕間距與對齊)
-		// ==========================================
-		function renderTable(products) {
-		    let html = '';
-		    // 🟢 修改表頭：調整寬度配置
-		    let thead = `
-		        <thead>
-		            <tr>
-		                <th style="width: 50px;">ID</th>
-		                <th style="width: 70px;">圖片</th>
-		                <th>名稱</th> <th style="width: 90px;">價格</th>
-		                <th style="width: 90px;">庫存</th>
-		                <th style="width: 110px;">類別</th>
-		                <th style="width: 90px;">狀態</th>
-		                <th class="text-center col-action">操作</th> </tr>
-		        </thead>
-		    `;
-		
-		    if (products.length === 0) {
-		        html = '<tr><td colspan="8" class="text-center py-4 text-muted">沒有找到相關資料</td></tr>';
-		    } else {
-		        $.each(products, function (index, p) {
-		            let categoryName = (p.category && p.category.categoryName) ? p.category.categoryName : '未分類';
-		            let imgUrl = p.imageUrl ? p.imageUrl : 'https://via.placeholder.com/50';
-		            
-		            // 狀態標籤樣式
-		            let statusBadge = p.isActive 
-		                ? '<span class="badge badge-success px-2 py-1">上架中</span>' 
-		                : '<span class="badge badge-secondary px-2 py-1">已下架</span>';
-		            
-		            // 上下架按鈕樣式
-		            let btnClass = p.isActive ? 'btn-outline-danger' : 'btn-outline-success';
-		            let btnIcon = p.isActive ? 'fa-arrow-down' : 'fa-arrow-up';
-		            let btnTitle = p.isActive ? '下架商品' : '上架商品';
-		
-		            html += `
-		                <tr>
-		                    <td class="align-middle text-center">
-		                        <a href="javascript:void(0)" onclick="viewProduct(${p.productId})" class="font-weight-bold text-primary">#${p.productId}</a>
-		                    </td>
-		                    <td class="align-middle text-center">
-		                        <img src="${imgUrl}" class="table-img shadow-sm border">
-		                    </td>
-		                    
-		                    <td class="text-left align-middle" style="max-width: 280px; min-width: 200px; white-space: normal; line-height: 1.4;">
-		                        <span class="font-weight-bold text-dark">${p.productName}</span>
-		                    </td>
-		                    
-		                    <td class="align-middle text-center font-weight-bold text-success">$${p.price}</td>
-		                    
-		                    <td class="align-middle">
-		                        <input type="number" class="form-control form-control-sm stock-input mx-auto text-center" 
-		                               data-id="${p.productId}" value="${p.stock}" style="width: 70px;" min="0">
-		                    </td>
-		                    
-		                    <td class="align-middle text-center"><small class="badge badge-light border">${categoryName}</small></td>
-		                    <td class="align-middle text-center">${statusBadge}</td>
-		                    
-		                    <td class="align-middle">
-		                        <div class="action-btn-group">
-		                            <button class="btn btn-warning btn-sm text-white shadow-sm" onclick="openGalleryModal(${p.productId}, '${p.productName}')" title="圖庫管理">
-		                                <i class="fas fa-images"></i>
-		                            </button>
-		                            <button class="btn btn-info btn-sm shadow-sm" onclick="openEditModal(${p.productId})" title="編輯商品">
-		                                <i class="fas fa-edit"></i>
-		                            </button>
-		                            <button class="btn ${btnClass} btn-sm shadow-sm" onclick="toggleStatus(${p.productId})" title="${btnTitle}">
-		                                <i class="fas ${btnIcon}"></i>
-		                            </button>
-		                        </div>
-		                    </td>
-		                </tr>
-		            `;
-		        });
-		    }
-		    
-    // 更新表格內容 (記得把 thead 也放進去，或者只更新 tbody)
-    // 由於原本您的 HTML 裡已經有 thead，我們這裡只更新 tbody 比較安全
-    // 但為了讓寬度設定生效，建議您可以把原本 HTML 裡的 <thead> ... </thead> 刪掉，
-    // 然後用 JS 直接把整張 table 重寫，或者像下面這樣只更新 tbody，但上面的 CSS .col-action 會負責寬度。
-    
-    $('#tableBody').html(html);
-}
+        // 🟢 修正後的 renderTable (含文字換行)
+        // ==========================================
+        function renderTable(products) {
+            let html = '';
+            if (products.length === 0) {
+                html = '<tr><td colspan="8" class="text-center">沒有找到相關資料</td></tr>';
+            } else {
+                $.each(products, function (index, p) {
+                    let categoryName = (p.category && p.category.categoryName) ? p.category.categoryName : '未分類';
+                    let imgUrl = p.imageUrl ? p.imageUrl : 'https://via.placeholder.com/50';
+                    let statusBadge = p.isActive ? '<span class="badge badge-success">上架中</span>' : '<span class="badge badge-secondary">已下架</span>';
+                    let btnClass = p.isActive ? 'btn-danger' : 'btn-success';
+                    let btnIcon = p.isActive ? 'fa-arrow-down' : 'fa-arrow-up';
+                    let btnText = p.isActive ? '下架' : '上架';
+
+                    html += `
+                        <tr>
+                            <td class="align-middle">
+                                <a href="javascript:void(0)" onclick="viewProduct(${p.productId})" class="font-weight-bold text-primary">${p.productId}</a>
+                            </td>
+                            <td class="align-middle"><img src="${imgUrl}" class="table-img"></td>
+                            
+                            <td class="text-left align-middle" style="max-width: 250px; min-width: 200px; white-space: normal; overflow-wrap: break-word;">
+                                ${p.productName}
+                            </td>
+                            
+                            <td class="align-middle">$${p.price}</td>
+                            <td class="align-middle">
+                                <input type="number" class="form-control form-control-sm stock-input mx-auto" 
+                                       data-id="${p.productId}" value="${p.stock}" style="width: 80px;" min="0">
+                            </td>
+                            <td class="align-middle">${categoryName}</td>
+                            <td class="align-middle">${statusBadge}</td>
+                            
+                            <td class="text-center align-middle">
+                                <button class="btn btn-warning btn-sm mr-1" onclick="openGalleryModal(${p.productId}, '${p.productName}')" title="圖庫">
+                                    <i class="fas fa-images"></i>
+                                </button>
+                                <button class="btn btn-secondary btn-sm mr-1" onclick="openEditModal(${p.productId})" title="修改">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn ${btnClass} btn-sm" onclick="toggleStatus(${p.productId})" title="${btnText}">
+                                    <i class="fas ${btnIcon}"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            }
+            $('#tableBody').html(html);
+        }
 
         // --- 以下所有 alert 已更換為 Swal ---
         
@@ -517,18 +496,34 @@
 
         function openEditModal(id) {
             $.ajax({
-                url: API_BASE + '/' + id, type: 'GET',
+                url: API_BASE + '/' + id,
+                type: 'GET',
                 success: function (p) {
                     $('#modalProductId').val(p.productId);
                     $('#modalProductName').val(p.productName);
                     $('#modalDescription').val(p.description);
                     $('#modalPrice').val(p.price);
                     $('#modalStock').val(p.stock);
-                    $('#modalExpireDate').val(p.expireDate);
+                    
+                    // 🟢 日期讀取邏輯
+                    if (p.expireDate) {
+                        // 不管資料庫是 "2026-05-01" 還是 "2026-05-01T20:00"
+                        // 我們只取前 10 個字元 "2026-05-01"
+                        let dateStr = p.expireDate.substring(0, 10);
+                        $('#modalExpireDate').val(dateStr);
+                    } else {
+                        $('#modalExpireDate').val('');
+                    }
+
                     if (p.category) $('#modalCategoryId').val(p.category.categoryId);
+                    
                     $('#modalImageFile').val('');
-                    if (p.imageUrl) $('#modalImagePreview').attr('src', IMAGE_BASE_URL + p.imageUrl).show();
-                    else $('#modalImagePreview').hide();
+                    if (p.imageUrl) {
+                        $('#modalImagePreview').attr('src', IMAGE_BASE_URL + p.imageUrl).show();
+                    } else {
+                        $('#modalImagePreview').hide();
+                    }
+                    
                     $('#modalTitle').text('修改商品');
                     $('#productModal').modal('show');
                 },
@@ -587,6 +582,7 @@
                     $.ajax({
                         url: API_BASE + '/' + id + '/status', type: 'PUT',
                         success: function () {
+                            // 狀態變更成功，用 Toast 提示
                             Swal.fire({
                                 icon: 'success',
                                 title: '更新成功！',
@@ -626,14 +622,61 @@
             $('#productForm input, #productForm select').on('input change', function() { $(this).removeClass('is-invalid'); });
         }
 
-        function fillDemoData() {
+        async function fillDemoData() {
+            // 1. 設定文字欄位
             $('#modalProductName').val("【新品推薦】頂級無穀深海魚貓糧");
-            $('#modalDescription').val("測試資料...");
+            $('#modalDescription').val("這是一筆由系統自動生成的測試資料。\n富含豐富 Omega-3，保護毛孩心血管健康。");
             $('#modalPrice').val(1580);
             $('#modalStock').val(99);
+
+            // 2. 設定分類
             let firstCategoryVal = $('#modalCategoryId option:eq(1)').val();
             if (firstCategoryVal) $('#modalCategoryId').val(firstCategoryVal);
+
+            // 3. 設定日期
+            let now = new Date();
+            now.setMonth(now.getMonth() + 1);
+            let year = now.getFullYear();
+            let month = String(now.getMonth() + 1).padStart(2, '0');
+            let day = String(now.getDate()).padStart(2, '0');
+            $('#modalExpireDate').val(`${year}-${month}-${day}`);
+
+            // 4. 移除錯誤紅框
             $('#productForm .form-control').removeClass('is-invalid');
+
+            // 🟢 5. 自動填入預設圖片 (關鍵程式碼)
+            // 這裡是用一張 Unsplash 的免費貓咪圖當範例，您可以換成任何 "公開" 的圖片網址
+            const imageUrl = 'https://res.cloudinary.com/dwzbhnqmq/image/upload/v1769834690/dog-food_lossul.png'; 
+            
+            try {
+                // A. 讓按鈕顯示 "處理中..."
+                let btn = $(event.target); // 抓取點擊的按鈕
+                let originalText = btn.html();
+                btn.html('<i class="fas fa-spinner fa-spin"></i> 抓取圖片中...');
+                
+                // B. 下載圖片並轉成檔案物件
+                let response = await fetch(imageUrl);
+                let blob = await response.blob();
+                // 這裡的 "demo.jpg" 是模擬的檔名
+                let file = new File([blob], "demo-cat.jpg", { type: "image/jpeg" });
+
+                // C. 使用 DataTransfer 模擬使用者選檔
+                let container = new DataTransfer();
+                container.items.add(file);
+                
+                // D. 塞進 input[type="file"]
+                document.getElementById('modalImageFile').files = container.files;
+                
+                // E. 觸發預覽 (讓您看到圖片)
+                $('#modalImagePreview').attr('src', URL.createObjectURL(blob)).show();
+                
+                // 復原按鈕文字
+                btn.html(originalText);
+                
+            } catch (error) {
+                console.error("無法載入預設圖片", error);
+                alert("預設圖片載入失敗，請檢查網路或網址");
+            }
         }
 
         // 🟢 新增/修改：使用 Timer Swal
@@ -762,6 +805,7 @@
                     });
                 },
                 error: function() { 
+                    // 這裡其實可以安靜處理，或者用 Toast
                     Swal.fire({icon: 'error', title: '無法載入圖片列表', toast: true, position: 'top-end', showConfirmButton: false, timer: 2000}); 
                 }
             });
@@ -802,6 +846,7 @@
                     $.ajax({
                         url: '/api/product-images/' + imageId, type: 'DELETE',
                         success: function() { 
+                            // 刪除成功，重整列表
                             loadGalleryImages(); 
                         },
                         error: function() { Swal.fire('錯誤', '刪除失敗', 'error'); }
@@ -852,81 +897,38 @@
             $('#paginationContainer').html(html);
         }
 
-	     // ==========================================
-	     // 📊 載入並繪製圖表 (AJAX)
-	     // ==========================================
-	     function loadCharts() {
-	         $.ajax({
-	             url: API_BASE + '/stats', // 呼叫後端: /products/stats
-	             type: 'GET',
-	             dataType: 'json',
-	             success: function (data) {
-	                 // data.lowStock 包含了我們在 Service 包好的 labels 和 data
-	                 if (data.lowStock) {
-	                     renderStockChart(data.lowStock);
-	                 }
-	                 
-	                 // 如果您還有分類圖表
-	                 if (data.categories) {
-	                     renderCategoryChart(data.categories);
-	                 }
-	             },
-	             error: function (err) {
-	                 console.error('無法載入圖表數據', err);
-	             }
-	         });
-	     }
-	
-	     // ==========================================
-	     // 🎨 繪製庫存告急圖表 (Bar Chart)
-	     // ==========================================
-	     function renderStockChart(chartData) {
-	         var ctx = document.getElementById('stockChart').getContext('2d');
-	         
-	         // 如果之前已經有圖表實例，建議先銷毀以免重疊 (視情況而定)
-	         // if (window.myStockChart) window.myStockChart.destroy();
-	
-	         new Chart(ctx, {
-	             type: 'bar', // 長條圖
-	             data: {
-	                 labels: chartData.labels, // 商品名稱
-	                 datasets: [{
-	                     label: '剩餘庫存',
-	                     data: chartData.data, // 庫存數量
-	                     // 設定顏色：因為是 "Danger" 告急，使用紅色系
-	                     backgroundColor: 'rgba(220, 53, 69, 0.7)', 
-	                     borderColor: 'rgba(220, 53, 69, 1)',
-	                     borderWidth: 1,
-	                     barPercentage: 0.6 // 條棒寬度
-	                 }]
-	             },
-	             options: {
-	                 indexAxis: 'y', // 🔥 關鍵：轉成橫向長條圖 (適合顯示長商品名)
-	                 responsive: true,
-	                 maintainAspectRatio: false,
-	                 plugins: {
-	                     legend: { display: false }, // 隱藏圖例 (標題已經寫在 Card Header 了)
-	                     tooltip: {
-	                         callbacks: {
-	                             label: function(context) {
-	                                 return ' 剩餘: ' + context.raw + ' 件';
-	                             }
-	                         }
-	                     }
-	                 },
-	                 scales: {
-	                     x: {
-	                         beginAtZero: true,
-	                         suggestedMax: 10, // 讓刻度稍微好看一點
-	                         grid: { display: true, drawBorder: false }
-	                     },
-	                     y: {
-	                         grid: { display: false } // 隱藏 Y 軸格線比較乾淨
-	                     }
-	                 }
-	             }
-	         });
-	     }
+        function loadCharts() {
+            $.ajax({
+                url: API_BASE + '/stats', type: 'GET', dataType: 'json',
+                success: function (data) {
+                    renderStockChart(data.lowStock);
+                    renderCategoryChart(data.categories);
+                },
+                error: function (err) { console.error('無法載入圖表數據', err); }
+            });
+        }
+
+        function renderStockChart(chartData) {
+            var ctx = document.getElementById('stockChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: chartData.labels,
+                    datasets: [{
+                        label: '剩餘庫存',
+                        data: chartData.data,
+                        backgroundColor: 'rgba(220, 53, 69, 0.8)',
+                        borderColor: 'rgba(220, 53, 69, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { x: { beginAtZero: true } }
+                }
+            });
+        }
 
         function renderCategoryChart(chartData) {
             var ctx = document.getElementById('categoryChart').getContext('2d');
@@ -942,34 +944,6 @@
                 options: {
                     responsive: true, maintainAspectRatio: false,
                     plugins: { legend: { position: 'right' } }
-                }
-            });
-        }
-        
-     	// 🟢 匯出 Excel	
-        function exportToExcel() {
-            // 這裡使用 SweetAlert 做個簡單確認 (選用)
-            Swal.fire({
-                title: '確定要匯出所有商品報表嗎？',
-                icon: 'info',
-                showCancelButton: true,
-                confirmButtonColor: '#198754', // Excel 綠
-                confirmButtonText: '下載',
-                cancelButtonText: '取消'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // 直接導向後端下載連結，瀏覽器會自動開始下載
-                    window.location.href = API_BASE + '/export';
-                    
-                    // 下載開始後顯示一個非阻塞的 Toast 提示
-                    Swal.fire({
-                        icon: 'success',
-                        title: '報表下載中...',
-                        toast: true,
-                        position: 'top-end',
-                        showConfirmButton: false,
-                        timer: 2000
-                    });
                 }
             });
         }

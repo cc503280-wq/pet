@@ -37,7 +37,7 @@ const navbarHTML = `
 // Sidebar HTML
 const sidebarHTML = `
 <aside class="main-sidebar">
-    <a href="Home.html" class="brand-link">
+    <a href="/admin/layout/Home.html" class="brand-link">
         <i class="fas fa-paw" style="color: #ffc20f; font-size: 1.8rem;"></i>
     </a>
 
