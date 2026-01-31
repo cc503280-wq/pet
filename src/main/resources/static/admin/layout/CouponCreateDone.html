@@ -1,325 +1,151 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-TW">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>CouponCreateDone</title>
+    <title>新增完成 | 管理中心</title>
 
-    <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <link rel="stylesheet" href="../../plugins/fontawesome-free/css/all.min.css">
     <link rel="stylesheet" href="../../dist/css/adminlte.min.css">
-    <link rel="stylesheet" href="../../plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
-    <link rel="stylesheet" href="../../plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+    
+    <link rel="stylesheet" href="../../dist/css/admin-custom.css">
 
-    <style type="text/css">
-        .brand-link {
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            padding: 0.5rem 1rem;
-        }
-
-        .sidebar-collapse .brand-link {
-            justify-content: center;
-        }
-
-        .brand-link i {
-            width: 1.5rem;
-            text-align: center;
-        }
-
-        .sidebar-collapse .brand-text {
-            display: none;
-        }
-
+    <style>
+        /* 標題區塊排版 */
         .box1 {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .form-control-static {
-            padding-top: 7px;
-            font-weight: bold;
-            color: #333;
+        /* 成功頁面專屬樣式 */
+        .success-icon {
+            font-size: 4rem;
+            color: #28a745;
+            margin-bottom: 1rem;
         }
-
-        .box2 {
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        
+        .data-row {
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .data-row:last-child {
+            border-bottom: none;
+        }
+        
+        .data-label {
+            font-weight: 600;
+            color: #6c757d;
+        }
+        
+        .data-value {
+            font-weight: 500;
+            color: #343a40;
+            word-break: break-all;
         }
     </style>
 </head>
 
 <body class="hold-transition sidebar-mini sidebar-collapse">
     <div class="wrapper">
-        <nav class="main-header navbar navbar-expand navbar-white navbar-light">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
-                </li>
-            </ul>
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a href="javascript:void(0)" id="logoutBtn" class="btn btn-secondary btn-sm">
-                        <i class="fas fa-sign-out-alt"></i> 登出
-                    </a>
-                </li>
-            </ul>
-        </nav>
-
-        <aside class="main-sidebar sidebar-dark-primary elevation-4">
-            <a href="Home.html" class="brand-link">
-                <i class="fas fa-paw" style="color: #FFD43B; font-size: 1.5rem;"></i>
-                <span class="brand-text font-weight-light">後台管理系統</span>
-            </a>
-            <div class="sidebar">
-                <nav class="mt-2">
-                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
-                        data-accordion="false">
-                        <li class="nav-item menu-open">
-                            <a href="#" class="nav-link active">
-                                <i class="nav-icon fas fa-edit"></i>
-                                <p>會員管理 <i class="right fas fa-angle-left"></i></p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item"><a href="AdminQueryAll.html" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>管理員資料</p>
-                                    </a></li>
-                                <li class="nav-item"><a href="MemberQueryAll.html" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>會員基本資料</p>
-                                    </a></li>
-                                <li class="nav-item"><a href="MemberPetQueryAll.html" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>會員寵物資料</p>
-                                    </a></li>
-                                <li class="nav-item"><a href="CouponQueryAll.html" class="nav-link active"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>優惠券總覽</p>
-                                    </a></li>
-                                <li class="nav-item"><a href="CouponUsersQueryAll.html" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>會員持有優惠券</p>
-                                    </a></li>
-                                <li class="nav-item"><a href="FavoritesQueryAll.html" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>會員收藏清單</p>
-                                    </a></li>
-                            </ul>
-                        </li>
-
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-edit"></i>
-                                <p>商品管理 <i class="right fas fa-angle-left"></i></p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item"><a href="/admin/products" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>商品管理</p>
-                                    </a></li>
-                                <li class="nav-item"><a href="/admin/categories" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>類別管理</p>
-                                    </a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-edit"></i>
-                                <p>訂單管理 <i class="right fas fa-angle-left"></i></p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item"><a href="/orders/list" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>查詢全部訂單</p>
-                                    </a></li>
-                                <li class="nav-item"><a href="/shipment/list" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>物流查詢</p>
-                                    </a></li>
-                                <li class="nav-item"><a href="/ordersItem/list" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>查詢全部訂單明細</p>
-                                    </a></li>
-                                <li class="nav-item"><a href="/Cart/shopping" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>新增訂單</p>
-                                    </a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item"><a href="#" class="nav-link"> <i class="nav-icon fas fa-edit"></i>
-                <p>
-                  預約管理 <i class="right fas fa-angle-left"></i>
-                </p>
-              </a>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="GetAllDailySchedules.html" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>班表總覽
-                    </p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="GetAllAppointments.html" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>預約訂單列表</p>
-                  </a>
-                </li>
-
-                <li class="nav-item">
-                  <a href="GetAllAppointmentDetails.html" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>預約明細</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="GetAllServiceItems.html" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>服務項目</p>
-                  </a>
-                </li>
-              </ul>
-            </li>
-
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="nav-icon fas fa-edit"></i>
-                <p>人員管理 <i class="right fas fa-angle-left"></i></p>
-              </a>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="GetAllGroomers.html" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>美容師列表</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="GetAllLeaveRecords.html" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>休假審核</p>
-                  </a>
-                </li>
-              </ul>
-            </li>
-          </ul>
-          </li>
-        </nav>
-        <!-- /.sidebar-menu -->
-      </div>
-      <!-- /.sidebar -->
-    </aside>
-
+        
         <div class="content-wrapper">
             <section class="content-header">
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-12 box1">
-                            <h1>會員管理</h1>
-                            <a href="CouponQueryAll.html" class="btn btn-secondary btn-sm">回列表</a>
+                            <h1>新增優惠券</h1>
+                            <a href="CouponQueryAll.html" class="btn btn-default btn-sm shadow-sm border">
+                                <i class="fas fa-arrow-left mr-1"></i> 回列表
+                            </a>
                         </div>
                     </div>
                 </div>
             </section>
 
             <section class="content">
-                <div class="container-fluid d-flex justify-content-center">
-                    <div class="row w-100 box2">
-                        <div class="col-md-6">
-                            <div class="card card-info">
-                                <div class="card-header">
-                                    <h3 class="card-title">新增資料檢視</h3>
-                                </div>
-
-                                <div class="alert alert-success mx-4 mt-3 py-2">
-                                    <i class="icon fas fa-check-circle"></i>
-                                    <strong>新增成功!</strong>
-                                </div>
-
-                                <form class="form-horizontal">
-                                    <div class="card-body">
-                                        <div class="form-group row">
-                                            <label class="col-sm-4 col-form-label">ID:</label>
-                                            <div class="col-sm-8">
-                                                <p class="form-control-static" id="res-couponId"></p>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label class="col-sm-4 col-form-label">折扣碼:</label>
-                                            <div class="col-sm-8">
-                                                <p class="form-control-static" id="res-code"></p>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label class="col-sm-4 col-form-label">折扣類型:</label>
-                                            <div class="col-sm-8">
-                                                <p class="form-control-static" id="res-discountType"></p>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label class="col-sm-4 col-form-label">折扣金額/百分比:</label>
-                                            <div class="col-sm-8">
-                                                <p class="form-control-static" id="res-discountValue"></p>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label class="col-sm-4 col-form-label">總發放量:</label>
-                                            <div class="col-sm-8">
-                                                <p class="form-control-static" id="res-totalAmount"></p>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label class="col-sm-4 col-form-label">使用門檻金額:</label>
-                                            <div class="col-sm-8">
-                                                <p class="form-control-static" id="res-minPurchase"></p>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label class="col-sm-4 col-form-label">發放區間:</label>
-                                            <div class="col-sm-8">
-                                                <p class="form-control-static">
-                                                    <span id="res-issueStartAt"></span> ~ <span
-                                                        id="res-issueEndAt"></span>
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label class="col-sm-4 col-form-label">使用區間:</label>
-                                            <div class="col-sm-8">
-                                                <p class="form-control-static">
-                                                    <span id="res-useStartAt"></span> ~ <span id="res-useEndAt"></span>
-                                                </p>
-                                            </div>
-                                        </div>
+                <div class="container-fluid">
+                    <div class="row justify-content-center"> 
+                        <div class="col-md-6"> <div class="card card-outline card-success shadow-lg">
+                                <div class="card-body text-center pt-5 pb-5">
+                                    
+                                    <div class="mb-4">
+                                        <i class="fas fa-check-circle success-icon"></i>
+                                        <h3 class="text-success font-weight-bold">新增成功！</h3>
+                                        <p class="text-muted">該優惠券活動已建立完成。</p>
                                     </div>
-                                    <div class="card-footer text-right">
-                                        <a href="CouponCreate.html" class="btn btn-info">
-                                            <i class="fas fa-plus"></i> 繼續新增
+
+                                    <div class="text-left bg-light p-4 rounded mb-5 mx-auto" style="max-width: 500px;">
+                                        
+                                        <div class="row data-row">
+                                            <div class="col-4 data-label">ID</div>
+                                            <div class="col-8 data-value" id="res-couponId">Loading...</div>
+                                        </div>
+                                        <div class="row data-row">
+                                            <div class="col-4 data-label">折扣碼</div>
+                                            <div class="col-8 data-value font-weight-bold text-primary" id="res-code">Loading...</div>
+                                        </div>
+                                        <div class="row data-row">
+                                            <div class="col-4 data-label">折扣類型</div>
+                                            <div class="col-8 data-value" id="res-discountType">Loading...</div>
+                                        </div>
+                                        <div class="row data-row">
+                                            <div class="col-4 data-label">折扣數值</div>
+                                            <div class="col-8 data-value" id="res-discountValue">Loading...</div>
+                                        </div>
+                                        <div class="row data-row">
+                                            <div class="col-4 data-label">發放總量</div>
+                                            <div class="col-8 data-value" id="res-totalAmount">Loading...</div>
+                                        </div>
+                                        <div class="row data-row">
+                                            <div class="col-4 data-label">使用門檻</div>
+                                            <div class="col-8 data-value" id="res-minPurchase">Loading...</div>
+                                        </div>
+                                        <div class="row data-row">
+                                            <div class="col-4 data-label">發放期間</div>
+                                            <div class="col-8 data-value">
+                                                <span id="res-issueStartAt"></span> ~ <br><span id="res-issueEndAt"></span>
+                                            </div>
+                                        </div>
+                                        <div class="row data-row">
+                                            <div class="col-4 data-label">使用期間</div>
+                                            <div class="col-8 data-value">
+                                                <span id="res-useStartAt"></span> ~ <br><span id="res-useEndAt"></span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div>
+                                        <a href="CouponCreate.html" class="btn btn-theme-action px-5 shadow-sm">
+                                            <i class="fas fa-plus mr-1"></i> 繼續新增
                                         </a>
                                     </div>
-                                </form>
+
+                                </div>
                             </div>
+                            
                         </div>
                     </div>
                 </div>
             </section>
         </div>
 
-        <footer class="main-footer">
-            <strong>Copyright &copy; 2026 Pet Admin.</strong>
-        </footer>
     </div>
 
     <script src="../../plugins/jquery/jquery.min.js"></script>
     <script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    
     <script src="../../dist/js/adminlte.min.js"></script>
-    <script src="../../dist/js/adminAuth.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+
+    <script src="../../dist/js/admin-layout.js"></script>
 
     <script>
         $(function () {
@@ -327,8 +153,15 @@
             const dataString = sessionStorage.getItem('lastCreatedCoupon');
 
             if (!dataString) {
-                alert("查無新增資料，將回列表頁");
-                window.location.href = 'CouponQueryAll.html';
+                Swal.fire({
+                    icon: 'warning',
+                    title: '無資料',
+                    text: '查無新增資料，將導回列表頁。',
+                    timer: 2000,
+                    showConfirmButton: false
+                }).then(() => {
+                    window.location.href = 'CouponQueryAll.html';
+                });
                 return;
             }
 
@@ -342,13 +175,21 @@
             const typeText = data.discountType === 'percent' ? '百分比折扣' : '固定金額折扣';
             $('#res-discountType').text(typeText);
 
-            // 折扣值顯示 (若是百分比則顯示例如 0.8)
-            $('#res-discountValue').text(data.discountValue);
+            // 折扣值顯示
+            // 如果是金額，加上 $，如果是百分比，不做處理
+            let valueText = data.discountValue;
+            if(data.discountType === 'amount') {
+                valueText = '$' + data.discountValue;
+            }
+            $('#res-discountValue').text(valueText);
 
             // 發放量顯示
-            $('#res-totalAmount').text(data.isLimited === 1 ? data.totalAmount : '不限量');
+            const totalText = (data.isLimited === 1) ? data.totalAmount + ' 張' : '不限量';
+            $('#res-totalAmount').text(totalText);
 
-            $('#res-minPurchase').text(data.minPurchase);
+            $('#res-minPurchase').text('$' + data.minPurchase);
+            
+            // 日期顯示
             $('#res-issueStartAt').text(data.issueStartAt);
             $('#res-issueEndAt').text(data.issueEndAt);
             $('#res-useStartAt').text(data.useStartAt);

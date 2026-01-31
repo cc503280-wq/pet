@@ -2,6 +2,9 @@ package com.pet.config;
 
 import java.time.Duration;
 
+import org.springframework.cache.Cache;
+import org.springframework.cache.annotation.CachingConfigurer;
+import org.springframework.cache.interceptor.CacheErrorHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
@@ -19,8 +22,48 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * Redis 設定類別
+ * 繼承 CachingConfigurerSupport 以自訂錯誤處理器
+ */
+@Slf4j
 @Configuration
-public class RedisConfig {
+public class RedisConfig implements CachingConfigurer {
+
+    /**
+     * Redis 容錯處理器
+     * 當 Redis 連線失敗時，自動 fallback 到資料庫查詢，不中斷業務邏輯
+     */
+    @Override
+    public CacheErrorHandler errorHandler() {
+        return new CacheErrorHandler() {
+            @Override
+            public void handleCacheGetError(RuntimeException e, Cache cache, Object key) {
+                log.warn("Redis GET 失敗，略過快取直接查詢資料庫: cache={}, key={}, error={}", 
+                        cache.getName(), key, e.getMessage());
+                // 不拋出例外，Spring 會自動 fallback 執行原本的方法
+            }
+
+            @Override
+            public void handleCachePutError(RuntimeException e, Cache cache, Object key, Object value) {
+                log.warn("Redis PUT 失敗，資料未快取: cache={}, key={}, error={}", 
+                        cache.getName(), key, e.getMessage());
+            }
+
+            @Override
+            public void handleCacheEvictError(RuntimeException e, Cache cache, Object key) {
+                log.warn("Redis EVICT 失敗，快取可能未清除: cache={}, key={}, error={}", 
+                        cache.getName(), key, e.getMessage());
+            }
+
+            @Override
+            public void handleCacheClearError(RuntimeException e, Cache cache) {
+                log.warn("Redis CLEAR 失敗: cache={}, error={}", cache.getName(), e.getMessage());
+            }
+        };
+    }
 
     /**
      * 可在Redis Key中看見JSAON資料

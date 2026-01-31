@@ -1,6 +1,8 @@
 package com.pet.controller.product;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,8 @@ import com.pet.dto.product.AddToCartRequest;
 import com.pet.service.product.CartItemService;
 import com.pet.util.LoginUser;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/cart")
 @CrossOrigin(origins = "http://localhost:5173")
@@ -27,14 +31,28 @@ public class CartItemController {
 	@Autowired
     private CartItemService cartService;
 	// ✅ 1. 加入購物車
-    @PostMapping("/add")
-    public String addToCart(@LoginUser Integer memberId, @RequestBody AddToCartRequest request) {
-        // 模擬從 Token 取得 memberId (實際上您要寫解析 Token 的邏輯)
-    	if (memberId == null) {
-            throw new RuntimeException("請先登入"); // 或回傳 401
+	@PostMapping("/add")
+    public ResponseEntity<?> addToCart(
+            @LoginUser Integer memberId, 
+            @RequestBody @Valid AddToCartRequest request) {
+        
+        // 1. 檢查登入 (回傳 401 而不是 500)
+        if (memberId == null) {
+            return ResponseEntity.status(401).body(Map.of("message", "請先登入"));
         }
+
+        // 2. 呼叫業務邏輯
         cartService.addToCart(memberId, request.getProductId(), request.getQuantity());
-        return "加入成功";
+
+        // 3. 回傳漂亮的 JSON
+        Map<String, Object> response = new HashMap<>();
+        response.put("status", "success");
+        response.put("message", "加入成功");
+        
+        // (選用) 如果想順便更新前端右上角的購物車數字，可以在這裡回傳
+        // response.put("cartCount", cartService.countItems(memberId)); 
+
+        return ResponseEntity.ok(response);
     }
 
     // ✅ 2. 查看我的購物車 (回傳 DTO List)
@@ -49,9 +67,8 @@ public class CartItemController {
     
     // ✅ 3. 移除商品
     @DeleteMapping("/remove/{productId}")
-    public String removeFromCart(@PathVariable Integer productId) {
-        Integer memberId = 1; 
-        cartService.removeFromCart(memberId, productId);
+    public String removeFromCart(@LoginUser Integer userId,@PathVariable Integer productId) {
+        cartService.removeFromCart(userId, productId);
         return "移除成功";
     }
     

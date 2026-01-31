@@ -2,6 +2,7 @@ package com.pet.dao.member;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -30,4 +31,7 @@ public interface CouponRepository extends JpaRepository<Coupon, Integer> {
     // 查詢目前「可領取」的優惠券 (狀態啟用且在日期內)
     @Query("SELECT c FROM Coupon c WHERE c.status = 'active' AND :today >= c.issueStartAt AND :today <= c.issueEndAt ORDER BY c.couponId Asc")
     List<Coupon> findAvailableCoupons(@Param("today") LocalDate today);
+    
+    // 用優惠券代碼查找優惠券模板
+    Optional<Coupon> findByCode(String code);
 }

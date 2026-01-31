@@ -1,9 +1,17 @@
 package com.pet.controller.product;
 
+import java.io.ByteArrayInputStream;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,13 +20,16 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.pet.dto.product.ProductStockDTO;
 import com.pet.model.product.Category;
 import com.pet.model.product.Product;
+import com.pet.service.product.ExcelExportService;
 import com.pet.service.product.ProductService;
+import com.pet.util.LoginUser;
 
 @RestController // 1. 告訴 Spring 這是一個 REST API (會回傳 JSON)
 @RequestMapping("/products")
@@ -26,6 +37,8 @@ public class ProductController {
 
 	@Autowired
 	private ProductService pService;
+	@Autowired // 注入剛剛寫的 Excel 服務
+    private ExcelExportService excelExportService;
 
 	// 取得所有商品 (後台管理用)
 	// 網址: GET /products/admin/all
@@ -101,7 +114,7 @@ public class ProductController {
 	// 搜尋商品 (模糊查詢)
 	// 網址: GET /products/search?keyword=貓罐頭
 	@GetMapping("/search")
-	public List<Product> searchProducts(@RequestParam String keyword) {
+	public List<Product> searchProducts(@RequestParam String keyword,@RequestParam(required = false) Integer categoryId) {
 		return pService.searchProducts(keyword);
 	}
 
@@ -151,6 +164,33 @@ public class ProductController {
 			return ResponseEntity.badRequest().body("更新失敗: " + e.getMessage());
 		}
 	}
+	
+	// 📊 統計圖表 API
+    @GetMapping("/stats")
+    @ResponseBody // 這一行很重要！強制回傳 JSON 而不是跳轉頁面
+    public ResponseEntity<Map<String, Object>> getStats() {
+        Map<String, Object> stats = pService.getProductStats();
+        return ResponseEntity.ok(stats);
+    }
+ // 🔥 新增：匯出 Excel API
+    @GetMapping("/export")
+    public ResponseEntity<Resource> exportProducts() {
+        // 1. 撈出所有資料 (您也可以改成接收搜尋條件來匯出特定資料)
+        // 這裡假設 productService 有 findAll()
+        List<Product> products = pService.findAllProducts(); 
+
+        // 2. 產生 Excel
+        ByteArrayInputStream in = excelExportService.productsToExcel(products);
+
+        // 3. 設定檔名
+        String filename = "products_" + System.currentTimeMillis() + ".xlsx";
+
+        // 4. 回傳檔案
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
+                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                .body(new InputStreamResource(in));
+    }
 
 	// 給前台用的 API：只抓上架商品
 	@GetMapping("/store/all")
@@ -169,6 +209,18 @@ public class ProductController {
 	@GetMapping("/store/categories")
 	public ResponseEntity<List<Category>> getCategories() { // 回傳型態變了
 	    return ResponseEntity.ok(pService.getAllCategories());
+	}
+	
+	@GetMapping("/store/recommendations")
+	public ResponseEntity<List<Product>> getRecommendations(@LoginUser Integer memberId) {
+	    // Controller 只需要把 memberId (可能是 null) 傳給 Service
+	    // Service 會自己判斷是訪客還是會員
+	    return ResponseEntity.ok(pService.getRecommendations(memberId));
+	}
+	@GetMapping("/best-sellers")
+	public ResponseEntity<List<Product>> getBestSellers() {
+	    List<Product> list = pService.getBestSellers();
+	    return ResponseEntity.ok(list);
 	}
 	
 }

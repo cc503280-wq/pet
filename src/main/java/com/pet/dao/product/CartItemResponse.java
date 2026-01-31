@@ -15,4 +15,6 @@ public class CartItemResponse {
     private Integer quantity;    // 購買數量
     private Integer subtotal;    // 🔥 小計 (單價 * 數量) - 前端直接顯示這個很方便
     private Integer stock;       // 庫存 (前端可用來限制 "+" 按鈕不能超過庫存)
+
+    private Boolean isActive; 
 }

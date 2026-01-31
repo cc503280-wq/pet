@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
@@ -14,6 +15,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling // 自動生產排程
 @EnableAsync // 啟用異步寄送郵件
 @EnableCaching //啟動快取功能(Redis)
+@EnableRetry //預約Retry功能
 public class PetApplication {
 
 	public static void main(String[] args) {
@@ -21,3 +23,5 @@ public class PetApplication {
 	}
 
 }
+
+

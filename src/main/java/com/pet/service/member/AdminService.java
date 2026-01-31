@@ -11,12 +11,11 @@ import org.springframework.transaction.annotation.Transactional;
 import com.pet.dao.member.AdminRepository;
 import com.pet.model.member.Admin;
 
-
 @Service
 @Transactional
 public class AdminService {
 
-	@Autowired
+    @Autowired
     private AdminRepository adminRepo;
 
     // 查詢全部
@@ -64,62 +63,68 @@ public class AdminService {
     // 6. 修改
     public Admin updateAdmin(Admin input) {
         Optional<Admin> optional = adminRepo.findById(input.getAdminId());
-        
+
         if (optional.isPresent()) {
             Admin existing = optional.get();
-            
+
             // 手動更新欄位
             existing.setName(input.getName());
             existing.setEmail(input.getEmail());
             existing.setPhone(input.getPhone());
             existing.setRole(input.getRole());
-            
+
             if (input.getStatus() != null) {
                 existing.setStatus(input.getStatus());
             }
-            
+
+            // --- 新增：如果輸入有包含密碼，就進行更新 ---
+            if (input.getPassword() != null && !input.getPassword().trim().isEmpty()) {
+                String hashedPassword = BCrypt.hashpw(input.getPassword(), BCrypt.gensalt());
+                existing.setPassword(hashedPassword);
+            }
+
             return adminRepo.save(existing);
         }
-        
+
         return null; // 找不到該筆資料
     }
 
     // 7. 切換狀態
     public boolean toggleAdminStatus(int id) {
         Optional<Admin> optional = adminRepo.findById(id);
-        
+
         if (optional.isPresent()) {
             Admin admin = optional.get();
             String currentStatus = admin.getStatus();
-            
+
             // 傳統 if-else 切換
             if ("active".equals(currentStatus)) {
                 admin.setStatus("disabled");
             } else {
                 admin.setStatus("active");
             }
-            
+
             adminRepo.save(admin);
             return true;
         }
-        
+
         return false;
     }
-    
- // 登入驗證
+
+    // 登入驗證
     public Admin adminLogin(String email, String password) {
         Optional<Admin> optional = adminRepo.findByEmail(email);
 
         if (optional.isPresent()) {
             Admin admin = optional.get();
-            
+
             if (BCrypt.checkpw(password, admin.getPassword())) {
                 if ("active".equals(admin.getStatus())) {
                     return admin;
                 }
             }
         }
-        
+
         return null;
     }
 }

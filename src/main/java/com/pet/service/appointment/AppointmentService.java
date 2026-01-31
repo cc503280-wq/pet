@@ -1,6 +1,7 @@
 package com.pet.service.appointment;
 
 import com.pet.common.AppConstants;
+
 import com.pet.dao.appointment.*;
 import com.pet.dao.member.MemberRepository;
 import com.pet.model.appointment.Appointment;
@@ -11,7 +12,10 @@ import com.pet.model.appointment.AppointmentRequest;
 import com.pet.model.appointment.DailySchedule;
 import com.pet.model.appointment.ServiceItem;
 import com.pet.model.member.Member;
+import com.pet.model.member.MemberPet;
 import com.pet.util.TimeSlotUtils;
+import com.pet.aspect.LogAction;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -20,7 +24,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.io.ByteArrayOutputStream;
@@ -28,8 +34,11 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
-
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
+import org.springframework.retry.annotation.Retryable;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Recover;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,9 +58,15 @@ public class AppointmentService {
     private final AppointmentListRepository appointmentListRepository;
     private final ServiceItemRepository serviceItemRepository;
     private final AppointmentDetailListRepository appointmentDetailListRepository;
-    private final LineNotificationService lineNotificationService;
-    private final MailService mailService;
     private final MemberRepository memberRepository;
+    // 注入Line通知功能
+    private final LineNotificationService lineNotificationService;
+    // 注入Mail通知功能
+    private final MailService mailService;
+    // 注入SimpMessagingTemplate-WebSocket功能
+    private final SimpMessagingTemplate messagingTemplate;
+    // 注入Twilio SMS通知功能
+    private final TwilioSmsService twilioSmsService;
 
     // ==================== 查詢方法 ====================
 
@@ -108,48 +123,119 @@ public class AppointmentService {
 
     @Transactional
     public Appointment completeAppointment(Integer id) {
-        return updateAppointmentStatus(id, AppConstants.APPOINTMENT_STATUS_COMPLETED, "預約單號：{} 服務完成");
+        Appointment appointment = findAppointmentOrThrow(id);
+
+        // 準備Websocket
+        Map<String, Object> message = new HashMap<>();
+        message.put("message", "您的毛孩服務已完成，可以來接牠囉！🐾");
+        message.put("status", AppConstants.APPOINTMENT_STATUS_COMPLETED); // "已完成"
+        message.put("appointmentId", id);
+
+        // 取得會員ID
+        Integer memberId = appointment.getMemberPet().getMember().getMemberId();
+
+        // 發送 WebSocket 通知給會員
+        messagingTemplate.convertAndSend("/topic/member/" + memberId + "/appointments", (Object) message);
+
+        // FIXME:記得改回來
+        // sendCompletionNotifications(appointment);
+
+        return updateStatus(appointment, AppConstants.APPOINTMENT_STATUS_COMPLETED,
+                appt -> log.info("預約單號：{} 服務完成", appt.getAppointmentId()));
     }
 
     @Transactional
     public Appointment checkInAppointment(Integer id) {
-        return updateAppointmentStatus(id, AppConstants.APPOINTMENT_STATUS_IN_PROGRESS, "預約單號：{} 報到成功");
+        Appointment appointment = findAppointmentOrThrow(id);
+
+        LocalDate today = LocalDate.now();
+        LocalDate appointmentDate = appointment.getAppointmentDate();
+
+        if (!appointmentDate.equals(today)) {
+            String errorMessage;
+            if (appointmentDate.isBefore(today)) {
+                errorMessage = String.format(
+                        "此預約日期為 %s，已經過期！今天是 %s。如需報到，請聯繫管理員。",
+                        appointmentDate, today);
+            } else {
+                errorMessage = String.format(
+                        "此預約日期為 %s，是未來的預約！今天是 %s。請於預約當天再進行報到。",
+                        appointmentDate, today);
+            }
+            log.warn("報到失敗 - 日期不符。預約單號: {}, 預約日期: {}, 今天: {}", id, appointmentDate, today);
+            throw new RuntimeException(errorMessage);
+        }
+
+        // 先準備一個要傳送的內容 (例如用 Map)
+        Map<String, Object> message = new HashMap<>();
+        message.put("message", "您的毛孩已開始服務！");
+        message.put("status", AppConstants.APPOINTMENT_STATUS_IN_PROGRESS);
+        message.put("appointmentId", id);
+
+        Integer memberId = appointment.getMemberPet().getMember().getMemberId();
+
+        // 使用 messagingTemplate 傳送 WebSocket 消息
+        messagingTemplate.convertAndSend("/topic/member/" + memberId + "/appointments", (Object) message);
+
+        return updateStatus(appointment, AppConstants.APPOINTMENT_STATUS_IN_PROGRESS,
+                appt -> log.info("預約單號：{} 報到成功", appt.getAppointmentId()));
     }
 
     // ==================== 新增預約 ====================
 
+    @Retryable(retryFor = { ObjectOptimisticLockingFailureException.class }, noRetryFor = {
+            RuntimeException.class }, maxAttempts = 25, backoff = @Backoff(delay = 20, // 初始等待縮短一點
+                    multiplier = 1.1, // 每次增加 1.5 倍
+                    maxDelay = 300, // 最久不等超過 1 秒
+                    random = true // 👉 關鍵！開啟隨機，讓大家不要「一起醒來」
+    ))
     @Transactional
+    @LogAction(type = LogAction.ActionType.BOOKING) // [AOP] 紀錄預約
     public Appointment saveAppointment(AppointmentRequest request) {
-        try {
-            // 1. 資料準備與檢查
-            LocalTime startTime = LocalTime.parse(request.getStartTime());
-            LocalTime endTime = LocalTime.parse(request.getEndTime());
-            DailySchedule schedule = getScheduleOrThrow(request.getGroomerId(), request.getAppointmentDate());
-            List<ServiceItem> selectedServices = getServicesOrThrow(request.getServiceIds());
 
-            // 2. 計算與邏輯驗證
-            int totalDuration = calculateTotalDuration(selectedServices);
-            validateGroomerAvailability(schedule, startTime, totalDuration);
-            validatePetAvailability(request.getPetId(), request.getAppointmentDate(), startTime, endTime);
+        // 1. 資料準備與檢查
+        LocalTime startTime = LocalTime.parse(request.getStartTime());
+        LocalTime endTime = LocalTime.parse(request.getEndTime());
+        DailySchedule schedule = getScheduleOrThrow(request.getGroomerId(), request.getAppointmentDate());
+        List<ServiceItem> selectedServices = getServicesOrThrow(request.getServiceIds());
 
-            // 3. 組裝與存檔
-            Appointment appointment = createAppointmentEntity(request, selectedServices, startTime, endTime);
-            Appointment savedAppt = appointmentRepository.save(appointment);
-            log.info("預約單號: {} 建立成功, 總時長: {} 分鐘", savedAppt.getAppointmentId(), totalDuration);
+        // 2. 計算與邏輯驗證
+        int totalDuration = calculateTotalDuration(selectedServices);
+        validateGroomerAvailability(schedule, startTime, totalDuration);
+        validatePetAvailability(request.getPetId(), request.getAppointmentDate(), startTime, endTime);
 
-            // 4. 鎖定時段
-            // 修改美容師班表，把時段鎖起來 (0 -> 1)
-            lockGroomerSchedule(schedule, startTime, totalDuration);
+        // 3. 組裝與存檔
+        Appointment appointment = createAppointmentEntity(request, selectedServices, startTime, endTime);
+        Appointment savedAppt = appointmentRepository.save(appointment);
+        log.info("預約單號: {} 建立成功, 總時長: {} 分鐘", savedAppt.getAppointmentId(), totalDuration);
 
-            // 5. 發送通知
-            sendAppointmentConfirmationEmail(savedAppt, request.getMemberId());
+        dailyScheduleRepository.flush();
 
-            return savedAppt;
+        // 4. 鎖定時段
+        // 修改美容師班表，把時段鎖起來 (0 -> 1)
+        lockGroomerSchedule(schedule, startTime, totalDuration);
 
-        } catch (ObjectOptimisticLockingFailureException e) {
-            log.warn("樂觀鎖衝突: {}", e.getMessage());
-            throw new RuntimeException("該時段剛被其他人預約，請重新選擇時段！");
-        }
+        // 5. 發送通知
+        sendAppointmentConfirmationEmail(savedAppt, request.getMemberId());
+
+        return savedAppt;
+
+    }
+
+    @Recover
+    public Appointment recover(RuntimeException e, AppointmentRequest request) {
+        log.warn("🛑 攔截到非併發錯誤 ({}): {}", e.getClass().getSimpleName(), e.getMessage());
+
+        // 什麼都不做，直接把原本的錯誤 (例如: "該時段已被預約") 往外丟
+        // 這樣 Controller 就會收到正確的錯誤訊息，而不是 ExhaustedRetryException
+        throw e;
+    }
+
+    @Recover
+    public Appointment recover(ObjectOptimisticLockingFailureException e, AppointmentRequest request) {
+        log.error("已重試 3 次，但仍發生樂觀鎖衝突。放棄預約。請求: {}", request);
+        // 這裡拋出的異常會傳給前端 Controller
+        throw new RuntimeException("系統繁忙（多人搶訂中），請重新整理頁面後再試！");
     }
 
     // ==================== 私有輔助方法 ====================
@@ -159,10 +245,12 @@ public class AppointmentService {
                 .orElseThrow(() -> new RuntimeException("找不到 ID 為 " + id + " 的預約"));
     }
 
-    private Appointment updateAppointmentStatus(Integer id, String newStatus, String logMessage) {
-        Appointment appointment = findAppointmentOrThrow(id);
-        return updateStatus(appointment, newStatus, appt -> log.info(logMessage, appt.getAppointmentId()));
-    }
+    // private Appointment updateAppointmentStatus(Integer id, String newStatus,
+    // String logMessage) {
+    // Appointment appointment = findAppointmentOrThrow(id);
+    // return updateStatus(appointment, newStatus, appt -> log.info(logMessage,
+    // appt.getAppointmentId()));
+    // }
 
     private Appointment updateStatus(Appointment appointment, String newStatus, Consumer<Appointment> onSuccess) {
         appointment.setAppointmentStatus(newStatus);
@@ -188,7 +276,9 @@ public class AppointmentService {
                         ? appointment.getGroomer().getGroomerName()
                         : "Unknown";
                 log.info("偵測到臨時取消 (< {} 小時)。觸發 LINE 通知...", URGENT_CANCEL_HOURS_THRESHOLD);
-                lineNotificationService.sendCancellationNotification(appointment, groomerName);
+                // TODO:等等需要再打開通知，目前先取消
+                // lineNotificationService.sendCancellationNotification(appointment,
+                // groomerName);
             } else {
                 log.info("取消時間在 {} 小時之前。不觸發通知。", URGENT_CANCEL_HOURS_THRESHOLD);
             }
@@ -233,6 +323,36 @@ public class AppointmentService {
             }
         } catch (Exception e) {
             log.error("發送預約通知信失敗，但預約已成功", e);
+        }
+    }
+
+    /**
+     * 發送服務完成通知 (使用 Twilio SMS 簡訊)
+     */
+    private void sendCompletionNotifications(Appointment appointment) {
+        try {
+            // 1. 透過 JPA 關聯取得會員資料 (Appointment -> MemberPet -> Member)
+            MemberPet pet = appointment.getMemberPet();
+            if (pet == null) {
+                log.warn("找不到預約的寵物資料，無法發送通知");
+                return;
+            }
+
+            Member member = pet.getMember();
+            if (member == null) {
+                log.warn("找不到會員資料，無法發送通知");
+                return;
+            }
+
+            // 2. 發送 SMS 簡訊通知 (如果有手機號碼)
+            if (member.getPhone() != null && !member.getPhone().isEmpty()) {
+                twilioSmsService.sendServiceCompletedSms(member.getPhone(), appointment);
+                log.info("已觸發 SMS 通知給會員: {}", member.getPhone());
+            } else {
+                log.warn("會員沒有手機號碼，無法發送 SMS");
+            }
+        } catch (Exception e) {
+            log.error("發送服務完成通知失敗，但服務已完成", e);
         }
     }
 
@@ -288,7 +408,6 @@ public class AppointmentService {
         appointment.setFinalPrice(request.getTotalPrice());
         appointment.setNotes(request.getNotes());
         appointment.setAppointmentStatus(AppConstants.APPOINTMENT_STATUS_CONFIRMED);
-        appointment.setPayStatus(AppConstants.PAY_STATUS_UNPAID);
 
         // 處理服務明細
         for (ServiceItem svc : services) {
@@ -307,7 +426,8 @@ public class AppointmentService {
         int startIndex = TimeSlotUtils.timeToStartIndex(startTime);
         String lockedSlots = TimeSlotUtils.lockSlots(schedule.getTimeSlots(), startIndex, totalDuration);
         schedule.setTimeSlots(lockedSlots);
-        dailyScheduleRepository.save(schedule);
+        // 如果衝突，直接拋出Exception，這樣就不會沒有預約到的人也收到確認郵件
+        dailyScheduleRepository.saveAndFlush(schedule);
         log.info("已將美容師: {} 工作日: {} 時段鎖定", schedule.getGroomerId(), schedule.getWorkDate());
     }
 

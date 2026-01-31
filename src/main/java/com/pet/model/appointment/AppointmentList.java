@@ -44,8 +44,6 @@ public class AppointmentList {
 	private String notes;
 	@Column(name = "appointment_status")
 	private String appointmentStatus;
-	@Column(name = "pay_status")
-	private String payStatus;
 	@Column(name = "pet_type")
 	private String petType;
 	@Column(name = "pet_size")

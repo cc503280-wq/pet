@@ -16,7 +16,8 @@
 	<link rel="stylesheet" href="/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css" />
 	<link rel="stylesheet" href="/plugins/datatables-responsive/css/responsive.bootstrap4.min.css" />
 	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-
+	<!-- SweetAlert2 (Bootstrap 4 Theme) -->
+<link rel="stylesheet" href="../../plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
 	<style type="text/css">
 		/* 調整 sidebar logo 排版 */
 		.brand-link {
@@ -429,6 +430,8 @@
 	<script src="/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
 	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
 	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+	<!-- SweetAlert2 -->
+	<script src="../../plugins/sweetalert2/sweetalert2.min.js"></script>
 	<!-- 登出 -->
 	<script src="../../dist/js/adminAuth.js"></script>
 	<!-- .登出 -->
@@ -443,7 +446,11 @@
 			let dataStr = sessionStorage.getItem('appointmentSuccessData');
 
 			if (!dataStr) {
-				alert("查無預約資料，將返回新增頁面。");
+				Swal.fire({
+					icon: 'error',
+					title: '錯誤',
+					text: '查無預約資料，將返回新增頁面。',
+				});
 				window.location.href = "InsertAppointment.html";
 				return;
 			}

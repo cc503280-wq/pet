@@ -25,13 +25,6 @@ public class TimeSlotUtils {
 
 	// 將時間字串 "HH:mm" 轉為陣列索引 (0-95)
     // 00:00 -> 0, 00:15 -> 1
-	public static int timeToStartIndex(String time) {
-		String[] parts = time.split(":");
-		int h = Integer.parseInt(parts[0]);
-		int m = Integer.parseInt(parts[1]);
-		return (h * 4) + (m / 15);
-	}
-
 	public static int timeToStartIndex(LocalTime time) {
         return (time.getHour() * 4) + (time.getMinute() / 15);
     }

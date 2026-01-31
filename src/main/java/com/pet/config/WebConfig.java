@@ -46,9 +46,11 @@ public class WebConfig implements WebMvcConfigurer {
                         "/scss/**", // 樣式資源
                         "/products/**",
                         "/products/store/**",
+                        "/products/store/recommendations",
                         "/store/**", // 首頁熱銷推薦 API
                         "/api/**",
                         "/favicon.ico",
+                        "/appointments/**",
                         "/appointments/member/**", // 會員查詢預約
                         "/appointments/insertInto", // 會員新增預約
                         "/appointments/cancel/**", // 會員取消預約
@@ -61,9 +63,16 @@ public class WebConfig implements WebMvcConfigurer {
                         "/schedule/**", // 時段 API (前台預約)
                         "/members", // 會員列表 API (預約選擇會員)
                         "/memberPets/**", // 會員寵物 API (預約選擇寵物)
-                        //FIXME: 剛剛新增的東西
                         "/shop/coupons", // 會員優惠券 API (前台瀏覽)
-                        "/error"); // 排除錯誤路徑
+                        "/error",
+                        "/swagger-ui.html",
+                        "/swagger-ui/**",
+                        "/v3/api-docs/**",
+                        "/swagger-resources/**",
+                        "/webjars/**",
+                        "/plugins/**",
+                        "/dist/**"
+                        ); // 排除錯誤路徑
 
     }
 
