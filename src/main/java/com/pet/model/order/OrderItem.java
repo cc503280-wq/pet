@@ -1,6 +1,7 @@
 package com.pet.model.order;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -37,9 +38,9 @@ public class OrderItem implements Serializable {
 	@NonNull
 	private Integer quantity;
 	@NonNull
-	private Integer unitPrice;
+	private BigDecimal unitPrice;
 	@NonNull
-	private Integer subtotal;
+	private BigDecimal subtotal;
 	
 
 }

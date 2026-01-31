@@ -65,7 +65,7 @@ public class UserController {
 		return oiService.getOrderItemDTO(orderId);
 	}
 	
-	@GetMapping("/shipFee")
+	@GetMapping("/shipment")
 	public Shipment getMethodName(Integer orderId) {
 		return shipmentService.getShipmentByOrderId(orderId).get(0);
 	}
