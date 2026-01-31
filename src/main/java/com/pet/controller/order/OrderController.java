@@ -2,6 +2,7 @@
 package com.pet.controller.order;
 
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +15,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 
 import com.pet.model.order.Order;
+import com.pet.model.order.OrderItem;
+import com.pet.service.member.CouponUsersRealService;
+import com.pet.service.member.CouponUsersService;
+import com.pet.service.order.OrderItemService;
 import com.pet.service.order.OrderService;
 import com.pet.service.order.ShipmentService;
-
-
+import com.pet.service.product.ProductService;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,6 +35,15 @@ public class OrderController {
 	private OrderService oService;
 	@Autowired
 	private ShipmentService shipmentService;
+	@Autowired
+	private OrderItemService oItemService;
+	
+	@Autowired
+	private ProductService pService;
+	@Autowired
+	private CouponUsersRealService couponUsersRealService;
+	@Autowired
+	private CouponUsersService cUsersService;
 	
 	@GetMapping("/list")
 	public String orderlist(Model model) {
@@ -61,6 +74,16 @@ public class OrderController {
 	public ResponseEntity<Void> cancelOrder(@RequestParam Integer orderId){
 	    oService.updateOrderStatus(orderId, "已取消");
 	    shipmentService.updateShipmentStatus(orderId, "已取消");
+	    //修改庫存量
+	    List<OrderItem> orders = oItemService.getOrderItemByorder(orderId);
+	    for (OrderItem orderItem : orders) {
+	    	pService.updateProductStock(orderId, orderItem.getQuantity(), 0);
+		}
+	    //修改優惠券
+	    Order order = oService.getOrderById(orderId);
+	    couponUsersRealService.CouponUsersUpdate(couponUsersRealService.couponUserId(order.getMemberId(), order.getCouponId()), "unused", LocalDate.now());
+	    
+	    
 	    return ResponseEntity.ok().build();
 	}
 	

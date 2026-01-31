@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.pet.dao.member.CouponRepository;
 import com.pet.dao.member.CouponUsersRealRepository;
 import com.pet.model.member.Coupon;
+import com.pet.model.member.CouponUsers;
 import com.pet.model.member.CouponUsersReal;
 
 import jakarta.transaction.Transactional;
@@ -48,5 +49,13 @@ public class CouponUsersRealService {
 
 	    // 4. 存進 coupon_users 表
 	    curRepo.save(couponUser);
+	}
+	//根據會員編號與優惠券編號查詢會員優惠券編號
+	public Integer couponUserId(Integer memberId,Integer couponId) {
+		
+		  return curRepo
+		            .findByCouponIdAndMemberId(couponId, memberId)
+		            .orElseThrow(() -> new RuntimeException("Coupon 不存在或不屬於該會員"))
+		            .getId();
 	}
 }

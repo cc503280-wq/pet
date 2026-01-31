@@ -24,6 +24,8 @@ public class EcpayService {
     private final String HASH_KEY = "pwFHCqoQZGmho4w6";
     private final String HASH_IV = "EkRm7iFT261dpevs";
     private final String ACTION_URL = "https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5";
+    
+   //修改成後端位置
     private final String BASE_URL ="https://unchid-technologically-pok.ngrok-free.dev";
 
     // 回傳網址 (請改為您的實際網址，本地開發需用 ngrok)
