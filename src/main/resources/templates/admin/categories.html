@@ -13,17 +13,17 @@
     <link rel="stylesheet" th:href="@{/plugins/datatables-responsive/css/responsive.bootstrap4.min.css}">
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <link rel="stylesheet" th:href="@{/dist/css/admin-custom.css}">
-    
-    
-
     <style>
-        /* 頁面專屬樣式 */
-        .box1 {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        /* 頁面專屬微調 */
+        .card-header {
+            background-color: #fff;
+            border-bottom: 1px solid rgba(0,0,0,.125);
+        }
+        .table td {
+            font-size: 1.05rem;
         }
     </style>
 </head>
@@ -35,13 +35,8 @@
             <section class="content-header">
                 <div class="container-fluid">
                     <div class="row mb-2">
-                        <div class="col-sm-6">
-                            <h1 class="m-0">分類管理</h1>
-                        </div>
-                        <div class="col-sm-6">
-                            <button onclick="openCreateModal()" class="btn btn-success float-sm-right">
-                                <i class="fas fa-plus"></i> 新增分類
-                            </button>
+                        <div class="col-sm-12">
+                            <h1>分類管理</h1>
                         </div>
                     </div>
                 </div>
@@ -49,19 +44,33 @@
 
             <section class="content">
                 <div class="container-fluid">
-                    <div class="card">
-                        <div class="card-body">
-                            <table id="categoriesTable" class="table table-bordered table-hover">
-                                <thead>
-                                    <tr>
-                                        <th style="width: 10%">ID</th>
-                                        <th>分類名稱</th>
-                                        <th style="width: 20%">操作</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="tableBody">
-                                    </tbody>
-                            </table>
+                    <div class="row">
+                        <div class="col-md-8 mx-auto"> <div class="card shadow-sm">
+                                <div class="card-header d-flex align-items-center py-3">
+                                    <h3 class="card-title text-dark font-weight-bold">
+                                        <i class="fas fa-tags mr-2 text-primary"></i>分類列表
+                                    </h3>
+                                    <div class="ml-auto">
+                                        <button onclick="openCreateModal()" class="btn btn-success btn-sm shadow-sm">
+                                            <i class="fas fa-plus"></i> 新增分類
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="card-body p-0">
+                                    <table id="categoriesTable" class="table table-hover table-striped">
+                                        <thead class="bg-light">
+                                            <tr>
+                                                <th style="width: 100px;" class="text-center">ID</th>
+                                                <th>分類名稱</th>
+                                                <th style="width: 150px;" class="text-center">操作</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tableBody">
+                                            </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -69,27 +78,28 @@
         </div>
         </div>
     <div class="modal fade" id="categoryModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalTitle">新增分類</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title font-weight-bold" id="modalTitle">新增分類</h5>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body p-4">
                     <form id="categoryForm">
                         <input type="hidden" id="modalCategoryId">
 
                         <div class="form-group">
-                            <label>分類名稱</label> 
-                            <input type="text" class="form-control" id="modalCategoryName" required>
+                            <label class="font-weight-bold">分類名稱 <span class="text-danger">*</span></label> 
+                            <input type="text" class="form-control form-control-lg" id="modalCategoryName" placeholder="請輸入分類名稱..." required>
+                            <div class="invalid-feedback">分類名稱不能為空</div>
                         </div>
                     </form>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
-                    <button type="button" class="btn btn-primary" onclick="submitCategory()">儲存</button>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-secondary px-4" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary px-4" onclick="submitCategory()">儲存</button>
                 </div>
             </div>
         </div>
@@ -99,44 +109,56 @@
     <script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
     <script th:src="@{/dist/js/adminAuth.js}"></script>
     <script th:src="@{/dist/js/adminlte.min.js}"></script>
-    
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script th:src="@{/dist/js/admin-layout.js}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/markdown-it@14.0.0/dist/markdown-it.min.js"></script>
-    <script th:src="@{/dist/js/admin-layout.js}"></script>
 
     <script th:inline="javascript">
         /*<![CDATA[*/
-        // API 路徑 (對應 CategoryController)
         const API_BASE = /*[[@{/categories}]]*/ '/categories';
 
         $(function () {
             loadAllCategories();
+            
+            // 綁定輸入框 Enter 事件
+            $('#modalCategoryName').keypress(function (e) {
+                if (e.which == 13) {
+                    e.preventDefault(); // 避免表單預設送出
+                    submitCategory();
+                }
+            });
+            
+            // 移除錯誤紅框
+            $('#modalCategoryName').on('input', function() {
+                $(this).removeClass('is-invalid');
+            });
         });
 
         // 1. 載入列表
         function loadAllCategories() {
             $.ajax({
-                url: API_BASE, // GET /categories
+                url: API_BASE, 
                 type: 'GET',
                 success: function (data) {
                     const tableBody = $('#tableBody');
                     tableBody.empty();
 
                     if(data.length === 0) {
-                        tableBody.html('<tr><td colspan="3" class="text-center">尚無分類資料</td></tr>');
+                        tableBody.html('<tr><td colspan="3" class="text-center py-4 text-muted">尚無分類資料</td></tr>');
                         return;
                     }
 
                     $.each(data, function (index, c) {
                         let row = `
                         <tr>
-                            <td>${c.categoryId}</td>
-                            <td>${c.categoryName}</td>
-                            <td>
-                                <button class="btn btn-secondary btn-sm mr-1" onclick="openEditModal(${c.categoryId})">
-                                    <i class="fas fa-edit"></i> 修改
+                            <td class="align-middle text-center">
+                                <span class="badge badge-light border" style="font-size: 1rem;">${c.categoryId}</span>
+                            </td>
+                            <td class="align-middle font-weight-bold text-dark pl-4">${c.categoryName}</td>
+                            <td class="align-middle text-center">
+                                <button class="btn btn-info btn-sm shadow-sm px-3" onclick="openEditModal(${c.categoryId})">
+                                    <i class="fas fa-edit mr-1"></i> 修改
                                 </button>
                             </td>
                         </tr>
@@ -146,12 +168,11 @@
                 },
                 error: function (err) {
                     console.error(err);
-                    // 如果您有引用 SweetAlert2，可以用 Swal.fire 代替 alert
-                    if(typeof Swal !== 'undefined') {
-                        Swal.fire('錯誤', '無法載入分類資料', 'error');
-                    } else {
-                        alert('無法載入分類資料');
-                    }
+                    Swal.fire({
+                        icon: 'error',
+                        title: '錯誤',
+                        text: '無法載入分類資料'
+                    });
                 }
             });
         }
@@ -159,37 +180,56 @@
         // 2. 打開新增視窗
         function openCreateModal() {
             $('#categoryForm')[0].reset();
-            $('#modalCategoryId').val(''); // 清空 ID
+            $('#modalCategoryId').val(''); 
             $('#modalTitle').text('新增分類');
+            $('#modalCategoryName').removeClass('is-invalid'); // 重置錯誤狀態
             $('#categoryModal').modal('show');
+            
+            // 自動聚焦輸入框
+            setTimeout(() => $('#modalCategoryName').focus(), 500);
         }
 
         // 3. 打開修改視窗
         function openEditModal(id) {
             $.ajax({
-                url: API_BASE + '/' + id, // 假設後端有 GET /categories/{id}
+                url: API_BASE + '/' + id,
                 type: 'GET',
                 success: function (c) {
                     $('#modalCategoryId').val(c.categoryId);
-                    $('#modalCategoryName').val(c.categoryName);
+                    $('#modalCategoryName').val(c.categoryName).removeClass('is-invalid');
 
                     $('#modalTitle').text('修改分類');
                     $('#categoryModal').modal('show');
+                    setTimeout(() => $('#modalCategoryName').focus(), 500);
                 },
                 error: function(err) {
-                    console.error(err);
-                    alert('無法讀取該分類資料');
+                    Swal.fire('錯誤', '無法讀取該分類資料', 'error');
                 }
             });
         }
 
-        // 4. 送出資料 (新增或修改)
+        // 4. 送出資料 (使用 Swal Timer)
         function submitCategory() {
+            const nameInput = $('#modalCategoryName');
+            const name = nameInput.val().trim();
+            
+            // 簡單驗證
+            if (!name) {
+                nameInput.addClass('is-invalid');
+                return;
+            }
+
             let formData = new FormData();
-            formData.append('categoryName', $('#modalCategoryName').val());
+            formData.append('categoryName', name);
 
             let id = $('#modalCategoryId').val();
             let url = id ? (API_BASE + '/update/' + id) : (API_BASE + '/create');
+            let actionText = id ? '修改' : '新增';
+
+            // 鎖定按鈕避免重複送出
+            const btn = $(event.target);
+            const originalText = btn.text();
+            btn.prop('disabled', true).text('處理中...');
 
             $.ajax({
                 url: url,
@@ -198,12 +238,12 @@
                 processData: false,
                 contentType: false,
                 success: function () {
-                    // 使用 SweetAlert2 (如果有引入)
-                    if(typeof Swal !== 'undefined') {
-                        Swal.fire('成功', '儲存成功！', 'success');
-                    } else {
-                        alert('儲存成功！');
-                    }
+                    Swal.fire({
+                        icon: 'success',
+                        title: actionText + '成功！',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
                     
                     $('#categoryModal').modal('hide');
                     loadAllCategories();
@@ -211,12 +251,10 @@
                 error: function (xhr) {
                     console.error(xhr);
                     let msg = xhr.responseText || '儲存失敗';
-                    
-                    if(typeof Swal !== 'undefined') {
-                        Swal.fire('失敗', msg, 'error');
-                    } else {
-                        alert(msg);
-                    }
+                    Swal.fire('失敗', msg, 'error');
+                },
+                complete: function() {
+                    btn.prop('disabled', false).text(originalText);
                 }
             });
         }

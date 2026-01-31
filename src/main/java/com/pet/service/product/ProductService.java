@@ -5,6 +5,7 @@ import com.pet.aspect.LogAction;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -235,8 +236,6 @@ public class ProductService {
 
 	// 批量改庫存
 	public void batchUpdateStock(List<ProductStockDTO> stockList) {
-
-		// ... (這裡保留您原本轉 Map 的程式碼) ...
 		Map<Integer, Integer> stockMap = stockList.stream()
 				.filter(dto -> dto.getStock() >= 0)
 				.collect(Collectors.toMap(ProductStockDTO::getProductId, ProductStockDTO::getStock));
@@ -249,11 +248,7 @@ public class ProductService {
 		products.forEach(product -> {
 			Integer newStock = stockMap.get(product.getProductId());
 			product.setStock(newStock);
-
-			// ==========================================
 			// 🔥 修改後的 LINE 通知邏輯
-			// ==========================================
-
 			if (newStock == 0) {
 				// 情境 A：庫存變成 0 -> 發送下架通知
 				System.out.println("商品已下架：" + product.getProductName());
@@ -264,9 +259,6 @@ public class ProductService {
 				System.out.println("觸發庫存警報：" + product.getProductName());
 				lineNotify.sendStockAlert(product.getProductName(), newStock);
 			}
-
-			// ==========================================
-
 			// 自動上下架邏輯
 			product.setIsActive(newStock > 0);
 		});
@@ -281,6 +273,58 @@ public class ProductService {
 		// 2. 呼叫 Repository
 		return pRepos.findAll(pageable);
 	}
+	
+	// 取得儀表板統計數據
+    public Map<String, Object> getProductStats() {
+        Map<String, Object> response = new HashMap<>();
+
+        // ==========================================
+        // 1. 庫存告急數據 (Low Stock) - 這是您之前做好的
+        // ==========================================
+        List<Product> lowStockList = pRepos.findTop5ByStockLessThanOrderByStockAsc(10);
+        List<String> stockLabels = new ArrayList<>();
+        List<Integer> stockData = new ArrayList<>();
+
+        for (Product p : lowStockList) {
+            String name = p.getProductName();
+            // 字串截斷處理，避免圖表爆版
+            if (name.length() > 8) name = name.substring(0, 8) + "...";
+            stockLabels.add(name);
+            stockData.add(p.getStock());
+        }
+
+        Map<String, Object> lowStockMap = new HashMap<>();
+        lowStockMap.put("labels", stockLabels);
+        lowStockMap.put("data", stockData);
+        
+        response.put("lowStock", lowStockMap);
+
+        // ==========================================
+        // 2. 🔥 新增：商品分類佔比數據 (Category Distribution)
+        // ==========================================
+        List<Object[]> categoryCounts = pRepos.countProductsByCategory();
+        
+        List<String> catLabels = new ArrayList<>();
+        List<Integer> catData = new ArrayList<>();
+
+        for (Object[] row : categoryCounts) {
+            // row[0] 是分類名稱, row[1] 是數量 (Count 回傳的是 Long)
+            String categoryName = (String) row[0];
+            Long count = (Long) row[1];
+
+            catLabels.add(categoryName);
+            catData.add(count.intValue());
+        }
+
+        Map<String, Object> catMap = new HashMap<>();
+        catMap.put("labels", catLabels);
+        catMap.put("data", catData);
+
+        // 將分類數據放入回傳物件 (key 必須叫 "categories"，因為前端 JS 是這樣抓的)
+        response.put("categories", catMap);
+
+        return response;
+    }
 
 	// 前台功能
 	public Page<Product> getActiveProducts(int page, int size) {
@@ -294,12 +338,9 @@ public class ProductService {
 	}
 
 	// --- 功能 2: 取得前台商品 (包含分頁與分類邏輯) ---
-	// --- 功能 2: 取得前台商品 (包含分頁與分類邏輯) ---
 	// 這看起來是舊版的查詢方法，為了保險起見我們也一起改
 	public Page<Product> getStoreProducts(int page, int size, Integer categoryId, String keyword) {
 		Pageable pageable = PageRequest.of(page, size);
-
-		// 🟢 濃縮後的寫法：
 		// 不管前端傳什麼 (null 或 有值)，這個方法都能自動處理
 		return pRepos.findShopProducts(categoryId, keyword, pageable);
 	}
