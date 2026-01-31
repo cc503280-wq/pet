@@ -4,33 +4,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>商品管理系統</title>
+    <title>商品管理 | 管理中心</title>
 
-    <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
     <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
     <link rel="stylesheet" th:href="@{/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css}">
     <link rel="stylesheet" th:href="@{/plugins/datatables-responsive/css/responsive.bootstrap4.min.css}">
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" th:href="@{/dist/css/admin-custom.css}">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/markdown-it@14.0.0/dist/markdown-it.min.js"></script>
+
     <style>
-        .brand-link {
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            padding: 0.5rem 1rem;
-        }
-
-        .sidebar-collapse .brand-link {
-            justify-content: center;
-        }
-
-        .brand-link i {
-            width: 1.5rem;
-            text-align: center;
-        }
-
         .box1 {
             display: flex;
             justify-content: space-between;
@@ -48,190 +38,7 @@
 
 <body class="hold-transition sidebar-mini sidebar-collapse">
     <div class="wrapper">
-        <nav class="main-header navbar navbar-expand navbar-white navbar-light">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a href="javascript:void(0)" id="logoutBtn" class="btn btn-secondary btn-sm">
-                        <i class="fas fa-sign-out-alt"></i> 登出
-                    </a>
-                </li>
-            </ul>
-        </nav>
-
-        <aside class="main-sidebar sidebar-dark-primary elevation-4">
-            <!-- Brand Logo -->
-            <a href="/admin/layout/Home.html" class="brand-link">
-                <i class="fas fa-paw" style="color: #FFD43B; font-size: 1.5rem;"></i>
-                <span class="brand-text font-weight-light"></span>
-            </a>
-            <!-- Sidebar -->
-            <div class="sidebar">
-                <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-                </div>
-                <!-- Sidebar Menu -->
-                <nav class="mt-2">
-                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
-                        data-accordion="false">
-                        <!-- Add icons to the links using the .nav-icon class
-               with font-awesome or any other icon font library -->
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-edit"></i>
-                                <p>
-                                    會員管理
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="/admin/layout/AdminQueryAll.html" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>管理員資料</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="/admin/layout/MemberQueryAll.html" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>會員基本資料</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="/admin/layout/MemberPetQueryAll.html" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>會員寵物資料</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="/admin/layout/CouponQueryAll.html" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>優惠券總覽</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="/admin/layout/CouponUsersQueryAll.html" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>會員持有優惠券</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="/admin/layout/FavoritesQueryAll.html" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>會員收藏清單</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-edit"></i>
-                                <p>
-                                    商品管理
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a th:href="@{/admin/products}" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>商品管理</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a th:href="@{/admin/categories}" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>分類管理</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-edit"></i>
-                                <p>訂單管理 <i class="right fas fa-angle-left"></i></p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item"><a href="/orders/list" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>查詢全部訂單</p>
-                                    </a></li>
-                                <li class="nav-item"><a href="/shipment/list" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>物流查詢</p>
-                                    </a></li>
-                                <li class="nav-item"><a href="/ordersItem/list" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>查詢全部訂單明細</p>
-                                    </a></li>
-                                <li class="nav-item"><a href="/Cart/shopping" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
-                                        <p>新增訂單</p>
-                                    </a></li>
-                            </ul>
-                        </li>
-                        
-						<li class="nav-item"><a href="#" class="nav-link"> <i class="nav-icon fas fa-edit"></i>
-                <p>
-                  預約管理 <i class="right fas fa-angle-left"></i>
-                </p>
-              </a>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a th:href="@{/admin/layout/GetAllDailySchedules.html}" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>班表總覽
-                    </p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a th:href="@{/admin/layout/GetAllAppointments.html}" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>預約訂單列表</p>
-                  </a>
-                </li>
-
-                <li class="nav-item">
-                  <a th:href="@{/admin/layout/GetAllAppointmentDetails.html}" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>預約明細</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a th:href="@{/admin/layout/GetAllServiceItems.html}" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>服務項目</p>
-                  </a>
-                </li>
-              </ul>
-            </li>
-
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="nav-icon fas fa-edit"></i>
-                <p>人員管理 <i class="right fas fa-angle-left"></i></p>
-              </a>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a th:href="@{/admin/layout/GetAllGroomers.html}" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>美容師列表</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a th:href="@{/admin/layout/GetAllLeaveRecords.html}" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>休假審核</p>
-                  </a>
-                </li>
-              </ul>
-            </li>
-          </ul>
-          </li>
-        </nav>
-        <!-- /.sidebar-menu -->
-      </div>
-      <!-- /.sidebar -->
-    </aside>
-
+        
         <div class="content-wrapper">
             <section class="content-header">
                 <div class="container-fluid">
@@ -245,35 +52,41 @@
 
             <section class="content">
                 <div class="container-fluid">
-                <div class="row mb-3">
-				    <div class="col-md-6">
-				        <div class="card card-danger shadow-sm">
-				            <div class="card-header">
-				                <h3 class="card-title"><i class="fas fa-exclamation-triangle"></i> 庫存告急商品 (Top 5)</h3>
-				                <div class="card-tools">
-				                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
-				                </div>
-				            </div>
-				            <div class="card-body">
-				                <canvas id="stockChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
-				            </div>
-				        </div>
-				    </div>
-				
-				    <div class="col-md-6">
-				        <div class="card card-primary shadow-sm">
-				            <div class="card-header">
-				                <h3 class="card-title"><i class="fas fa-chart-pie"></i> 商品分類佔比</h3>
-				                <div class="card-tools">
-				                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
-				                </div>
-				            </div>
-				            <div class="card-body">
-				                <canvas id="categoryChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
-				            </div>
-				        </div>
-				    </div>
-				</div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="card card-danger shadow-sm">
+                                <div class="card-header">
+                                    <h3 class="card-title"><i class="fas fa-exclamation-triangle"></i> 庫存告急商品 (Top 5)</h3>
+                                    <div class="card-tools">
+                                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="chart-container">
+                                        <canvas id="stockChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="card card-primary shadow-sm">
+                                <div class="card-header">
+                                    <h3 class="card-title"><i class="fas fa-chart-pie"></i> 商品分類佔比</h3>
+                                    <div class="card-tools">
+                                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="chart-container">
+                                        <canvas id="categoryChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="row">
                         <div class="col-12">
                             <div class="card">
@@ -285,8 +98,8 @@
                                             <i class="fas fa-plus"></i> 新增
                                         </button>
                                         <button onclick="saveBatchStock()" class="btn btn-primary btn-sm mr-2">
-										    <i class="fas fa-save"></i> 批量庫存變更
-										</button>
+                                            <i class="fas fa-save"></i> 批量庫存變更
+                                        </button>
                                         <button onclick="loadAllProducts()" class="btn btn-info btn-sm mr-2">
                                             <i class="fas fa-list"></i> 全部
                                         </button>
@@ -331,12 +144,12 @@
                                         </tbody>
                                     </table>
                                     <div class="card-footer clearfix">
-									    <div class="float-left" style="padding-top: 8px;">
-									        共 <span id="totalRecords">0</span> 筆資料
-									    </div>
-									    <ul class="pagination pagination-sm m-0 float-right" id="paginationContainer">
-									    	</ul>
-									</div>
+                                        <div class="float-left" style="padding-top: 8px;">
+                                            共 <span id="totalRecords">0</span> 筆資料
+                                        </div>
+                                        <ul class="pagination pagination-sm m-0 float-right" id="paginationContainer">
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -344,12 +157,8 @@
                 </div>
             </section>
         </div>
-
-        <footer class="main-footer">
-            <strong>Copyright &copy; 2026 Pet Shop.</strong>
-        </footer>
+        
     </div>
-
     <div class="modal fade" id="productModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -361,58 +170,58 @@
                 </div>
                 <div class="modal-body">
                     <form id="productForm">
-					    <input type="hidden" id="modalProductId">
-					
-					    <div class="form-group">
-					        <label>商品名稱 <span class="text-danger">*</span></label>
-					        <input type="text" class="form-control" id="modalProductName" required>
-					        <div class="invalid-feedback">請輸入商品名稱</div>
-					    </div>
-					
-					    <div class="form-group">
-					        <label>商品描述</label>
-					        <textarea class="form-control" id="modalDescription" rows="3"></textarea>
-					    </div>
-					
-					    <div class="form-row">
-					        <div class="form-group col-md-6">
-					            <label>價格 <span class="text-danger">*</span></label>
-					            <input type="number" class="form-control" id="modalPrice" required min="0">
-					            <div class="invalid-feedback">請輸入有效的價格</div>
-					        </div>
-					        <div class="form-group col-md-6">
-					            <label>庫存 <span class="text-danger">*</span></label>
-					            <input type="number" class="form-control" id="modalStock" required min="0">
-					            <div class="invalid-feedback">請輸入有效的庫存數量</div>
-					        </div>
-					    </div>
-					
-					    <div class="form-group">
-					        <label>類別 <span class="text-danger">*</span></label>
-					        <select class="form-control" id="modalCategoryId">
-					            <option value="" disabled selected>請選擇分類</option>
-					        </select>
-					        <div class="invalid-feedback">請選擇一個分類</div>
-					    </div>
-					
-					    <div class="form-group">
-					        <label>倒數日期</label>
-					        <input type="datetime-local" class="form-control" id="modalExpireDate">
-					    </div>
-					
-					    <div class="form-group">
-					        <label>商品圖片</label>
-					        <input type="file" class="form-control-file" id="modalImageFile" accept="image/*" onchange="previewImage()">
-					        <div class="mt-2">
-					            <img id="modalImagePreview" src="" style="max-width: 200px; display: none;" class="img-thumbnail">
-					        </div>
-					    </div>
-					</form>
+                        <input type="hidden" id="modalProductId">
+
+                        <div class="form-group">
+                            <label>商品名稱 <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="modalProductName" required>
+                            <div class="invalid-feedback">請輸入商品名稱</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>商品描述</label>
+                            <textarea class="form-control" id="modalDescription" rows="3"></textarea>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label>價格 <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control" id="modalPrice" required min="0">
+                                <div class="invalid-feedback">請輸入有效的價格</div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>庫存 <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control" id="modalStock" required min="0">
+                                <div class="invalid-feedback">請輸入有效的庫存數量</div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>類別 <span class="text-danger">*</span></label>
+                            <select class="form-control" id="modalCategoryId">
+                                <option value="" disabled selected>請選擇分類</option>
+                            </select>
+                            <div class="invalid-feedback">請選擇一個分類</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>倒數日期</label>
+                            <input type="datetime-local" class="form-control" id="modalExpireDate">
+                        </div>
+
+                        <div class="form-group">
+                            <label>商品圖片</label>
+                            <input type="file" class="form-control-file" id="modalImageFile" accept="image/*" onchange="previewImage()">
+                            <div class="mt-2">
+                                <img id="modalImagePreview" src="" style="max-width: 200px; display: none;" class="img-thumbnail">
+                            </div>
+                        </div>
+                    </form>
                 </div>
                 <div class="modal-footer">
-                	<button type="button" class="btn btn-outline-warning mr-auto" onclick="fillDemoData()">
-				        <i class="fas fa-magic mr-1"></i> 一鍵輸入
-				    </button>
+                    <button type="button" class="btn btn-outline-warning mr-auto" onclick="fillDemoData()">
+                        <i class="fas fa-magic mr-1"></i> 一鍵輸入
+                    </button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
                     <button type="button" class="btn btn-primary" onclick="submitProduct()">儲存</button>
                 </div>
@@ -488,42 +297,48 @@
             </div>
         </div>
     </div>
+
     <div class="modal fade" id="galleryModal" tabindex="-1">
-	    <div class="modal-dialog modal-lg">
-	        <div class="modal-content">
-	            <div class="modal-header bg-warning">
-	                <h5 class="modal-title">管理附圖 - <span id="galleryProductName" class="font-weight-bold"></span></h5>
-	                <button type="button" class="close" data-dismiss="modal">&times;</button>
-	            </div>
-	            <div class="modal-body">
-	                
-	                <div class="mb-4 p-3 bg-light rounded border">
-	                    <label class="font-weight-bold"><i class="fas fa-cloud-upload-alt"></i> 新增圖片 (可多選)</label>
-	                    <div class="input-group">
-	                        <input type="file" class="form-control" id="galleryFileInput" multiple accept="image/*" style="height: auto;">
-	                        <div class="input-group-append">
-	                            <button class="btn btn-primary" onclick="uploadGalleryImages()">
-	                                <i class="fas fa-upload"></i> 上傳
-	                            </button>
-	                        </div>
-	                    </div>
-	                    <small class="text-muted">按住 Ctrl 可選擇多張圖片</small>
-	                </div>
-	                <hr>
-	                <h6 class="font-weight-bold mb-3"><i class="fas fa-images"></i> 現有圖片</h6>
-	                <div class="row" id="galleryContainer">
-	                    </div>
-	            </div>
-	            <div class="modal-footer">
-	                <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
-	            </div>
-	        </div>
-	    </div>
-	</div>
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title">管理附圖 - <span id="galleryProductName" class="font-weight-bold"></span></h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    
+                    <div class="mb-4 p-3 bg-light rounded border">
+                        <label class="font-weight-bold"><i class="fas fa-cloud-upload-alt"></i> 新增圖片 (可多選)</label>
+                        <div class="input-group">
+                            <input type="file" class="form-control" id="galleryFileInput" multiple accept="image/*" style="height: auto;">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" onclick="uploadGalleryImages()">
+                                    <i class="fas fa-upload"></i> 上傳
+                                </button>
+                            </div>
+                        </div>
+                        <small class="text-muted">按住 Ctrl 可選擇多張圖片</small>
+                    </div>
+                    <hr>
+                    <h6 class="font-weight-bold mb-3"><i class="fas fa-images"></i> 現有圖片</h6>
+                    <div class="row" id="galleryContainer">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script th:src="@{/plugins/jquery/jquery.min.js}"></script>
     <script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
     <script th:src="@{/dist/js/adminAuth.js}"></script>
     <script th:src="@{/dist/js/adminlte.min.js}"></script>
+    <script th:src="@{/dist/js/admin-layout.js}"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 
     <script th:inline="javascript">
         /*<![CDATA[*/
@@ -533,7 +348,7 @@
         const API_CATEGORY = /*[[@{/categories}]]*/ '/categories';
         const IMAGE_BASE_URL = '';
 
-     	// 用來記錄目前在第幾頁，預設是 0 (第一頁)
+        // 用來記錄目前在第幾頁，預設是 0 (第一頁)
         let currentPage = 0; 
         const pageSize = 10; // 一頁顯示幾筆
         
@@ -553,39 +368,39 @@
         // 1. 載入資料的通用函式 (GET)
         // ==========================================
         function loadData(url) {
-		    $('#tableBody').html('<tr><td colspan="8" class="text-center">載入中...</td></tr>');
-		
-		    $.ajax({
-		        url: url,
-		        type: 'GET',
-		        dataType: 'json',
-		        success: function (data) {
-		            // 情況 A：後端回傳的是 Page 物件 (有 content, totalElements 等欄位)
-		            // 通常是用於 loadAllProducts
-		            if (data.content && Array.isArray(data.content)) {
-		                renderTable(data.content);
-		                $('#totalRecords').text(data.totalElements);
-		                renderPagination(data.totalPages, data.number);
-		            } 
-		            // 情況 B：後端回傳的是純 List 陣列 (用於搜尋或分類)
-		            // 如果搜尋/分類沒有做後端分頁，通常是這種格式
-		            else if (Array.isArray(data)) {
-		                renderTable(data);
-		                $('#totalRecords').text(data.length); // 更新為實際搜尋到的筆數
-		                $('#paginationContainer').html('');   // 搜尋結果通常不分頁(或是全部顯示)，所以清空分頁按鈕
-		            }
-		            // 情況 C：其他怪異格式
-		            else {
-		                console.error("未知的資料格式:", data);
-		                $('#tableBody').html('<tr><td colspan="8" class="text-center text-danger">資料格式錯誤</td></tr>');
-		            }
-		        },
-		        error: function (xhr) {
-		            console.error(xhr);
-		            $('#tableBody').html('<tr><td colspan="8" class="text-center text-danger">載入失敗</td></tr>');
-		        }
-		    });
-		}
+            $('#tableBody').html('<tr><td colspan="8" class="text-center">載入中...</td></tr>');
+        
+            $.ajax({
+                url: url,
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    // 情況 A：後端回傳的是 Page 物件 (有 content, totalElements 等欄位)
+                    // 通常是用於 loadAllProducts
+                    if (data.content && Array.isArray(data.content)) {
+                        renderTable(data.content);
+                        $('#totalRecords').text(data.totalElements);
+                        renderPagination(data.totalPages, data.number);
+                    } 
+                    // 情況 B：後端回傳的是純 List 陣列 (用於搜尋或分類)
+                    // 如果搜尋/分類沒有做後端分頁，通常是這種格式
+                    else if (Array.isArray(data)) {
+                        renderTable(data);
+                        $('#totalRecords').text(data.length); // 更新為實際搜尋到的筆數
+                        $('#paginationContainer').html('');   // 搜尋結果通常不分頁(或是全部顯示)，所以清空分頁按鈕
+                    }
+                    // 情況 C：其他怪異格式
+                    else {
+                        console.error("未知的資料格式:", data);
+                        $('#tableBody').html('<tr><td colspan="8" class="text-center text-danger">資料格式錯誤</td></tr>');
+                    }
+                },
+                error: function (xhr) {
+                    console.error(xhr);
+                    $('#tableBody').html('<tr><td colspan="8" class="text-center text-danger">載入失敗</td></tr>');
+                }
+            });
+        }
 
         // ==========================================
         // 2. 渲染表格 HTML (把 JSON 變成 <tr>)
@@ -725,34 +540,34 @@
         // ==========================================
 
         function loadAllProducts(page = 0) {
-		    currentPage = page; // 更新全域變數
-		 	// 🟢 新增這行：將下拉選單重置為 "預設值" (value="")
-		    $('#categorySelect').val(''); 
-		    
-		    // (選用) 清空搜尋框，這樣邏輯比較一致，看您需求
-		    $('#searchInput').val('');
-		
-		    // 發送 AJAX，帶上參數 ?page=0&size=10
-		    $.ajax({
-		        url: API_BASE + '/admin/all?page=' + page + '&size=' + pageSize,
-		        type: 'GET',
-		        dataType: 'json',
-		        success: function (data) {
-		            // 🟢 注意：因為後端回傳 Page 物件，商品清單在 data.content 裡面
-		            renderTable(data.content); 
-		            
-		            // 🟢 更新總筆數文字
-		            $('#totalRecords').text(data.totalElements);
-		
-		            // 🟢 渲染分頁按鈕
-		            renderPagination(data.totalPages, data.number);
-		        },
-		        error: function (xhr) {
-		            console.error(xhr);
-		            $('#tableBody').html('<tr><td colspan="8" class="text-center text-danger">載入失敗</td></tr>');
-		        }
-		    });
-		}
+            currentPage = page; // 更新全域變數
+            // 🟢 新增這行：將下拉選單重置為 "預設值" (value="")
+            $('#categorySelect').val(''); 
+            
+            // (選用) 清空搜尋框，這樣邏輯比較一致，看您需求
+            $('#searchInput').val('');
+        
+            // 發送 AJAX，帶上參數 ?page=0&size=10
+            $.ajax({
+                url: API_BASE + '/admin/all?page=' + page + '&size=' + pageSize,
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    // 🟢 注意：因為後端回傳 Page 物件，商品清單在 data.content 裡面
+                    renderTable(data.content); 
+                    
+                    // 🟢 更新總筆數文字
+                    $('#totalRecords').text(data.totalElements);
+        
+                    // 🟢 渲染分頁按鈕
+                    renderPagination(data.totalPages, data.number);
+                },
+                error: function (xhr) {
+                    console.error(xhr);
+                    $('#tableBody').html('<tr><td colspan="8" class="text-center text-danger">載入失敗</td></tr>');
+                }
+            });
+        }
 
         function loadInactiveProducts() {
             loadData(API_BASE + '/admin/inactive');
@@ -831,52 +646,52 @@
             $('#modalImagePreview').attr('src', '').hide(); // 隱藏預覽圖
 
             $('#productModal').modal('show');
-         	// 當使用者在 Modal 裡面的任何欄位輸入時，移除該欄位的錯誤樣式
+            // 當使用者在 Modal 裡面的任何欄位輸入時，移除該欄位的錯誤樣式
             $('#productForm input, #productForm select').on('input change', function() {
                 $(this).removeClass('is-invalid');
             });
         }
 
-	     // ==========================================
-	     // 🟢 一鍵輸入測試資料 (jQuery 版)
-	     // ==========================================
-	     function fillDemoData() {
-	         // 1. 設定文字欄位
-	         $('#modalProductName').val("【新品推薦】頂級無穀深海魚貓糧");
-	         $('#modalDescription').val("這是一筆由系統自動生成的測試資料。\n富含豐富 Omega-3，保護毛孩心血管健康。");
-	         $('#modalPrice').val(1580);
-	         $('#modalStock').val(99);
-	
-	         // 2. 設定分類 (自動選擇下拉選單的第 2 個選項，避開"請選擇分類")
-	         // 如果您想指定特定 ID，可以寫 $('#modalCategoryId').val(101);
-	         let firstCategoryVal = $('#modalCategoryId option:eq(1)').val();
-	         if (firstCategoryVal) {
-	             $('#modalCategoryId').val(firstCategoryVal);
-	         }
-	
-	         // 3. 設定日期 (格式必須是 YYYY-MM-DDTHH:mm)
-	         let now = new Date();
-	         // 簡單往後推一個月當作倒數日期
-	         now.setMonth(now.getMonth() + 1);
-	         
-	         // 格式化成 input datetime-local 接受的字串
-	         let year = now.getFullYear();
-	         let month =String(now.getMonth() + 1).padStart(2, '0');
-	         let day = String(now.getDate()).padStart(2, '0');
-	         let hours = String(now.getHours()).padStart(2, '0');
-	         let minutes = String(now.getMinutes()).padStart(2, '0');
-	         
-	         let dateString = `${year}-${month}-${day}T${hours}:${minutes}`;
-	         $('#modalExpireDate').val(dateString);
-	
-	         // 4. 清除錯誤紅框 (如果原本有驗證錯誤，一鍵輸入後應該要消除)
-	         $('#productForm .form-control').removeClass('is-invalid');
-	         
-	         // ⚠️ 注意：基於瀏覽器安全限制，JavaScript 無法自動幫您「選擇檔案(圖片)」
-	         // 您還是需要手動點擊圖片上傳
-	     }
+         // ==========================================
+         // 🟢 一鍵輸入測試資料 (jQuery 版)
+         // ==========================================
+         function fillDemoData() {
+             // 1. 設定文字欄位
+             $('#modalProductName').val("【新品推薦】頂級無穀深海魚貓糧");
+             $('#modalDescription').val("這是一筆由系統自動生成的測試資料。\n富含豐富 Omega-3，保護毛孩心血管健康。");
+             $('#modalPrice').val(1580);
+             $('#modalStock').val(99);
+    
+             // 2. 設定分類 (自動選擇下拉選單的第 2 個選項，避開"請選擇分類")
+             // 如果您想指定特定 ID，可以寫 $('#modalCategoryId').val(101);
+             let firstCategoryVal = $('#modalCategoryId option:eq(1)').val();
+             if (firstCategoryVal) {
+                 $('#modalCategoryId').val(firstCategoryVal);
+             }
+    
+             // 3. 設定日期 (格式必須是 YYYY-MM-DDTHH:mm)
+             let now = new Date();
+             // 簡單往後推一個月當作倒數日期
+             now.setMonth(now.getMonth() + 1);
+             
+             // 格式化成 input datetime-local 接受的字串
+             let year = now.getFullYear();
+             let month =String(now.getMonth() + 1).padStart(2, '0');
+             let day = String(now.getDate()).padStart(2, '0');
+             let hours = String(now.getHours()).padStart(2, '0');
+             let minutes = String(now.getMinutes()).padStart(2, '0');
+             
+             let dateString = `${year}-${month}-${day}T${hours}:${minutes}`;
+             $('#modalExpireDate').val(dateString);
+    
+             // 4. 清除錯誤紅框 (如果原本有驗證錯誤，一鍵輸入後應該要消除)
+             $('#productForm .form-control').removeClass('is-invalid');
+             
+             // ⚠️ 注意：基於瀏覽器安全限制，JavaScript 無法自動幫您「選擇檔案(圖片)」
+             // 您還是需要手動點擊圖片上傳
+         }
         
-     	
+        
         function submitProduct() {
             // ==========================================
             // 🟢 1. 前端驗證區塊 (取代 alert)
@@ -1034,7 +849,7 @@
             }
         }
         
-     	// ==========================================
+        // ==========================================
         // 圖庫管理相關函式
         // ==========================================
 
@@ -1148,174 +963,174 @@
             });
         }
         
-	     // ==========================================
-	     // 🟢 批量更新庫存邏輯
-	     // ==========================================
-	     function saveBatchStock() {
-	         let stockList = []; // 準備一個空陣列
-	
-	         // 1. 抓取畫面上所有的庫存輸入框
-	         $('.stock-input').each(function() {
-	             let input = $(this);
-	             let id = input.data('id'); // 從 data-id 屬性拿 ID
-	             let val = input.val();     // 拿輸入框的值
-	             
-	             // 簡單驗證：必須是數字且大於等於 0
-	             if (val !== '' && val >= 0) {
-	                 stockList.push({
-	                     productId: id,
-	                     stock: parseInt(val)
-	                 });
-	             }
-	         });
-	
-	         // 如果陣列是空的，就不送出
-	         if (stockList.length === 0) {
-	             alert('沒有資料可更新');
-	             return;
-	         }
-	
-	         // 2. 發送 AJAX
-	         // 讓按鈕變成 loading 狀態，避免重複點擊
-	         let btn = $(event.target); // 抓到被點擊的按鈕
-	         let originalText = btn.html();
-	         btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> 儲存中...');
-	
-	         $.ajax({
-	             url: API_BASE + '/batch-stock', // 對應後端 /api/products/batch-stock
-	             type: 'POST',
-	             contentType: 'application/json', // 🟢 重要：告訴後端我傳的是 JSON
-	             data: JSON.stringify(stockList), // 🟢 重要：把 JS 陣列轉成 JSON 字串
-	             success: function(response) {
-	                 alert('庫存批量更新成功！');
-	                 loadAllProducts(); // 重新載入表格，確保資料同步
-	             },
-	             error: function(xhr) {
-	                 console.error(xhr);
-	                 alert('更新失敗');
-	             },
-	             complete: function() {
-	                 // 恢復按鈕狀態
-	                 btn.prop('disabled', false).html(originalText);
-	             }
-	         });
-	     }
-	     
-	     // 畫出按鈕
-	     function renderPagination(totalPages, currentPage) {
-	    	    let html = '';
-	    	    
-	    	    // 如果只有1頁或沒資料，就不顯示分頁
-	    	    if (totalPages <= 1) {
-	    	        $('#paginationContainer').html('');
-	    	        return;
-	    	    }
+         // ==========================================
+         // 🟢 批量更新庫存邏輯
+         // ==========================================
+         function saveBatchStock() {
+             let stockList = []; // 準備一個空陣列
+    
+             // 1. 抓取畫面上所有的庫存輸入框
+             $('.stock-input').each(function() {
+                 let input = $(this);
+                 let id = input.data('id'); // 從 data-id 屬性拿 ID
+                 let val = input.val();     // 拿輸入框的值
+                 
+                 // 簡單驗證：必須是數字且大於等於 0
+                 if (val !== '' && val >= 0) {
+                     stockList.push({
+                         productId: id,
+                         stock: parseInt(val)
+                     });
+                 }
+             });
+    
+             // 如果陣列是空的，就不送出
+             if (stockList.length === 0) {
+                 alert('沒有資料可更新');
+                 return;
+             }
+    
+             // 2. 發送 AJAX
+             // 讓按鈕變成 loading 狀態，避免重複點擊
+             let btn = $(event.target); // 抓到被點擊的按鈕
+             let originalText = btn.html();
+             btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> 儲存中...');
+    
+             $.ajax({
+                 url: API_BASE + '/batch-stock', // 對應後端 /api/products/batch-stock
+                 type: 'POST',
+                 contentType: 'application/json', // 🟢 重要：告訴後端我傳的是 JSON
+                 data: JSON.stringify(stockList), // 🟢 重要：把 JS 陣列轉成 JSON 字串
+                 success: function(response) {
+                     alert('庫存批量更新成功！');
+                     loadAllProducts(); // 重新載入表格，確保資料同步
+                 },
+                 error: function(xhr) {
+                     console.error(xhr);
+                     alert('更新失敗');
+                 },
+                 complete: function() {
+                     // 恢復按鈕狀態
+                     btn.prop('disabled', false).html(originalText);
+                 }
+             });
+         }
+         
+         // 畫出按鈕
+         function renderPagination(totalPages, currentPage) {
+                let html = '';
+                
+                // 如果只有1頁或沒資料，就不顯示分頁
+                if (totalPages <= 1) {
+                    $('#paginationContainer').html('');
+                    return;
+                }
 
-	    	    // --- [上一頁] 按鈕 ---
-	    	    let prevDisabled = (currentPage === 0) ? 'disabled' : '';
-	    	    // onclick 呼叫 loadAllProducts(目前頁數 - 1)
-	    	    html += `
-	    	        <li class="page-item ${prevDisabled}">
-	    	            <a class="page-link" href="javascript:void(0)" onclick="loadAllProducts(${currentPage - 1})">«</a>
-	    	        </li>
-	    	    `;
+                // --- [上一頁] 按鈕 ---
+                let prevDisabled = (currentPage === 0) ? 'disabled' : '';
+                // onclick 呼叫 loadAllProducts(目前頁數 - 1)
+                html += `
+                    <li class="page-item ${prevDisabled}">
+                        <a class="page-link" href="javascript:void(0)" onclick="loadAllProducts(${currentPage - 1})">«</a>
+                    </li>
+                `;
 
-	    	    // --- [數字頁碼] 按鈕 ---
-	    	    // 這裡做一個簡單版：顯示所有頁碼 (如果頁數很多，可以改寫成只顯示前後幾頁)
-	    	    for (let i = 0; i < totalPages; i++) {
-	    	        let activeClass = (i === currentPage) ? 'active' : '';
-	    	        // 顯示給使用者看的是 i+1 (1, 2, 3...)，但傳給程式的是 i (0, 1, 2...)
-	    	        html += `
-	    	            <li class="page-item ${activeClass}">
-	    	                <a class="page-link" href="javascript:void(0)" onclick="loadAllProducts(${i})">${i + 1}</a>
-	    	            </li>
-	    	        `;
-	    	    }
+                // --- [數字頁碼] 按鈕 ---
+                // 這裡做一個簡單版：顯示所有頁碼 (如果頁數很多，可以改寫成只顯示前後幾頁)
+                for (let i = 0; i < totalPages; i++) {
+                    let activeClass = (i === currentPage) ? 'active' : '';
+                    // 顯示給使用者看的是 i+1 (1, 2, 3...)，但傳給程式的是 i (0, 1, 2...)
+                    html += `
+                        <li class="page-item ${activeClass}">
+                            <a class="page-link" href="javascript:void(0)" onclick="loadAllProducts(${i})">${i + 1}</a>
+                        </li>
+                    `;
+                }
 
-	    	    // --- [下一頁] 按鈕 ---
-	    	    let nextDisabled = (currentPage === totalPages - 1) ? 'disabled' : '';
-	    	    html += `
-	    	        <li class="page-item ${nextDisabled}">
-	    	            <a class="page-link" href="javascript:void(0)" onclick="loadAllProducts(${currentPage + 1})">»</a>
-	    	        </li>
-	    	    `;
+                // --- [下一頁] 按鈕 ---
+                let nextDisabled = (currentPage === totalPages - 1) ? 'disabled' : '';
+                html += `
+                    <li class="page-item ${nextDisabled}">
+                        <a class="page-link" href="javascript:void(0)" onclick="loadAllProducts(${currentPage + 1})">»</a>
+                    </li>
+                `;
 
-	    	    $('#paginationContainer').html(html);
-	    	}
-		  // ==========================================
-		  // 🟢 新增：載入並繪製圖表
-		  // ==========================================
-		  function loadCharts() {
-		      $.ajax({
-		          url: API_BASE + '/stats', // 假設後端路徑是 /products/stats
-		          type: 'GET',
-		          dataType: 'json',
-		          success: function (data) {
-		              // data 結構範例:
-		              // {
-		              //    lowStock: { labels: ['A商品', 'B商品'], data: [2, 5] },
-		              //    categories: { labels: ['貓食', '狗食'], data: [100, 50] }
-		              // }
-	
-		              renderStockChart(data.lowStock);
-		              renderCategoryChart(data.categories);
-		          },
-		          error: function (err) {
-		              console.error('無法載入圖表數據', err);
-		          }
-		      });
-		  }
-	
-		  function renderStockChart(chartData) {
-		      var ctx = document.getElementById('stockChart').getContext('2d');
-		      new Chart(ctx, {
-		          type: 'bar',
-		          data: {
-		              labels: chartData.labels,
-		              datasets: [{
-		                  label: '剩餘庫存',
-		                  data: chartData.data,
-		                  backgroundColor: 'rgba(220, 53, 69, 0.8)', // 紅色
-		                  borderColor: 'rgba(220, 53, 69, 1)',
-		                  borderWidth: 1
-		              }]
-		          },
-		          options: {
-		              indexAxis: 'y', // 橫向長條圖
-		              responsive: true,
-		              maintainAspectRatio: false,
-		              plugins: {
-		                  legend: { display: false } // 隱藏圖例
-		              },
-		              scales: {
-		                  x: { beginAtZero: true }
-		              }
-		          }
-		      });
-		  }
-	
-		  function renderCategoryChart(chartData) {
-		      var ctx = document.getElementById('categoryChart').getContext('2d');
-		      new Chart(ctx, {
-		          type: 'doughnut',
-		          data: {
-		              labels: chartData.labels,
-		              datasets: [{
-		                  data: chartData.data,
-		                  backgroundColor: [
-		                      '#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc', '#d2d6de'
-		                  ],
-		              }]
-		          },
-		          options: {
-		              responsive: true,
-		              maintainAspectRatio: false,
-		              plugins: {
-		                  legend: { position: 'right' }
-		              }
-		          }
-		      });
-		  }
+                $('#paginationContainer').html(html);
+            }
+          // ==========================================
+          // 🟢 新增：載入並繪製圖表
+          // ==========================================
+          function loadCharts() {
+              $.ajax({
+                  url: API_BASE + '/stats', // 假設後端路徑是 /products/stats
+                  type: 'GET',
+                  dataType: 'json',
+                  success: function (data) {
+                      // data 結構範例:
+                      // {
+                      //    lowStock: { labels: ['A商品', 'B商品'], data: [2, 5] },
+                      //    categories: { labels: ['貓食', '狗食'], data: [100, 50] }
+                      // }
+    
+                      renderStockChart(data.lowStock);
+                      renderCategoryChart(data.categories);
+                  },
+                  error: function (err) {
+                      console.error('無法載入圖表數據', err);
+                  }
+              });
+          }
+    
+          function renderStockChart(chartData) {
+              var ctx = document.getElementById('stockChart').getContext('2d');
+              new Chart(ctx, {
+                  type: 'bar',
+                  data: {
+                      labels: chartData.labels,
+                      datasets: [{
+                          label: '剩餘庫存',
+                          data: chartData.data,
+                          backgroundColor: 'rgba(220, 53, 69, 0.8)', // 紅色
+                          borderColor: 'rgba(220, 53, 69, 1)',
+                          borderWidth: 1
+                      }]
+                  },
+                  options: {
+                      indexAxis: 'y', // 橫向長條圖
+                      responsive: true,
+                      maintainAspectRatio: false,
+                      plugins: {
+                          legend: { display: false } // 隱藏圖例
+                      },
+                      scales: {
+                          x: { beginAtZero: true }
+                      }
+                  }
+              });
+          }
+    
+          function renderCategoryChart(chartData) {
+              var ctx = document.getElementById('categoryChart').getContext('2d');
+              new Chart(ctx, {
+                  type: 'doughnut',
+                  data: {
+                      labels: chartData.labels,
+                      datasets: [{
+                          data: chartData.data,
+                          backgroundColor: [
+                              '#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc', '#d2d6de'
+                          ],
+                      }]
+                  },
+                  options: {
+                      responsive: true,
+                      maintainAspectRatio: false,
+                      plugins: {
+                          legend: { position: 'right' }
+                      }
+                  }
+              });
+          }
 
         /*]]>*/
     </script>

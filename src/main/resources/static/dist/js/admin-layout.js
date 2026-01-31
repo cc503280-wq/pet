@@ -47,12 +47,12 @@ const sidebarHTML = `
                 <li class="nav-item">
                     <a href="#" class="nav-link"><i class="nav-icon fas fa-edit"></i><p>會員管理 <i class="right fas fa-angle-left"></i></p></a>
                     <ul class="nav nav-treeview">
-                        <li class="nav-item"><a href="AdminQueryAll.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>管理員資料</p></a></li>
-                        <li class="nav-item"><a href="MemberQueryAll.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>會員基本資料</p></a></li>
-                        <li class="nav-item"><a href="MemberPetQueryAll.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>會員寵物資料</p></a></li>
-                        <li class="nav-item"><a href="CouponQueryAll.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>優惠券總覽</p></a></li>
-                        <li class="nav-item"><a href="CouponUsersQueryAll.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>會員持有優惠券</p></a></li>
-                        <li class="nav-item"><a href="FavoritesQueryAll.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>會員收藏清單</p></a></li>
+                        <li class="nav-item"><a href="/admin/layout/AdminQueryAll.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>管理員資料</p></a></li>
+                        <li class="nav-item"><a href="/admin/layout/MemberQueryAll.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>會員基本資料</p></a></li>
+                        <li class="nav-item"><a href="/admin/layout/MemberPetQueryAll.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>會員寵物資料</p></a></li>
+                        <li class="nav-item"><a href="/admin/layout/CouponQueryAll.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>優惠券總覽</p></a></li>
+                        <li class="nav-item"><a href="/admin/layout/CouponUsersQueryAll.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>會員持有優惠券</p></a></li>
+                        <li class="nav-item"><a href="/admin/layout/FavoritesQueryAll.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>會員收藏清單</p></a></li>
                     </ul>
                 </li>
                 <li class="nav-item">
