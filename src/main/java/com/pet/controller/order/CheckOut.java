@@ -59,7 +59,7 @@ public class CheckOut {
 		if ("ECPay".equals(orderRequest.getPaymentMethod())) {
 			String timestamp = new SimpleDateFormat("yyMMddHHmmss").format(new Date());
 			// 產生綠界金流的 HTML 表單字串
-			String checkOutId = order.getOrderId()+"T" + timestamp ;
+			String checkOutId = order.getOrderId() + "T" + timestamp;
 			String ecpayHtml = ecpayService.createEcpayForm(checkOutId, order.getTotalAmountDiscountPoints(), "寵物商城商品", // 或是從
 																														// request
 																														// 組合商品名稱
