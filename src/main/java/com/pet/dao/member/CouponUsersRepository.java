@@ -35,6 +35,6 @@ public interface CouponUsersRepository extends JpaRepository<CouponUsers, Intege
 			""")
 	List<CouponUsers> findUsableCoupons(@Param("memberId") Integer memberId, @Param("today") LocalDate today,
 			@Param("orderTotal") BigDecimal orderTotal);
-	Optional<CouponUsers> findByCouponIdAndMemberId(Integer couponId, Integer memberId);
+	
 	
 }
