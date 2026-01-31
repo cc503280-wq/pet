@@ -117,6 +117,11 @@ const chatWidgetHTML = `
     <div id="view-chat-room" class="chat-body" style="display: none;">
         <div id="adminMsgBox" style="display: flex; flex-direction: column;"></div>
     </div>
+    <div id="quickReplyArea" class="px-2 pb-1 border-top pt-2 bg-light" style="display: none;">
+        <button class="btn btn-outline-secondary btn-sm rounded-pill" onclick="sendQuickReply()" style="font-size: 0.85rem;">
+            您好，請問有什麼可以協助您的嗎?
+        </button>
+    </div>
     <div id="chatInputArea" class="chat-footer" style="display: none;">
         <div class="input-group">
             <input type="text" id="adminMsgInput" placeholder="請輸入訊息..." class="form-control border-0 chat-input">
@@ -258,7 +263,7 @@ function showUserList() {
     currentUser = null;
     $('#chatHeaderLeft').html('<i class="bi bi-chat-dots-fill mr-2" style="font-size: 1.5rem;"></i><span class="font-weight-bold">客服中心</span>');
     $('#backToListBtn').hide();
-    $('#view-chat-room').hide(); $('#chatInputArea').hide();
+    $('#view-chat-room').hide(); $('#chatInputArea').hide(); $('#quickReplyArea').hide();
     $('#view-user-list').fadeIn();
     loadUserList();
 }
@@ -277,6 +282,7 @@ function enterChatRoom(id, name, pic) {
     $('#view-user-list').hide();
     $('#backToListBtn').show();
     $('#view-chat-room').css('display', 'flex');
+    $('#quickReplyArea').show(); // 顯示快速回覆區域
     $('#chatInputArea').show();
     $.post('/admin/chat/read?memberId=' + id);
 
@@ -383,6 +389,12 @@ function sendAdminMessage() {
             confirmButtonColor: themeColors.primary
         });
     }
+}
+
+function sendQuickReply() {
+    const msg = "您好，請問有什麼可以協助您的嗎?";
+    $('#adminMsgInput').val(msg);
+    sendAdminMessage();
 }
 
 function handleAdminNewMsg(msg) {
