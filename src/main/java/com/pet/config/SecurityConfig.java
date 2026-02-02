@@ -96,7 +96,9 @@ public class SecurityConfig {
                                 // --- 新增：放行 OAuth2 必要路徑 ---
                                 "/oauth2/**",
                                 "/login/oauth2/**",
-                                "/shop/ws-chat/**")
+                                "/shop/ws-chat/**",
+                                "/shop/checkout/callback",
+                                "/shop/checkout/map_callback")
                         .permitAll()
 
                         // --- 修正：ProductController 路徑設定 ---
