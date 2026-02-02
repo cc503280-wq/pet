@@ -14,6 +14,7 @@ import com.pet.dto.product.ReviewResponseDTO;
 import com.pet.model.member.Member;
 import com.pet.model.product.Product;
 import com.pet.model.product.ProductReview;
+import com.pet.util.LoginUser;
 
 @Service
 public class ProductReviewService {
@@ -40,11 +41,11 @@ public class ProductReviewService {
     }
 
     // 2. 新增留言
-    public void addReview(ReviewRequestDTO dto) {
+    public void addReview(ReviewRequestDTO dto,Integer userId) {
         Product product = productRepo.findById(dto.getProductId())
                 .orElseThrow(() -> new RuntimeException("商品不存在"));
         
-        Member member = memberRepo.findById(dto.getMemberId())
+        Member member = memberRepo.findById(userId)
                 .orElseThrow(() -> new RuntimeException("會員不存在"));
 
         ProductReview review = new ProductReview();
@@ -52,7 +53,6 @@ public class ProductReviewService {
         review.setMember(member);
         review.setRating(dto.getRating());
         review.setComment(dto.getComment());
-        
         reviewRepo.save(review);
     }
 }

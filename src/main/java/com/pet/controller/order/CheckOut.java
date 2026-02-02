@@ -48,9 +48,7 @@ public class CheckOut {
 
 	@PostMapping("/insert")
 	public ResponseEntity<?> insertOrders(@RequestBody OrderCheckOutDTO orderRequest) {
-		// 1. 驗證資料是否正確接收
-		System.out.println("收到訂單請求，收件人：" + orderRequest.getReceiverName());
-		System.out.println("使用點數：" + orderRequest.getPointsUsed());
+		
 
 		// 2. 呼叫 Service 執行建立訂單邏輯
 		Order order = orderService.userOrder(orderRequest);

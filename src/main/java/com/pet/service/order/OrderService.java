@@ -231,7 +231,7 @@ public class OrderService {
 
      	// 6.修改會員幣數量
 
-     		memberService.updateMemberPoints(orderCheckOutDTO.getMemberId(),orderCheckOutDTO.getPointsUsed(), getPoints);
+     		memberService.updateMemberPoints(orderCheckOutDTO.getMemberId(),orderCheckOutDTO.getPointsUsed(), 0);
 
      	//7.清空購物車
      		

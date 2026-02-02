@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.pet.dto.product.ReviewRequestDTO;
 import com.pet.dto.product.ReviewResponseDTO;
 import com.pet.service.product.ProductReviewService;
+import com.pet.util.LoginUser;
 
 @RestController
 @RequestMapping("/api/reviews")
@@ -32,9 +33,9 @@ public class ProductReviewController {
     // 2. 新增留言
     // POST /api/reviews
     @PostMapping
-    public ResponseEntity<?> addReview(@RequestBody ReviewRequestDTO request) {
+    public ResponseEntity<?> addReview(@RequestBody ReviewRequestDTO request ,@LoginUser Integer memId) {
         try {
-            reviewService.addReview(request);
+            reviewService.addReview(request,memId);
             return ResponseEntity.ok("留言成功");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("留言失敗: " + e.getMessage());
