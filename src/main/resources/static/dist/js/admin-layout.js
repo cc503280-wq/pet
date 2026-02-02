@@ -37,7 +37,7 @@ const navbarHTML = `
 // Sidebar HTML
 const sidebarHTML = `
 <aside class="main-sidebar">
-    <a href="Home.html" class="brand-link">
+    <a href="/admin/layout/Home.html" class="brand-link">
         <i class="fas fa-paw" style="color: #ffc20f; font-size: 1.8rem;"></i>
     </a>
 
@@ -74,7 +74,6 @@ const sidebarHTML = `
                 <li class="nav-item">
                     <a href="#" class="nav-link"><i class="nav-icon fas fa-edit"></i><p>預約管理 <i class="right fas fa-angle-left"></i></p></a>
                     <ul class="nav nav-treeview">
-                        <li class="nav-item"><a href="GetAllDailySchedules.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>班表總覽</p></a></li>
                         <li class="nav-item"><a href="GetAllAppointments.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>預約訂單列表</p></a></li>
                         <li class="nav-item"><a href="GetAllAppointmentDetails.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>預約明細</p></a></li>
                         <li class="nav-item"><a href="GetAllServiceItems.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>服務項目</p></a></li>
@@ -83,6 +82,7 @@ const sidebarHTML = `
                 <li class="nav-item">
                     <a href="#" class="nav-link"><i class="nav-icon fas fa-edit"></i><p>人員管理 <i class="right fas fa-angle-left"></i></p></a>
                     <ul class="nav nav-treeview">
+					    <li class="nav-item"><a href="AuditDashboard.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>系統監控儀表板</p></a></li>
                         <li class="nav-item"><a href="GetAllGroomers.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>美容師列表</p></a></li>
                         <li class="nav-item"><a href="GetAllLeaveRecords.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>休假審核</p></a></li>
                     </ul>
@@ -116,6 +116,14 @@ const chatWidgetHTML = `
     </div>
     <div id="view-chat-room" class="chat-body" style="display: none;">
         <div id="adminMsgBox" style="display: flex; flex-direction: column;"></div>
+    </div>
+    <div id="quickReplyArea" class="px-2 pb-1 border-top pt-2 bg-light" style="display: none;">
+        <button class="btn btn-outline-secondary btn-sm rounded-pill mb-1 mr-1" onclick="sendQuickReply('您好，請問有什麼可以協助您的嗎?')" style="font-size: 0.85rem;">
+            您好，請問有什麼可以協助您的嗎?
+        </button>
+        <button class="btn btn-outline-secondary btn-sm rounded-pill mb-1 mr-1" onclick="sendQuickReply('正在替您確認中，請稍後哦')" style="font-size: 0.85rem;">
+            正在替您確認中，請稍後哦
+        </button>
     </div>
     <div id="chatInputArea" class="chat-footer" style="display: none;">
         <div class="input-group">
@@ -157,6 +165,13 @@ $(function () {
         $wrapper.prepend(navbarHTML);
         $wrapper.children('.navbar').after(sidebarHTML);
         $wrapper.append(footerHTML);
+
+        // 修正：動態插入 HTML 後，需手動觸發 AdminLTE 的 Treeview 與 PushMenu 初始化
+        // 因為 AdminLTE 可能在我們插入這些元素之前就已經跑完初始化了 (Race Condition)
+        if ($.fn.Layout) {
+            $('[data-widget="pushmenu"]').PushMenu();
+            $('[data-widget="treeview"]').Treeview('init');
+        }
     }
     $('body').append(chatWidgetHTML);
 
@@ -243,6 +258,22 @@ function highlightActiveMenu() {
 // ==========================================
 // 6. 客服聊天室邏輯 (Chat Logic)
 // ==========================================
+// 輔助：安全解析時間格式
+function safeParseTime(createdAt) {
+    if (!createdAt) return '';
+    // 如果是 ISO 字串 (2026-01-31T16:15:20)
+    if (typeof createdAt === 'string' && createdAt.length >= 16) {
+        return createdAt.substring(11, 16);
+    }
+    // 如果是陣列 [2026, 1, 31, 16, 15, 30]
+    if (Array.isArray(createdAt) && createdAt.length >= 5) {
+        const hh = createdAt[3].toString().padStart(2, '0');
+        const mm = createdAt[4].toString().padStart(2, '0');
+        return `${hh}:${mm}`;
+    }
+    return '';
+}
+
 function toggleAdminChat() {
     isWidgetOpen = !isWidgetOpen;
     if (isWidgetOpen) {
@@ -258,7 +289,7 @@ function showUserList() {
     currentUser = null;
     $('#chatHeaderLeft').html('<i class="bi bi-chat-dots-fill mr-2" style="font-size: 1.5rem;"></i><span class="font-weight-bold">客服中心</span>');
     $('#backToListBtn').hide();
-    $('#view-chat-room').hide(); $('#chatInputArea').hide();
+    $('#view-chat-room').hide(); $('#chatInputArea').hide(); $('#quickReplyArea').hide();
     $('#view-user-list').fadeIn();
     loadUserList();
 }
@@ -277,6 +308,7 @@ function enterChatRoom(id, name, pic) {
     $('#view-user-list').hide();
     $('#backToListBtn').show();
     $('#view-chat-room').css('display', 'flex');
+    $('#quickReplyArea').show(); // 顯示快速回覆區域
     $('#chatInputArea').show();
     $.post('/admin/chat/read?memberId=' + id);
 
@@ -348,10 +380,24 @@ function loadAdminHistory(id) {
 
 function appendAdminMsgUI(msg) {
     const box = $('#adminMsgBox');
+
+    // 特殊處理：系統訊息 (SYSTEM)
+    if (msg.sender === 'SYSTEM') {
+        const timeStr = safeParseTime(msg.createdAt);
+        box.append(`
+            <div class="d-flex justify-content-center my-3">
+                <span class="badge badge-secondary px-3 py-2 shadow-sm" style="font-size: 0.9rem; opacity: 0.9; border-radius: 20px;">
+                    <i class="fas fa-info-circle mr-1"></i> ${msg.content} <small class="ml-1 opacity-75">${timeStr}</small>
+                </span>
+            </div>
+        `);
+        return;
+    }
+
     const isSystem = (msg.sender === 'ADMIN' || msg.sender === 'AI');
     const wrapperClass = isSystem ? 'admin-wrapper' : 'member-wrapper';
     let contentHtml = md ? md.render(msg.content) : msg.content;
-    const timeStr = msg.createdAt ? msg.createdAt.substring(11, 16) : '';
+    const timeStr = safeParseTime(msg.createdAt);
 
     box.append(`
         <div class="message-wrapper ${wrapperClass}">
@@ -385,12 +431,42 @@ function sendAdminMessage() {
     }
 }
 
+function sendQuickReply(msg) {
+    if (!msg) msg = "您好，請問有什麼可以協助您的嗎?";
+    $('#adminMsgInput').val(msg);
+    sendAdminMessage();
+}
+
 function handleAdminNewMsg(msg) {
     if (isWidgetOpen && currentUser && currentUser.id == msg.memberId) {
         appendAdminMsgUI(msg);
         scrollToBottom();
         $.post('/admin/chat/read?memberId=' + currentUser.id);
+
+        // 如果是 SYSTEM 訊息，除了顯示在聊天室，也跳個 Toast 提醒
+        if (msg.sender === 'SYSTEM') {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'info',
+                title: msg.content,
+                showConfirmButton: false,
+                timer: 3000
+            });
+        }
         return;
+    }
+
+    // 如果不在聊天室，如果是 SYSTEM 訊息，也跳個 Toast
+    if (msg.sender === 'SYSTEM') {
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'info',
+            title: `會員 ${msg.memberId}: ${msg.content}`,
+            showConfirmButton: false,
+            timer: 3000
+        });
     }
 
     let target = userList.find(u => u.member.memberId === msg.memberId);

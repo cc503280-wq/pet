@@ -55,7 +55,7 @@ public class MemberActionLogController {
             map.put("id", log.getId());
             map.put("memberId", log.getMemberId());
             map.put("actionType", log.getActionType());
-            map.put("targetId", log.getTargetId());
+            map.put("targetId", formatTargetId(log.getActionType(), log.getTargetId()));
             map.put("detail", log.getDetail());
             map.put("clientIp", log.getClientIp());
             map.put("time", log.getActionTime().format(formatter));
@@ -91,16 +91,40 @@ public class MemberActionLogController {
 
             for (MemberActionLog log : logs) {
                 String detail = (log.getDetail() == null) ? "" : log.getDetail().replace(",", "，").replace("\n", " ");
-                String targetId = (log.getTargetId() == null) ? "-" : log.getTargetId();
+                String formattedTargetId = formatTargetId(log.getActionType(), log.getTargetId());
 
                 writer.println(String.join(",",
                         log.getActionTime().format(formatter),
                         String.valueOf(log.getMemberId()),
                         log.getActionType(),
-                        targetId,
+                        formattedTargetId,
                         detail,
                         log.getClientIp()));
             }
+        }
+    }
+
+    // 輔助方法：根據動作類型為 ID 加上敘述
+    private String formatTargetId(String actionType, String targetId) {
+        if (targetId == null || targetId.isEmpty() || "null".equals(targetId)) {
+            return "-";
+        }
+        if (actionType == null) {
+            return targetId;
+        }
+
+        switch (actionType) {
+            case "CART":
+            case "FAVORITE":
+            case "ADD_TO_CART": // 兼容可能得舊字串
+            case "VIEW_PRODUCT":
+                return "商品ID: " + targetId;
+            case "CREATE_ORDER":
+                return "訂單ID: " + targetId;
+            case "BOOKING":
+                return "寵物ID: " + targetId; // 根據 Aspect 邏輯，目前存的是 PetID
+            default:
+                return targetId;
         }
     }
 

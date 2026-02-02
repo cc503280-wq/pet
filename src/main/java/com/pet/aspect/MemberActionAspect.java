@@ -1,5 +1,7 @@
 package com.pet.aspect;
 
+import com.pet.dto.order.OrderCheckOutDTO;
+
 import com.pet.dao.member.MemberActionLogRepository;
 import com.pet.model.member.MemberActionLog;
 import com.pet.model.order.Order;
@@ -146,15 +148,22 @@ public class MemberActionAspect {
                     break;
 
                 case LogAction.ActionType.CREATE_ORDER:
-                    // insertOrder(Order order) -> order 物件裡有 memberId, orderId, totalAmount
-                    if (args.length > 0 && args[0] instanceof Order) {
-                        Order order = (Order) args[0];
-                        memberId = order.getMemberId();
-                        targetId = String.valueOf(order.getOrderId()); // 注意: 插入前可能沒 ID
-                        // 如果回傳值 result 是 Order (且已存檔有 ID)，改用 result 抓
-                        if (result instanceof Order) {
-                            targetId = String.valueOf(((Order) result).getOrderId());
-                            memberId = ((Order) result).getMemberId();
+                    // 1. 嘗試從輸入參數抓 MemberId
+                    if (args.length > 0) {
+                        if (args[0] instanceof Order) {
+                            memberId = ((Order) args[0]).getMemberId();
+                        } else if (args[0] instanceof OrderCheckOutDTO) {
+                            // 直接轉型並取得 memberId
+                            memberId = ((OrderCheckOutDTO) args[0]).getMemberId();
+                        }
+                    }
+
+                    // 2. 從回傳結果 (Order 物件) 抓 OrderId 和成交金額
+                    if (result instanceof Order) {
+                        Order order = (Order) result;
+                        targetId = String.valueOf(order.getOrderId());
+                        if (memberId == null) {
+                            memberId = order.getMemberId();
                         }
                         detail = "訂單金額: " + order.getTotalAmountDiscountPoints();
                     }
