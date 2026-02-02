@@ -26,6 +26,7 @@
 
 	<!-- Tempus Dominus -->
 	<link rel="stylesheet" th:href="@{/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css}">
+	<link rel="stylesheet" href="../dist/css/admin-custom.css">
 	<style type="text/css">
 		/* 調整 sidebar logo 排版 */
 		.brand-link {
@@ -65,194 +66,6 @@
 	<!-- Site wrapper -->
 	<div class="wrapper">
 		<!-- Navbar -->
-		<nav class="main-header navbar navbar-expand navbar-white navbar-light">
-			<!-- Left navbar links -->
-			<ul class="navbar-nav ml-auto">
-				<li class="nav-item">
-					<a href="javascript:void(0)" id="logoutBtn" class="btn btn-secondary btn-sm">
-						<i class="fas fa-sign-out-alt"></i> 登出
-					</a>
-				</li>
-			</ul>
-
-
-		</nav>
-		<!-- /.navbar -->
-
-		<!-- Main Sidebar Container -->
-		<aside class="main-sidebar sidebar-dark-primary elevation-4">
-			<!-- Brand Logo -->
-			<a href="/admin/layout/Home.html" class="brand-link"> <i class="fas fa-paw"
-					style="color: #FFD43B; font-size: 1.5rem;"></i> <span class="brand-text font-weight-light"></span>
-			</a>
-
-			<!-- Sidebar -->
-			<div class="sidebar">
-				<div class="user-panel mt-3 pb-3 mb-3 d-flex"></div>
-
-
-
-				<!-- Sidebar Menu -->
-				<nav class="mt-2">
-					<ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
-						data-accordion="false">
-						<!-- Add icons to the links using the .nav-icon class
-               with font-awesome or any other icon font library -->
-						<li class="nav-item"><a href="#" class="nav-link"> <i class="nav-icon fas fa-edit"></i>
-								<p>
-									會員管理 <i class="right fas fa-angle-left"></i>
-								</p>
-							</a>
-							<ul class="nav nav-treeview">
-								<li class="nav-item">
-									<a href="/admin/layout/AdminQueryAll.html" class="nav-link">
-										<i class="far fa-circle nav-icon"></i>
-										<p>管理員資料</p>
-									</a>
-								</li>
-								<li class="nav-item">
-									<a href="/admin/layout/MemberQueryAll.html" class="nav-link">
-										<i class="far fa-circle nav-icon"></i>
-										<p>會員基本資料</p>
-									</a>
-								</li>
-								<li class="nav-item">
-									<a href="/admin/layout/MemberPetQueryAll.html" class="nav-link">
-										<i class="far fa-circle nav-icon"></i>
-										<p>會員寵物資料</p>
-									</a>
-								</li>
-								<li class="nav-item">
-									<a href="/admin/layout/CouponQueryAll.html" class="nav-link">
-										<i class="far fa-circle nav-icon"></i>
-										<p>優惠券總覽</p>
-									</a>
-								</li>
-								<li class="nav-item">
-									<a href="/admin/layout/CouponUsersQueryAll.html" class="nav-link">
-										<i class="far fa-circle nav-icon"></i>
-										<p>會員持有優惠券</p>
-									</a>
-								</li>
-								<li class="nav-item">
-									<a href="/admin/layout/FavoritesQueryAll.html" class="nav-link">
-										<i class="far fa-circle nav-icon"></i>
-										<p>會員收藏清單</p>
-									</a>
-								</li>
-							</ul>
-						</li>
-						<li class="nav-item">
-							<a href="#" class="nav-link">
-								<i class="nav-icon fas fa-edit"></i>
-								<p>
-									商品管理
-									<i class="right fas fa-angle-left"></i>
-								</p>
-							</a>
-							<ul class="nav nav-treeview">
-								<li class="nav-item">
-									<a th:href="@{/admin/products}" class="nav-link">
-										<i class="far fa-circle nav-icon"></i>
-										<p>商品管理</p>
-									</a>
-								</li>
-								<li class="nav-item">
-									<a th:href="@{/admin/categories}" class="nav-link">
-										<i class="far fa-circle nav-icon"></i>
-										<p>分類管理</p>
-									</a>
-								</li>
-							</ul>
-						</li>
-						<li class="nav-item">
-							<a href="#" class="nav-link">
-								<i class="nav-icon fas fa-edit"></i>
-								<p>訂單管理 <i class="right fas fa-angle-left"></i></p>
-							</a>
-							<ul class="nav nav-treeview">
-								<li class="nav-item"><a href="/orders/list" class="nav-link"><i
-											class="far fa-circle nav-icon"></i>
-										<p>查詢全部訂單</p>
-									</a></li>
-								<li class="nav-item"><a href="/shipment/list" class="nav-link"><i
-											class="far fa-circle nav-icon"></i>
-										<p>物流查詢</p>
-									</a></li>
-								<li class="nav-item"><a href="/ordersItem/list" class="nav-link"><i
-											class="far fa-circle nav-icon"></i>
-										<p>查詢全部訂單明細</p>
-									</a></li>
-								<li class="nav-item"><a href="/Cart/shopping" class="nav-link"><i
-											class="far fa-circle nav-icon"></i>
-										<p>新增訂單</p>
-									</a></li>
-							</ul>
-						</li>
-
-						<li class="nav-item"><a href="#" class="nav-link"> <i class="nav-icon fas fa-edit"></i>
-								<p>
-									預約管理 <i class="right fas fa-angle-left"></i>
-								</p>
-							</a>
-							<ul class="nav nav-treeview">
-								<li class="nav-item">
-									<a th:href="@{/admin/layout/GetAllDailySchedules.html}" class="nav-link">
-										<i class="far fa-circle nav-icon"></i>
-										<p>班表總覽
-										</p>
-									</a>
-								</li>
-								<li class="nav-item">
-									<a th:href="@{/admin/layout/GetAllAppointments.html}" class="nav-link">
-										<i class="far fa-circle nav-icon"></i>
-										<p>預約訂單列表</p>
-									</a>
-								</li>
-
-								<li class="nav-item">
-									<a th:href="@{/admin/layout/GetAllAppointmentDetails.html}" class="nav-link">
-										<i class="far fa-circle nav-icon"></i>
-										<p>預約明細</p>
-									</a>
-								</li>
-								<li class="nav-item">
-									<a th:href="@{/admin/layout/GetAllServiceItems.html}" class="nav-link">
-										<i class="far fa-circle nav-icon"></i>
-										<p>服務項目</p>
-									</a>
-								</li>
-							</ul>
-						</li>
-
-						<li class="nav-item">
-							<a href="#" class="nav-link">
-								<i class="nav-icon fas fa-edit"></i>
-								<p>人員管理 <i class="right fas fa-angle-left"></i></p>
-							</a>
-							<ul class="nav nav-treeview">
-								<li class="nav-item">
-									<a th:href="@{/admin/layout/GetAllGroomers.html}" class="nav-link">
-										<i class="far fa-circle nav-icon"></i>
-										<p>美容師列表</p>
-									</a>
-								</li>
-								<li class="nav-item">
-									<a th:href="@{/admin/layout/GetAllLeaveRecords.html}" class="nav-link">
-										<i class="far fa-circle nav-icon"></i>
-										<p>休假審核</p>
-									</a>
-								</li>
-							</ul>
-						</li>
-					</ul>
-					</li>
-				</nav>
-				<!-- /.sidebar-menu -->
-			</div>
-			<!-- /.sidebar -->
-		</aside>
-
 		<!-- Content Wrapper. Contains page content -->
 		<div class="content-wrapper">
 			<!-- Content Header (Page header) -->
@@ -339,19 +152,6 @@
 		</div>
 		<!-- /.content-wrapper -->
 
-		<footer class="main-footer">
-			<div class="float-right d-none d-sm-block">
-				<b>Version</b> 3.2.0
-			</div>
-			<strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.
-			</strong> All rights reserved.
-		</footer>
-
-		<!-- Control Sidebar -->
-		<aside class="control-sidebar control-sidebar-dark">
-			<!-- Control sidebar content goes here -->
-		</aside>
-		<!-- /.control-sidebar -->
 	</div>
 	<!-- ./wrapper -->
 
@@ -381,9 +181,12 @@
 	<script th:src="@{/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js}"></script>
 
 	<script th:src="@{/plugins/select2/js/select2.full.min.js}"></script>
+	<script src="../dist/js/admin-layout.js"></script>
 
 	<!-- AdminLTE App -->
 	<script th:src="@{/dist/js/adminlte.min.js}"></script>
+	<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 	<script src="../../dist/js/adminAuth.js"></script>
 	<!-- AdminLTE for demo purposes
             <script src="../../dist/js/demo.js"></script> -->
