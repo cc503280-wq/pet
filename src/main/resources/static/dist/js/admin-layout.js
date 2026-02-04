@@ -74,17 +74,17 @@ const sidebarHTML = `
                 <li class="nav-item">
                     <a href="#" class="nav-link"><i class="nav-icon fas fa-edit"></i><p>預約管理 <i class="right fas fa-angle-left"></i></p></a>
                     <ul class="nav nav-treeview">
-                        <li class="nav-item"><a href="GetAllAppointments.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>預約訂單列表</p></a></li>
-                        <li class="nav-item"><a href="GetAllAppointmentDetails.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>預約明細</p></a></li>
-                        <li class="nav-item"><a href="GetAllServiceItems.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>服務項目</p></a></li>
+                        <li class="nav-item"><a href="/admin/layout/GetAllAppointments.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>預約訂單列表</p></a></li>
+                        <li class="nav-item"><a href="/admin/layout/GetAllAppointmentDetails.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>預約明細</p></a></li>
+                        <li class="nav-item"><a href="/admin/layout/GetAllServiceItems.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>服務項目</p></a></li>
                     </ul>
                 </li>
                 <li class="nav-item">
                     <a href="#" class="nav-link"><i class="nav-icon fas fa-edit"></i><p>人員管理 <i class="right fas fa-angle-left"></i></p></a>
                     <ul class="nav nav-treeview">
-					    <li class="nav-item"><a href="AuditDashboard.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>系統監控儀表板</p></a></li>
-                        <li class="nav-item"><a href="GetAllGroomers.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>美容師列表</p></a></li>
-                        <li class="nav-item"><a href="GetAllLeaveRecords.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>休假審核</p></a></li>
+					    <li class="nav-item"><a href="/admin/layout/AuditDashboard.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>系統監控儀表板</p></a></li>
+                        <li class="nav-item"><a href="/admin/layout/GetAllGroomers.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>美容師列表</p></a></li>
+                        <li class="nav-item"><a href="/admin/layout/GetAllLeaveRecords.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>休假審核</p></a></li>
                     </ul>
                 </li>
             </ul>

@@ -82,6 +82,8 @@
 									<h3 class="card-title">訂單列表</h3>
 
 									<div class="d-flex align-items-center ml-auto">
+									<a id="exportOrdersCsvBtn" href="#" class="btn btn-success btn-sm ml-2">匯出訂單 CSV</a>
+									<a id="exportOrdersJsonBtn" href="#" class="btn btn-info btn-sm ml-2">匯出訂單 JSON</a>
 
 										<div class="input-group input-group-sm mr-2" style="width: 150px;">
 											<input id="idSearchInput" type="text" class="form-control"
@@ -268,6 +270,34 @@
 					.fail(function () {
 						alert("取消失敗");
 					});
+			});
+			$(document).on("click", "#exportOrdersCsvBtn", function(e) {
+			    e.preventDefault();
+
+			    const memberId = new URLSearchParams(window.location.search).get("memberId");
+			    let url = "/orders/csv";
+			    if (memberId) url += "?memberId=" + encodeURIComponent(memberId);
+
+			    const link = document.createElement("a");
+			    link.href = url;
+			    link.download = "orders.csv";
+			    document.body.appendChild(link);
+			    link.click();
+			    document.body.removeChild(link);
+			});
+			$(document).on("click", "#exportOrdersJsonBtn", function(e) {
+			    e.preventDefault();
+
+			    const memberId = new URLSearchParams(window.location.search).get("memberId");
+			    let url = "/orders/json";
+			    if (memberId) url += "?memberId=" + encodeURIComponent(memberId);
+
+			    const link = document.createElement("a");
+			    link.href = url;
+			    link.download = "orders.json";
+			    document.body.appendChild(link);
+			    link.click();
+			    document.body.removeChild(link);
 			});
 		});
 	</script>

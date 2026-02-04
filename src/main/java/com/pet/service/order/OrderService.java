@@ -80,9 +80,12 @@ public class OrderService {
 	}
 	
 	//找多筆透過會員編號
-	public List<Order> getOrderByMemberId(Integer id) {
-		return oRepository.findByMemberId(id);
-	}
+	 public List<Order> getOrderByMemberId(Integer memberId) {
+	        if (memberId != null) {
+	            return oRepository.findByMemberId(memberId);
+	        }
+	        return oRepository.findAll();
+	        }
 	
 	public Order insertOrder(Order order) {
 		return oRepository.save(order);
@@ -237,4 +240,33 @@ public class OrderService {
         
         
 	}
+	public String generateOrdersCsv(Integer memberId) {
+        List<Order> orders;
+        if (memberId != null) {
+            orders = oRepository.findByMemberId(memberId);
+        } else {
+            orders = oRepository.findAll();
+        }
+
+        StringBuilder sb = new StringBuilder();
+        // CSV 標頭
+        sb.append("訂單編號,會員編號,成立日期,當前狀態,商品總價,優惠券,券後總價,使用點數,點數折價後價錢,得到點數\n");
+
+        for (Order o : orders) {
+            sb.append(String.format("%d,%d,%s,%s,%.2f,%s,%.2f,%d,%.2f,%d\n",
+                    o.getOrderId(),
+                    o.getMemberId(),
+                    o.getOrderDate(),
+                    o.getStatus(),
+                    o.getTotalAmountUndiscount(),
+                    o.getCouponId() != null ? o.getCouponId() : "",
+                    o.getTotalAmountDiscount(),
+                    o.getUsePoints(),
+                    o.getTotalAmountDiscountPoints(),
+                    o.getGetPoints()));
+        }
+
+        return sb.toString();
+    }
+
 }

@@ -85,6 +85,8 @@
 									<h3 class="card-title">訂單列表</h3>
 
 									<div class="d-flex align-items-center ml-auto">
+									<a id="exportShipmentCsvBtn" href="#" class="btn btn-success btn-sm ml-2">匯出 CSV</a>
+									<a id="exportShipmentJsonBtn" href="#" class="btn btn-info btn-sm ml-2">匯出訂單 JSON</a>
 
 
 										<div class="input-group input-group-sm mr-2"
@@ -220,6 +222,29 @@
 								+ encodeURIComponent(id);
 						$(this).attr("href", url);
 					});
+			$(document).on("click", "#exportShipmentCsvBtn", function(e) {
+			    e.preventDefault();
+
+			    const orderId = new URLSearchParams(window.location.search).get("orderId");
+			    let url = "/shipment/csv";
+			    if (orderId) url += "?orderId=" + encodeURIComponent(orderId);
+
+			    const link = document.createElement("a");
+			    link.href = url;
+			    link.download = "shipments.csv";
+			    document.body.appendChild(link);
+			    link.click();
+			    document.body.removeChild(link);
+			});
+			$(document).on("click", "#exportShipmentJsonBtn", function(e) {
+			    e.preventDefault();
+
+			    const orderId = new URLSearchParams(window.location.search).get("orderId");
+			    let url = "/shipment/json";
+			    if (orderId) url += "?orderId=" + encodeURIComponent(orderId);
+
+			    window.location.href = url;
+			});
 		});
 	</script>
 </body>

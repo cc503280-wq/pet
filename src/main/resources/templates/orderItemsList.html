@@ -2,53 +2,56 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>queryAll.html</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>queryAll.html</title>
 
-	<!-- Google Font: Source Sans Pro -->
-	<link rel="stylesheet"
-		href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-	<!-- Font Awesome -->
-	<link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
-	<!-- Theme style -->
-	<link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
-	<link rel="stylesheet" th:href="@{/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css}">
-	<link rel="stylesheet" th:href="@{/plugins/datatables-responsive/css/responsive.bootstrap4.min.css}">
-	<link rel="stylesheet" href="../../dist/css/admin-custom.css">
-	<style type="text/css">
-		/* 調整 sidebar logo 排版 */
-		.brand-link {
-			display: flex;
-			align-items: center;
-			justify-content: flex-start;
-			/* 展開時靠左 */
-			padding: 0.5rem 1rem;
-		}
+<!-- Google Font: Source Sans Pro -->
+<link rel="stylesheet"
+	href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+<!-- Font Awesome -->
+<link rel="stylesheet"
+	th:href="@{/plugins/fontawesome-free/css/all.min.css}">
+<!-- Theme style -->
+<link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
+<link rel="stylesheet"
+	th:href="@{/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css}">
+<link rel="stylesheet"
+	th:href="@{/plugins/datatables-responsive/css/responsive.bootstrap4.min.css}">
+<link rel="stylesheet" href="../../dist/css/admin-custom.css">
+<style type="text/css">
+/* 調整 sidebar logo 排版 */
+.brand-link {
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	/* 展開時靠左 */
+	padding: 0.5rem 1rem;
+}
 
-		/* 收起 sidebar 時，icon 置中 */
-		.sidebar-collapse .brand-link {
-			justify-content: center;
-		}
+/* 收起 sidebar 時，icon 置中 */
+.sidebar-collapse .brand-link {
+	justify-content: center;
+}
 
-		/* 調整 icon 與文字間距 */
-		.brand-link i {
-			width: 1.5rem;
-			/* 固定寬度讓文字距離固定 */
-			text-align: center;
-		}
+/* 調整 icon 與文字間距 */
+.brand-link i {
+	width: 1.5rem;
+	/* 固定寬度讓文字距離固定 */
+	text-align: center;
+}
 
-		/* 收起 sidebar 時文字隱藏 */
-		.sidebar-collapse .brand-text {
-			display: none;
-		}
+/* 收起 sidebar 時文字隱藏 */
+.sidebar-collapse .brand-text {
+	display: none;
+}
 
-		.box1 {
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-		}
-	</style>
+.box1 {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+</style>
 </head>
 
 <body class="hold-transition sidebar-mini sidebar-collapse">
@@ -62,7 +65,8 @@
 					<div class="row mb-2">
 						<div class="col-sm-12 box1">
 							<h1>訂單管理</h1>
-							<a href="link" class="btn btn-secondary btn-sm"> 回列表 </a>
+							<a href="/ordersItem/list" class="btn btn-secondary btn-sm">
+								回列表 </a>
 						</div>
 						<div class="col-sm-6"></div>
 					</div>
@@ -81,13 +85,18 @@
 									<h3 class="card-title">訂單列表</h3>
 
 									<div class="d-flex align-items-center ml-auto">
-
-										<div class="input-group input-group-sm mr-2" style="width: 150px;">
+										<a id="exportJsonBtn" href="#"
+											class="btn btn-info btn-sm ml-2"> 匯出 JSON </a> <a
+											id="exportCsvBtn" href="#"
+											class="btn btn-success btn-sm ml-2"> 匯出 CSV </a>
+										<div class="input-group input-group-sm mr-2"
+											style="width: 160px;">
+											
 											<input id="idSearchInput" type="text" class="form-control"
-												placeholder="依 訂單ID 查詢">
+												placeholder="依訂單ID查詢">
 											<div class="input-group-append">
-												<a href="" id="idSearchBtn" type="button" class="btn btn-secondary"> <i
-														class="fas fa-search"></i>
+												<a href="" id="idSearchBtn" type="button"
+													class="btn btn-secondary"> <i class="fas fa-search"></i>
 												</a>
 											</div>
 										</div>
@@ -101,6 +110,7 @@
 												<th>明細編號</th>
 												<th>訂單編號</th>
 												<th>商品編號</th>
+												<th>商品名稱</th>
 												<th>商品數量</th>
 												<th>商品單價</th>
 												<th>小計</th>
@@ -113,6 +123,7 @@
 												<td th:text="${item.productItemId}"></td>
 												<td th:text="${item.order.orderId}"></td>
 												<td th:text="${item.productId}"></td>
+												<td th:text="${item.productName}"></td>
 												<td th:text="${item.quantity}" class="quantity-cell"
 													data-itemid="${item.productItemId}"></td>
 												<td th:text="${item.unitPrice}" class="price-cell"
@@ -147,58 +158,97 @@
 	<script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
 	<!-- DataTables & Plugins -->
 	<script th:src="@{/plugins/datatables/jquery.dataTables.min.js}"></script>
-	<script th:src="@{/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js}"></script>
-	<script th:src="@{/plugins/datatables-responsive/js/dataTables.responsive.min.js}"></script>
-	<script th:src="@{/plugins/datatables-responsive/js/responsive.bootstrap4.min.js}"></script>
-	<script th:src="@{/plugins/datatables-buttons/js/dataTables.buttons.min.js}"></script>
-	<script th:src="@{/plugins/datatables-buttons/js/buttons.bootstrap4.min.js}"></script>
+	<script
+		th:src="@{/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js}"></script>
+	<script
+		th:src="@{/plugins/datatables-responsive/js/dataTables.responsive.min.js}"></script>
+	<script
+		th:src="@{/plugins/datatables-responsive/js/responsive.bootstrap4.min.js}"></script>
+	<script
+		th:src="@{/plugins/datatables-buttons/js/dataTables.buttons.min.js}"></script>
+	<script
+		th:src="@{/plugins/datatables-buttons/js/buttons.bootstrap4.min.js}"></script>
 	<script th:src="@{/plugins/jszip/jszip.min.js}"></script>
 	<script th:src="@{/plugins/pdfmake/pdfmake.min.js}"></script>
 	<script th:src="@{/plugins/pdfmake/vfs_fonts.js}"></script>
 	<script th:src="@{/plugins/datatables-buttons/js/buttons.html5.min.js}"></script>
 	<script th:src="@{/plugins/datatables-buttons/js/buttons.print.min.js}"></script>
-	<script th:src="@{/plugins/datatables-buttons/js/buttons.colVis.min.js}"></script>
-	 
- <script src="../dist/js/admin-layout.js"></script>
+	<script
+		th:src="@{/plugins/datatables-buttons/js/buttons.colVis.min.js}"></script>
+
+	<script src="../dist/js/admin-layout.js"></script>
 	<!-- AdminLTE App -->
 	<script th:src="@{/dist/js/adminlte.min.js}"></script>
-	<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 	<script src="../../dist/js/adminAuth.js"></script>
 	<!-- AdminLTE for demo purposes
             <script src="${pageContext.request.contextPath}/dist/js/demo.js"></script> -->
 	<!-- Page specific script -->
 	<script>
-		$(function () {
+		$(function() {
 
 			$('#example2')
-				.DataTable(
-					{
-						"paging": true,
-						"lengthChange": false, // 關閉每頁筆數選項
-						"searching": false, // 關閉搜索框
-						"ordering": true,
-						"info": true, // 顯示資訊文字
-						"autoWidth": true,
-						"responsive": true,
+					.DataTable(
+							{
+								"paging" : true,
+								"lengthChange" : false, // 關閉每頁筆數選項
+								"searching" : false, // 關閉搜索框
+								"ordering" : true,
+								"info" : true, // 顯示資訊文字
+								"autoWidth" : true,
+								"responsive" : true,
 
-						// **【關鍵修正】使用 dom 屬性強制分頁 (p) 靠右 (col-md-7)**
-						// 結構: 表格本體(t) / 新的一行: [資訊(i) - 左 5 欄] [分頁(p) - 右 7 欄]
-						"dom": '<"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7 d-flex justify-content-end"p>>'
-					});
-			$("#idSearchBtn")
-				.click(
-					function () {
+								// **【關鍵修正】使用 dom 屬性強制分頁 (p) 靠右 (col-md-7)**
+								// 結構: 表格本體(t) / 新的一行: [資訊(i) - 左 5 欄] [分頁(p) - 右 7 欄]
+								"dom" : '<"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7 d-flex justify-content-end"p>>'
+							});
+			$("#idSearchBtn").click(
 
+					function() {
 						let id = $("#idSearchInput").val();
 						if (!id)
 							return;
 
 						// 把 ID 塞進 a 標籤的 href 當 GET 參數
 						let url = "/ordersItem/orderId?orderId="
-							+ encodeURIComponent(id);
+								+ encodeURIComponent(id);
 						$(this).attr("href", url);
 					});
+			function getQueryParam(name) {
+				const params = new URLSearchParams(window.location.search);
+				return params.get(name);
+			}
+			$(document).on("click", "#exportCsvBtn", function(e) {
+				e.preventDefault();
+
+				let orderId = getQueryParam("orderId");
+				console.log("orderId from URL =", orderId);
+
+				let url = "/ordersItem/csv";
+				if (orderId) {
+					url += "?orderId=" + encodeURIComponent(orderId);
+				}
+
+				console.log("export url =", url);
+				window.location.href = url;
+			});
+			$(document).on("click", "#exportJsonBtn", function(e) {
+			    e.preventDefault();
+
+			    const orderId = getQueryParam("orderId");
+			    let url = "/ordersItem/json";
+			    if (orderId) url += "?orderId=" + encodeURIComponent(orderId);
+
+			    const link = document.createElement("a");
+			    link.href = url;
+			    link.download = "order_items.json";
+			    document.body.appendChild(link);
+			    link.click();
+			    document.body.removeChild(link);
+			});
 		});
 	</script>
 </body>

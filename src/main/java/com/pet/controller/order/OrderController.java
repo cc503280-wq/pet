@@ -2,6 +2,7 @@
 package com.pet.controller.order;
 
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -22,6 +23,9 @@ import com.pet.service.order.OrderItemService;
 import com.pet.service.order.OrderService;
 import com.pet.service.order.ShipmentService;
 import com.pet.service.product.ProductService;
+
+import jakarta.servlet.http.HttpServletResponse;
+import tools.jackson.databind.ObjectMapper;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -81,10 +85,36 @@ public class OrderController {
 		}
 	    //修改優惠券
 	    Order order = oService.getOrderById(orderId);
+	    if (order.getCouponId()!=null) {
 	    couponUsersRealService.CouponUsersUpdate(couponUsersRealService.couponUserId(order.getMemberId(), order.getCouponId()), "unused", LocalDate.now());
-	    
-	    
+		}
 	    return ResponseEntity.ok().build();
+	}
+	@GetMapping("/csv")
+	public void exportOrdersCsv(@RequestParam(required = false) Integer memberId,
+	                            HttpServletResponse response) throws IOException {
+
+	    String csvContent = oService.generateOrdersCsv(memberId);
+
+	    response.setContentType("text/csv; charset=UTF-8");
+	    response.setHeader("Content-Disposition", "attachment; filename=orders.csv");
+	    response.getWriter().write("\uFEFF");
+
+	    response.getWriter().write(csvContent);
+	}
+	@GetMapping("/json")
+	public void exportOrdersJson(@RequestParam(required = false) Integer memberId,
+	                             HttpServletResponse response) throws IOException {
+
+	    List<Order> orders = oService.getOrderByMemberId(memberId);
+
+	    // 設定下載檔名與 MIME
+	    response.setContentType("application/json; charset=UTF-8");
+	    response.setHeader("Content-Disposition", "attachment; filename=orders.json");
+
+	    // 用 Jackson ObjectMapper 寫入 JSON
+	    ObjectMapper mapper = new ObjectMapper();
+	    mapper.writeValue(response.getOutputStream(), orders);
 	}
 	
 	

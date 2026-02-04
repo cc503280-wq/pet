@@ -42,5 +42,7 @@ public class OrderItem implements Serializable {
 	@NonNull
 	private BigDecimal subtotal;
 	
+	@Transient
+	private String productName;	
 
 }
