@@ -57,6 +57,16 @@ public class OrderService {
 	
 	@Autowired
 	private CartItemService cService;
+	
+	@Autowired
+    private OrderItemService oiService;
+    @Autowired
+    private ShipmentService shipmentService;
+    @Autowired
+    private CouponUsersRealService curService;
+    @Autowired
+    private MemberService mService;
+	
 
     OrderService(CloudinaryConfig cloudinaryConfig, CouponUsersRealService couponUsersRealService) {
         this.cloudinaryConfig = cloudinaryConfig;
@@ -268,5 +278,65 @@ public class OrderService {
 
         return sb.toString();
     }
+	
+	@Transactional
+    public Order processAdminOrder(
+            List<Integer> productIds, List<Integer> quantities, List<Integer> prices,
+            Integer memberId, Integer couponId, Integer couponUserId,
+            BigDecimal totalPrice, BigDecimal discountPrice, BigDecimal finalAmount,
+            BigDecimal totalAmountDiscountPoints, Integer usedPoint, Integer getPoint,
+            String method, Integer fee, String recipientName, String recipientPhone, String shippingAddress) {
 
+        // 1. 建立並儲存訂單主表
+        Order order = new Order();
+        order.setMemberId(memberId);
+        order.setCouponId(couponUserId != null ? couponId : null);
+        order.setOrderDate(LocalDateTime.now().withNano(0));
+        order.setStatus("付款完成");
+        order.setTotalAmountUndiscount(totalPrice);
+        order.setTotalAmountDiscount(discountPrice);
+        order.setTotalAmountDiscountPoints(totalAmountDiscountPoints);
+        order.setUsePoints(usedPoint);
+        order.setGetPoints(getPoint);
+        
+        Order savedOrder = oRepository.save(order);
+
+        // 2. 建立並儲存訂單明細
+        for (int i = 0; i < productIds.size(); i++) {
+            OrderItem item = new OrderItem();
+            item.setOrder(savedOrder);
+            item.setProductId(productIds.get(i));
+            item.setQuantity(quantities.get(i));
+            item.setUnitPrice(BigDecimal.valueOf(prices.get(i)));
+            
+            // 計算小計
+            BigDecimal subtotal = BigDecimal.valueOf(quantities.get(i))
+                                            .multiply(BigDecimal.valueOf(prices.get(i)));
+            item.setSubtotal(subtotal);
+            
+            oiService.insertOrderItem(item);
+        }
+
+        // 3. 建立並儲存物流表
+        Shipment shipping = new Shipment();
+        shipping.setOrder(savedOrder);
+        shipping.setRecipientName(recipientName);
+        shipping.setRecipientPhone(recipientPhone);
+        shipping.setShippingAddress(shippingAddress);
+        shipping.setShippingMethod(method);
+        shipping.setShippingFee(fee);
+        shipping.setStatus("未出貨");
+        shipmentService.insertShipment(shipping);
+
+        // 4. 修改優惠券狀態
+        if (couponUserId != null && couponUserId != 0) {
+            curService.CouponUsersUpdate(couponUserId, "used", LocalDate.now());
+        }
+
+        // 5. 修改會員幣數量
+        mService.updateMemberPoints(memberId, usedPoint, 0);
+
+        return savedOrder;
+    }
 }
+

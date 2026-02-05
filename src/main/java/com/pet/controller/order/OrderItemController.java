@@ -1,8 +1,11 @@
 package com.pet.controller.order;
 
+import java.io.Console;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,9 +32,22 @@ public class OrderItemController {
 	
 	@GetMapping("/list")
 	public String orderlist(Model model) {
-		List<OrderItem> orderItemsList = oiService.getAllOrderItem();
-        model.addAttribute("orderItemsList", orderItemsList);
-        return "orderItemsList";
+	    List<OrderItem> orderItemsList = oiService.getAllOrderItem();
+	    
+	    // 統計各商品銷售額占比
+	    Map<String, Double> salesMap = orderItemsList.stream()
+	        .collect(Collectors.groupingBy(
+	            OrderItem::getProductName,
+	            Collectors.summingDouble(item -> item.getSubtotal().doubleValue())
+	        ));
+	    
+	    System.out.println("後端統計結果: " + salesMap);
+	    
+	    model.addAttribute("orderItemsList", orderItemsList);
+	    // 【關鍵修正】：將整個 Map 傳給前端，名稱要跟 JS 裡的 /*[[${salesSummary}]]*/ 對齊
+	    model.addAttribute("salesSummary", salesMap); 
+	    
+	    return "orderItemsList";
 	}
 	@GetMapping("/orderId")
 	public String orderItemsOrderlist(@RequestParam Integer orderId,Model model) {
@@ -89,6 +105,27 @@ public class OrderItemController {
 	    // Jackson 直接寫入 Response
 	    ObjectMapper mapper = new ObjectMapper();
 	    mapper.writeValue(response.getOutputStream(), dtoList);
+	}
+	@GetMapping("/product")
+	public String orderItemsProductlist(@RequestParam Integer productId,Model model) {
+		List<OrderItem> orderItemsList = oiService.getOrderItemByProductId(productId);
+		// 按訂單日期排序 (由舊到新)
+	    orderItemsList.sort(Comparator.comparing(item -> item.getOrder().getOrderDate()));
+
+	    // 準備圖表數據
+	    List<String> labels = orderItemsList.stream()
+	            .map(item -> item.getOrder().getOrderDate().toLocalDate().toString())
+	            .collect(Collectors.toList());
+	    System.out.println("準備圖表數據:"+labels);
+	            
+	    List<Integer> data = orderItemsList.stream()
+	            .map(OrderItem::getQuantity)
+	            .collect(Collectors.toList());
+	    System.out.println("準備圖表數據:"+data);
+		model.addAttribute("orderItemsList", orderItemsList);
+		model.addAttribute("chartLabels", labels); // 日期標籤
+	    model.addAttribute("chartData", data);     // 銷售數量
+		return "orderItemsList";
 	}
 	
 }

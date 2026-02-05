@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,6 +20,7 @@ import com.pet.model.order.Order;
 import com.pet.model.order.OrderItem;
 import com.pet.service.member.CouponUsersRealService;
 import com.pet.service.member.CouponUsersService;
+import com.pet.service.member.MemberService;
 import com.pet.service.order.OrderItemService;
 import com.pet.service.order.OrderService;
 import com.pet.service.order.ShipmentService;
@@ -34,6 +36,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Controller
 @RequestMapping("/orders")
 public class OrderController {
+
+ 
 	
 	@Autowired
 	private OrderService oService;
@@ -48,6 +52,10 @@ public class OrderController {
 	private CouponUsersRealService couponUsersRealService;
 	@Autowired
 	private CouponUsersService cUsersService;
+	@Autowired
+	private MemberService mService;
+
+  
 	
 	@GetMapping("/list")
 	public String orderlist(Model model) {
@@ -75,19 +83,28 @@ public class OrderController {
         }
     }
 	@PostMapping("/cancel")
+	@Transactional
 	public ResponseEntity<Void> cancelOrder(@RequestParam Integer orderId){
+		Order order = oService.getOrderById(orderId);
+		if (order.getStatus().equals("已取消")) {
+			return ResponseEntity.badRequest().build();
+		}
+		
 	    oService.updateOrderStatus(orderId, "已取消");
 	    shipmentService.updateShipmentStatus(orderId, "已取消");
 	    //修改庫存量
 	    List<OrderItem> orders = oItemService.getOrderItemByorder(orderId);
 	    for (OrderItem orderItem : orders) {
-	    	pService.updateProductStock(orderId, orderItem.getQuantity(), 0);
+	    	pService.updateProductStock(orderId, 0, orderItem.getQuantity());
 		}
 	    //修改優惠券
-	    Order order = oService.getOrderById(orderId);
+	    
 	    if (order.getCouponId()!=null) {
-	    couponUsersRealService.CouponUsersUpdate(couponUsersRealService.couponUserId(order.getMemberId(), order.getCouponId()), "unused", LocalDate.now());
-		}
+	    	 couponUsersRealService.rollbackCouponStatus(order.getMemberId(), order.getCouponId());
+	    }
+	    //回滾會員幣
+	    mService.updateMemberPoints(order.getMemberId(), order.getUsePoints(), order.getGetPoints());
+	    
 	    return ResponseEntity.ok().build();
 	}
 	@GetMapping("/csv")

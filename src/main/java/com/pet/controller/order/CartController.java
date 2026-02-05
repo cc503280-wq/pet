@@ -87,72 +87,35 @@ public class CartController {
 	}
 
 	@PostMapping("/insertOrder")
-	public String insertOrder(@RequestParam("productId[]") List<Integer> productIds,
-			@RequestParam("productName[]") List<String> productNames,
-			@RequestParam("quantity[]") List<Integer> quantities, @RequestParam("price[]") List<Integer> prices,
-			@RequestParam("member_id") Integer member_Id,
-			@RequestParam(required = false, name = "coupon_id") Integer coupon_Id,
-			@RequestParam("total_price") BigDecimal total_price,
-			@RequestParam("discountPrice") BigDecimal discountPrice, @RequestParam("method") String method,
-			@RequestParam("fee") Integer fee, @RequestParam("finalAmount") BigDecimal finalAmount,
-			@RequestParam("recipientName") String recipientName, @RequestParam("recipientPhone") String recipientPhone,
-			@RequestParam("shippingAddress") String shippingAddress,
-			@RequestParam(required = false, name = "couponUserId") Integer couponUserId,
-			@RequestParam("usedPoint") Integer usedPoint,
-			@RequestParam("totalAmountDiscountPoints") BigDecimal TotalAmountDiscountPoints,
-			@RequestParam("getPoint") Integer getPoint) {
-		System.out.println(coupon_Id + "user:" + couponUserId);
-		// 1. 建立訂單主表
-		Order order = new Order();
-		order.setMemberId(member_Id);
-		if (couponUserId != null) {
-			order.setCouponId(coupon_Id);
-		} else {
-			order.setCouponId(null);
-		}
-		order.setOrderDate(LocalDateTime.now().withNano(0));
-		order.setStatus("下訂單完成");
-		order.setTotalAmountUndiscount(total_price);
-		order.setTotalAmountDiscount(discountPrice);
-		order.setTotalAmountDiscountPoints(TotalAmountDiscountPoints);
-		order.setUsePoints(usedPoint);
-		order.setGetPoints(getPoint);
-		Order orderId = oService.insertOrder(order);
+	public String insertOrder(
+	        @RequestParam("productId[]") List<Integer> productIds,
+	        @RequestParam("productName[]") List<String> productNames,
+	        @RequestParam("quantity[]") List<Integer> quantities, 
+	        @RequestParam("price[]") List<Integer> prices,
+	        @RequestParam("member_id") Integer memberId,
+	        @RequestParam(required = false, name = "coupon_id") Integer couponId,
+	        @RequestParam("total_price") BigDecimal totalPrice,
+	        @RequestParam("discountPrice") BigDecimal discountPrice, 
+	        @RequestParam("method") String method,
+	        @RequestParam("fee") Integer fee, 
+	        @RequestParam("finalAmount") BigDecimal finalAmount,
+	        @RequestParam("recipientName") String recipientName, 
+	        @RequestParam("recipientPhone") String recipientPhone,
+	        @RequestParam("shippingAddress") String shippingAddress,
+	        @RequestParam(required = false, name = "couponUserId") Integer couponUserId,
+	        @RequestParam("usedPoint") Integer usedPoint,
+	        @RequestParam("totalAmountDiscountPoints") BigDecimal totalAmountDiscountPoints,
+	        @RequestParam("getPoint") Integer getPoint) {
 
-		// 2. 建立訂單明細
+	    // 呼叫封裝好的 Service 邏輯
+	    oService.processAdminOrder(
+	        productIds, quantities, prices, 
+	        memberId, couponId, couponUserId, 
+	        totalPrice, discountPrice, finalAmount, 
+	        totalAmountDiscountPoints, usedPoint, getPoint, 
+	        method, fee, recipientName, recipientPhone, shippingAddress
+	    );
 
-		for (int i = 0; i < productIds.size(); i++) {
-			OrderItem item = new OrderItem();
-			item.setOrder(orderId);
-			item.setProductId(productIds.get(i));
-			item.setQuantity(quantities.get(i));
-			item.setUnitPrice(BigDecimal.valueOf(prices.get(i)));
-			// item.setSubtotal(quantities.get(i)*prices.get(i));
-			// 小計
-			Integer subtotal = quantities.get(i) * prices.get(i);
-			item.setSubtotal(BigDecimal.valueOf(subtotal));
-			oiService.insertOrderItem(item);
-		}
-
-		// 3. 建立物流表
-		Shipment shipping = new Shipment();
-		shipping.setOrder(orderId);
-		shipping.setRecipientName(recipientName);
-		shipping.setRecipientPhone(recipientPhone);
-		shipping.setShippingAddress(shippingAddress);
-		shipping.setShippingMethod(method);
-		shipping.setShippingFee(fee);
-		shipping.setStatus("未出貨");
-		shipmentService.insertShipment(shipping);
-		// 4.修改優惠券狀態
-		if (couponUserId != null) {
-			curService.CouponUsersUpdate(couponUserId, "used", LocalDate.now());
-		}
-
-		// 5.修改會員幣數量
-
-		mService.updateMemberPoints(member_Id, usedPoint, getPoint);
-
-		return "redirect:/orders/list";
+	    return "redirect:/orders/list";
 	}
 }

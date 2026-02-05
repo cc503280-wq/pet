@@ -77,6 +77,38 @@
 			<!-- Main content -->
 			<section class="content">
 				<div class="container-fluid">
+					<div class="row" th:if="${param.productId == null}">
+						<div class="col-12">
+							<div class="card card-success card-outline">
+								<div class="card-header">
+									<h3 class="card-title">
+										<i class="fas fa-chart-pie mr-1"></i> 全商品銷售額占比
+									</h3>
+								</div>
+								<div class="card-body">
+									<canvas id="allProductPieChart"
+										style="min-height: 300px; height: 300px; max-height: 300px; max-width: 100%;"></canvas>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row" th:if="${param.productId != null}">
+						<div class="col-12">
+							<div class="card card-primary card-outline">
+								<div class="card-header">
+									<h3 class="card-title">
+										<i class="fas fa-chart-line mr-1"></i> 銷售趨勢圖
+									</h3>
+								</div>
+								<div class="card-body">
+									<div class="chart">
+										<canvas id="productSalesChart"
+											style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
 					<div class="row">
 						<div class="col-12">
 							<div class="card">
@@ -91,7 +123,7 @@
 											class="btn btn-success btn-sm ml-2"> 匯出 CSV </a>
 										<div class="input-group input-group-sm mr-2"
 											style="width: 160px;">
-											
+
 											<input id="idSearchInput" type="text" class="form-control"
 												placeholder="依訂單ID查詢">
 											<div class="input-group-append">
@@ -122,7 +154,9 @@
 											<tr th:each="item : ${orderItemsList}">
 												<td th:text="${item.productItemId}"></td>
 												<td th:text="${item.order.orderId}"></td>
-												<td th:text="${item.productId}"></td>
+												<td><a
+													th:href="@{/ordersItem/product(productId=${item.productId})}"
+													th:text="${item.productId}" title="查看此商品的所有明細"> </a></td>
 												<td th:text="${item.productName}"></td>
 												<td th:text="${item.quantity}" class="quantity-cell"
 													data-itemid="${item.productItemId}"></td>
@@ -175,6 +209,7 @@
 	<script th:src="@{/plugins/datatables-buttons/js/buttons.print.min.js}"></script>
 	<script
 		th:src="@{/plugins/datatables-buttons/js/buttons.colVis.min.js}"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 	<script src="../dist/js/admin-layout.js"></script>
 	<!-- AdminLTE App -->
@@ -187,7 +222,7 @@
 	<!-- AdminLTE for demo purposes
             <script src="${pageContext.request.contextPath}/dist/js/demo.js"></script> -->
 	<!-- Page specific script -->
-	<script>
+	<script th:inline="javascript">
 		$(function() {
 
 			$('#example2')
@@ -236,19 +271,109 @@
 				window.location.href = url;
 			});
 			$(document).on("click", "#exportJsonBtn", function(e) {
-			    e.preventDefault();
+				e.preventDefault();
 
-			    const orderId = getQueryParam("orderId");
-			    let url = "/ordersItem/json";
-			    if (orderId) url += "?orderId=" + encodeURIComponent(orderId);
+				const orderId = getQueryParam("orderId");
+				let url = "/ordersItem/json";
+				if (orderId)
+					url += "?orderId=" + encodeURIComponent(orderId);
 
-			    const link = document.createElement("a");
-			    link.href = url;
-			    link.download = "order_items.json";
-			    document.body.appendChild(link);
-			    link.click();
-			    document.body.removeChild(link);
+				const link = document.createElement("a");
+				link.href = url;
+				link.download = "order_items.json";
+				document.body.appendChild(link);
+				link.click();
+				document.body.removeChild(link);
 			});
+			//圖形化商品
+			// 從 Thymeleaf 取得數據
+			const labels = /*[[${chartLabels}]]*/[];
+			const salesData = /*[[${chartData}]]*/[];
+
+			const chartCanvas = document.getElementById('productSalesChart');
+			if (chartCanvas && labels && labels.length > 0) {
+				const ctx = chartCanvas.getContext('2d');
+				new Chart(ctx, {
+					type : 'line',
+					data : {
+						labels : labels,
+						datasets : [ {
+							label : '成交數量',
+							backgroundColor : 'rgba(60,141,188,0.2)',
+							borderColor : 'rgba(60,141,188,1)',
+							pointRadius : 5,
+							pointBackgroundColor : '#3b8bba',
+							data : salesData,
+							fill : true,
+							tension : 0.3
+						} ]
+					},
+					options : {
+						maintainAspectRatio : false,
+						responsive : true,
+						scales : {
+							y : {
+								beginAtZero : true,
+								ticks : {
+									stepSize : 1
+								}
+							}
+						}
+					}
+				});
+			} else {
+				console.log("當前頁面不符合圖表顯示條件 (無 productId 或無銷售數據)");
+			}
+			
+			// 從 Thymeleaf 獲取原始數據 (Map 轉 Object)
+		    const rawData = /*[[${salesSummary}]]*/ null;
+		    
+		    let pieLabels = [];
+		    let pieData = [];
+
+		    // 1. 遍歷物件提取 Key 和 Value
+		    if (rawData && typeof rawData === 'object') {
+		        for (let key in rawData) {
+		            if (rawData.hasOwnProperty(key)) {
+		                pieLabels.push(key);        // 商品名稱
+		                pieData.push(rawData[key]); // 銷售金額
+		            }
+		        }
+		    }
+
+		    // 2. 除錯確認
+		    console.log("修正後標籤:", pieLabels);
+		    console.log("修正後數值:", pieData);
+
+		    const pieCanvas = document.getElementById('allProductPieChart');
+		    
+		    // 3. 只有在真的有資料時才畫圖
+		    if (pieCanvas && pieLabels.length > 0) {
+		        new Chart(pieCanvas.getContext('2d'), {
+		            type: 'pie',
+		            data: {
+		                labels: pieLabels,
+		                datasets: [{
+		                    data: pieData,
+		                    backgroundColor: [
+		                        '#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc', 
+		                        '#d2d6de', '#605ca8', '#ff851b', '#D81B60', '#343a40'
+		                    ],
+		                    borderWidth: 1
+		                }]
+		            },
+		            options: {
+		                maintainAspectRatio: false,
+		                responsive: true,
+		                plugins: {
+		                    legend: {
+		                        display: true,
+		                        position: 'right'
+		                    }
+		                }
+		            }
+		        });
+		    }
 		});
 	</script>
 </body>

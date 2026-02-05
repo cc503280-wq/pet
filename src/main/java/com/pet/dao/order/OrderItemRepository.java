@@ -11,4 +11,5 @@ import com.pet.model.order.OrderItem;
 
 public interface OrderItemRepository extends JpaRepository<OrderItem, Integer> {
 	List<OrderItem> findByOrder_OrderId(Integer orderId);
+	List<OrderItem> findByProductId(Integer productId);
 }
