@@ -56,7 +56,7 @@ public class CartController {
 
 	@GetMapping("/shopping")
 	public String getProduct(Model m) {
-		List<Product> products = pService.findAllProducts();
+		List<Product> products = pService.findActiveProducts();
 		m.addAttribute("products", products);
 		return "shopping";
 	}
