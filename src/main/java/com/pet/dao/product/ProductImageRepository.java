@@ -10,8 +10,9 @@ import com.pet.model.product.ProductImage;
 
 public interface ProductImageRepository extends JpaRepository<ProductImage, Integer> {
 
-	List<ProductImage> findByProduct_ProductIdOrderBySortOrderAsc(Integer productId);
-	
 	@Query("SELECT MAX(p.sortOrder) FROM ProductImage p WHERE p.product.productId = :productId")
-	Integer findMaxSortOrder(@Param("productId") Integer productId);
+    Integer findMaxSortOrderByProductId(Integer productId);
+    
+    // 確保抓取圖片時是依照順序排的
+    List<ProductImage> findByProduct_ProductIdOrderBySortOrderAsc(Integer productId);
 }

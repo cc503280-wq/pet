@@ -42,17 +42,22 @@ public class CartItemController {
         }
 
         // 2. 呼叫業務邏輯
-        cartService.addToCart(memberId, request.getProductId(), request.getQuantity());
-
-        // 3. 回傳漂亮的 JSON
-        Map<String, Object> response = new HashMap<>();
-        response.put("status", "success");
-        response.put("message", "加入成功");
         
-        // (選用) 如果想順便更新前端右上角的購物車數字，可以在這裡回傳
-        // response.put("cartCount", cartService.countItems(memberId)); 
+        try {
+            // 2. 呼叫業務邏輯 (這裡可能會噴 "庫存不足" 的例外)
+            cartService.addToCart(memberId, request.getProductId(), request.getQuantity());
 
-        return ResponseEntity.ok(response);
+            // 3. ✅ 成功：回傳 JSON
+            Map<String, Object> response = new HashMap<>();
+            response.put("status", "success");
+            response.put("message", "加入成功");
+            return ResponseEntity.ok(response);
+
+        } catch (RuntimeException e) {
+            // 4. 🛑 失敗 (庫存不足)：回傳 400 + 錯誤訊息文字
+            // e.getMessage() 就是您在 Service 裡 throw new RuntimeException("庫存不足...") 寫的那段話
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     // ✅ 2. 查看我的購物車 (回傳 DTO List)

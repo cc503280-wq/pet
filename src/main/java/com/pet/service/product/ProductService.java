@@ -544,32 +544,31 @@ public class ProductService {
         // PageRequest.of(0, 8) 代表取第 0 頁，共 8 筆 (即前 8 名)
         return pRepos.findBestSellers(PageRequest.of(0, 8));
     }
-    
  // 單筆更新庫存數量
- 	public Product updateProductStock(Integer productId, Integer Increase, Integer reduce) {
- 		Product product = pRepos.findById(productId).orElseThrow();
- 		Integer oldStock = product.getStock();
- 		Integer totalStock = oldStock + Increase - reduce;
- 		product.setStock(totalStock);
- 		// ==========================================
- 		// 🔥 修改後的 LINE 通知邏輯
- 		// ==========================================
+    public Product updateProductStock(Integer productId, Integer Increase, Integer reduce) {
+     Product product = pRepos.findById(productId).orElseThrow();
+     Integer oldStock = product.getStock();
+     Integer totalStock = oldStock + Increase - reduce;
+     product.setStock(totalStock);
+     // ==========================================
+     // 🔥 修改後的 LINE 通知邏輯
+     // ==========================================
 
- 		if (totalStock == 0) {
- 			// 情境 A：庫存變成 0 -> 發送下架通知
- 			System.out.println("商品已下架：" + product.getProductName());
- 			lineNotify.sendOutOfStockAlert(product.getProductName());
+     if (totalStock == 0) {
+      // 情境 A：庫存變成 0 -> 發送下架通知
+      System.out.println("商品已下架：" + product.getProductName());
+      lineNotify.sendOutOfStockAlert(product.getProductName());
 
- 		} else if (totalStock < 5 && totalStock > 0) {
- 			// 情境 B：庫存低於 5 但還沒光 -> 發送補貨警報
- 			System.out.println("觸發庫存警報：" + product.getProductName());
- 			lineNotify.sendStockAlert(product.getProductName(), totalStock);
- 		}
+     } else if (totalStock < 5 && totalStock > 0) {
+      // 情境 B：庫存低於 5 但還沒光 -> 發送補貨警報
+      System.out.println("觸發庫存警報：" + product.getProductName());
+      lineNotify.sendStockAlert(product.getProductName(), totalStock);
+     }
 
- 		// ==========================================
+     // ==========================================
 
- 		// 自動上下架邏輯
- 		product.setIsActive(totalStock > 0);
- 		return pRepos.save(product);
- 	}
+     // 自動上下架邏輯
+     product.setIsActive(totalStock > 0);
+     return pRepos.save(product);
+    }
 }
