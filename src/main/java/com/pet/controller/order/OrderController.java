@@ -4,6 +4,7 @@ package com.pet.controller.order;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,12 +62,16 @@ public class OrderController {
 	public String orderlist(Model model) {
 		List<Order> orders = oService.getAllOrders();
         model.addAttribute("orders", orders);
+     // 加入這一行！
+        addChartAttributes(model, null);
         return "orderList";
 	}
 	@GetMapping("/memberId")
 	public String memberOrderlist(@RequestParam Integer memberId,Model model) {
 		List<Order> orders = oService.getOrderByMemberId(memberId);
 		model.addAttribute("orders", orders);
+		// 加入這一行！並傳入 memberId
+	    addChartAttributes(model, memberId);
 		return "orderList";
 	}
 	
@@ -134,6 +139,21 @@ public class OrderController {
 	    mapper.writeValue(response.getOutputStream(), orders);
 	}
 	
+	private void addChartAttributes(Model model, Integer memberId) {
+	    List<String> labels = oService.getRecentSixMonthsLabels();
+	    List<Double> totalSales = oService.getMonthlyTotalSales();
+	    List<Double> memberSales = new ArrayList<>();
+
+	    if (memberId != null) {
+	        memberSales = oService.getMemberMonthlySales(memberId);
+	    } else {
+	        for(int i=0; i<labels.size(); i++) memberSales.add(0.0);
+	    }
+
+	    model.addAttribute("chartLabels", labels);
+	    model.addAttribute("totalSalesData", totalSales);
+	    model.addAttribute("memberSalesData", memberSales);
+	}
 	
 	
 	

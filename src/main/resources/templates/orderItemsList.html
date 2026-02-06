@@ -77,7 +77,7 @@
 			<!-- Main content -->
 			<section class="content">
 				<div class="container-fluid">
-					<div class="row" th:if="${param.productId == null}">
+					<div class="row" th:if="${param.productId == null and param.orderId == null}">
 						<div class="col-12">
 							<div class="card card-success card-outline">
 								<div class="card-header">
@@ -92,7 +92,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="row" th:if="${param.productId != null}">
+					<div class="row" th:if="${param.productId != null and param.orderId == null}">
 						<div class="col-12">
 							<div class="card card-primary card-outline">
 								<div class="card-header">

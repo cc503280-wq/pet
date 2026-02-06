@@ -3,7 +3,12 @@ package com.pet.service.order;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -337,6 +342,42 @@ public class OrderService {
         mService.updateMemberPoints(memberId, usedPoint, 0);
 
         return savedOrder;
+    }
+	
+	// 產生最近六個月的標籤：["2025-09", "2025-10", ..., "2026-02"]
+    public List<String> getRecentSixMonthsLabels() {
+        List<String> labels = new ArrayList<>();
+        LocalDate now = LocalDate.now();
+        for (int i = 5; i >= 0; i--) {
+            labels.add(now.minusMonths(i).format(DateTimeFormatter.ofPattern("yyyy-MM")));
+        }
+        return labels;
+    }
+
+    public List<Double> getMonthlyTotalSales() {
+        return mapDataToLabels(oRepository.getTotalMonthlySales());
+    }
+
+    public List<Double> getMemberMonthlySales(Integer memberId) {
+        return mapDataToLabels(oRepository.getMemberMonthlySales(memberId));
+    }
+
+    private List<Double> mapDataToLabels(List<Object[]> rawData) {
+        List<String> labels = getRecentSixMonthsLabels();
+        Map<String, Double> dataMap = new HashMap<>();
+
+        // SQL Server 回傳的 SUM 有可能是 BigDecimal 或 Double，視欄位定義而定
+        for (Object[] row : rawData) {
+            String month = row[0].toString();
+            Double amount = (row[1] != null) ? ((Number) row[1]).doubleValue() : 0.0;
+            dataMap.put(month, amount);
+        }
+
+        List<Double> result = new ArrayList<>();
+        for (String label : labels) {
+            result.add(dataMap.getOrDefault(label, 0.0));
+        }
+        return result;
     }
 }
 
