@@ -70,6 +70,11 @@ public class ShopMemberController {
         // 2. 檢查會員是否存在，以及密碼是否正確
         if (member != null && passwordEncoder.matches(loginRequest.getPassword(), member.getPassword())) {
 
+            // 2.5 檢查帳號狀態 (若非 active 則禁止登入)
+            if (!"active".equalsIgnoreCase(member.getStatus())) {
+                return ResponseEntity.status(403).body("此帳號已被停用，請聯繫客服");
+            }
+
             // 3. 登入成功，產生 Token (傳入你的 Integer ID)
             String token = jwtUtils.createToken(member.getMemberId());
 
