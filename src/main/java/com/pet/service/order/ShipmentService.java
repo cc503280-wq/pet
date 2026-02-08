@@ -72,7 +72,7 @@ public class ShipmentService {
               .append(s.getOrder().getOrderId()).append(",")
               .append(s.getShippingMethod()).append(",")
               .append(s.getShippingFee()).append(",")
-              .append(s.getTrackingNumber()).append(",")
+              .append(s.getLogisticsId()).append(",")
               .append(s.getShippedAt()).append(",")
               .append(s.getDeliveredAt()).append(",")
               .append(s.getStatus()).append(",")

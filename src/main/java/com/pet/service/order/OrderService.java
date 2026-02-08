@@ -122,7 +122,7 @@ public class OrderService {
     }
 	
 	@Transactional
-	@LogAction(type = LogAction.ActionType.CREATE_ORDER) 
+//	@LogAction(type = LogAction.ActionType.CREATE_ORDER) 
 	public Order userOrder(OrderCheckOutDTO orderCheckOutDTO) {
 		
 		List<CartItem> cartItems = cRepository.findByMember_MemberId(orderCheckOutDTO.getMemberId());
@@ -215,6 +215,7 @@ public class OrderService {
                 .shippingAddress(orderCheckOutDTO.getReceiverAddress())
                 .shippingMethod(orderCheckOutDTO.getShippingMethod())
                 .shippingFee(shippingFee)
+                .storeId(orderCheckOutDTO.getStoreId())
                 .status("備貨中") // 物流初始狀態
                 .build();
 

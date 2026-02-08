@@ -38,7 +38,5 @@ public class OrderCheckOutDTO {
     private Integer totalAmount;
     
     private String storeId;
-    
-    
 
 }

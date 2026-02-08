@@ -1,58 +1,53 @@
 package com.pet.model.order;
 
-import java.time.LocalDateTime;
-import java.util.Date;
-
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "shipments")
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-@RequiredArgsConstructor
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Shipment {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer shipmentId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer shipmentId;
 
-	@ManyToOne
-	@JoinColumn(name = "order_id")
-	@NonNull
-	private Order order;
-	@NonNull
-	private String shippingMethod;
-	@NonNull
-	private Integer shippingFee;
-	
-	private String trackingNumber;
-	
-	private LocalDateTime shippedAt;
-	
-	private LocalDateTime deliveredAt;
-	@NonNull
-	private String status;
-	@NonNull
-	private String recipientName;
-	@NonNull
-	private String recipientPhone;
-	@NonNull
-	private String shippingAddress;
+    @OneToOne
+    @JoinColumn(name = "order_id", nullable = false)
+    private Order order;
 
+    // 收件人資訊
+    private String recipientName;
+    private String recipientPhone;
+    private String shippingAddress;
+
+    // 物流方式 (例如: "7-11", "全家", "宅配")
+    private String shippingMethod;
+
+    // ★ 關鍵 1：超商門市代號 (例如: 131386)
+    // 如果是宅配，這裡可以是 null
+    private String storeId; 
+
+    private Integer shippingFee;
+
+    // 物流狀態 (備貨中, 已出貨, 配送中, 已送達)
+    private String status;
+
+    // ★ 關鍵 2：寄貨編號 (CVS Payment No)
+    // 這是綠界回傳給您的，您要給客人這組號碼去超商寄貨 (C2C)
+    private String deliverySn; 
+
+    // ★ 關鍵 3：綠界物流編號 (AllPayLogisticsID)
+    // 這是綠界內部的唯一編號，查單用
+    private String logisticsId; 
+
+    private LocalDateTime shippedAt; // 出貨時間
+    private LocalDateTime deliveredAt; // 送達時間
 }

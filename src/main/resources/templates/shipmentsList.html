@@ -57,7 +57,7 @@
 <body class="hold-transition sidebar-mini sidebar-collapse">
 	<!-- Site wrapper -->
 	<div class="wrapper">
-		
+
 		<!-- Content Wrapper. Contains page content -->
 		<div class="content-wrapper">
 			<!-- Content Header (Page header) -->
@@ -66,7 +66,8 @@
 					<div class="row mb-2">
 						<div class="col-sm-12 box1">
 							<h1>物流查詢</h1>
-							<a href="/shipment/list" class="btn btn-secondary btn-sm"> 回列表 </a>
+							<a href="/shipment/list" class="btn btn-secondary btn-sm">
+								回列表 </a>
 						</div>
 						<div class="col-sm-6"></div>
 					</div>
@@ -85,8 +86,10 @@
 									<h3 class="card-title">物流紀錄</h3>
 
 									<div class="d-flex align-items-center ml-auto">
-									<a id="exportShipmentCsvBtn" href="#" class="btn btn-success btn-sm ml-2">匯出 CSV</a>
-									<a id="exportShipmentJsonBtn" href="#" class="btn btn-info btn-sm ml-2">匯出訂單 JSON</a>
+										<a id="exportShipmentCsvBtn" href="#"
+											class="btn btn-success btn-sm ml-2">匯出 CSV</a> <a
+											id="exportShipmentJsonBtn" href="#"
+											class="btn btn-info btn-sm ml-2">匯出訂單 JSON</a>
 
 
 										<div class="input-group input-group-sm mr-2"
@@ -122,13 +125,12 @@
 											</tr>
 										</thead>
 										<tbody>
-
 											<tr th:each="s : ${shipmentsList}">
 												<td th:text="${s.shipmentId}"></td>
 												<td th:text="${s.order.orderId}"></td>
 												<td th:text="${s.shippingMethod}"></td>
 												<td th:text="${s.shippingFee}"></td>
-												<td th:text="${s.trackingNumber}"></td>
+												<td th:text="${s.logisticsId}"></td>
 												<td th:text="${s.shippedAt}"></td>
 												<td th:text="${s.deliveredAt}"></td>
 												<td th:text="${s.status}"></td>
@@ -136,9 +138,20 @@
 												<td th:text="${s.recipientPhone}"></td>
 												<td th:text="${s.shippingAddress}"></td>
 
-												<td class="text-center"><a
+												<td class="text-center" style="white-space: nowrap;"><a
 													th:href="@{/shipment/updatePage(shipmentId=${s.shipmentId})}"
-													class="btn btn-secondary btn-sm mr-1"> 修改 </a></td>
+													class="btn btn-secondary btn-sm mr-1"> <i
+														class="fas fa-edit"></i> 修改
+												</a>
+
+													<button th:if="${s.status == '備貨中'}" type="button"
+														class="btn btn-primary btn-sm btn-ship-ecpay mr-1"
+														th:data-id="${s.shipmentId}"
+														th:data-method="${s.shippingMethod}">
+														<i class="fas fa-truck"></i> 產生寄件碼
+													</button> <span th:if="${s.deliverySn != null}"
+													class="badge badge-success" style="font-size: 0.9em;"
+													th:text="'寄件碼: ' + ${s.deliverySn}"> </span></td>
 											</tr>
 										</tbody>
 
@@ -186,8 +199,10 @@
 		th:src="@{/plugins/datatables-buttons/js/buttons.colVis.min.js}"></script>
 	<!-- AdminLTE App -->
 	<script th:src="@{/dist/js/adminlte.min.js}"></script>
-	<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 	<script src="../../dist/js/adminAuth.js"></script>
 	<script src="../dist/js/admin-layout.js"></script>
 	<!-- AdminLTE for demo purposes
@@ -222,29 +237,78 @@
 								+ encodeURIComponent(id);
 						$(this).attr("href", url);
 					});
-			$(document).on("click", "#exportShipmentCsvBtn", function(e) {
-			    e.preventDefault();
+			$(document).on(
+					"click",
+					"#exportShipmentCsvBtn",
+					function(e) {
+						e.preventDefault();
 
-			    const orderId = new URLSearchParams(window.location.search).get("orderId");
-			    let url = "/shipment/csv";
-			    if (orderId) url += "?orderId=" + encodeURIComponent(orderId);
+						const orderId = new URLSearchParams(
+								window.location.search).get("orderId");
+						let url = "/shipment/csv";
+						if (orderId)
+							url += "?orderId=" + encodeURIComponent(orderId);
 
-			    const link = document.createElement("a");
-			    link.href = url;
-			    link.download = "shipments.csv";
-			    document.body.appendChild(link);
-			    link.click();
-			    document.body.removeChild(link);
-			});
-			$(document).on("click", "#exportShipmentJsonBtn", function(e) {
-			    e.preventDefault();
+						const link = document.createElement("a");
+						link.href = url;
+						link.download = "shipments.csv";
+						document.body.appendChild(link);
+						link.click();
+						document.body.removeChild(link);
+					});
+			$(document).on(
+					"click",
+					"#exportShipmentJsonBtn",
+					function(e) {
+						e.preventDefault();
 
-			    const orderId = new URLSearchParams(window.location.search).get("orderId");
-			    let url = "/shipment/json";
-			    if (orderId) url += "?orderId=" + encodeURIComponent(orderId);
+						const orderId = new URLSearchParams(
+								window.location.search).get("orderId");
+						let url = "/shipment/json";
+						if (orderId)
+							url += "?orderId=" + encodeURIComponent(orderId);
 
-			    window.location.href = url;
-			});
+						window.location.href = url;
+					});
+			$(document)
+					.on(
+							"click",
+							".btn-ship-ecpay",
+							function() {
+								let shipmentId = $(this).data("id");
+								let method = $(this).data("method");
+								let $btn = $(this);
+
+								if (!confirm("確定要建立 [" + method + "] 的綠界物流訂單嗎？"))
+									return;
+
+								// 鎖定按鈕
+								$btn
+										.prop("disabled", true)
+										.html(
+												'<i class="fas fa-spinner fa-spin"></i> 處理中...');
+
+								$
+										.ajax({
+											url : "/shipment/createEcpay", // 呼叫後端
+											method : "POST",
+											data : {
+												shipmentId : shipmentId
+											},
+											success : function(response) {
+												alert("成功！" + response);
+												location.reload(); // 重整頁面
+											},
+											error : function(xhr) {
+												alert("失敗："
+														+ (xhr.responseText || "系統錯誤"));
+												$btn
+														.prop("disabled", false)
+														.html(
+																'<i class="fas fa-truck"></i> 產生寄件碼');
+											}
+										});
+							});
 		});
 	</script>
 </body>
