@@ -131,9 +131,6 @@ public class AppointmentNotificationService {
 
             if (targetMemberId != null) {
                 String memberTopic = String.format(AppConstants.TOPIC_MEMBER_PREFIX, targetMemberId);
-                // The constant has %d, so we need String.format or just replace manually if format is simple.
-                // Spring Stomp doesn't support regex topics easily, strict path.
-                // AppConstants definition: "/topic/member/%d/appointments"
                 messagingTemplate.convertAndSend(memberTopic, (Object) payload);
                 log.info("WebSocket Sent to Member ID: {}", targetMemberId);
             } else {
