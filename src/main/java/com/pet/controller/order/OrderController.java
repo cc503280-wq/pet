@@ -30,11 +30,13 @@ import com.pet.service.product.ProductService;
 import jakarta.servlet.http.HttpServletResponse;
 import tools.jackson.databind.ObjectMapper;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 
 @Controller
+@CrossOrigin
 @RequestMapping("/orders")
 public class OrderController {
 
@@ -109,6 +111,31 @@ public class OrderController {
 	    }
 	    //回滾會員幣
 	    mService.updateMemberPoints(order.getMemberId(), order.getUsePoints(), order.getGetPoints());
+	    
+	    return ResponseEntity.ok().build();
+	}
+	@PostMapping("/usercancel")
+	@Transactional
+	public ResponseEntity<Void> userCancelOrder(@RequestParam Integer orderId){
+		Order order = oService.getOrderById(orderId);
+		if (order.getStatus().equals("已取消")) {
+			return ResponseEntity.badRequest().build();
+		}
+		
+	    oService.updateOrderStatus(orderId, "已取消");
+	    shipmentService.updateShipmentStatus(orderId, "已取消");
+	    //修改庫存量
+	    List<OrderItem> orders = oItemService.getOrderItemByorder(orderId);
+	    for (OrderItem orderItem : orders) {
+	    	pService.updateProductStock(orderId, 0, orderItem.getQuantity());
+		}
+	    //修改優惠券
+	    
+	    if (order.getCouponId()!=null) {
+	    	 couponUsersRealService.rollbackCouponStatus(order.getMemberId(), order.getCouponId());
+	    }
+	    //回滾會員幣
+	    mService.updateMemberPoints(order.getMemberId(), order.getUsePoints(), 0);
 	    
 	    return ResponseEntity.ok().build();
 	}
