@@ -481,7 +481,7 @@
           Swal.fire({
             icon: 'error',
             title: '錯誤',
-            text: '儲存失敗：' + (xhr.responseText || "未知錯誤"),
+            text: xhr.responseText || "操作失敗",
           });
         },
       });
@@ -757,7 +757,7 @@
     // 載入 Modal 內的美容師篩選選單
     function loadScheduleGroomerFilter() {
       $.ajax({
-        url: "/groomers",
+        url: "/groomers/search?isActive=1",
         type: "GET",
         dataType: "json",
         success: function (list) {
