@@ -75,6 +75,11 @@
       padding: 0.25rem 0.5rem;
       white-space: nowrap;
     }
+
+    /* 覆蓋 admin-custom.css 的固定高度，讓 textarea 的 rows 屬性生效 */
+    textarea.form-control {
+      height: auto !important;
+    }
   </style>
 </head>
 
@@ -553,7 +558,7 @@
           Swal.fire({
             icon: 'error',
             title: '錯誤',
-            text: '儲存失敗：' + (xhr.responseText || "未知錯誤"),
+            text: xhr.responseText || "操作失敗",
           });
         },
       });

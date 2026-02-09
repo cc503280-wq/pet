@@ -791,7 +791,7 @@
             Swal.fire({
               icon: "error",
               title: "失敗",
-              text: "儲存失敗：" + (xhr.responseText || "未知錯誤！"),
+              text: xhr.responseText || "儲存失敗！",
             });
           },
         });
@@ -853,7 +853,7 @@
                 Swal.fire({
                   icon: "error",
                   title: "失敗",
-                  text: "儲存失敗：" + (xhr.responseText || "未知錯誤！"),
+                  text: xhr.responseText || "操作失敗！",
                 });
 
                 console.error("Status Update Error:", xhr);

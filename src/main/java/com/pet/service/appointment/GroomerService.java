@@ -3,6 +3,7 @@ package com.pet.service.appointment;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 import org.mindrot.jbcrypt.BCrypt;
@@ -211,7 +212,7 @@ public class GroomerService {
         long appointmentCount = appointmentRepository.countActiveFutureAppointments(id, today);
         
 		if (appointmentCount > 0) {
-			throw new RuntimeException("該美容師在 " + today + " 之後仍有 " + appointmentCount + " 筆未處理預約。請先手動取消再轉單後操作。");
+			throw new RuntimeException("該美容師在 " + today + " 之後仍有 " + appointmentCount + " 筆未處理預約。請先手動取消後操作。");
 		} else {
         	groomer.setIsActive(isActive);
             groomerRepository.save(groomer);
@@ -248,11 +249,17 @@ public class GroomerService {
 			throw new RuntimeException("結束日期不能早於開始日期");
 	    }
 		
+		// 0. 檢查是否已有重疊的請假記錄 (避免重複請假)
+		long overlappingCount = leaveRecordRepository.countOverlappingLeaves(gId, start, end);
+		if (overlappingCount > 0) {
+			throw new RuntimeException("該時段內已有請假記錄，不可重複申請。");
+		}
+		
 		// 1. 檢查該時段內是否有「未取消」的預約
 		long count = appointmentRepository.countByGroomerIdAndDateRange(gId, start, end);
 
 		if (count > 0) {
-			throw new RuntimeException("無法請假：該時段內已有 " + count + " 筆預約。");
+			throw new RuntimeException("該時段內已有 " + count + " 筆預約。");
 		}
 		
         // 2. 檢查請假期間內，是否每一天都至少還有一位其他美容師上班 (避免全店放空城)
@@ -262,7 +269,7 @@ public class GroomerService {
             long workingCount = groomerRepository.countWorkingGroomers(checkDate);
             // 如果只剩 1 人 (也就是自己)，再請假就會變成 0 人
             if (workingCount <= 1) {
-                throw new RuntimeException("無法請假：" + checkDate + " 必須至少留一位美容師上班。");
+                throw new RuntimeException(checkDate + " 必須至少留一位美容師上班。");
             }
             checkDate = checkDate.plusDays(1);
         }
@@ -286,7 +293,7 @@ public class GroomerService {
 		return savedResult;
     }
 
-	// 修改請假記錄 (如：審核狀態變更)
+	// 修改請假記錄 (審核狀態變更)
 	@Transactional
     public LeaveRecord updateRecord(Integer leaveId, LeaveRecord inputRecord) {
         LeaveRecord existing = leaveRecordRepository.findById(leaveId)
@@ -307,7 +314,7 @@ public class GroomerService {
                 dailyScheduleRepository.deleteByGroomerIdAndDateRange(targetGroomerId, start, end);
 
 				// 呼叫 SP 重新產生該區間的初始班表 (09:00~21:00)
-				long days = java.time.temporal.ChronoUnit.DAYS.between(start, end) + 1;
+				long days = ChronoUnit.DAYS.between(start, end) + 1;
                 
 				dailyScheduleRepository.generateGroomerSchedules(targetGroomerId, start, (int) days, "09:00",
 						"21:00", -1 // WeeklyOffDay
