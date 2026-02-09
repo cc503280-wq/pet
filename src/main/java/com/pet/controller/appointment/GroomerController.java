@@ -76,7 +76,7 @@ public class GroomerController {
 	        return ResponseEntity.ok().body("美容師新增成功");
 	    } catch (Exception e) {
 	        log.error("新增失敗", e);
-	        return ResponseEntity.badRequest().body("美容師新增失敗：" + e.getMessage());
+	        return ResponseEntity.badRequest().body(e.getMessage());
 	    }
 	}
 	

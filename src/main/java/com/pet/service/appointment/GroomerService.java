@@ -170,13 +170,13 @@ public class GroomerService {
 
 	private void validateUniquePhone(String phone) {
 		if (groomerRepository.findByPhone(phone).isPresent()) {
-			throw new RuntimeException("Phone 已存在");
+			throw new RuntimeException("此電話號碼已被其他美容師使用");
 		}
 	}
 
 	private void validateUniqueEmail(String email) {
 		if (groomerRepository.findByEmail(email).isPresent()) {
-			throw new RuntimeException("Email 已存在");
+			throw new RuntimeException("此 Email 已被其他美容師使用");
     }
 	}
     
