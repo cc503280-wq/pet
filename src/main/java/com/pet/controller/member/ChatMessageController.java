@@ -104,12 +104,13 @@ public class ChatMessageController {
         String sender = payload.get("sender").toString();
         String content = payload.get("content").toString();
 
-        // 3. 存擋 (先把信影印一份存到資料庫)
-        // 這樣使用者重新整理才看得到歷史紀錄
-        ChatMessage savedMsg = chatService.saveMessage(memberId, sender, content);
+        // 3. 移除全域存檔，改為驗證後存擋
+        // ChatMessage savedMsg = chatService.saveMessage(memberId, sender, content);
 
         // 4. 分信 (郵差投遞)
         if ("MEMBER".equals(sender)) {
+            // --- 情境 A：會員講話 (會員講話直接存) ---
+            ChatMessage savedMsg = chatService.saveMessage(memberId, sender, content);
             // --- 情境 A：會員講話 ---
 
             // 動作：推播給「管理員」
@@ -172,6 +173,21 @@ public class ChatMessageController {
                 messagingTemplate.convertAndSend("/topic/admin", errorMsg);
                 return;
             }
+
+            // 0.5. 檢查：若使用者目前處於 AI 模式，禁止管理員擅自插入 (除非使用者要求轉真人)
+            if (!chatService.isHumanMode(memberId)) {
+                ChatMessage warningMsg = ChatMessage.builder()
+                        .memberId(memberId)
+                        .sender("SYSTEM")
+                        .content("【系統提示】使用者目前處於 AI 模式，您無法傳送訊息。需等待使用者呼叫真人客服。")
+                        .createdAt(LocalDateTime.now())
+                        .build();
+                messagingTemplate.convertAndSend("/topic/admin", warningMsg);
+                return;
+            }
+
+            // 驗證通過，這時候才存入資料庫！
+            ChatMessage savedMsg = chatService.saveMessage(memberId, sender, content);
 
             // 動作：推播給「該位會員」
             // 這裡很關鍵！路徑是動態的："/topic/member/" + memberId
