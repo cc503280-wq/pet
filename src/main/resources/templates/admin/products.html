@@ -135,7 +135,7 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="chart-container">
-                                        <canvas id="categoryChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                                        <canvas id="categoryChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width:100%;"></canvas>
                                     </div>
                                 </div>
                             </div>
@@ -358,6 +358,9 @@
         let currentPage = 0; 
         const pageSize = 10; 
         
+        let stockChartInstance = null;
+        let categoryChartInstance = null;
+        
         $(document).ready(function () {
             loadCategories();   
             loadAllProducts();  
@@ -490,6 +493,15 @@
                     $.each(categories, function (index, category) {
                         select.append(`<option value="${category.categoryId}">${category.categoryName}</option>`);
                     });
+                }
+            });
+        }
+        
+        function exportToExcel() {
+            Swal.fire({title: '確定要匯出所有商品報表嗎？', icon: 'info', showCancelButton: true, confirmButtonColor: '#198754', confirmButtonText: '下載', cancelButtonText: '取消'}).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = API_BASE + '/export';
+                    Swal.fire({icon: 'success', title: '報表下載中...', toast: true, position: 'top-end', showConfirmButton: false, timer: 2000});
                 }
             });
         }
@@ -877,6 +889,7 @@
                         timer: 1500
                     });
                     loadAllProducts();
+                    loadCharts();
                 },
                 error: function() { Swal.fire('錯誤', '更新失敗', 'error'); },
                 complete: function() { btn.prop('disabled', false).html(originalText); }
@@ -909,30 +922,84 @@
         }
 
         function renderStockChart(chartData) {
+            // 1. 銷毀舊圖表
+            if (stockChartInstance) {
+                stockChartInstance.destroy();
+            }
+
             var ctx = document.getElementById('stockChart').getContext('2d');
-            new Chart(ctx, {
+
+            stockChartInstance = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: chartData.labels,
+                    labels: chartData.labels, 
                     datasets: [{
                         label: '剩餘庫存',
                         data: chartData.data,
                         backgroundColor: 'rgba(220, 53, 69, 0.8)',
                         borderColor: 'rgba(220, 53, 69, 1)',
-                        borderWidth: 1
+                        borderWidth: 1,
+                        
+                        // 🟢 1. 控制長條圖的粗細 (0.1 ~ 1.0)
+                        // 數字越小，棒子越細；數字越大，棒子越粗
+                        barPercentage: 0.75, 
+                        categoryPercentage: 0.8 
                     }]
                 },
                 options: {
-                    indexAxis: 'y', responsive: true, maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: { x: { beginAtZero: true } }
+                    indexAxis: 'y', // 橫向
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    
+                    // 🟢 2. 版面配置 (Layout Padding)
+                    // 透過增加右邊的 Padding，讓圖表不要塞滿整個寬度，製造出 60% 的感覺
+                    layout: {
+                        padding: {
+                            right: 50,  // 右側留白
+                            left: 10    // 左側留白
+                        }
+                    },
+                    
+                    plugins: {
+                        legend: { display: false } // 不顯示圖例
+                    },
+                    
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            // 如果您希望 X 軸最大值固定 (例如 20)，可解開下面註解
+                            // max: 20, 
+                            grid: {
+                                display: true, // 顯示格線
+                                drawBorder: false
+                            }
+                        },
+                        y: {
+                            // 🟢 3. 設定左側商品名稱字體
+                            ticks: {
+                                font: {
+                                    size: 15,       // 字體加大 (原本預設約 12)
+                                    weight: 'bold', // 字體加粗
+                                    family: "'Source Sans Pro', 'Microsoft JhengHei', sans-serif" // 指定字型
+                                },
+                                color: '#333', // 字體顏色深一點比較清楚
+                                autoSkip: false // 確保每個商品名稱都顯示，不會被藏起來
+                            },
+                            grid: {
+                                display: false // 隱藏 Y 軸橫線，讓畫面比較乾淨
+                            }
+                        }
+                    }
                 }
             });
         }
 
         function renderCategoryChart(chartData) {
+        	if (categoryChartInstance) {
+                categoryChartInstance.destroy();
+            }
             var ctx = document.getElementById('categoryChart').getContext('2d');
-            new Chart(ctx, {
+            categoryChartInstance = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
                     labels: chartData.labels,
@@ -942,8 +1009,11 @@
                     }]
                 },
                 options: {
-                    responsive: true, maintainAspectRatio: false,
-                    plugins: { legend: { position: 'right' } }
+                    responsive: true, 
+                    maintainAspectRatio: false,
+                    plugins: { 
+                        legend: { position: 'right' } 
+                    }
                 }
             });
         }
