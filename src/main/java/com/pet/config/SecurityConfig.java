@@ -57,7 +57,7 @@ public class SecurityConfig {
     public SecurityFilterChain shopFilterChain(HttpSecurity http) throws Exception {
         http
                 // 1. 擴充攔截範圍，加入 /oauth2/** 與 /login/**，這套規則才管得到 Google 登入
-                .securityMatcher("/shop/**", "/api/reviews/**", "/oauth2/**", "/login/**", "/ws-chat/**")
+                .securityMatcher("/shop/**", "/api/reviews/**", "/oauth2/**", "/login/**", "/ws-chat/**", "/orders/**")
 
                 // 開啟CORS支持
                 .cors(cors -> cors.configurationSource(request -> {
@@ -65,6 +65,7 @@ public class SecurityConfig {
                     corsConfiguration.setAllowedOriginPatterns(List.of(
                             "http://localhost:5173",
                             "https://*.trycloudflare.com",
+                            "http://localhost:8081",
                             "https://*.ecpay.com.tw"));
                     corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
                     corsConfiguration.setAllowedHeaders(List.of("*"));
@@ -96,7 +97,9 @@ public class SecurityConfig {
                                 // --- 新增：放行 OAuth2 必要路徑 ---
                                 "/oauth2/**",
                                 "/login/oauth2/**",
-                                "/shop/ws-chat/**")
+                                "/shop/ws-chat/**",
+                                "/shop/checkout/callback",
+                                "/shop/checkout/map_callback")
                         .permitAll()
 
                         // --- 修正：ProductController 路徑設定 ---

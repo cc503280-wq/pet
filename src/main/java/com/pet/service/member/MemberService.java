@@ -195,6 +195,8 @@ public class MemberService {
         Member member = memberRepository.getById(memberId);
 
         int newPoints = member.getPoints();
+        System.out.println("消耗會員幣:"+usedPoint);
+        System.out.println("得到會員幣:"+getPoint);
 
         // 扣點
         if (usedPoint != null && usedPoint > 0) {
@@ -209,7 +211,7 @@ public class MemberService {
         if (newPoints < 0) {
             newPoints = 0;
         }
-
+        System.out.println("最終會員幣:"+newPoints);
         memberRepository.updatePoints(memberId, newPoints);
     }
     

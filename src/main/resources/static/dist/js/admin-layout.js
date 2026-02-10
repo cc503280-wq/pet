@@ -240,20 +240,31 @@ $(function () {
 
 // 自動標記當前選單
 function highlightActiveMenu() {
-    const path = window.location.pathname;
-    const page = path.split("/").pop();
+    const currentPath = window.location.pathname;
+
+    // 先全部清掉（避免疊加）
+    $('.nav-sidebar .nav-link').removeClass('active');
+    $('.nav-sidebar .nav-item').removeClass('menu-open');
 
     $('.nav-sidebar a.nav-link').each(function () {
         const href = $(this).attr('href');
-        // 修正比對邏輯，支援相對路徑
-        if (href === page || href.endsWith('/' + page) || (page === '' && href === 'Home.html')) {
+        if (!href || href === '#') return;
+
+        // 轉成 pathname，比對完整路徑
+        const linkPath = new URL(href, window.location.origin).pathname;
+
+        if (currentPath === linkPath) {
             $(this).addClass('active');
-            $(this).parents('.nav-item').addClass('menu-open');
-            $(this).parents('.nav-item').children('a.nav-link').addClass('active');
+
+            // 展開父選單
+            $(this)
+                .closest('.has-treeview')
+                .addClass('menu-open')
+                .children('a.nav-link')
+                .addClass('active');
         }
     });
 }
-
 // ==========================================
 // 6. 客服聊天室邏輯 (Chat Logic)
 // ==========================================

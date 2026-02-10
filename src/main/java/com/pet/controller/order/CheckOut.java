@@ -48,13 +48,25 @@ public class CheckOut {
 
 	@PostMapping("/insert")
 	public ResponseEntity<?> insertOrders(@RequestBody OrderCheckOutDTO orderRequest) {
-		// 1. 驗證資料是否正確接收
-		System.out.println("收到訂單請求，收件人：" + orderRequest.getReceiverName());
-		System.out.println("使用點數：" + orderRequest.getPointsUsed());
+		
 
-		// 2. 呼叫 Service 執行建立訂單邏輯
+		// 1. 呼叫 Service 執行建立訂單邏輯
 		Order order = orderService.userOrder(orderRequest);
-
+		
+//		// 2. 建立物流訂單，並接收回傳結果
+//	    String logisticsResult = ecpayService.createShippingOrder(
+//	        order.getOrderId().toString(),
+//	        orderRequest.getReceiverName(),
+//	        orderRequest.getReceiverPhone(),
+//	        orderRequest.getStoreId(), 
+//	        order.getTotalAmountUndiscount().intValue(), 
+//	        orderRequest.getShippingMethod()
+//	    );
+//	    // 檢查物流建立是否成功 (綠界成功會以 1| 開頭)
+//	    if (!logisticsResult.startsWith("1|")) {
+//	        // 物流建立失敗，回傳錯誤讓前端顯示 (例如：收件人姓名格式錯誤)
+//	        return ResponseEntity.badRequest().body("物流單建立失敗：" + logisticsResult);
+//	    }
 		// 3.判斷付款方式
 		if ("ECPay".equals(orderRequest.getPaymentMethod())) {
 			String timestamp = new SimpleDateFormat("yyMMddHHmmss").format(new Date());

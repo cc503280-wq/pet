@@ -2,246 +2,61 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>queryAll.html</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>queryAll.html</title>
 
-	<!-- Google Font: Source Sans Pro -->
-	<link rel="stylesheet"
-		href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-	<!-- Font Awesome -->
-	<link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
-	<!-- Theme style -->
-	<link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
-	<link rel="stylesheet" th:href="@{/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css}">
-	<link rel="stylesheet" th:href="@{/plugins/datatables-responsive/css/responsive.bootstrap4.min.css}">
-	<style type="text/css">
-		/* 調整 sidebar logo 排版 */
-		.brand-link {
-			display: flex;
-			align-items: center;
-			justify-content: flex-start;
-			/* 展開時靠左 */
-			padding: 0.5rem 1rem;
-		}
+<!-- Google Font: Source Sans Pro -->
+<link rel="stylesheet"
+	href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+<!-- Font Awesome -->
+<link rel="stylesheet"
+	th:href="@{/plugins/fontawesome-free/css/all.min.css}">
+<!-- Theme style -->
+<link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
+<link rel="stylesheet"
+	th:href="@{/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css}">
+<link rel="stylesheet"
+	th:href="@{/plugins/datatables-responsive/css/responsive.bootstrap4.min.css}">
+<link rel="stylesheet" href="../../dist/css/admin-custom.css">
+<style type="text/css">
+/* 調整 sidebar logo 排版 */
+.brand-link {
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	/* 展開時靠左 */
+	padding: 0.5rem 1rem;
+}
 
-		/* 收起 sidebar 時，icon 置中 */
-		.sidebar-collapse .brand-link {
-			justify-content: center;
-		}
+/* 收起 sidebar 時，icon 置中 */
+.sidebar-collapse .brand-link {
+	justify-content: center;
+}
 
-		/* 調整 icon 與文字間距 */
-		.brand-link i {
-			width: 1.5rem;
-			/* 固定寬度讓文字距離固定 */
-			text-align: center;
-		}
+/* 調整 icon 與文字間距 */
+.brand-link i {
+	width: 1.5rem;
+	/* 固定寬度讓文字距離固定 */
+	text-align: center;
+}
 
-		/* 收起 sidebar 時文字隱藏 */
-		.sidebar-collapse .brand-text {
-			display: none;
-		}
+/* 收起 sidebar 時文字隱藏 */
+.sidebar-collapse .brand-text {
+	display: none;
+}
 
-		.box1 {
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-		}
-	</style>
+.box1 {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+</style>
 </head>
 
 <body class="hold-transition sidebar-mini sidebar-collapse">
 	<!-- Site wrapper -->
 	<div class="wrapper">
-		<!-- Navbar -->
-		<nav class="main-header navbar navbar-expand navbar-white navbar-light">
-			<!-- Left navbar links -->
-			<ul class="navbar-nav ml-auto">
-				<li class="nav-item">
-					<a href="javascript:void(0)" id="logoutBtn" class="btn btn-secondary btn-sm">
-						<i class="fas fa-sign-out-alt"></i> 登出
-					</a>
-				</li>
-			</ul>
-
-
-		</nav>
-		<!-- /.navbar -->
-
-		<!-- Main Sidebar Container -->
-		<aside class="main-sidebar sidebar-dark-primary elevation-4">
-			<!-- Brand Logo -->
-			<a href="/admin/layout/Home.html" class="brand-link"> <i class="fas fa-paw"
-					style="color: #FFD43B; font-size: 1.5rem;"></i> <span class="brand-text font-weight-light"></span>
-			</a>
-
-			<!-- Sidebar -->
-			<div class="sidebar">
-				<div class="user-panel mt-3 pb-3 mb-3 d-flex"></div>
-
-
-
-				<!-- Sidebar Menu -->
-				<nav class="mt-2">
-					<ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
-						data-accordion="false">
-						<!-- Add icons to the links using the .nav-icon class
-               with font-awesome or any other icon font library -->
-						<li class="nav-item"><a href="#" class="nav-link"> <i class="nav-icon fas fa-edit"></i>
-								<p>
-									會員管理 <i class="right fas fa-angle-left"></i>
-								</p>
-							</a>
-							<ul class="nav nav-treeview">
-								<li class="nav-item">
-									<a href="/admin/layout/AdminQueryAll.html" class="nav-link">
-										<i class="far fa-circle nav-icon"></i>
-										<p>管理員資料</p>
-									</a>
-								</li>
-								<li class="nav-item">
-									<a href="/admin/layout/MemberQueryAll.html" class="nav-link">
-										<i class="far fa-circle nav-icon"></i>
-										<p>會員基本資料</p>
-									</a>
-								</li>
-								<li class="nav-item">
-									<a href="/admin/layout/MemberPetQueryAll.html" class="nav-link">
-										<i class="far fa-circle nav-icon"></i>
-										<p>會員寵物資料</p>
-									</a>
-								</li>
-								<li class="nav-item">
-									<a href="/admin/layout/CouponQueryAll.html" class="nav-link">
-										<i class="far fa-circle nav-icon"></i>
-										<p>優惠券總覽</p>
-									</a>
-								</li>
-								<li class="nav-item">
-									<a href="/admin/layout/CouponUsersQueryAll.html" class="nav-link">
-										<i class="far fa-circle nav-icon"></i>
-										<p>會員持有優惠券</p>
-									</a>
-								</li>
-								<li class="nav-item">
-									<a href="/admin/layout/FavoritesQueryAll.html" class="nav-link">
-										<i class="far fa-circle nav-icon"></i>
-										<p>會員收藏清單</p>
-									</a>
-								</li>
-							</ul>
-						</li>
-						<li class="nav-item">
-							<a href="#" class="nav-link">
-								<i class="nav-icon fas fa-edit"></i>
-								<p>
-									商品管理
-									<i class="right fas fa-angle-left"></i>
-								</p>
-							</a>
-							<ul class="nav nav-treeview">
-								<li class="nav-item">
-									<a th:href="@{/admin/products}" class="nav-link">
-										<i class="far fa-circle nav-icon"></i>
-										<p>商品管理</p>
-									</a>
-								</li>
-								<li class="nav-item">
-									<a th:href="@{/admin/categories}" class="nav-link">
-										<i class="far fa-circle nav-icon"></i>
-										<p>分類管理</p>
-									</a>
-								</li>
-							</ul>
-						</li>
-						<li class="nav-item">
-							<a href="#" class="nav-link">
-								<i class="nav-icon fas fa-edit"></i>
-								<p>訂單管理 <i class="right fas fa-angle-left"></i></p>
-							</a>
-							<ul class="nav nav-treeview">
-								<li class="nav-item"><a href="/orders/list" class="nav-link"><i
-											class="far fa-circle nav-icon"></i>
-										<p>查詢全部訂單</p>
-									</a></li>
-								<li class="nav-item"><a href="/shipment/list" class="nav-link"><i
-											class="far fa-circle nav-icon"></i>
-										<p>物流查詢</p>
-									</a></li>
-								<li class="nav-item"><a href="/ordersItem/list" class="nav-link"><i
-											class="far fa-circle nav-icon"></i>
-										<p>查詢全部訂單明細</p>
-									</a></li>
-								<li class="nav-item"><a href="/Cart/shopping" class="nav-link"><i
-											class="far fa-circle nav-icon"></i>
-										<p>新增訂單</p>
-									</a></li>
-							</ul>
-						</li>
-						
-						<li class="nav-item"><a href="#" class="nav-link"> <i class="nav-icon fas fa-edit"></i>
-                <p>
-                  預約管理 <i class="right fas fa-angle-left"></i>
-                </p>
-              </a>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a th:href="@{/admin/layout/GetAllDailySchedules.html}" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>班表總覽
-                    </p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a th:href="@{/admin/layout/GetAllAppointments.html}" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>預約訂單列表</p>
-                  </a>
-                </li>
-
-                <li class="nav-item">
-                  <a th:href="@{/admin/layout/GetAllAppointmentDetails.html}" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>預約明細</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a th:href="@{/admin/layout/GetAllServiceItems.html}" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>服務項目</p>
-                  </a>
-                </li>
-              </ul>
-            </li>
-
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="nav-icon fas fa-edit"></i>
-                <p>人員管理 <i class="right fas fa-angle-left"></i></p>
-              </a>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a th:href="@{/admin/layout/GetAllGroomers.html}" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>美容師列表</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a th:href="@{/admin/layout/GetAllLeaveRecords.html}" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>休假審核</p>
-                  </a>
-                </li>
-              </ul>
-            </li>
-          </ul>
-          </li>
-        </nav>
-        <!-- /.sidebar-menu -->
-      </div>
-      <!-- /.sidebar -->
-    </aside>
-
 		<!-- Content Wrapper. Contains page content -->
 		<div class="content-wrapper">
 			<!-- Content Header (Page header) -->
@@ -250,7 +65,8 @@
 					<div class="row mb-2">
 						<div class="col-sm-12 box1">
 							<h1>訂單管理</h1>
-							<a href="link" class="btn btn-secondary btn-sm"> 回列表 </a>
+							<a href="/ordersItem/list" class="btn btn-secondary btn-sm">
+								回列表 </a>
 						</div>
 						<div class="col-sm-6"></div>
 					</div>
@@ -261,6 +77,38 @@
 			<!-- Main content -->
 			<section class="content">
 				<div class="container-fluid">
+					<div class="row" th:if="${param.productId == null and param.orderId == null}">
+						<div class="col-12">
+							<div class="card card-success card-outline">
+								<div class="card-header">
+									<h3 class="card-title">
+										<i class="fas fa-chart-pie mr-1"></i> 全商品銷售額占比
+									</h3>
+								</div>
+								<div class="card-body">
+									<canvas id="allProductPieChart"
+										style="min-height: 300px; height: 300px; max-height: 300px; max-width: 100%;"></canvas>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row" th:if="${param.productId != null and param.orderId == null}">
+						<div class="col-12">
+							<div class="card card-primary card-outline">
+								<div class="card-header">
+									<h3 class="card-title">
+										<i class="fas fa-chart-line mr-1"></i> 銷售趨勢圖
+									</h3>
+								</div>
+								<div class="card-body">
+									<div class="chart">
+										<canvas id="productSalesChart"
+											style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
 					<div class="row">
 						<div class="col-12">
 							<div class="card">
@@ -269,13 +117,18 @@
 									<h3 class="card-title">訂單列表</h3>
 
 									<div class="d-flex align-items-center ml-auto">
+										<a id="exportJsonBtn" href="#"
+											class="btn btn-info btn-sm ml-2"> 匯出 JSON </a> <a
+											id="exportCsvBtn" href="#"
+											class="btn btn-success btn-sm ml-2"> 匯出 CSV </a>
+										<div class="input-group input-group-sm mr-2"
+											style="width: 160px;">
 
-										<div class="input-group input-group-sm mr-2" style="width: 150px;">
 											<input id="idSearchInput" type="text" class="form-control"
-												placeholder="依 訂單ID 查詢">
+												placeholder="依訂單ID查詢">
 											<div class="input-group-append">
-												<a href="" id="idSearchBtn" type="button" class="btn btn-secondary"> <i
-														class="fas fa-search"></i>
+												<a href="" id="idSearchBtn" type="button"
+													class="btn btn-secondary"> <i class="fas fa-search"></i>
 												</a>
 											</div>
 										</div>
@@ -289,6 +142,7 @@
 												<th>明細編號</th>
 												<th>訂單編號</th>
 												<th>商品編號</th>
+												<th>商品名稱</th>
 												<th>商品數量</th>
 												<th>商品單價</th>
 												<th>小計</th>
@@ -300,7 +154,10 @@
 											<tr th:each="item : ${orderItemsList}">
 												<td th:text="${item.productItemId}"></td>
 												<td th:text="${item.order.orderId}"></td>
-												<td th:text="${item.productId}"></td>
+												<td><a
+													th:href="@{/ordersItem/product(productId=${item.productId})}"
+													th:text="${item.productId}" title="查看此商品的所有明細"> </a></td>
+												<td th:text="${item.productName}"></td>
 												<td th:text="${item.quantity}" class="quantity-cell"
 													data-itemid="${item.productItemId}"></td>
 												<td th:text="${item.unitPrice}" class="price-cell"
@@ -326,20 +183,6 @@
 			<!-- /.content -->
 		</div>
 		<!-- /.content-wrapper -->
-
-		<footer class="main-footer">
-			<div class="float-right d-none d-sm-block">
-				<b>Version</b> 3.2.0
-			</div>
-			<strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.
-			</strong> All rights reserved.
-		</footer>
-
-		<!-- Control Sidebar -->
-		<aside class="control-sidebar control-sidebar-dark">
-			<!-- Control sidebar content goes here -->
-		</aside>
-		<!-- /.control-sidebar -->
 	</div>
 	<!-- ./wrapper -->
 
@@ -349,54 +192,188 @@
 	<script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
 	<!-- DataTables & Plugins -->
 	<script th:src="@{/plugins/datatables/jquery.dataTables.min.js}"></script>
-	<script th:src="@{/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js}"></script>
-	<script th:src="@{/plugins/datatables-responsive/js/dataTables.responsive.min.js}"></script>
-	<script th:src="@{/plugins/datatables-responsive/js/responsive.bootstrap4.min.js}"></script>
-	<script th:src="@{/plugins/datatables-buttons/js/dataTables.buttons.min.js}"></script>
-	<script th:src="@{/plugins/datatables-buttons/js/buttons.bootstrap4.min.js}"></script>
+	<script
+		th:src="@{/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js}"></script>
+	<script
+		th:src="@{/plugins/datatables-responsive/js/dataTables.responsive.min.js}"></script>
+	<script
+		th:src="@{/plugins/datatables-responsive/js/responsive.bootstrap4.min.js}"></script>
+	<script
+		th:src="@{/plugins/datatables-buttons/js/dataTables.buttons.min.js}"></script>
+	<script
+		th:src="@{/plugins/datatables-buttons/js/buttons.bootstrap4.min.js}"></script>
 	<script th:src="@{/plugins/jszip/jszip.min.js}"></script>
 	<script th:src="@{/plugins/pdfmake/pdfmake.min.js}"></script>
 	<script th:src="@{/plugins/pdfmake/vfs_fonts.js}"></script>
 	<script th:src="@{/plugins/datatables-buttons/js/buttons.html5.min.js}"></script>
 	<script th:src="@{/plugins/datatables-buttons/js/buttons.print.min.js}"></script>
-	<script th:src="@{/plugins/datatables-buttons/js/buttons.colVis.min.js}"></script>
+	<script
+		th:src="@{/plugins/datatables-buttons/js/buttons.colVis.min.js}"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+	<script src="../dist/js/admin-layout.js"></script>
 	<!-- AdminLTE App -->
 	<script th:src="@{/dist/js/adminlte.min.js}"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 	<script src="../../dist/js/adminAuth.js"></script>
 	<!-- AdminLTE for demo purposes
             <script src="${pageContext.request.contextPath}/dist/js/demo.js"></script> -->
 	<!-- Page specific script -->
-	<script>
-		$(function () {
+	<script th:inline="javascript">
+		$(function() {
 
 			$('#example2')
-				.DataTable(
-					{
-						"paging": true,
-						"lengthChange": false, // 關閉每頁筆數選項
-						"searching": false, // 關閉搜索框
-						"ordering": true,
-						"info": true, // 顯示資訊文字
-						"autoWidth": true,
-						"responsive": true,
+					.DataTable(
+							{
+								"paging" : true,
+								"lengthChange" : false, // 關閉每頁筆數選項
+								"searching" : false, // 關閉搜索框
+								"ordering" : true,
+								"info" : true, // 顯示資訊文字
+								"autoWidth" : true,
+								"responsive" : true,
 
-						// **【關鍵修正】使用 dom 屬性強制分頁 (p) 靠右 (col-md-7)**
-						// 結構: 表格本體(t) / 新的一行: [資訊(i) - 左 5 欄] [分頁(p) - 右 7 欄]
-						"dom": '<"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7 d-flex justify-content-end"p>>'
-					});
-			$("#idSearchBtn")
-				.click(
-					function () {
+								// **【關鍵修正】使用 dom 屬性強制分頁 (p) 靠右 (col-md-7)**
+								// 結構: 表格本體(t) / 新的一行: [資訊(i) - 左 5 欄] [分頁(p) - 右 7 欄]
+								"dom" : '<"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7 d-flex justify-content-end"p>>'
+							});
+			$("#idSearchBtn").click(
 
+					function() {
 						let id = $("#idSearchInput").val();
 						if (!id)
 							return;
 
 						// 把 ID 塞進 a 標籤的 href 當 GET 參數
 						let url = "/ordersItem/orderId?orderId="
-							+ encodeURIComponent(id);
+								+ encodeURIComponent(id);
 						$(this).attr("href", url);
 					});
+			function getQueryParam(name) {
+				const params = new URLSearchParams(window.location.search);
+				return params.get(name);
+			}
+			$(document).on("click", "#exportCsvBtn", function(e) {
+				e.preventDefault();
+
+				let orderId = getQueryParam("orderId");
+				console.log("orderId from URL =", orderId);
+
+				let url = "/ordersItem/csv";
+				if (orderId) {
+					url += "?orderId=" + encodeURIComponent(orderId);
+				}
+
+				console.log("export url =", url);
+				window.location.href = url;
+			});
+			$(document).on("click", "#exportJsonBtn", function(e) {
+				e.preventDefault();
+
+				const orderId = getQueryParam("orderId");
+				let url = "/ordersItem/json";
+				if (orderId)
+					url += "?orderId=" + encodeURIComponent(orderId);
+
+				const link = document.createElement("a");
+				link.href = url;
+				link.download = "order_items.json";
+				document.body.appendChild(link);
+				link.click();
+				document.body.removeChild(link);
+			});
+			//圖形化商品
+			// 從 Thymeleaf 取得數據
+			const labels = /*[[${chartLabels}]]*/[];
+			const salesData = /*[[${chartData}]]*/[];
+
+			const chartCanvas = document.getElementById('productSalesChart');
+			if (chartCanvas && labels && labels.length > 0) {
+				const ctx = chartCanvas.getContext('2d');
+				new Chart(ctx, {
+					type : 'line',
+					data : {
+						labels : labels,
+						datasets : [ {
+							label : '成交數量',
+							backgroundColor : 'rgba(60,141,188,0.2)',
+							borderColor : 'rgba(60,141,188,1)',
+							pointRadius : 5,
+							pointBackgroundColor : '#3b8bba',
+							data : salesData,
+							fill : true,
+							tension : 0.3
+						} ]
+					},
+					options : {
+						maintainAspectRatio : false,
+						responsive : true,
+						scales : {
+							y : {
+								beginAtZero : true,
+								ticks : {
+									stepSize : 1
+								}
+							}
+						}
+					}
+				});
+			} else {
+				console.log("當前頁面不符合圖表顯示條件 (無 productId 或無銷售數據)");
+			}
+			
+			// 從 Thymeleaf 獲取原始數據 (Map 轉 Object)
+		    const rawData = /*[[${salesSummary}]]*/ null;
+		    
+		    let pieLabels = [];
+		    let pieData = [];
+
+		    // 1. 遍歷物件提取 Key 和 Value
+		    if (rawData && typeof rawData === 'object') {
+		        for (let key in rawData) {
+		            if (rawData.hasOwnProperty(key)) {
+		                pieLabels.push(key);        // 商品名稱
+		                pieData.push(rawData[key]); // 銷售金額
+		            }
+		        }
+		    }
+
+		    // 2. 除錯確認
+		    console.log("修正後標籤:", pieLabels);
+		    console.log("修正後數值:", pieData);
+
+		    const pieCanvas = document.getElementById('allProductPieChart');
+		    
+		    // 3. 只有在真的有資料時才畫圖
+		    if (pieCanvas && pieLabels.length > 0) {
+		        new Chart(pieCanvas.getContext('2d'), {
+		            type: 'pie',
+		            data: {
+		                labels: pieLabels,
+		                datasets: [{
+		                    data: pieData,
+		                    backgroundColor: [
+		                        '#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc', 
+		                        '#d2d6de', '#605ca8', '#ff851b', '#D81B60', '#343a40'
+		                    ],
+		                    borderWidth: 1
+		                }]
+		            },
+		            options: {
+		                maintainAspectRatio: false,
+		                responsive: true,
+		                plugins: {
+		                    legend: {
+		                        display: true,
+		                        position: 'right'
+		                    }
+		                }
+		            }
+		        });
+		    }
 		});
 	</script>
 </body>

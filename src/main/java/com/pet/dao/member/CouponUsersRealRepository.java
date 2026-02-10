@@ -1,12 +1,14 @@
 package com.pet.dao.member;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.pet.model.member.CouponUsers;
 import com.pet.model.member.CouponUsersReal;
 
 public interface CouponUsersRealRepository extends JpaRepository<CouponUsersReal, Integer> {
@@ -26,5 +28,6 @@ public interface CouponUsersRealRepository extends JpaRepository<CouponUsersReal
 	
 	// 用於檢查該會員是否已經領過該張券
     boolean existsByMemberIdAndCouponId(Integer memberId, Integer couponId);
+    Optional<CouponUsersReal> findByCouponIdAndMemberId(Integer couponId, Integer memberId);
     
 }

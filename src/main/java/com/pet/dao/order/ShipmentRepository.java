@@ -1,6 +1,7 @@
 package com.pet.dao.order;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -9,4 +10,6 @@ import com.pet.model.order.Shipment;
 
 public interface ShipmentRepository extends JpaRepository<Shipment, Integer> {
 	 List<Shipment> findByOrder_OrderId(Integer orderId);
+	 
+	 Optional<Shipment> findByLogisticsId(String logisticsId);
 }
