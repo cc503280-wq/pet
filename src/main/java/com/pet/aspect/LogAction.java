@@ -24,5 +24,7 @@ public @interface LogAction {
         public static final String CREATE_ORDER = "CREATE_ORDER"; // 建立訂單
         public static final String BOOKING = "BOOKING"; // 預約美容
         public static final String FAVORITE = "FAVORITE"; // 收藏商品
+        public static final String CANCEL_ORDER = "CANCEL_ORDER"; // 取消訂單
+        public static final String VIEW_ORDERS = "VIEW_ORDERS"; // 查看訂單歷史
     }
 }
