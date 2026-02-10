@@ -36,6 +36,8 @@ public class MemberActionAspect {
     private MemberActionLogRepository logRepository;
     @Autowired
     private com.pet.dao.product.CategoryRepository categoryRepository;
+    @Autowired
+    private com.pet.dao.order.OrderRepository orderRepository;
 
     /**
      * 後置通知 (AfterReturning)：只有方法執行成功才紀錄
@@ -165,7 +167,7 @@ public class MemberActionAspect {
                         if (memberId == null) {
                             memberId = order.getMemberId();
                         }
-                        detail = "訂單金額: " + order.getTotalAmountDiscountPoints();
+                        detail = "訂單金額: " + order.getTotalAmountDiscountPoints().intValue();
                     }
                     break;
 
@@ -182,8 +184,20 @@ public class MemberActionAspect {
                 case LogAction.ActionType.CANCEL_ORDER:
                     // userCancelOrder(@RequestParam Integer orderId)
                     if (args.length > 0 && args[0] instanceof Integer) {
-                        targetId = String.valueOf(args[0]); // Order ID
-                        detail = "會員取消訂單";
+                        Integer orderIdRaw = (Integer) args[0];
+                        targetId = "訂單ID: " + orderIdRaw; // Order ID
+
+                        // 查詢訂單金額以紀錄
+                        Order order = orderRepository.findById(orderIdRaw).orElse(null);
+                        if (order != null) {
+                            detail = "訂單金額: " + order.getTotalAmountDiscountPoints().intValue();
+                            // 若無登入狀態 (理論上userCancelOrder需驗證), 補上 memberId
+                            if (memberId == null) {
+                                memberId = order.getMemberId();
+                            }
+                        } else {
+                            detail = "會員取消訂單";
+                        }
                     }
                     break;
 
