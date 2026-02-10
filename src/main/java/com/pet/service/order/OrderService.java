@@ -71,7 +71,7 @@ public class OrderService {
     private CouponUsersRealService curService;
     @Autowired
     private MemberService mService;
-	
+    private static final BigDecimal FREE_SHIPPING_THRESHOLD = new BigDecimal("1000");
 
     OrderService(CloudinaryConfig cloudinaryConfig, CouponUsersRealService couponUsersRealService) {
         this.cloudinaryConfig = cloudinaryConfig;
@@ -136,15 +136,20 @@ public class OrderService {
 		//計算物流費用
         if ("宅配".equals(orderCheckOutDTO.getShippingMethod())) {
             shippingFee = 100; // 範例：宅配運費 100
-        }
+        }else {
+			shippingFee=60;
+		}
+        
         //1.資料庫取得購物車資料
 		for (CartItem cartItem : cartItems) {
 		    BigDecimal itemTotal =
 		    		BigDecimal.valueOf(cartItem.getProduct().getPrice()).multiply(BigDecimal.valueOf(cartItem.getQuantity()));
-		            //cartItem.getPriceAtAdded()
-		                    //.multiply(BigDecimal.valueOf(cartItem.getQuantity()));
 
 		    totalAmount = totalAmount.add(itemTotal);
+		}
+		
+		if(totalAmount.compareTo(FREE_SHIPPING_THRESHOLD) > 0) {
+			shippingFee = 0;
 		}
 		BigDecimal amountAfterDiscount = totalAmount;
 
