@@ -55,6 +55,9 @@ public class AIService {
     @Autowired
     private AppointmentService appointmentService; // 新增 AppointmentService 注入
 
+    @Autowired
+    private com.pet.service.order.OrderItemService orderItemService; // 新增 OrderItemService 注入
+
     // --- 關鍵字定義 (同義詞庫) ---
     private static final List<String> PRODUCT_KEYWORDS = List.of("買", "推薦", "飼料", "罐頭", "貓砂", "玩具", "多少錢", "價格", "費用",
             "cost", "price", "shop", "store", "東西");
@@ -176,9 +179,40 @@ public class AIService {
                     String orderInfo = orders.stream()
                             .sorted((o1, o2) -> o2.getOrderDate().compareTo(o1.getOrderDate())) // 時間新->舊
                             .limit(3)
-                            .map(o -> String.format("- 訂單號[%s] 金額$%s (狀態: %s) 日期: %s",
-                                    o.getOrderId(), o.getTotalAmountDiscountPoints(), o.getStatus(),
-                                    o.getOrderDate()))
+                            .map(o -> {
+                                // 1. 處理日期格式 (把 T 換成 空白)
+                                String formattedDate = o.getOrderDate().toString().replace("T", " ");
+
+                                // 2. 查詢訂單內容
+                                String itemsStr = "無詳細內容";
+                                try {
+                                    List<com.pet.dto.order.OrderItemDTO> items = orderItemService
+                                            .getOrderItemDTO(o.getOrderId());
+                                    if (items != null && !items.isEmpty()) {
+                                        itemsStr = items.stream()
+                                                .map(item -> String.format("%s x%d",
+                                                        item.getProduct().getProductName(),
+                                                        item.getOrderItem().getQuantity()))
+                                                .collect(Collectors.joining(", "));
+                                    }
+                                } catch (Exception e) {
+                                    System.err.println("查詢訂單明細失敗: " + e.getMessage());
+                                }
+
+                                // 3. 換行格式化
+                                return String.format("""
+                                        📋 **訂單編號**: %s
+                                        📦 **訂單內容**: %s
+                                        💰 **訂單金額**: $%s
+                                        📊 **訂單狀態**: %s
+                                        📅 **訂單日期**: %s
+                                        -------------------""",
+                                        o.getOrderId(),
+                                        itemsStr,
+                                        o.getTotalAmountDiscountPoints(),
+                                        o.getStatus(),
+                                        formattedDate);
+                            })
                             .collect(Collectors.joining("\n"));
                     contextBuilder.append("【您最近的訂單紀錄 (僅本人可見)】:\n").append(orderInfo).append("\n\n");
                 } else {
@@ -218,14 +252,20 @@ public class AIService {
                     1. **自我介紹**：若問「你是誰」，請簡短自我介紹。若直接問業務，直接回答問題。
                     2. **排版規定**：
                        - 禁止使用 Markdown 表格。
-                       - **通用卡片格式**：
+                       - **商品/服務卡片格式**：
                          (Emoji) **[名稱]**
                          💰 [價格/折扣]：[...]
                          ✨ [說明]：[...]
                          -------------------
-                         (Emoji 參考: 美容✂️, 商品🐶, 優惠🎫, 美容師💇, 訂單📦, 預約📅)
+                       - **訂單查詢格式 (絕對嚴格遵守，不可修改)**：
+                         📋 **訂單編號**: [編號]
+                         📦 **訂單內容**: [商品清單]
+                         � **訂單金額**: $[金額]
+                         � **訂單狀態**: [狀態]
+                         📅 **訂單日期**: [日期]
+                         -------------------
                     3. **合併邏輯**：相同服務不同價格請合併顯示 (例如: $500 - $1200)。
-                    4. **訂單/預約查詢**：若上方有提供資料，請整理給使用者；若無資料請誠實告知。
+                    4. **資料引用**：若上方有提供訂單資料，請直接複製貼上，不要自己縮減內容。
 
                     【網站基礎規範】：
                     1. 運費與免運：運費 $60，消費滿 $1,000 即享免運。
