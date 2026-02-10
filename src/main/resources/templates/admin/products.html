@@ -135,7 +135,7 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="chart-container">
-                                        <canvas id="categoryChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                                        <canvas id="categoryChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width:100%;"></canvas>
                                     </div>
                                 </div>
                             </div>
@@ -320,6 +320,9 @@
                 <div class="modal-body">
                     <div class="mb-4 p-3 bg-light rounded border">
                         <label class="font-weight-bold"><i class="fas fa-cloud-upload-alt"></i> 新增圖片 (可多選)</label>
+                        <button type="button" class="btn btn-sm btn-outline-warning" onclick="fillGalleryDemoData()">
+			                <i class="fas fa-magic mr-1"></i> 一鍵輸入測試圖
+			            </button>
                         <div class="input-group">
                             <input type="file" class="form-control" id="galleryFileInput" multiple accept="image/*" style="height: auto;">
                             <div class="input-group-append">
@@ -357,6 +360,9 @@
 
         let currentPage = 0; 
         const pageSize = 10; 
+        
+        let stockChartInstance = null;
+        let categoryChartInstance = null;
         
         $(document).ready(function () {
             loadCategories();   
@@ -493,6 +499,15 @@
                 }
             });
         }
+        
+        function exportToExcel() {
+            Swal.fire({title: '確定要匯出所有商品報表嗎？', icon: 'info', showCancelButton: true, confirmButtonColor: '#198754', confirmButtonText: '下載', cancelButtonText: '取消'}).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = API_BASE + '/export';
+                    Swal.fire({icon: 'success', title: '報表下載中...', toast: true, position: 'top-end', showConfirmButton: false, timer: 2000});
+                }
+            });
+        }
 
         function openEditModal(id) {
             $.ajax({
@@ -623,17 +638,51 @@
         }
 
         async function fillDemoData() {
-            // 1. 設定文字欄位
-            $('#modalProductName').val("【新品推薦】頂級無穀深海魚貓糧");
-            $('#modalDescription').val("這是一筆由系統自動生成的測試資料。\n富含豐富 Omega-3，保護毛孩心血管健康。");
-            $('#modalPrice').val(1580);
-            $('#modalStock').val(99);
+            // 🟢 1. 判斷現在是「新增模式」還是「修改模式」
+            // 如果有 ID，代表是點了「編輯」進來的
+            let id = $('#modalProductId').val(); 
+            let isEditMode = (id !== '');
 
-            // 2. 設定分類
+            // 🟢 2. 準備兩組不同的資料
+            let data = {};
+            let imageUrl = '';
+
+            if (isEditMode) {
+                // --- 🅰️ 修改模式用的資料 (測試更新功能) ---
+                console.log("填入修改測試資料...");
+                data = {
+                    name: "【限時特價】(已修改) 頂級深海魚貓糧", // 改個名字，看列表有無更新
+                    desc: "這是修改後的描述。\n特別添加牛磺酸，照顧貓咪視力。\n(此資料為修改測試)",
+                    price: 1200, // 改個價格
+                    stock: 50    // 改個庫存
+                };
+                // 建議換一張不同的圖，這樣視覺上很明顯知道圖片也被換了
+                // 這裡我用一個產生圖片的服務，顯示 "UPDATED" 字樣
+                imageUrl = 'https://res.cloudinary.com/dwzbhnqmq/image/upload/v1769572988/pet_shop_products/file_d38mzp.png'; 
+            } else {
+                // --- 🅱️ 新增模式用的資料 (測試新增功能) ---
+                console.log("填入新增測試資料...");
+                data = {
+                    name: "【新品推薦】頂級無穀深海魚貓糧",
+                    desc: "這是一筆由系統自動生成的測試資料。\n富含豐富 Omega-3，保護毛孩心血管健康。",
+                    price: 1580,
+                    stock: 99
+                };
+                // 原本的狗狗飼料圖
+                imageUrl = 'https://res.cloudinary.com/dwzbhnqmq/image/upload/v1769834690/dog-food_lossul.png';
+            }
+
+            // 🟢 3. 將資料填入欄位
+            $('#modalProductName').val(data.name);
+            $('#modalDescription').val(data.desc);
+            $('#modalPrice').val(data.price);
+            $('#modalStock').val(data.stock);
+
+            // 設定分類 (預設選第 2 個)
             let firstCategoryVal = $('#modalCategoryId option:eq(1)').val();
             if (firstCategoryVal) $('#modalCategoryId').val(firstCategoryVal);
 
-            // 3. 設定日期
+            // 設定日期 (統一設為下個月)
             let now = new Date();
             now.setMonth(now.getMonth() + 1);
             let year = now.getFullYear();
@@ -641,36 +690,31 @@
             let day = String(now.getDate()).padStart(2, '0');
             $('#modalExpireDate').val(`${year}-${month}-${day}`);
 
-            // 4. 移除錯誤紅框
+            // 移除錯誤紅框
             $('#productForm .form-control').removeClass('is-invalid');
 
-            // 🟢 5. 自動填入預設圖片 (關鍵程式碼)
-            // 這裡是用一張 Unsplash 的免費貓咪圖當範例，您可以換成任何 "公開" 的圖片網址
-            const imageUrl = 'https://res.cloudinary.com/dwzbhnqmq/image/upload/v1769834690/dog-food_lossul.png'; 
-            
+            // 🟢 4. 處理圖片 (邏輯不變，只是 imageUrl 變數會根據模式改變)
             try {
-                // A. 讓按鈕顯示 "處理中..."
-                let btn = $(event.target); // 抓取點擊的按鈕
+                let btn = $(event.target);
                 let originalText = btn.html();
                 btn.html('<i class="fas fa-spinner fa-spin"></i> 抓取圖片中...');
                 
-                // B. 下載圖片並轉成檔案物件
+                // 下載圖片
                 let response = await fetch(imageUrl);
                 let blob = await response.blob();
-                // 這裡的 "demo.jpg" 是模擬的檔名
-                let file = new File([blob], "demo-cat.jpg", { type: "image/jpeg" });
+                
+                // 根據模式給不同的假檔名
+                let fileName = isEditMode ? "updated-demo.jpg" : "new-demo.jpg";
+                let file = new File([blob], fileName, { type: "image/jpeg" });
 
-                // C. 使用 DataTransfer 模擬使用者選檔
+                // 塞入 input
                 let container = new DataTransfer();
                 container.items.add(file);
-                
-                // D. 塞進 input[type="file"]
                 document.getElementById('modalImageFile').files = container.files;
                 
-                // E. 觸發預覽 (讓您看到圖片)
+                // 預覽
                 $('#modalImagePreview').attr('src', URL.createObjectURL(blob)).show();
                 
-                // 復原按鈕文字
                 btn.html(originalText);
                 
             } catch (error) {
@@ -680,65 +724,140 @@
         }
 
         // 🟢 新增/修改：使用 Timer Swal
-        function submitProduct() {
-            let isValid = true;
-            let nameInput = $('#modalProductName');
-            let priceInput = $('#modalPrice');
-            let stockInput = $('#modalStock');
-            let categoryInput = $('#modalCategoryId');
-            $('#productForm .form-control').removeClass('is-invalid');
-
-            if (nameInput.val().trim() === '') { nameInput.addClass('is-invalid'); isValid = false; }
-            if (priceInput.val() === '' || parseFloat(priceInput.val()) < 0) { priceInput.addClass('is-invalid'); isValid = false; }
-            if (stockInput.val() === '' || parseInt(stockInput.val()) < 0) { stockInput.addClass('is-invalid'); isValid = false; }
-            if (categoryInput.val() === null || categoryInput.val() === '') { categoryInput.addClass('is-invalid'); isValid = false; }
-
-            if (!isValid) {
-                $('.modal-content').addClass('animate__animated animate__shakeX');
-                setTimeout(() => $('.modal-content').removeClass('animate__animated animate__shakeX'), 500);
-                return; 
-            }
-
-            let formData = new FormData();
-            formData.append('productName', nameInput.val());
-            formData.append('description', $('#modalDescription').val());
-            formData.append('price', priceInput.val());
-            formData.append('stock', stockInput.val());
-            formData.append('categoryId', categoryInput.val());
-            let expireDate = $('#modalExpireDate').val();
-            if (expireDate) formData.append('expireDate', expireDate);
-            const fileInput = $('#modalImageFile')[0];
-            if (fileInput.files && fileInput.files[0]) formData.append('file', fileInput.files[0]);
-
-            let id = $('#modalProductId').val();
-            let url = (id) ? (API_BASE + '/update/' + id) : (API_BASE + '/create');
-
-            // 按鈕 loading 效果
-            let btn = $(event.target);
-            let originalText = btn.html();
-            btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> 處理中...');
-
-            $.ajax({
-                url: url, type: 'POST', data: formData, processData: false, contentType: false,
-                success: function () {
-                    // 成功：自動消失的彈窗
-                    Swal.fire({
-                        icon: 'success',
-                        title: (id ? '修改成功！' : '新增成功！'),
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-                    $('#productModal').modal('hide');
-                    loadAllProducts();
-                },
-                error: function (xhr) { 
-                    Swal.fire('失敗', '儲存失敗：' + (xhr.responseText || '未知錯誤'), 'error'); 
-                },
-                complete: function() {
-                    btn.prop('disabled', false).html(originalText);
-                }
-            });
-        }
+        // 🟢 主入口：HTML 按鈕只需要綁定這個
+		function submitProduct() {
+		    // 1. 先做驗證並取得 FormData
+		    let result = getValidatedFormData(); 
+		    
+		    // 如果驗證失敗 (回傳 null)，就停止
+		    if (!result) return; 
+		
+		    let { id, formData, btn, originalText } = result;
+		
+		    // 2. 根據是否有 ID 決定走哪條路
+		    if (id) {
+		        // 走更新邏輯
+		        updateProduct(id, formData, btn, originalText);
+		    } else {
+		        // 走新增邏輯
+		        createProduct(formData, btn, originalText);
+		    }
+		}
+		
+		// 🟡 工具函式：負責驗證 + 打包資料 (避免重複寫兩遍)
+		function getValidatedFormData() {
+		    let isValid = true;
+		    let nameInput = $('#modalProductName');
+		    let priceInput = $('#modalPrice');
+		    let stockInput = $('#modalStock');
+		    let categoryInput = $('#modalCategoryId');
+		    
+		    $('#productForm .form-control').removeClass('is-invalid');
+		
+		    // --- 驗證邏輯 ---
+		    if (nameInput.val().trim() === '') { nameInput.addClass('is-invalid'); isValid = false; }
+		    if (priceInput.val() === '' || parseFloat(priceInput.val()) < 0) { priceInput.addClass('is-invalid'); isValid = false; }
+		    if (stockInput.val() === '' || parseInt(stockInput.val()) < 0) { stockInput.addClass('is-invalid'); isValid = false; }
+		    if (categoryInput.val() === null || categoryInput.val() === '') { categoryInput.addClass('is-invalid'); isValid = false; }
+		
+		    if (!isValid) {
+		        $('.modal-content').addClass('animate__animated animate__shakeX');
+		        setTimeout(() => $('.modal-content').removeClass('animate__animated animate__shakeX'), 500);
+		        return null; // 驗證失敗回傳 null
+		    }
+		
+		    // --- 打包 FormData ---
+		    let formData = new FormData();
+		    formData.append('productName', nameInput.val());
+		    formData.append('description', $('#modalDescription').val());
+		    formData.append('price', priceInput.val());
+		    formData.append('stock', stockInput.val());
+		    formData.append('categoryId', categoryInput.val());
+		    
+		    let expireDate = $('#modalExpireDate').val();
+		    if (expireDate) formData.append('expireDate', expireDate);
+		    
+		    const fileInput = $('#modalImageFile')[0];
+		    if (fileInput.files && fileInput.files[0]) {
+		        formData.append('file', fileInput.files[0]);
+		    }
+		
+		    // 取得按鈕狀態以便後續還原
+		    let btn = $(event.target);
+		    let originalText = btn.html();
+		    // 鎖定按鈕
+		    btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> 處理中...');
+		
+		    return {
+		        id: $('#modalProductId').val(), // 取得隱藏的 ID
+		        formData: formData,
+		        btn: btn,
+		        originalText: originalText
+		    };
+		}
+		
+		// 🔵 獨立的【新增】函式
+		function createProduct(formData, btn, originalText) {
+		    $.ajax({
+		        url: API_BASE + '/create', 
+		        type: 'POST', 
+		        data: formData, 
+		        processData: false, 
+		        contentType: false,
+		        success: function () {
+		            Swal.fire({
+		                icon: 'success',
+		                title: '新增成功！',
+		                showConfirmButton: false,
+		                timer: 1500
+		            });
+		            $('#productModal').modal('hide');
+		            loadAllProducts();
+		        },
+		        error: function (xhr) { 
+		            Swal.fire('失敗', '新增失敗：' + (xhr.responseText || '未知錯誤'), 'error'); 
+		        },
+		        complete: function() {
+		            // 還原按鈕
+		            btn.prop('disabled', false).html(originalText);
+		        }
+		    });
+		}
+		
+		// 🔴 獨立的【更新】函式 (您可以在這裡修改邏輯)
+		function updateProduct(id, formData, btn, originalText) {
+		    
+		    // 如果您後端更新是用 PUT，可以在這裡改 type: 'PUT'
+		    // 注意：Spring Boot 預設不支援 PUT 接收 FormData，除非有設定 HiddenHttpMethodFilter
+		    // 建議維持 POST 到 /update/{id} 比較穩定
+		    
+		    $.ajax({
+		        url: API_BASE + '/update/' + id,
+		        type: 'POST', // 這裡可以根據後端需求改成 PUT
+		        data: formData,
+		        processData: false,
+		        contentType: false,
+		        success: function () {
+		            Swal.fire({
+		                icon: 'success',
+		                title: '修改成功！',
+		                showConfirmButton: false,
+		                timer: 1500
+		            });
+		            $('#productModal').modal('hide');
+		            
+		            // 更新後，可以選擇保留在當前頁面
+		            loadAllProducts(currentPage); 
+		        },
+		        error: function (xhr) { 
+		            Swal.fire('失敗', '更新失敗：' + (xhr.responseText || '未知錯誤'), 'error'); 
+		        },
+		        complete: function() {
+		            // 還原按鈕
+		            btn.prop('disabled', false).html(originalText);
+		        }
+		    });
+		}
 
         function viewProduct(id) {
             $.ajax({
@@ -877,6 +996,7 @@
                         timer: 1500
                     });
                     loadAllProducts();
+                    loadCharts();
                 },
                 error: function() { Swal.fire('錯誤', '更新失敗', 'error'); },
                 complete: function() { btn.prop('disabled', false).html(originalText); }
@@ -909,30 +1029,84 @@
         }
 
         function renderStockChart(chartData) {
+            // 1. 銷毀舊圖表
+            if (stockChartInstance) {
+                stockChartInstance.destroy();
+            }
+
             var ctx = document.getElementById('stockChart').getContext('2d');
-            new Chart(ctx, {
+
+            stockChartInstance = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: chartData.labels,
+                    labels: chartData.labels, 
                     datasets: [{
                         label: '剩餘庫存',
                         data: chartData.data,
                         backgroundColor: 'rgba(220, 53, 69, 0.8)',
                         borderColor: 'rgba(220, 53, 69, 1)',
-                        borderWidth: 1
+                        borderWidth: 1,
+                        
+                        // 🟢 1. 控制長條圖的粗細 (0.1 ~ 1.0)
+                        // 數字越小，棒子越細；數字越大，棒子越粗
+                        barPercentage: 0.75, 
+                        categoryPercentage: 0.8 
                     }]
                 },
                 options: {
-                    indexAxis: 'y', responsive: true, maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: { x: { beginAtZero: true } }
+                    indexAxis: 'y', // 橫向
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    
+                    // 🟢 2. 版面配置 (Layout Padding)
+                    // 透過增加右邊的 Padding，讓圖表不要塞滿整個寬度，製造出 60% 的感覺
+                    layout: {
+                        padding: {
+                            right: 50,  // 右側留白
+                            left: 10    // 左側留白
+                        }
+                    },
+                    
+                    plugins: {
+                        legend: { display: false } // 不顯示圖例
+                    },
+                    
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            // 如果您希望 X 軸最大值固定 (例如 20)，可解開下面註解
+                            // max: 20, 
+                            grid: {
+                                display: true, // 顯示格線
+                                drawBorder: false
+                            }
+                        },
+                        y: {
+                            // 🟢 3. 設定左側商品名稱字體
+                            ticks: {
+                                font: {
+                                    size: 15,       // 字體加大 (原本預設約 12)
+                                    weight: 'bold', // 字體加粗
+                                    family: "'Source Sans Pro', 'Microsoft JhengHei', sans-serif" // 指定字型
+                                },
+                                color: '#333', // 字體顏色深一點比較清楚
+                                autoSkip: false // 確保每個商品名稱都顯示，不會被藏起來
+                            },
+                            grid: {
+                                display: false // 隱藏 Y 軸橫線，讓畫面比較乾淨
+                            }
+                        }
+                    }
                 }
             });
         }
 
         function renderCategoryChart(chartData) {
+        	if (categoryChartInstance) {
+                categoryChartInstance.destroy();
+            }
             var ctx = document.getElementById('categoryChart').getContext('2d');
-            new Chart(ctx, {
+            categoryChartInstance = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
                     labels: chartData.labels,
@@ -942,10 +1116,67 @@
                     }]
                 },
                 options: {
-                    responsive: true, maintainAspectRatio: false,
-                    plugins: { legend: { position: 'right' } }
+                    responsive: true, 
+                    maintainAspectRatio: false,
+                    plugins: { 
+                        legend: { position: 'right' } 
+                    }
                 }
             });
+        }
+     	// 🟢 一鍵輸入附圖 (模擬多張圖片選取)
+        async function fillGalleryDemoData() {
+            // 1. 定義要抓取的圖片網址 (這裡用假圖，您也可以換成自己的 Cloudinary 網址)
+            const imageUrls = [
+                'https://res.cloudinary.com/dwzbhnqmq/image/upload/v1769845270/pet_shop_products/file_cbv4p5.png',
+                'https://res.cloudinary.com/dwzbhnqmq/image/upload/v1769845193/pet_shop_products/file_uo1e1n.png',
+            ];
+
+            const btn = $(event.target);
+            const originalText = btn.html();
+            
+            // 2. 按鈕變更為讀取中狀態
+            btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> 抓取中...');
+
+            try {
+                // 3. 建立 DataTransfer 物件 (用來模擬檔案拖曳/選取)
+                const dataTransfer = new DataTransfer();
+
+                // 4. 跑迴圈抓取每一張圖
+                for (let i = 0; i < imageUrls.length; i++) {
+                    const response = await fetch(imageUrls[i]);
+                    const blob = await response.blob();
+                    
+                    // 建立 File 物件 (檔名 demo-1.jpg, demo-2.jpg...)
+                    const file = new File([blob], `demo-gallery-${i+1}.jpg`, { type: "image/jpeg" });
+                    
+                    // 加入清單
+                    dataTransfer.items.add(file);
+                }
+
+                // 5. 將模擬的檔案清單塞進 input[type="file"]
+                const fileInput = document.getElementById('galleryFileInput');
+                fileInput.files = dataTransfer.files;
+
+                // 6. 成功提示 (使用 SweetAlert 或簡單 alert)
+                // 這裡會顯示 input 欄位變更，通常瀏覽器會顯示 "3 個檔案"
+                Swal.fire({
+                    icon: 'success',
+                    title: '已填入 2 張測試圖片',
+                    text: '請點擊「上傳」按鈕來送出',
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+
+            } catch (error) {
+                console.error("圖片抓取失敗", error);
+                Swal.fire('錯誤', '無法抓取測試圖片', 'error');
+            } finally {
+                // 7. 恢復按鈕
+                btn.prop('disabled', false).html(originalText);
+            }
         }
 
         /*]]>*/
