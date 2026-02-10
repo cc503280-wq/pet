@@ -18,8 +18,6 @@ import java.util.Base64;
  * TwilioSmsService: 使用 Twilio REST API 發送簡訊通知
  * 用途：當寵物美容服務完成時，發送 SMS 通知會員
  * 
- * 注意：使用 HTTP 直接呼叫 Twilio API，而非 SDK。
- * 原因：Twilio SDK 與 Spring Boot 4.x 的 HttpClient 5.x 有版本衝突，無法使用。
  */
 @Service
 @Slf4j
@@ -59,7 +57,7 @@ public class TwilioSmsService {
         try {
             // 組合簡訊內容
             String messageBody = String.format(
-                "【PetShop 通知】您的毛孩美容服務已完成！🐾\n" +
+                "【MaoMaoLand通知】您的毛孩美容服務已完成！🐾\n" +
                 "預約單號: %d\n" +
                 "請至店內接回您的寶貝！",
                 appointment.getAppointmentId()
