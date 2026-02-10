@@ -46,18 +46,15 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 
 	// 2. 關鍵字 + 分類 ID 搜尋 (後台用，不限上架狀態)
 	List<Product> findByProductNameContainingAndCategory_CategoryId(String productName, Integer categoryId);
+
 	/**
-     * 查詢庫存低於指定數量 (threshold) 的商品
-     * OrderByStockAsc: 庫存越少越前面 (最急)
-     * Top5: 只取前 5 筆
-     */
-    List<Product> findTop5ByStockLessThanOrderByStockAsc(Integer threshold);
-    
-    // (如果您之前的分類統計還沒寫，也可以順便補上)
-    @Query("SELECT c.categoryName, COUNT(p) FROM Product p JOIN p.category c GROUP BY c.categoryName")
-     List<Object[]> countProductsByCategory();
-	
-	
+	 * 查詢庫存低於指定數量 (threshold) 的商品 OrderByStockAsc: 庫存越少越前面 (最急) Top5: 只取前 5 筆
+	 */
+	List<Product> findTop5ByStockLessThanOrderByStockAsc(Integer threshold);
+
+	// (如果您之前的分類統計還沒寫，也可以順便補上)
+	@Query("SELECT c.categoryName, COUNT(p) FROM Product p JOIN p.category c GROUP BY c.categoryName")
+	List<Object[]> countProductsByCategory();
 
 	// ==========================================
 	// 🟢 前台商品列表專用 (必須上架 + 有庫存)
@@ -101,17 +98,16 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 	Page<Product> findByIsActiveTrue(Pageable pageable);
 
 	@Query(value = """
-		       SELECT p.product_id, p.product_name, p.description, p.price, p.stock, 
-		              p.category_id, p.image_url, p.expire_date, p.is_active, p.created_at, p.updated_at 
-		       FROM products p 
-		       INNER JOIN (
-		           SELECT product_id, SUM(quantity) as total_qty 
-		           FROM Order_Items 
-		           GROUP BY product_id
-		       ) sales ON p.product_id = sales.product_id 
-		       WHERE p.is_active = 1  
-		       ORDER BY sales.total_qty DESC
-		       """, 
-		       nativeQuery = true)
-		List<Product> findBestSellers(Pageable pageable);
+			    SELECT p.product_id, p.product_name, p.description, p.price, p.stock,
+			       p.category_id, p.image_url, p.expire_date, p.is_active, p.created_at, p.updated_at
+			FROM products p
+			INNER JOIN (
+			    SELECT product_id, COUNT(*) as order_count
+			    FROM Order_Items
+			    GROUP BY product_id
+			) popularity ON p.product_id = popularity.product_id
+			WHERE p.is_active = 1
+			ORDER BY popularity.order_count DESC
+			""", nativeQuery = true)
+	List<Product> findBestSellers(Pageable pageable);
 }
