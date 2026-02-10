@@ -176,11 +176,19 @@ public class MemberActionAspect {
                         memberId = req.getMemberId();
                         targetId = String.valueOf(req.getPetId()); // 暫存 PetID
                         detail = "預約日期: " + req.getAppointmentDate() + " " + req.getStartTime();
-
-                        // 如果有回傳 Appointment 實體，改抓 Appointment ID
-                        // (假設 Service 回傳 Appointment)
-                        // if (result instanceof Appointment) { ... }
                     }
+                    break;
+
+                case LogAction.ActionType.CANCEL_ORDER:
+                    // userCancelOrder(@RequestParam Integer orderId)
+                    if (args.length > 0 && args[0] instanceof Integer) {
+                        targetId = String.valueOf(args[0]); // Order ID
+                        detail = "會員取消訂單";
+                    }
+                    break;
+
+                case LogAction.ActionType.VIEW_ORDERS:
+                    detail = "查看歷史訂單";
                     break;
 
                 case LogAction.ActionType.LOGIN:

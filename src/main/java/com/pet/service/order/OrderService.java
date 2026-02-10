@@ -122,7 +122,7 @@ public class OrderService {
     }
 	
 	@Transactional
-//	@LogAction(type = LogAction.ActionType.CREATE_ORDER) 
+	@LogAction(type = LogAction.ActionType.CREATE_ORDER) 
 	public Order userOrder(OrderCheckOutDTO orderCheckOutDTO) {
 		
 		List<CartItem> cartItems = cRepository.findByMember_MemberId(orderCheckOutDTO.getMemberId());
