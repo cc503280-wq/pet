@@ -70,6 +70,11 @@
       padding: 0.25rem 0.5rem;
       white-space: nowrap;
     }
+
+    /* 覆蓋 admin-custom.css 的固定高度，讓 textarea 的 rows 屬性生效 */
+    textarea.form-control {
+      height: auto !important;
+    }
   </style>
 </head>
 
@@ -107,7 +112,7 @@
                     <!-- .新增資料 -->
 
                     <!-- 依ID查詢 -->
-                    <div class="input-group input-group-sm mr-2" style="width: 150px;">
+                    <div class="input-group input-group-sm mr-2" style="width: 160px;">
                       <input id="idSearchInput" type="text" class="form-control" placeholder="依預約ID查詢">
                       <div class="input-group-append">
                         <a href="link" id="idSearchBtn" type="button" class="btn btn-secondary">

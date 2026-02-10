@@ -158,7 +158,7 @@ public class AppointmentController {
             return ResponseEntity.ok(ApiResponse.success("預約建立成功", appt.getAppointmentId()));
         } catch (Exception e) {
             log.error("新增預約失敗", e);
-            return ResponseEntity.badRequest().body(ApiResponse.error("預約失敗：" + e.getMessage()));
+            return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
         }
     }
 

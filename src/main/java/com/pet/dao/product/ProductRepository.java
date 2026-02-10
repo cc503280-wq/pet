@@ -101,16 +101,17 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 	Page<Product> findByIsActiveTrue(Pageable pageable);
 
 	@Query(value = """
-	           SELECT p.product_id, p.product_name, p.description, p.price, p.stock, 
-	                  p.category_id, p.image_url, p.expire_date, p.is_active, p.created_at, p.updated_at 
-	           FROM products p 
-	           INNER JOIN (
-	               SELECT product_id, SUM(quantity) as total_qty 
-	               FROM Order_Items 
-	               GROUP BY product_id
-	           ) sales ON p.product_id = sales.product_id 
-	           ORDER BY sales.total_qty DESC
-	           """, 
-	           nativeQuery = true)
-	    List<Product> findBestSellers(Pageable pageable);
+		       SELECT p.product_id, p.product_name, p.description, p.price, p.stock, 
+		              p.category_id, p.image_url, p.expire_date, p.is_active, p.created_at, p.updated_at 
+		       FROM products p 
+		       INNER JOIN (
+		           SELECT product_id, SUM(quantity) as total_qty 
+		           FROM Order_Items 
+		           GROUP BY product_id
+		       ) sales ON p.product_id = sales.product_id 
+		       WHERE p.is_active = 1  
+		       ORDER BY sales.total_qty DESC
+		       """, 
+		       nativeQuery = true)
+		List<Product> findBestSellers(Pageable pageable);
 }

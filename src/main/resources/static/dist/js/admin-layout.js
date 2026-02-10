@@ -82,7 +82,6 @@ const sidebarHTML = `
                 <li class="nav-item">
                     <a href="#" class="nav-link"><i class="nav-icon fas fa-edit"></i><p>人員管理 <i class="right fas fa-angle-left"></i></p></a>
                     <ul class="nav nav-treeview">
-					    <li class="nav-item"><a href="/admin/layout/AuditDashboard.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>系統監控儀表板</p></a></li>
                         <li class="nav-item"><a href="/admin/layout/GetAllGroomers.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>美容師列表</p></a></li>
                         <li class="nav-item"><a href="/admin/layout/GetAllLeaveRecords.html" class="nav-link"><i class="far fa-circle nav-icon"></i><p>休假審核</p></a></li>
                     </ul>
@@ -259,10 +258,10 @@ function highlightActiveMenu() {
 
             // 展開父選單
             $(this)
-              .closest('.has-treeview')
-              .addClass('menu-open')
-              .children('a.nav-link')
-              .addClass('active');
+                .closest('.has-treeview')
+                .addClass('menu-open')
+                .children('a.nav-link')
+                .addClass('active');
         }
     });
 }

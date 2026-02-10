@@ -76,7 +76,7 @@ public class GroomerController {
 	        return ResponseEntity.ok().body("美容師新增成功");
 	    } catch (Exception e) {
 	        log.error("新增失敗", e);
-	        return ResponseEntity.badRequest().body("美容師新增失敗：" + e.getMessage());
+	        return ResponseEntity.badRequest().body(e.getMessage());
 	    }
 	}
 	
@@ -118,7 +118,7 @@ public class GroomerController {
             return ResponseEntity.ok().body("{\"message\": \"美容師資料更新成功\"}");
         } catch (Exception e) {
             log.error("更新失敗", e);
-            return ResponseEntity.badRequest().body("更新失敗：" + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 	
@@ -133,7 +133,7 @@ public class GroomerController {
             return ResponseEntity.ok().body("{\"message\": \"狀態更新成功\"}");
         } catch (Exception e) {
             log.error("狀態更新失敗", e);
-            return ResponseEntity.badRequest().body("更新失敗：" + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 	
@@ -153,7 +153,7 @@ public class GroomerController {
             return ResponseEntity.ok().body("{\"message\": \"請假申請已提交\"}");
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.badRequest().body("請假申請失敗：" + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 	

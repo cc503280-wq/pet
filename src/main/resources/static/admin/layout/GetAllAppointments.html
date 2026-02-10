@@ -332,7 +332,6 @@
                     
                     <div class="card bg-light">
                         <div class="card-body">
-                            <h5 class="card-title font-weight-bold mb-3">費用詳情</h5>
                             <div class="d-flex justify-content-between mb-2">
                                 <span>預約編號:</span>
                                 <span id="checkin-appt-id" class="font-weight-bold"></span>
@@ -341,9 +340,17 @@
                                 <span>會員姓名:</span>
                                 <span id="checkin-member-name"></span>
                             </div>
-                             <div class="d-flex justify-content-between mb-2">
-                                <span>服務項目:</span>
-                                <span id="checkin-service"></span>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>寵物姓名:</span>
+                                <span id="checkin-pet-name"></span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>主要服務:</span>
+                                <span id="checkin-main-service"></span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>加購項目:</span>
+                                <span id="checkin-addon-item"></span>
                             </div>
                             <hr>
                             <div class="d-flex justify-content-between align-items-center">
@@ -356,7 +363,7 @@
                     <div class="form-check mt-3 text-center">
                         <input class="form-check-input" type="checkbox" id="paymentReceivedCheck">
                         <label class="form-check-label font-weight-bold" for="paymentReceivedCheck">
-                            我已確認收到款項 (Cash/Credit Card)
+                            已確認收到款項
                         </label>
                     </div>
                 </div>
@@ -720,7 +727,7 @@
           } else if (app.appointmentStatus === "已完成") {
             deleteBtnHtml = `<button class="btn btn-success btn-sm disabled-btn" style="${btnStyle}" disabled>已完成</button>`;
           } else {
-            deleteBtnHtml = `<a href="#" class="btn btn-danger btn-sm btn-delete" data-id="${app.appointmentId}" style="${btnStyle}">取消預約</a>`;
+            deleteBtnHtml = `<a href="#" class="btn btn-danger btn-sm btn-delete d-flex align-items-center justify-content-center" data-id="${app.appointmentId}" style="${btnStyle}">取消預約</a>`;
           }
 
           const tr = `
@@ -766,7 +773,6 @@
           if (appData) {
             $("#modal-appointment-id").val(appData.appointmentId);
             $("#modal-pet-name").val(appData.petName);
-            // ... 填入欄位
             $("#modal-pet-type").val(appData.petType);
             $("#modal-pet-size").val(appData.petSize);
             $("#modal-main-service").val(appData.mainService);
@@ -951,7 +957,7 @@
       // 載入 Modal 內的美容師篩選選單
       function loadScheduleGroomerFilter() {
         $.ajax({
-          url: "/groomers",
+          url: "/groomers/search?isActive=1",
           type: "GET",
           dataType: "json",
           success: function (list) {
@@ -1275,12 +1281,27 @@
              return;
         }
 
+        // 檢查預約日期是否為今天
+        const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+        if (appData.appointmentDate !== today) {
+            let msg = '';
+            if (appData.appointmentDate < today) {
+                msg = `此預約日期為 ${appData.appointmentDate}，已經過期！今天是 ${today}。`;
+            } else {
+                msg = `此預約日期為 ${appData.appointmentDate}，是未來的預約！今天是 ${today}。`;
+            }
+            Swal.fire('無法報到', msg, 'warning');
+            return;
+        }
+
         currentCheckInId = appointmentId; // Store ID
         
         // Fill Modal Data
         $('#checkin-appt-id').text('#' + appData.appointmentId);
         $('#checkin-member-name').text(appData.memberName);
-        $('#checkin-service').text(appData.mainService);
+        $('#checkin-pet-name').text(appData.petName);
+        $('#checkin-main-service').text(appData.mainService);
+        $('#checkin-addon-item').text(appData.addonItem || '無');
         $('#checkin-price').text('$' + appData.price);
         
         // Reset Checkbox & Button
@@ -1316,7 +1337,14 @@
                 loadAllAppointments(); // Refresh Table
             },
             error: function(xhr) {
-                 Swal.fire('失敗', '報到失敗: ' + xhr.responseText, 'error');
+                 let errorMsg = '報到失敗';
+                 try {
+                     const response = JSON.parse(xhr.responseText);
+                     errorMsg = response.message || errorMsg;
+                 } catch(e) {
+                     errorMsg = xhr.responseText || errorMsg;
+                 }
+                 Swal.fire('失敗', errorMsg, 'error');
             }
         });
     }

@@ -89,6 +89,13 @@
         padding: 0.25rem 0.5rem;
         white-space: nowrap;
       }
+
+      /* 操作日誌 Badge 樣式 */
+      .badge-login { background-color: #28a745; }
+      .badge-logout { background-color: #6c757d; }
+      .badge-check_in { background-color: #17a2b8; }
+      .badge-start { background-color: #007bff; }
+      .badge-complete { background-color: #ffc107; color: #333; }
     </style>
   </head>
 
@@ -177,6 +184,10 @@
 
                       <button id="btnReset" class="btn btn-secondary btn-sm">
                         重置
+                      </button>
+
+                      <button id="btnActionLog" class="btn btn-info btn-sm" onclick="openActionLogModal()">
+                        <i class="fas fa-history"></i> 美容師行為日誌
                       </button>
                     </div>
                   </div>
@@ -326,6 +337,52 @@
             >
               儲存
             </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 美容師行為日誌 Modal -->
+    <div class="modal fade" id="actionLogModal" tabindex="-1">
+      <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title"><i class="fas fa-history mr-2"></i>美容師行為日誌</h5>
+            <button type="button" class="close" data-dismiss="modal">
+              <span>&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <select id="actionTypeFilter" class="form-control form-control-sm" style="width: 150px;">
+                <option value="">全部類型</option>
+                <option value="LOGIN">登入</option>
+                <option value="LOGOUT">登出</option>
+                <option value="CHECK_IN">會員報到</option>
+                <option value="START">服務開始</option>
+                <option value="COMPLETE">服務完成</option>
+              </select>
+            </div>
+            <div class="table-responsive" style="max-height: 500px;">
+              <table class="table table-hover table-striped">
+                <thead class="sticky-top bg-white">
+                  <tr>
+                    <th>時間</th>
+                    <th>美容師</th>
+                    <th>操作類型</th>
+                    <th>對象</th>
+                    <th>IP 位址</th>
+                    <th>描述</th>
+                  </tr>
+                </thead>
+                <tbody id="actionLogTable">
+                  <tr><td colspan="6" class="text-center">載入中...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
           </div>
         </div>
       </div>
@@ -734,7 +791,7 @@
             Swal.fire({
               icon: "error",
               title: "失敗",
-              text: "儲存失敗：" + (xhr.responseText || "未知錯誤！"),
+              text: xhr.responseText || "儲存失敗！",
             });
           },
         });
@@ -796,7 +853,7 @@
                 Swal.fire({
                   icon: "error",
                   title: "失敗",
-                  text: "儲存失敗：" + (xhr.responseText || "未知錯誤！"),
+                  text: xhr.responseText || "操作失敗！",
                 });
 
                 console.error("Status Update Error:", xhr);
@@ -804,6 +861,86 @@
             });
           }
         });
+      }
+
+      // ========== 美容師行為日誌 Modal ==========
+      function openActionLogModal() {
+        $('#actionLogModal').modal('show');
+        loadActionLogs();
+
+        // 綁定篩選器事件（只綁定一次）
+        $('#actionTypeFilter').off('change').on('change', function() {
+          loadActionLogs($(this).val());
+        });
+      }
+
+      async function loadActionLogs(actionType = '') {
+        try {
+          let url = '/api/audit/actions';
+          if (actionType) {
+            url = `/api/audit/actions/type/${actionType}`;
+          }
+
+          const res = await $.getJSON(url);
+          const tbody = $('#actionLogTable');
+          tbody.empty();
+
+          if (!res || res.length === 0) {
+            tbody.html('<tr><td colspan="6" class="text-center text-muted">尚無操作日誌</td></tr>');
+            return;
+          }
+
+          // 按時間倒序排列，取最近 50 筆
+          const sorted = res.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)).slice(0, 50);
+
+          sorted.forEach(log => {
+            const time = log.timestamp ? log.timestamp.replace('T', ' ').substring(0, 19) : '-';
+            const groomerId = log.groomerId || '-';
+            const groomerName = log.groomerName || '未知';
+            // CHECK_IN 由管理員操作，不顯示美容師
+            const groomer = log.actionType === 'CHECK_IN' ? '管理員操作' : `${groomerId}: ${groomerName}`;
+            const actionBadge = getActionBadge(log.actionType);
+            const ip = log.ipAddress || '-';
+            const desc = log.details?.description || '-';
+
+            // 組合對象資訊（會員/預約）- CHECK_IN, START, COMPLETE 都需要顯示
+            let target = '-';
+            if (log.actionType === 'CHECK_IN' || log.actionType === 'START' || log.actionType === 'COMPLETE') {
+              const memberId = log.targetMemberId || log.details?.memberId || '-';
+              const memberName = log.targetMemberName || log.details?.memberName || '未知';
+              const petId = log.details?.petId || '-';
+              const petName = log.details?.petName || '';
+              const appointmentId = log.targetAppointmentId || log.details?.appointmentId || '-';
+              target = `會員: ${memberName} (ID:${memberId})`;
+              if (petName) target += `<br><small class="text-muted">寵物: ${petName} (ID:${petId}), 預約ID:${appointmentId}</small>`;
+            }
+
+            tbody.append(`
+              <tr>
+                <td>${time}</td>
+                <td>${groomer}</td>
+                <td>${actionBadge}</td>
+                <td>${target}</td>
+                <td><code>${ip}</code></td>
+                <td>${desc}</td>
+              </tr>
+            `);
+          });
+        } catch (e) {
+          console.error('loadActionLogs error:', e);
+          $('#actionLogTable').html('<tr><td colspan="6" class="text-center text-danger">載入失敗</td></tr>');
+        }
+      }
+
+      function getActionBadge(actionType) {
+        const badges = {
+          'LOGIN': '<span class="badge badge-login">登入</span>',
+          'LOGOUT': '<span class="badge badge-logout">登出</span>',
+          'CHECK_IN': '<span class="badge badge-check_in">會員報到</span>',
+          'START': '<span class="badge badge-start">服務開始</span>',
+          'COMPLETE': '<span class="badge badge-complete">服務完成</span>'
+        };
+        return badges[actionType] || `<span class="badge badge-secondary">${actionType}</span>`;
       }
     </script>
   </body>

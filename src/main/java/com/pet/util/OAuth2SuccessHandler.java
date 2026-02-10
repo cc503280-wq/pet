@@ -110,6 +110,13 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
             // 使用 saveAndFlush 確保立即寫入
             member = memberRepository.saveAndFlush(member);
             System.out.println("✅ OAuth2 舊會員登入成功 (ID:" + member.getMemberId() + "): " + email);
+
+            // 檢查帳號狀態
+            if (!"active".equalsIgnoreCase(member.getStatus())) {
+                System.err.println("❌ OAuth2 登入失敗：帳號已被停用 " + email);
+                response.sendRedirect("http://localhost:5173/#/login?error=account_suspended");
+                return;
+            }
         } else {
             // 不存在：註冊新會員
             System.out.println("🎉 OAuth2 發現新用戶，執行註冊: " + email);

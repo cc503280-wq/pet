@@ -66,11 +66,8 @@ public class MailService {
         );
 
         try {
-            // 1. 產生 QR Code 資料內容 (格式: APPOINTMENT:{id}|DATE:{date}|TIME:{time})
-            String qrCodeData = String.format("APPOINTMENT:%d|DATE:%s|TIME:%s", 
-                appointment.getAppointmentId(),
-                appointment.getAppointmentDate(),
-                appointment.getStartTime());
+            // 1. 產生 QR Code 資料內容 (只使用 appointmentId，與 API 端點一致)
+            String qrCodeData = String.valueOf(appointment.getAppointmentId());
                 
             // 2. 產生 QR Code 圖片 byte 陣列
             byte[] qrCodeImage = generateQRCodeImage(qrCodeData, 200, 200);

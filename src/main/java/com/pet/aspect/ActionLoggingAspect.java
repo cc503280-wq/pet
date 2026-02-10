@@ -166,8 +166,8 @@ public class ActionLoggingAspect {
         String methodName = joinPoint.getSignature().getName();
         
         // 🛡️ 安全性改進：從 Session 取得美容師資訊（而非方法參數）
-        // 適用於 checkIn / complete / logout 等需要記錄操作者的方法
-        if (methodName.contains("checkIn") || methodName.contains("complete") || methodName.contains("logout")) {
+        // 適用於 checkIn / complete / logout / start 等需要記錄操作者的方法
+        if (methodName.contains("checkIn") || methodName.contains("complete") || methodName.contains("logout") || methodName.contains("start")) {
             extractGroomerFromSession(auditLog);
             // 如果已從 Session 取得，直接返回
             if (auditLog.getGroomerId() != null) {
@@ -280,8 +280,8 @@ public class ActionLoggingAspect {
     private void extractAppointmentAndMemberInfo(JoinPoint joinPoint, Object result, GroomerActionLog auditLog, Map<String, Object> details) {
         String methodName = joinPoint.getSignature().getName();
         
-        // 只對 checkIn 和 complete 方法提取
-        if (!methodName.contains("checkIn") && !methodName.contains("complete")) {
+        // 只對 checkIn、complete、start 方法提取
+        if (!methodName.contains("checkIn") && !methodName.contains("complete") && !methodName.contains("start")) {
             return;
         }
         
@@ -361,8 +361,9 @@ public class ActionLoggingAspect {
             details.put("memberId", member.getMemberId());
         }
         
-        // 也記錄寵物名稱
+        // 也記錄寵物資訊
         if (appointment.getMemberPet() != null) {
+            details.put("petId", appointment.getMemberPet().getPetId());
             details.put("petName", appointment.getMemberPet().getPetName());
         }
         

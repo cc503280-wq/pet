@@ -149,7 +149,7 @@ public class AppointmentService {
         Appointment saved = updateStatus(appointment, AppConstants.APPOINTMENT_STATUS_CHECKED_IN,
                 appt -> log.info("預約單號：{} 報到成功，付款狀態已更新", appt.getAppointmentId()));
 
-        notificationService.broadcastUpdate(saved, AppConstants.EVENT_CHECKIN, "您的毛孩已報到成功！請稍候", null);
+        notificationService.broadcastUpdate(saved, AppConstants.EVENT_CHECKIN, "預約 #" + saved.getAppointmentId() + " 已報到成功！", null);
         
         return saved;
     }
@@ -165,7 +165,7 @@ public class AppointmentService {
         Appointment saved = updateStatus(appointment, AppConstants.APPOINTMENT_STATUS_IN_PROGRESS,
                 appt -> log.info("預約單號：{} 開始服務", appt.getAppointmentId()));
 
-        notificationService.broadcastUpdate(saved, AppConstants.EVENT_START, "您的毛孩開始美容囉！✂️", null);
+        notificationService.broadcastUpdate(saved, AppConstants.EVENT_START, "預約 #" + saved.getAppointmentId() + " 開始美容囉！✂️", null);
         
         return saved;
     }
@@ -198,14 +198,12 @@ public class AppointmentService {
             Appointment savedAppt = appointmentRepository.save(appointment);
             log.info("預約單號: {} 建立成功, 總時長: {} 分鐘", savedAppt.getAppointmentId(), totalDuration);
             
-            // 4. 發送確認通知 (與 WebSocket 廣播)
-            // 傳遞 request.getMemberId() 避免 Lazy Loading 問題
-            notificationService.sendConfirmation(savedAppt, request.getMemberId());
-
+            // 4. 鎖定時段 (先鎖定，確保成功後才發送通知)
             dailyScheduleRepository.flush();
-
-            // 5. 鎖定時段 (保留在此，這屬於狀態變更)
             lockGroomerSchedule(schedule, startTime, totalDuration);
+
+            // 5. 發送確認通知 (鎖定成功後才寄信，避免併發時兩人都收到確認信)
+            notificationService.sendConfirmation(savedAppt, request.getMemberId());
 
             return savedAppt;
 
