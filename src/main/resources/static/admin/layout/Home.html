@@ -91,7 +91,8 @@
                                             <option value="LOGIN">登入</option>
                                             <option value="SEARCH">搜尋</option>
                                             <option value="CART">購物車</option>
-                                            <option value="CREATE_ORDER">訂單</option>
+                                            <option value="CREATE_ORDER">建立訂單</option>
+                                            <option value="CANCEL_ORDER">取消訂單</option>
                                             <option value="BOOKING">預約</option>
                                             <option value="FAVORITE">收藏</option>
                                         </select>
@@ -370,6 +371,7 @@
                         else badgeClass = 'bg-warning';
                     }
                     else if (log.actionType === 'CREATE_ORDER') badgeClass = 'bg-success';
+                    else if (log.actionType === 'CANCEL_ORDER') badgeClass = 'bg-danger'; // 紅色
                     else if (log.actionType === 'BOOKING') badgeClass = 'bg-purple'; // 自定義顏色
                     else if (log.actionType === 'FAVORITE') badgeClass = 'bg-pink'; // 收藏用粉色
 
