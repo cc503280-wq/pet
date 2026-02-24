@@ -41,6 +41,13 @@ public class OrderItemService {
 	}
 	//根據商品編號進行查詢
 	public List<OrderItem> getOrderItemByProductId(Integer productId) {
+		List<OrderItem> list = oiRepository.findByProductId(productId);
+		for (OrderItem item : list) {
+	        Product p = pService.getProductById(item.getProductId());
+	        if (p != null) {
+	            item.setProductName(p.getProductName());
+	        }
+	    }
 		return oiRepository.findByProductId(productId);
 	}
 

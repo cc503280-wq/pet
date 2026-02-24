@@ -121,10 +121,19 @@ public class OrderItemController {
 	    List<Integer> data = orderItemsList.stream()
 	            .map(OrderItem::getQuantity)
 	            .collect(Collectors.toList());
+	    // ✅ 取得商品名稱
+	    String productName = null;
+	    if (!orderItemsList.isEmpty()) {
+	        productName = orderItemsList.get(0).getProductName();
+	    }
 	    System.out.println("準備圖表數據:"+data);
 		model.addAttribute("orderItemsList", orderItemsList);
 		model.addAttribute("chartLabels", labels); // 日期標籤
 	    model.addAttribute("chartData", data);     // 銷售數量
+	    model.addAttribute("productName", productName); 
+	    orderItemsList.forEach(item -> 
+	    System.out.println("PID=" + item.getProductId() + ", NAME=" + item.getProductName())
+	);
 		return "orderItemsList";
 	}
 	
